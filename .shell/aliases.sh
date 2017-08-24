@@ -2,7 +2,6 @@
 
 alias ev='vim ~/.vim/vimrc'
 alias er='vim ~/.zshrc'
-alias et='vim ~/.tmux.conf'
 alias sr="source ~/.zshrc"
 alias es='vim ~/.ssh/config'
 
@@ -13,13 +12,17 @@ alias vi='vim -u NONE -N'
 alias e='emacs'
 
 # aliases for Tmux
-alias tmux='tmux -2'
-alias ta='tmux attach -t'
-alias tnew='tmux new'
-alias tls='tmux ls'
-alias tkill='tmux kill-session -t'
-TMUX_DEFAULT_SESSION_NAME=SACK
-alias tt='tmux attach || tnew $TMUX_DEFAULT_SESSION_NAME'
+which tmux > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias et='vim ~/.tmux.conf'
+    alias tmux='tmux -2'
+    alias ta='tmux attach -t'
+    alias tnew='tmux new -s'
+    alias tls='tmux ls'
+    alias tkill='tmux kill-session -t'
+    TMUX_DEFAULT_SESSION_NAME=SACK
+    alias tt='tmux attach || tnew $TMUX_DEFAULT_SESSION_NAME'
+fi
 
 alias myip='ifconfig|grep "inet "'
 alias myipc='curl ipinfo.io'
