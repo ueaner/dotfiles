@@ -1,0 +1,11 @@
+*.php diff=php
+
+# *.docx diff=docx2txt
+
+*.png diff=exif
+*.jpg diff=exif
+*.gif diff=exif
+
+*.jpg binary
+*.png binary
+*.gif binary

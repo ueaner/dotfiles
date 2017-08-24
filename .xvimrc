@@ -1,0 +1,64 @@
+set clipboard=unnamed
+set laststatus=0
+
+" ==================== 搜索 ==================== {{{
+
+" 实时显示搜索结果
+set incsearch
+" 忽略大小写
+set ignorecase
+" 智能搜索
+set smartcase
+" 高亮搜索结果
+set hlsearch
+
+" }}}
+" ==================== 键映射 ==================== {{{
+
+" 去除高亮
+nmap ,<space> :nohlsearch<CR>
+" 开启搜索当前光标下的单词，但是不跳转下一个, :help gd
+nmap ,k wb/\<<C-R><C-W>\>/e<CR>
+
+" 复制到行尾，类似大写的 C 和 D 操作
+nmap Y y$
+
+" close current file
+map ,q  :xccmd closeDocument<CR>
+
+" search the string cursor points to. Very Usefull.
+map ,s viw:xccmd findSelectedTextInWorkspace<CR>
+
+" search document for text cursor points to.
+map ,hh :xccmd searchDocumentationForSelectedText<CR>
+
+"quick save and quit
+map ,w :w<CR>
+
+" Fold
+nmap ,zf :xccmd fold<CR>
+" <S-SPACE> not work
+nmap ,zu :xccmd unfold<CR> 
+map ,fa :xccmd foldAllMethods<CR>
+map ,ua :xccmd unfoldAllMethods<CR>
+map ,fc :xccmd foldAllComments<CR>
+map ,uc :xccmd unfoldAllComments<CR>
+
+" auto center
+nnoremap n nzz
+nnoremap N Nzz
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Project
+""""""""""""""""""""""""""""""""""""""""""""""""""
+"map ,r  :run<CR>
+map ,bp  :xcmenucmd Build<CR>
+map ,cp  :xcmenucmd Clean<CR>
+
+" switch between .h/.m
+" You can use vim cmd |gd| and |ctrl+i/o| to navigate between files.
+
+" 显示/隐藏 toolbar
+map ,tt :xccmd toggleToolbarShown<CR>
+
+"}}}

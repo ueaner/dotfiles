@@ -1,0 +1,9 @@
+" 去除提示音
+set noerrorbells
+" 关闭可视响铃和鸣叫
+set visualbell t_vb=
+" 关闭 esc 闪屏
+au GuiEnter * set t_vb=
+
+" 高亮搜索结果
+set hlsearch

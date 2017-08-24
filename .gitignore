@@ -1,0 +1,31 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+.Trash-*
+*~
+
+# IDEs
+.idea
+.vscode
+xcuserdata
+*.xcworkspace
+
+# Apache
+.htaccess
+
+# vim gtags
+GPATH
+GRTAGS
+GTAGS
+gtags.files
