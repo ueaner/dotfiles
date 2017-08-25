@@ -11,13 +11,13 @@ export LC_CTYPE=zh_CN.UTF-8
 
 # PATH
 export PATH="$HOME/bin:$PATH"
-export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
 
 # golang
 export GOPATH=$HOME/golang
 #export GOBIN=$HOME/golib
 export GOROOT=/usr/local/opt/go/libexec
-export PATH="$PATH:$GOPATH/bin"
+#export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$GOROOT/bin"
 
 # composer
