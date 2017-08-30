@@ -41,7 +41,7 @@ export ANDROID_HOME=/usr/local/opt/android-sdk
 
 if [ "`uname`" = "Darwin" ]; then
     # brew cask
-    export HOMEBREW_CASK_OPTS="--appdir=~/Applications --caskroom=/usr/local/Caskroom"
+    export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
     #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
     export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
     alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
