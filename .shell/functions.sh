@@ -125,3 +125,12 @@ else
     }
 
 fi
+
+which tmux > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    tt()
+    {
+        TMUX_SESSION_NAME=${1:-"SACK"}
+        tmux attach-session || tmux new-session -s $TMUX_SESSION_NAME
+    }
+fi
