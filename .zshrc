@@ -1,12 +1,23 @@
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.local/share/oh-my-zsh
+source /usr/local/share/antigen/antigen.zsh
 
-ZSH_THEME="mysh"
-#ZSH_THEME="robbyrussell"
+antigen use oh-my-zsh
 
-plugins+=(zsh-completions)
+antigen bundle extract
+antigen bundle cp
+antigen bundle history
+antigen bundle history-substring-search
+antigen bundle tmux
+antigen bundle rsync
+antigen bundle gradle
 
-source $ZSH/oh-my-zsh.sh
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+
+antigen theme robbyrussell
+
+# 更改后执行 antigen reset，再打开新窗口
+antigen apply
 
 # User configuration
 source ~/.shell/env.sh
@@ -18,5 +29,3 @@ bindkey "^P" up-line-or-search
 bindkey "^N" down-line-or-search
 bindkey "^U" backward-kill-line
 #bindkey "^U" kill-whole-line #删除行
-
-fpath=(/usr/local/share/zsh-completions $fpath)
