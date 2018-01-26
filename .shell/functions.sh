@@ -126,8 +126,7 @@ else
 
 fi
 
-which tmux > /dev/null 2>&1
-if [ $? -eq 0 ]; then
+if function_exists tmux; then
     tt()
     {
         TMUX_SESSION_NAME=${1:-"SACK"}
