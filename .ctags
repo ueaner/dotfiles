@@ -1,0 +1,4 @@
+--exclude=.git
+--exclude=cache
+--exclude=vendor
+--exclude=tests
