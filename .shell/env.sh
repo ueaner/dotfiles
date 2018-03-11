@@ -4,14 +4,17 @@ export EDITOR="vim"
 export LANG=zh_CN.UTF-8
 export LC_CTYPE=zh_CN.UTF-8
 # TERM & screen
-#TERM=xterm-256color
-#ZSH_TMUX_TERM=screen-256color
+TERM=xterm-256color
+ZSH_TMUX_TERM=xterm-256color
 
 # export ARCHFLAGS="-arch x86_64"
 
 # PATH
 export PATH="$HOME/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
+
+# python3
+export PATH="$PATH:`python3 -m site --user-base`/bin"
 
 # golang
 export GOPATH=$HOME/golang
@@ -31,7 +34,8 @@ export GEM_PATH=$HOME/.gem
 export PATH="$PATH:$GEM_PATH/bin"
 
 # vim gtags 多目录
-export GTAGSLIBPATH=/usr/local/var/www/soliphp/framework/src
+export GTAGSLIBPATH=/usr/local/var/www/soliphp/soli-full-build
+export GTAGSLABEL=ctags
 
 # electron
 export ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
@@ -42,11 +46,23 @@ export ANDROID_HOME=/usr/local/opt/android-sdk
 if [ "`uname`" = "Darwin" ]; then
     # brew cask
     export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
+    # 使用每天定时更新，而不是每次使用命令时更新
+    export HOMEBREW_NO_AUTO_UPDATE=1
     #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
-    export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
+    #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
     alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
 
     export JAVA_HOME=`/usr/libexec/java_home`
 else
     export JAVA_HOME=/usr/java/default
 fi
+
+# tomcat
+export CATALINA_BASE=/usr/local/var/www/tomcatbase
+
+# jetty
+export JETTY_BASE=/usr/local/var/www/jettybase
+
+# OpenGrok
+export OPENGROK_INSTANCE_BASE=/usr/local/var/opengrok
+export OPENGROK_SRC_ROOT=/usr/local/var/www/soliphp/soli-full-build

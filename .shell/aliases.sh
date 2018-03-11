@@ -25,6 +25,10 @@ alias todo='vim ~/.gitpages/todo.md'
 alias phprofiler="php -d xdebug.profiler_enable=1"
 #alias phpunit="phpunit -d xdebug.show_exception_trace=0"
 
+alias www='cd /usr/local/var/www'
+
+alias cman='man -M /usr/local/share/man/zh_CN'
+
 alias cnpm="npm --registry=https://registry.npm.taobao.org \
 --disturl=https://npm.taobao.org/dist \
 --cache=$HOME/.npm \
