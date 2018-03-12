@@ -4,8 +4,8 @@ export EDITOR="vim"
 export LANG=zh_CN.UTF-8
 export LC_CTYPE=zh_CN.UTF-8
 # TERM & screen
-TERM=xterm-256color
-ZSH_TMUX_TERM=xterm-256color
+export TERM=xterm-256color
+export ZSH_TMUX_TERM=xterm-256color
 
 # export ARCHFLAGS="-arch x86_64"
 
@@ -22,6 +22,8 @@ export GOPATH=$HOME/golang
 export GOROOT=/usr/local/opt/go/libexec
 #export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$GOROOT/bin"
+
+export PHP_INI_SCAN_DIR=/usr/local/etc/php.d
 
 # composer
 export COMPOSER_HOME="$HOME/.composer"
