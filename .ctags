@@ -1,4 +1,11 @@
+--recurse=yes
+
 --exclude=.git
+
 --exclude=cache
 --exclude=vendor
 --exclude=tests
+
+--languages=-html
+--languages=-javascript
+--languages=-sql
