@@ -1,0 +1,20 @@
+import java.text.SimpleDateFormat
+
+// Remember - This property is a Closure (function code), not a string.
+// The 'timestamp' property needs to be executed as code each time, not referenced as a string.
+gradle.ext.timestamp = {
+    def df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS")
+    df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"))
+    return df.format(new Date())
+}
+
+println "from ~/.gradle/init.d/"
+println ">   init.gradle | EXECUTED | gradle.timestamp(): [${gradle.timestamp()}]"
+
+// REFERENCE - API docs for the Gradle interface object
+// https://docs.gradle.org/current/dsl/org.gradle.api.invocation.Gradle.html
+// $gradle.gradleVersion or $gradleVersion 都可以
+println ">   init.gradle | gradleVersion     : $gradleVersion"
+println ">   init.gradle | gradleHomeDir     : $gradleHomeDir"
+println ">   init.gradle | gradleUserHomeDir : $gradleUserHomeDir"
+println ">   init.gradle | Parent build of this build: $parent"
