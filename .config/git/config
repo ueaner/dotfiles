@@ -264,6 +264,12 @@
 
     insteadOf = "gist:"
 
+# 得用这个 push
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+[url "git@gitlab.com:"]
+    insteadOf = https://gitlab.com/
+
 [init]
 
     templateDir = ~/.config/git/template/
