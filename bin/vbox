@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+# Author: ueaner <ueaner@gmail.com>
+#
+# https://blog.sleeplessbeastie.eu/2013/07/23/virtualbox-how-to-control-virtual-machine-using-command-line/
+
+# 显示虚拟机列表
+list() {
+    if [ "$1" == "running" ]; then
+        VBoxManage list runningvms
+    else
+        VBoxManage list vms
+    fi
+}
+
+# 是否存在某个名称的虚拟机
+HasBox()
+{
+    has=`list | grep -c "\"$1\""`
+    if [ ! -n "$1" ] || [ $has -eq 0 ]; then
+        echo Could not find a registered machine named "'$1'"
+        echo VMs list:
+        list
+        exit 1
+    fi
+}
+
+# 显示某台虚拟机的相关信息
+info() {
+    HasBox $1
+    VBoxManage guestproperty enumerate "$1"
+    # VBoxManage showvminfo "$1"
+}
+
+# 获取某台虚拟机的操作系统名称
+GetOSProductName() {
+    # 查看 vmname 的所有已设置属性
+    # VBoxManage guestproperty enumerate vmname
+    # 对应的虚拟机需要安装 Guest Additions
+    NAME=`VBoxManage guestproperty get $1 "/VirtualBox/GuestInfo/OS/Product"`
+    echo $NAME | cut -d ' ' -f 2 | tr A-Z a-z
+}
+
+# 启动某台虚拟机, 通过虚拟机操作系统类型选择不同的方式启动
+start() {
+    if started $1; then
+        echo \"$1\" already started.
+        exit 0
+    fi
+
+    echo "Starting $1"
+
+    case "`GetOSProductName $1`" in
+        windows|darwin)
+            # 正常启动虚拟机
+            VBoxManage startvm "$1"
+            ;;
+        linux|freebsd)
+            # 无前端图形界面方式启动虚拟机
+            VBoxManage startvm "$1" --type headless
+            ;;
+        *)
+            # 未安装 Guest Additions，一般为 Linux 字符界面
+            VBoxManage startvm "$1" --type headless
+            ;;
+    esac
+}
+
+# 关闭某台虚拟机
+stop() {
+    NotStartedExit $1
+    echo "Stopping $1"
+    VBoxManage controlvm "$1" poweroff soft
+}
+
+# 关闭某台虚拟机
+restart() {
+    if started $1; then
+        stop $1
+        sleep 1
+    fi
+
+    start $1
+}
+
+# 挂起某台虚拟机
+suspend() {
+    NotStartedExit $1
+    echo "Suspend $1"
+    VBoxManage controlvm "$1" savestate
+}
+
+# 查看某台虚拟机是否已启动
+started() {
+    HasBox $1
+    isStarted=`VBoxManage showvminfo "$1" | grep -c "running (since"`
+    [ $isStarted -gt 0 ]
+}
+
+NotStartedExit()
+{
+    if ! started $1; then
+        echo \"$1\" is not started.
+        exit 1
+    fi
+}
+
+# 判断参数，执行相应的命令
+case "$1" in
+    list)
+        list $2
+        ;;
+
+    info)
+        info $2
+        ;;
+
+    start)
+        start $2
+        ;;
+
+    stop)
+        stop $2
+        ;;
+
+    suspend)
+        suspend $2
+        ;;
+
+    restart)
+        restart $2
+        ;;
+
+    started)
+        if started $2; then
+            echo Yes
+        else
+            echo No
+        fi
+        ;;
+
+    *)
+        echo "Usage: `basename $0` {list|info|start|stop|suspend|restart|started} [vmname]" >&2
+        exit 1
+        ;;
+esac
