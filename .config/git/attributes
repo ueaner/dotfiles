@@ -1,0 +1,17 @@
+# 始终使用 Unix-style line endings (LF), Windows 批处理文件除外
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+*.go diff=go
+*.php diff=php
+
+# *.docx diff=docx2txt
+
+*.png diff=exif
+*.jpg diff=exif
+*.gif diff=exif
+
+*.jpg binary
+*.png binary
+*.gif binary
