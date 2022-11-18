@@ -1,0 +1,87 @@
+# 配置说明：https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+
+live_config_reload: true
+
+# 0.10+
+window:
+  # 有透明度可以看到桌面背景，设置透明度会影响最终背景色的渲染效果
+  #opacity: 0.8
+  opacity: 1.0
+  #dynamic_padding: true
+  padding:
+    x: 6
+    y: 6
+
+cursor:
+  style:
+    shape: Beam
+
+env:
+  TERM: xterm-256color
+
+  # XDG_CONFIG_HOME: ~/.config
+  # XDG_CACHE_HOME: ~/.cache
+  # XDG_DATA_HOME: ~/.local/share
+  # XDG_STATE_HOME: ~/.local/state
+  # XDG_RUNTIME_DIR: ~/.local/runtime
+  # XDG_BIN_HOME: ~/.local/bin
+  # XDG_LIB_HOME: ~/.local/lib
+  # ZDOTDIR: ~/.config/zsh
+
+font:
+  size: 12.0
+  offset:
+    x: 0
+    y: 8
+  normal:
+    family: SauceCodePro Nerd Font
+    style: Regular
+  bold:
+    family: SauceCodePro Nerd Font
+    style: Bold
+  italic:
+    family: SauceCodePro Nerd Font
+    style: Italic
+  bold_italic:
+    family: SauceCodePro Nerd Font
+    style: Bold Italic    
+    #normal:
+    #  #family: UbuntuMono Nerd Font Mono
+    #  #family: FantasqueSansMono Nerd Font Mono
+    #  #family: MesloLGS Nerd Font
+    #  #family: MesloLGM Nerd Font
+    #  #family: MesloLGL Nerd Font
+    #  #family: MesloLGS Nerd Font Mono
+    #  family: SauceCodePro Nerd Font
+    #  #family: JetBrainsMonoMedium Nerd Font
+    #  #family: mplus Nerd Font Mono
+    #  #style: Regular
+    #  #family: UbuntuMono Nerd Font Mono
+    #  #style: Bold
+    #  #family: Operator Mono
+    #  #style: Book
+    #  #family: Menlo
+    #italic:
+    #  family: MesloLGS Nerd Font Mono
+    #  #family: Menlo
+    #bold_italic:
+    #  family: MesloLGS Nerd Font Mono
+    #  #family: Menlo
+
+
+selection:
+  # 保存到系统剪切板
+  save_to_clipboard: true
+
+# https://github.com/alacritty/alacritty/pull/1856#issuecomment-444581656
+# macOS 下会自动使用 login shell
+#shell:
+#  # alacritty 作为交互终端使用 login 模式，会加载 ~/.zprofile 环境变量配置文件
+#  # tmux 会继承 alacritty 终端已有环境变量，使用 non-login 模式，避免重复加载环境变量
+#  # alacritty 可以为 shell 设置环境变量，但是 alacritty 自身不支持读取环境变量
+#  program: /usr/bin/login
+#  args: [ "-pf", "ueaner" ]
+
+import:
+  - ~/.config/alacritty/colors.yml
+  - ~/.config/alacritty/key_bindings.yml

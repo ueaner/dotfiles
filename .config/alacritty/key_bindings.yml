@@ -1,0 +1,43 @@
+# https://zh.wikipedia.org/zh-cn/控制字符
+# https://zh.wikipedia.org/zh-cn/软件流控制
+# C-j \x0a
+# C-q \x11
+key_bindings:
+    - { key: N,         mods: Command,       command: { program: "open", args: ["-nb", "io.alacritty"] } }
+    # tmux, Cmd + Esc 进入可视模式
+    - { key: H,         mods: Command,       chars: "\x0a\x68" } # C-j h
+    - { key: J,         mods: Command,       chars: "\x0a\x6a" }
+    - { key: K,         mods: Command,       chars: "\x0a\x6b" }
+    - { key: L,         mods: Command,       chars: "\x0a\x6c" }
+    - { key: T,         mods: Command,       chars: "\x0a\x63" } # new window, C-j c
+    - { key: T,         mods: Command|Shift, chars: "\x0a\x43" } # new session, C-j S-c
+    - { key: D,         mods: Command,       chars: "\x0a\x5c" } # vertical split
+    - { key: D,         mods: Command|Shift, chars: "\x0a\x2d" } # horizontal split
+    - { key: S,         mods: Command|Shift, chars: "\x0a\x73" } # choose tree
+    - { key: Escape,    mods: Command,       chars: "\x0a\x1b" } # enter tmux vi-mode
+    - { key: Comma,     mods: Command|Shift, chars: "\x0a\x2c" } # previous window
+    - { key: Period,    mods: Command|Shift, chars: "\x0a\x2e" } # next window
+    - { key: Key1,      mods: Command,       chars: "\x0a\x31" }
+    - { key: Key2,      mods: Command,       chars: "\x0a\x32" }
+    - { key: Key3,      mods: Command,       chars: "\x0a\x33" }
+    - { key: Key4,      mods: Command,       chars: "\x0a\x34" }
+    - { key: Key5,      mods: Command,       chars: "\x0a\x35" }
+    - { key: Key6,      mods: Command,       chars: "\x0a\x36" }
+    - { key: Key7,      mods: Command,       chars: "\x0a\x37" }
+    - { key: Key8,      mods: Command,       chars: "\x0a\x38" }
+    - { key: Key9,      mods: Command,       chars: "\x0a\x39" }
+    - { key: M,         mods: Command,       chars: "\x0a\x6d" } # synchronize panes toggle
+    - { key: R,         mods: Command,       chars: "\x0a\x72" } # reload config
+    - { key: R,         mods: Command|Shift, chars: "\x0a\x52" } # refresh client
+    - { key: S,         mods: Command,       chars: "\x0a\x73" } # tmux pane tree
+    - { key: Z,         mods: Command,       chars: "\x0a\x7a" } # tmux pane zoom
+    - { key: Semicolon, mods: Command,       chars: "\x0a\x3a" } # Cmd + ; command mode
+    # https://github.com/alacritty/alacritty/issues/1359 macOS 下需要添加此行 CTRL-Q 才可使用，否则 CTRL-Q 需要按两次才会触发
+    - { key: Q,         mods: Control,       chars: "\x11" }
+
+    # TODO 临时修复退格键对中文输入的影响 待1.0版本发布 https://github.com/alacritty/alacritty/issues/1606#issuecomment-579754834
+    - { key: Back,   action: ReceiveChar}
+   #- { key: Slash,  mods: Command,       chars: "\x0a\x2f" } # search
+   #- { key: Slash,  mods: Command|Shift, chars: "\x0a\x3f" } # List key bindings, 无法映射 "?"
+   #- new session, rename
+
