@@ -1,0 +1,18 @@
+# ~/.config/tmuxinator/demo.yml
+
+name: demo
+root: ~/
+
+windows:
+  - demo:
+      layout: tiled
+      panes:
+        - list:
+          - ssh cluster-h-biz-group-service01.sh
+          - cd ~/work/service/
+        - list:
+          - ssh cluster-g-biz-group-service02.sh
+          - cd ~/work/service/
+        - list:
+          - ssh cluster-f-biz-group-service03.sh
+          - cd ~/work/service/
