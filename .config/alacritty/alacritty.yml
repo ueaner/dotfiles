@@ -12,6 +12,9 @@ window:
     x: 6
     y: 6
 
+  # "fixed" GNOME Wayland 边框问题
+  decorations: None
+
 cursor:
   style:
     shape: Beam
@@ -44,7 +47,7 @@ font:
     style: Italic
   bold_italic:
     family: SauceCodePro Nerd Font
-    style: Bold Italic    
+    style: Bold Italic
     #normal:
     #  #family: UbuntuMono Nerd Font Mono
     #  #family: FantasqueSansMono Nerd Font Mono
