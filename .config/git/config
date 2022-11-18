@@ -14,7 +14,7 @@
     root = rev-parse --show-toplevel
 
     # View abbreviated SHA, description, and history graph of the latest 20 commits.
-    l = log --pretty=oneline -n 20 --graph --abbrev-commit
+    l = log --pretty=oneline -n 20 --graph --abbrev-commit --stat
 
     # View the current working tree status using the short format.
     s = status -sb
