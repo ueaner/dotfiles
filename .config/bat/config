@@ -1,0 +1,4 @@
+# bat --list-themes
+--theme=base16
+--style=numbers
+--color=always
