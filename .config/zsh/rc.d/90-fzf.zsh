@@ -14,10 +14,18 @@
 # fd/ripgrep    bat
 
 # Auto-completion
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
+if [[ $- == *i* ]]; then
+    # macOS 下使用 brew 如果自动放在 /usr/local/share/zsh/site-functions/fzf 也可自动引入
+    [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
+    # https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_69
+    # Fedora 下 completion.zsh 自动放在了 /usr/share/zsh/site-functions/fzf 在 FPATH 路径下，会自动引入
+fi
 
 # Key bindings
-source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+# macOS by brew
+[[ -f "/usr/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/usr/local/opt/fzf/shell/key-bindings.zsh"
+# Fedora by dnf
+[[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
 
 # > man fzf
 # ANSI COLORS:

@@ -5,6 +5,7 @@
 FPATH=/usr/local/share/zsh-completions:$FPATH  # zsh-completions 包的路径
 FPATH=~/.local/share/zsh/site-functions:$FPATH # 自定义命令的补全提示路径
 # /usr/local/share/zsh/site-functions          # 安装的软件包的补全提示路径
+# /usr/share/zsh/site-functions
 # /usr/share/zsh/5.8/functions                 # zsh builtin command 补全提示路径
 
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
