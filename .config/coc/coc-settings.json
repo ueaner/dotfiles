@@ -22,6 +22,7 @@
 		".github",
 		".root",
 		".projections.json",
+		"pyproject.toml",
 		"go.mod",
 		"Cargo.toml",
 		"composer.json",
