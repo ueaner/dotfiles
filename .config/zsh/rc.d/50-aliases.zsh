@@ -62,7 +62,7 @@ alias -g JSON="| python -m json.tool | bat -p -l json"
 alias mux='tmuxinator'
 
 # 拷贝最后一条命令
-alias last='fc -ln -1 | pbcopy'
+alias last='fc -ln -1 | clipcopy'
 
 # rg search-text | vim -
 

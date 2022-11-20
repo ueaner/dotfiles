@@ -1,7 +1,6 @@
 # 依赖:
-# brew install fzf ripgrep
-# 可选：
-# brew install bat fd
+# brew install fzf ripgrep bat fd
+# dnf install fzf ripgrep bat fd-find
 #
 # https://github.com/junegunn/fzf#key-bindings-for-command-line
 # https://github.com/junegunn/fzf#2-switch-between-sources-by-pressing-ctrl-d-or-ctrl-f
@@ -18,7 +17,8 @@ if [[ $- == *i* ]]; then
     # macOS 下使用 brew 如果自动放在 /usr/local/share/zsh/site-functions/fzf 也可自动引入
     [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
     # https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_69
-    # Fedora 下 completion.zsh 自动放在了 /usr/share/zsh/site-functions/fzf 在 FPATH 路径下，会自动引入
+    # Fedora 下 completion.zsh 放在了 /usr/share/zsh/site-functions/fzf 在 FPATH 路径下
+    [[ -f "/usr/share/zsh/site-functions/fzf" ]] && . "/usr/share/zsh/site-functions/fzf"
 fi
 
 # Key bindings
@@ -64,7 +64,7 @@ export FZF_COMPLETION_TRIGGER=';'
 export FZF_DEFAULT_OPTS=$(printf '%s' \
     " --layout=reverse --height 50% --inline-info" \
     " --preview-window 'right:60%:hidden' --preview '(bat {} || cat {} || tree -C -L 2 {}) 2> /dev/null | head -500'" \
-    " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | pbcopy)+abort'" \
+    " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | clipcopy)+abort'" \
     " --header '[CTRL-Y] copy line, [?] toggle preview, [TAB] and [Shift-TAB] to mark multiple items' --header-lines=0 " \
     " --ansi --color=bg:black,hl:yellow,hl+:red,fg+:blue,bg+:black,info:yellow,border:blue,prompt:magenta,pointer:red,marker:red,spinner:yellow,header:gray"
 )
