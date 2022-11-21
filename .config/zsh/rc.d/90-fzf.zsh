@@ -14,7 +14,6 @@
 
 # Auto-completion
 if [[ $- == *i* ]]; then
-    # macOS 下使用 brew 如果自动放在 /usr/local/share/zsh/site-functions/fzf 也可自动引入
     [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
     # https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_69
     # Fedora 下 completion.zsh 放在了 /usr/share/zsh/site-functions/fzf 在 FPATH 路径下

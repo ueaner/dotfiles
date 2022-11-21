@@ -9,9 +9,12 @@
 # a. 语言代码 (Language Code)
 # b. 国家代码 (Country Code)
 # c. 编码 (Encoding)
-export LANG=zh_CN.UTF-8
-export LC_CTYPE=zh_CN.UTF-8
-export LC_ALL=zh_CN.UTF-8
+
+if [[ "`uname -s`" != "Linux" ]]; then
+    export LANG=zh_CN.UTF-8
+    export LC_CTYPE=zh_CN.UTF-8
+    export LC_ALL=zh_CN.UTF-8
+fi
 
 export EDITOR=nvim
 export VISUAL=nvim
