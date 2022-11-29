@@ -17,7 +17,12 @@ prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
 function prompt () {
     #PS1="%1~ $ "
     # prompt_symbol 默认显示绿色，如果上一命令出错则显示红色
-    PS1='%1~ %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+    # $SSH_CONNECTION 远程机器显示 hostname
+    if [[ ${SSH_TTY} ]] ; then
+        PS1='[%M] %1~ %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+    else
+        PS1='%1~ %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+    fi
 }
 
 precmd_functions+=(prompt)
