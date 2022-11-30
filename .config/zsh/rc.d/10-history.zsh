@@ -1,7 +1,7 @@
 export HISTSIZE=1000000
 export SAVEHIST=1000000
 # fc -p $HISTFILE
-# HISTFILE 默认为 ${ZDOTDIR:-$HOME}/.zsh_history
+export HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 #export HISTFILE=${XDG_DATA_HOME}/zsh/history
 export HISTORY_IGNORE="(ls|ll|cd|pwd|exit|bg|fg|history|cd -|cd ..|..)"
 
