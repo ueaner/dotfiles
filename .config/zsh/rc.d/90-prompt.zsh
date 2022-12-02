@@ -1,4 +1,3 @@
-#return 0
 # https://github.com/chrisduerr/dotfiles/blob/master/files/zsh/ps1.zsh
 autoload -U colors && colors  # prompt colors
 # https://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
@@ -14,14 +13,22 @@ export PROMPT_VICMD_SYMBOL=${PROMPT_VICMD_SYMBOL:-❮}     # ❮
 typeset -gA prompt_symbol
 prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
 
+# +----------------+--------+-----------+----------+-----------+
+# | prompt colors  | point  | condition |  default | highlight |
+# +----------------+--------+-----------+----------+-----------+
+# | %M  hostname   | ssh    | $SSH_TTY  | white    | magenta   |
+# | %1~ path       | root   | %!        | white    | magenta   |
+# | $prompt_symbol | error  | %?        | magenta  | red       |
+# +----------------+--------+-----------+----------+-----------+
+#
+# SSH: 可通过 $SSH_TTY or $SSH_CONNECTION 判断是否登陆在远程机器
+# 但 sudo -s 后切换到其他用户就没有 $SSH_CONNECTION 环境变量了
 function prompt () {
-    #PS1="%1~ $ "
-    # prompt_symbol 默认显示绿色，如果上一命令出错则显示红色
-    # $SSH_CONNECTION 远程机器显示 hostname
+    # %(x.true.false)
     if [[ ${SSH_TTY} ]] ; then
-        PS1='[%M] %1~ %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+        PS1='%F{magenta}[%M]%f %(!.%F{magenta}.%F{white})%1~%f %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
     else
-        PS1='%1~ %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+        PS1='[%M] %(!.%F{magenta}.%F{white})%1~%f %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
     fi
 }
 
