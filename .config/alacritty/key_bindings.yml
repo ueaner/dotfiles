@@ -2,43 +2,43 @@
 # https://zh.wikipedia.org/zh-cn/软件流控制
 # C-j \x0a
 # C-q \x11
-# 使用 Super 代替 Command 以便绑定的快捷键可跨系统使用
 key_bindings:
-    - { key: N,         mods: Super,       command: { program: "open", args: ["-nb", "io.alacritty"] } }
-    # tmux, Cmd + Esc 进入可视模式
-    - { key: H,         mods: Super,       chars: "\x0a\x68" } # C-j h
-    - { key: J,         mods: Super,       chars: "\x0a\x6a" }
-    - { key: K,         mods: Super,       chars: "\x0a\x6b" }
-    - { key: L,         mods: Super,       chars: "\x0a\x6c" }
-    - { key: T,         mods: Super,       chars: "\x0a\x63" } # new window, C-j c
-    - { key: T,         mods: Super|Shift, chars: "\x0a\x43" } # new session, C-j S-c
-    - { key: D,         mods: Super,       chars: "\x0a\x5c" } # vertical split
-    - { key: D,         mods: Super|Shift, chars: "\x0a\x2d" } # horizontal split
-    - { key: S,         mods: Super|Shift, chars: "\x0a\x73" } # choose tree
-    - { key: Escape,    mods: Super,       chars: "\x0a\x1b" } # enter tmux vi-mode
-    - { key: Comma,     mods: Super|Shift, chars: "\x0a\x2c" } # previous window
-    - { key: Period,    mods: Super|Shift, chars: "\x0a\x2e" } # next window
-    - { key: Key1,      mods: Super,       chars: "\x0a\x31" }
-    - { key: Key2,      mods: Super,       chars: "\x0a\x32" }
-    - { key: Key3,      mods: Super,       chars: "\x0a\x33" }
-    - { key: Key4,      mods: Super,       chars: "\x0a\x34" }
-    - { key: Key5,      mods: Super,       chars: "\x0a\x35" }
-    - { key: Key6,      mods: Super,       chars: "\x0a\x36" }
-    - { key: Key7,      mods: Super,       chars: "\x0a\x37" }
-    - { key: Key8,      mods: Super,       chars: "\x0a\x38" }
-    - { key: Key9,      mods: Super,       chars: "\x0a\x39" }
-    - { key: M,         mods: Super,       chars: "\x0a\x6d" } # synchronize panes toggle
-    - { key: R,         mods: Super,       chars: "\x0a\x72" } # reload config
-    - { key: R,         mods: Super|Shift, chars: "\x0a\x52" } # refresh client
-    - { key: S,         mods: Super,       chars: "\x0a\x73" } # tmux pane tree
-    - { key: Z,         mods: Super,       chars: "\x0a\x7a" } # tmux pane zoom
-    - { key: Semicolon, mods: Super,       chars: "\x0a\x3a" } # Cmd + ; command mode
-    # https://github.com/alacritty/alacritty/issues/1359 macOS 下需要添加此行 CTRL-Q 才可使用，否则 CTRL-Q 需要按两次才会触发
-    - { key: Q,         mods: Control,       chars: "\x11" }
+    - { key: N,         mods: Super,         action: SpawnNewInstance } # new alacritty instance
+    # tmux shortcuts: prefix C-j \x0a
+    - { key: R,         mods: Super,         chars: "\x0a\x72" } # reload config
+    - { key: R,         mods: Super|Shift,   chars: "\x0a\x52" } # refresh client
+    - { key: T,         mods: Super,         chars: "\x0a\x63" } # new window, C-j c
+    - { key: T,         mods: Super|Shift,   chars: "\x0a\x43" } # new session, C-j S-c
+    - { key: D,         mods: Super,         chars: "\x0a\x5c" } # vertical split
+    - { key: D,         mods: Super|Shift,   chars: "\x0a\x2d" } # horizontal split
+    - { key: Z,         mods: Super,         chars: "\x0a\x7a" } # tmux pane zoom
+    - { key: S,         mods: Super|Shift,   chars: "\x0a\x73" } # tmux choose tree
+    - { key: Tab,       mods: Control,       chars: "\x0a\x2e" } # next window
+    - { key: Tab,       mods: Control|Shift, chars: "\x0a\x2c" } # previous window
+    - { key: Escape,    mods: Super,         chars: "\x0a\x1b" } # enter tmux vi-mode
+    - { key: M,         mods: Super,         chars: "\x0a\x6d" } # tmux synchronize panes toggle
+    - { key: Semicolon, mods: Super,         chars: "\x0a\x3a" } # Cmd + ; tmux command mode
+    - { key: Slash,     mods: Command,       chars: "\x0a\x2f" } # Cmd + / tmux search  
+    - { key: Key1,      mods: Super,         chars: "\x0a\x31" }
+    - { key: Key2,      mods: Super,         chars: "\x0a\x32" }
+    - { key: Key3,      mods: Super,         chars: "\x0a\x33" }
+    - { key: Key4,      mods: Super,         chars: "\x0a\x34" }
+    - { key: Key5,      mods: Super,         chars: "\x0a\x35" }
+    - { key: Key6,      mods: Super,         chars: "\x0a\x36" }
+    - { key: Key7,      mods: Super,         chars: "\x0a\x37" }
+    - { key: Key8,      mods: Super,         chars: "\x0a\x38" }
+    - { key: Key9,      mods: Super,         chars: "\x0a\x39" }
+    # 可使用 Super+K/L 在一个方向上循环选择 pane
+    - { key: H,         mods: Super,         chars: "\x0a\x68" } # C-j h 被系统 Hide window 拦截
+    - { key: J,         mods: Super,         chars: "\x0a\x6a" }
+    - { key: K,         mods: Super,         chars: "\x0a\x6b" }
+    - { key: L,         mods: Super,         chars: "\x0a\x6c" }
 
-    # TODO 临时修复退格键对中文输入的影响 待1.0版本发布 https://github.com/alacritty/alacritty/issues/1606#issuecomment-579754834
-    - { key: Back,   action: ReceiveChar}
-   #- { key: Slash,  mods: Command,       chars: "\x0a\x2f" } # search
-   #- { key: Slash,  mods: Command|Shift, chars: "\x0a\x3f" } # List key bindings, 无法映射 "?"
-   #- new session, rename
+    # TODO macOS 下需要添加以下行 CTRL-Q 才可使用，否则 CTRL-Q 需要按两次才会触发
+    # https://github.com/alacritty/alacritty/issues/1359
+    - { key: Q,         mods: Control,       chars: "\x11" }
+    - { key: Slash,     mods: Control,       chars: "\x1f" }
+    # TODO 临时修复退格键对中文输入的影响，待1.0版本发布
+    # https://github.com/alacritty/alacritty/issues/1606#issuecomment-579754834
+    - { key: Back,                           action: ReceiveChar}
 
