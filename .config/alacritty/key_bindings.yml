@@ -4,6 +4,8 @@
 # C-q \x11
 key_bindings:
     - { key: N,         mods: Super,         action: SpawnNewInstance } # new alacritty instance
+    - { key: V,         mods: Super,         action: Paste            }
+    - { key: C,         mods: Super,         action: Copy             }
     # tmux shortcuts: prefix C-j \x0a
     - { key: R,         mods: Super,         chars: "\x0a\x72" } # reload config
     - { key: R,         mods: Super|Shift,   chars: "\x0a\x52" } # refresh client
