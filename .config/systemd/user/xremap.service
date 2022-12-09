@@ -1,0 +1,19 @@
+# 0. https://github.com/k0kubun/xremap/blob/6e8e1f21285ecedfa7ac88d703ad80d25a2699dd/examples/systemd/xremap.service
+# 0. https://github.com/k0kubun/xremap#gnome-wayland
+# 1. Copy this to ~/.config/systemd/user/xremap.service
+# 2. systemctl --user enable xremap
+
+[Unit]
+Description=Key remapper for Linux
+
+[Service]
+KillMode=process
+# Run xremap with sudo
+# %h resolves to $HOME for --user services
+ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xremap/config.yml'
+#ExecStart=/usr/bin/sudo $HOME/.cargo/bin/xremap $HOME/.config/xremap/config.yml
+ExecStop=/usr/bin/killall xremap
+Restart=always
+
+[Install]
+WantedBy=default.target
