@@ -21,11 +21,12 @@ keymap:
       # Super-tab switch applications
       #  Ctrl-tab switch tabs
       #  Super-`  当前选中的应用窗口间切换
-      # Tab
+      # Window / Tab
+      Super-n: C-n              # new window
       Super-t: C-t              # new tab
-      Super-Shift-t: C-Shift-t  # 定义完 Super-t 这一条不定义也可以产生相应的效果
       Super-w: [Esc, C-w]       # close tab
-      Super-n: C-n              # close tab
+      # 定义完 Super-t, Super-Shift-t 不定义也可以产生相应的效果
+      Super-Shift-t: C-Shift-t  # 重新打开刚关闭的标签页
 
       # Editting
       Super-z: C-z              # undo
@@ -33,8 +34,10 @@ keymap:
       Super-x: C-x              # Cut
       Super-c: C-c              # Copy
       Super-v: C-v              # Paste
+      # TODO Super-f 定义后 toggle-fullscreen <Super><Control>f 不好使了
       Super-f: C-f              # find
-      Super-g: C-g              # find again
+      Super-g: C-g              # find next
+      Super-Shift-g: C-Shift-g  # find previous
       Super-L: [Esc, C-L]       # Location Bar / Select Line
       # C-a 会覆盖 GNOME gtk-key-theme=Emacs 跳转到行首的动作，使用 C-/ 代替 C-a 触发全选
       # / 特殊字符使用 KEY_XXX 的形式定义
