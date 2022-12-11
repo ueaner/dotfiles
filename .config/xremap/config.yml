@@ -14,6 +14,8 @@
 #   - xremap 直接键映射 Ctrl 开头的快捷键，需要考虑是否会影响 gtk-key-theme=Emacs 和 vim 的编辑滚屏等操作
 keymap:
   - name: basic
+    # 精确匹配
+    exact_match: true
     application:
       # tmux 的快捷键配合 alacritty 进行定义
       not: [alacritty, tmux]
@@ -34,7 +36,6 @@ keymap:
       Super-x: C-x              # Cut
       Super-c: C-c              # Copy
       Super-v: C-v              # Paste
-      # TODO Super-f 定义后 toggle-fullscreen <Super><Control>f 不好使了
       Super-f: C-f              # find
       Super-g: C-g              # find next
       Super-Shift-g: C-Shift-g  # find previous
