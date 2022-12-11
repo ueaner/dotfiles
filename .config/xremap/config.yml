@@ -14,7 +14,12 @@
 #   - xremap 直接键映射 Ctrl 开头的快捷键，需要考虑是否会影响 gtk-key-theme=Emacs 和 vim 的编辑滚屏等操作
 keymap:
   - name: basic
-    # 精确匹配
+    # 按键精确匹配的概念，默认 exact_match: false, 映射一个快捷键会扇出多个快捷键
+    # 如映射了 Super-n: down
+    #   按下 Super-Shift-n 会触发 Shift-down
+    #   按下 Super-Control-n 会触发 Control-down
+    # 很可能稍不留神就拦截到系统定义的快捷键
+    # 使用精确匹配，只拦截显式定义的快捷键
     exact_match: true
     application:
       # tmux 的快捷键配合 alacritty 进行定义
@@ -27,7 +32,6 @@ keymap:
       Super-n: C-n              # new window
       Super-t: C-t              # new tab
       Super-w: [Esc, C-w]       # close tab
-      # 定义完 Super-t, Super-Shift-t 不定义也可以产生相应的效果
       Super-Shift-t: C-Shift-t  # 重新打开刚关闭的标签页
 
       # Editting
