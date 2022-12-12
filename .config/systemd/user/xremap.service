@@ -1,7 +1,7 @@
-# 0. https://github.com/k0kubun/xremap/blob/6e8e1f21285ecedfa7ac88d703ad80d25a2699dd/examples/systemd/xremap.service
-# 0. https://github.com/k0kubun/xremap#gnome-wayland
+# https://github.com/k0kubun/xremap/blob/6e8e1f21285ecedfa7ac88d703ad80d25a2699dd/examples/systemd/xremap.service
+# 0. cargo install xremap --features gnome
 # 1. Copy this to ~/.config/systemd/user/xremap.service
-# 2. systemctl --user enable xremap
+# 2. systemctl --user enable --now xremap
 
 [Unit]
 Description=Key remapper for Linux
