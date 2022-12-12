@@ -5,6 +5,11 @@
 
 [Unit]
 Description=Key remapper for Linux
+Documentation=https://github.com/k0kubun/xremap
+
+[Install]
+# systemctl --user 使用 default.target 代替 multi-user.target
+WantedBy=default.target
 
 [Service]
 KillMode=process
@@ -14,6 +19,3 @@ ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xrema
 #ExecStart=/usr/bin/sudo $HOME/.cargo/bin/xremap $HOME/.config/xremap/config.yml
 ExecStop=/usr/bin/killall xremap
 Restart=always
-
-[Install]
-WantedBy=default.target
