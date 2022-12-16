@@ -9,7 +9,8 @@
 # |                  |Interactive|Interactive|Script|
 # |                  |login      |non-login  |      |
 # +------------------+-----------+-----------+------+
-# | Application      | Alacritty |   Tmux    |      |
+# | macOS            | Alacritty |   Tmux    |      |
+# | GNOME            | Session   |   Tmux    |      |
 # +------------------+-----------+-----------+------+
 # | /etc/zshenv      |     A     |     A     |  A   |
 # +------------------+-----------+-----------+------+
@@ -20,7 +21,7 @@
 # | ~/.zprofile      |     D     |           |      |  这里定义环境变量
 # +------------------+-----------+-----------+------+
 # | /etc/zshrc       |     E     |     C     |      |
-# +------------------+-----------+-----------+------+
+# +------------------+-----------+-----------+------+  .zshrc 在执行 zsh 时引入, GNOME Session 时未引入
 # | ~/.zshrc         |     F     |     D     |      |  Alacritty 和 Tmux 都会加载 .zshrc 文件
 # +------------------+-----------+-----------+------+
 # | /etc/zlogin      |     G     |           |      |
@@ -80,6 +81,8 @@
 #
 # 6. zsh 内置函数，如 zmv 批量修改文件名
 # $ zmv '(*).txt' '$1.html'
+
+echo "$$ .zshrc" >> /tmp/zsh.log
 
 # 关闭 XON/XOFF flow control
 # Disable Ctrl-S and Ctrl-Q on terminal, stty -a 查看
