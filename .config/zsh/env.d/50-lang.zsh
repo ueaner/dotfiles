@@ -37,6 +37,7 @@ export ENABLE_FLUTTER_DESKTOP=true
 
 # Node.js version manager
 # eval "$(fnm env --use-on-cd)"
+export FNM_DIR="$HOME/.local/share/fnm"
 if type fnm &>/dev/null; then
 	source <(fnm env --use-on-cd)
 fi
