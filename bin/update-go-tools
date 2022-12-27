@@ -18,34 +18,15 @@ verlt() {
 # vim 使用
 # 参考： https://github.com/golang/vscode-go/blob/master/docs/tools.md
 packages=(
-github.com/acroca/go-symbols@latest # vscode
-github.com/cweill/gotests/gotests@latest # vscode
-github.com/davidrjenni/reftools/cmd/fillstruct@latest # both
-github.com/fatih/gomodifytags@latest # both option
-github.com/fatih/motion@latest # vim-go
-github.com/go-delve/delve/cmd/dlv@latest # both
-github.com/golangci/golangci-lint/cmd/golangci-lint@latest # both option
-github.com/haya14busa/goplay/cmd/goplay@latest # vscode
-github.com/josharian/impl@master # both option: Generate Interface Stubs
-github.com/jstemmer/gotags@master # vim-go
-github.com/kisielk/errcheck@latest # vim-go
-github.com/klauspost/asmfmt/cmd/asmfmt@latest # vim-go
-github.com/koron/iferr@master # vim-go
-github.com/mgechev/revive@latest # both option
+golang.org/x/tools/gopls@latest
+github.com/go-delve/delve/cmd/dlv@master # dlv-dap
 github.com/ramya-rao-a/go-outline@latest # vscode
-github.com/rogpeppe/godef@latest # both
-github.com/sqs/goreturns@latest # vscode
-github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest # vscode
-github.com/zmb3/gogetdoc@latest # vscode
-golang.org/x/lint/golint@master # both option
-golang.org/x/tools/cmd/goimports@master # both option: format tool
-golang.org/x/tools/cmd/gorename@latest # both
-golang.org/x/tools/cmd/guru@master # vim-go: guru does not support Go modules
-golang.org/x/tools/gopls@latest # both
-honnef.co/go/tools/cmd/keyify@master # vim-go
+github.com/haya14busa/goplay/cmd/goplay@latest # vscode
+github.com/fatih/gomodifytags@latest # both option
+github.com/josharian/impl@master # both option: Generate Interface Stubs
+github.com/cweill/gotests/gotests@latest # vscode
 honnef.co/go/tools/cmd/staticcheck@latest # both option: lint tool
-github.com/go-delve/delve/cmd/dlv@master # others >>>>>>>>>>>>-
-github.com/arl/gitmux@latest # git status on tmux line
+github.com/arl/gitmux@latest # git status on tmux line, others >>>>>>>>>>>>-
 github.com/google/gops@latest
 github.com/ofabry/go-callvis@master   # call graph
 golang.org/x/tools/cmd/callgraph@master
@@ -79,8 +60,12 @@ for pkg in ${packages[@]}; do
     fi
 done
 
-# 其他
+# dlv-dap
+GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@master
 cp ~/go/bin/dlv ~/go/bin/dlv-dap
+# dlv
+GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@latest
+
 #GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@master && cp ~/go/bin/dlv ~/go/bin/dlv-dap
 #
 #GO111MODULE=on go install -v github.com/arl/gitmux@latest # git status on tmux line
