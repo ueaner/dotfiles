@@ -1,0 +1,13 @@
+# TODO 安装 poetry 时需要先注释掉 ~/.config/pip/pip.conf:[install] 中的 user = true, 安装完再打开
+# 否则报错：ERROR: Can not perform a '--user' install. User site-packages are not visible in this virtualenv
+# curl -sSL https://install.python-poetry.org | python3 -
+# 将安装到 
+# - ~/.local/share/pypoetry
+# - ~/.local/bin/poetry
+# - ~/.config/pypoetry/config.toml
+# poetry config --list -vvv
+# poetry config repositories.aliyun https://mirrors.aliyun.com/pypi/simple/
+
+[repositories.aliyun]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+
