@@ -19,8 +19,9 @@ key_bindings:
     - { key: Tab,       mods: Control|Shift, chars: "\x0a\x2c" } # previous window
     - { key: Escape,    mods: Super,         chars: "\x0a\x1b" } # enter tmux vi-mode
     - { key: M,         mods: Super,         chars: "\x0a\x6d" } # tmux synchronize panes toggle
-    - { key: Semicolon, mods: Super,         chars: "\x0a\x3a" } # Cmd + ; tmux command mode
-    - { key: Slash,     mods: Command,       chars: "\x0a\x2f" } # Cmd + / tmux search  
+    - { key: Semicolon, mods: Super,         chars: "\x0a\x3a" } # Super + ; tmux command mode
+   #- { key: Slash,     mods: Super,         chars: "\x0a\x2f" } # Super + / tmux search
+    - { key: F,         mods: Super,         chars: "\x0a\x2f" } # Super + f tmux search
     - { key: Key1,      mods: Super,         chars: "\x0a\x31" }
     - { key: Key2,      mods: Super,         chars: "\x0a\x32" }
     - { key: Key3,      mods: Super,         chars: "\x0a\x33" }
