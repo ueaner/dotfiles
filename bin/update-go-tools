@@ -44,19 +44,20 @@ github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
 github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 github.com/mattn/goreman@latest
 github.com/spf13/cobra-cli@latest
+github.com/jesseduffield/lazygit@latest
 )
 
-for pkg in ${packages[@]}; do
+for pkg in "${packages[@]}"; do
     # GO111MODULE=on go get -v golang.org/x/tools/gopls@latest
     # go 1.17:
     #    go get: installing executables with 'go get' in module mode is deprecated.
 
     # < 1.17
-    if verlt $GO_VERSION 1.17; then
-        GO111MODULE=on go get -u -v $pkg
+    if verlt "$GO_VERSION" 1.17; then
+        GO111MODULE=on go get -u -v "$pkg"
     else
         # 1.17+
-        GO111MODULE=on go install -v $pkg
+        GO111MODULE=on go install -v "$pkg"
     fi
 done
 
