@@ -18,7 +18,7 @@ colors:
 
   # Normal colors, ANSI [0-7]
   normal:
-    black:   "#1e222a"
+    black:   "#1e2030"
     red:     "#df6566"
     green:   "#c5d15c"
     yellow:  "#ecce58"
