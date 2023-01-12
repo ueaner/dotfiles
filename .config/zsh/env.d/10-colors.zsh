@@ -31,7 +31,7 @@
 source <({
     # 颜色值和 alacritty 终端一致
     local colors=(\
-        black     "#181a1f" \
+        black     "#1e222a" \
         red       "#df6566" \
         green     "#c5d15c" \
         yellow    "#ecce58" \
@@ -40,7 +40,7 @@ source <({
         cyan      "#81cabf" \
         white     "#eaeaea" \
         selection "#282c34" \
-        line      "#1e232a" \
+        line      "#21252d" \
         gray      "#778899" \
     )
 
