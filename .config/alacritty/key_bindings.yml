@@ -17,6 +17,9 @@ key_bindings:
     - { key: S,         mods: Super|Shift,   chars: "\x0a\x73" } # tmux choose tree
     - { key: Tab,       mods: Control,       chars: "\x0a\x2e" } # next window
     - { key: Tab,       mods: Control|Shift, chars: "\x0a\x2c" } # previous window
+    # https://github.com/rust-windowing/winit/issues/600 Shift Keycode None
+    - { key: Period,    mods: Super|Alt,     chars: "\x0a\x2e" } # Super + Alt + . next window
+    - { key: Comma,     mods: Super|Alt,     chars: "\x0a\x2c" } # Super + Alt + , previous window
     - { key: Escape,    mods: Super,         chars: "\x0a\x1b" } # enter tmux vi-mode
     - { key: M,         mods: Super,         chars: "\x0a\x6d" } # tmux synchronize panes toggle
     - { key: Semicolon, mods: Super,         chars: "\x0a\x3a" } # Super + ; tmux command mode
