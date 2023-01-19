@@ -23,8 +23,8 @@ key_bindings:
     # https://github.com/rust-windowing/winit/issues/600 Shift Keycode None
     - { key: Period,     mods: Super,         chars: "\x1b\x73\x2e" } # Super + . next window
     - { key: Comma,      mods: Super,         chars: "\x1b\x73\x2c" } # Super + , previous window, Preferences on macOS
-    - { key: "RBracket", mods: Super,         chars: "\x1b\x73\x2e" } # Super + ] next window
-    - { key: "LBracket", mods: Super,         chars: "\x1b\x73\x2c" } # Super + [ previous window
+    - { key: RBracket,   mods: Super,         chars: "\x1b\x73\x2e" } # Super + ] next window
+    - { key: LBracket,   mods: Super,         chars: "\x1b\x73\x2c" } # Super + [ previous window
     - { key: Escape,     mods: Super,         chars: "\x1b\x73\x1b" } # enter tmux vi-mode
     - { key: M,          mods: Super,         chars: "\x1b\x73\x6d" } # tmux synchronize panes toggle
     - { key: Semicolon,  mods: Super,         chars: "\x1b\x73\x3a" } # Super + ; tmux command mode
