@@ -10,7 +10,7 @@ Home 目录下 dotfiles 文件较多，很多是由安装的工具自动生成�
 
 把 git 命令参数简单包装为 config 命令，便于使用。
 
-config 的定义，加到你的 shell 配置中：
+config 的定义，加到 shell 配置中：
 ```sh
 function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
 ```
@@ -29,7 +29,7 @@ config push
 
 ## 从头开始
 
-从头开始构建你的 dotfiles 项目。
+从头开始构建 dotfiles 项目。
 
 ```sh
 git init --bare $HOME/.cfg
