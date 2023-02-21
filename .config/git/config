@@ -123,6 +123,9 @@
     # 始终使用 Unix-style line endings (LF), Git v2.10+
     #autocrlf = input
 
+[pager]
+    difftool = true
+
 [interactive]
     diffFilter = delta --color-only
 
@@ -184,6 +187,7 @@
     renames = copies
     # tool = icdiff
     tool = delta
+    # tool = difftastic
     colorMoved = default
 
 [diff "bin"]
@@ -211,6 +215,9 @@
 
     cmd = delta $LOCAL $REMOTE
 
+[difftool "difftastic"]
+
+    cmd = difft "$LOCAL" "$REMOTE"
 
 [merge]
 
