@@ -39,11 +39,10 @@ export ENABLE_FLUTTER_DESKTOP=true
 # eval "$(fnm env --use-on-cd)"
 export FNM_DIR="$HOME/.local/share/fnm"
 if type fnm &>/dev/null; then
-	source <(fnm env --use-on-cd)
+  # GNOME Session relogin: fnm env 会重新生成新的路径，再次添加到 PATH 变量
+  source <(fnm env --use-on-cd)
 fi
-# pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
 # corepack enable pnpm
 # pnpm add -g pnpm  使用 pnpm 的最新版本，由于已经配置了 $PNPM_HOME，也可使用 pnpm 管理其他全局包
 # pnpm add -g vite

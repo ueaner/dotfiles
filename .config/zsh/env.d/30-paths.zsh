@@ -39,6 +39,7 @@ $HOME/bin     # 个人脚本工具，和 XDG BIN 分开，防止被覆盖
 $XDG_BIN_HOME # 三方可执行脚本文件
 $HOME/go/bin
 $HOME/.cargo/bin
+$HOME/.local/share/pnpm
 $path
 )
 
