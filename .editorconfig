@@ -3,14 +3,18 @@ root = true
 [*]
 charset = utf-8
 end_of_line = lf
-indent_size = 2
-indent_style = tab
 insert_final_newline = true
 trim_trailing_whitespace = true
+#indent_size = 4
+#indent_style = space
 
-[*.{go,java,py,php,lua}]
+[*.{go,java,md}]
 indent_size = 4
 indent_style = tab
+
+[*.{rs,py,php}]
+indent_size = 4
+indent_style = space
 
 [*.{js,ts,jsx,tsx}]
 indent_size = 2
@@ -19,3 +23,7 @@ indent_style = tab
 [*.{yml,yaml}]
 indent_size = 2
 indent_style = tab
+
+[*.{lua,vim}]
+indent_size = 2
+indent_style = space
