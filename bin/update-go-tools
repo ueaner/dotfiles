@@ -1,91 +1,86 @@
 #!/usr/bin/env bash
 
-GO_VERSION=`go version | { read _ _ v _; echo ${v#go}; }`
+GO_VERSION=$(go version | {
+	read -r _ _ v _
+	echo "${v#go}"
+})
 
 verlte() {
-    printf '%s\n%s' "$1" "$2" | sort -C -V
+	printf '%s\n%s' "$1" "$2" | sort -C -V
 }
 
-# if verlt "v2.5.5" "v2.5.6"; then
-#     echo "yes"
-# else
-#     echo "no"
-# fi
+# "v2.5.5" < "v2.5.6": yes
+# if verlt "v2.5.5" "v2.5.6"; then echo "yes"; else echo "no"; fi
+# if verlt "2.5.5" "2.5.6"; then echo "yes"; else echo "no"; fi
 verlt() {
-    ! verlte "$2" "$1"
+	! verlte "$2" "$1"
 }
 
-# vim 使用
 # 参考： https://github.com/golang/vscode-go/blob/master/docs/tools.md
+# 主要包含两部分：
+#   1. 终端使用
+#   2. nvim 插件依赖（不能通过 mason.nvim 安装的包）
+# vscode 的插件依赖，vscode 自己会处理
 packages=(
-golang.org/x/tools/gopls@latest
-github.com/go-delve/delve/cmd/dlv@master # dlv-dap
-github.com/ramya-rao-a/go-outline@latest # vscode
-github.com/haya14busa/goplay/cmd/goplay@latest # vscode
-github.com/fatih/gomodifytags@latest # both option
-github.com/josharian/impl@master # both option: Generate Interface Stubs
-github.com/cweill/gotests/gotests@latest # vscode
-honnef.co/go/tools/cmd/staticcheck@latest # both option: lint tool
-github.com/arl/gitmux@latest # git status on tmux line, others >>>>>>>>>>>>-
-github.com/google/gops@latest
-github.com/ofabry/go-callvis@master   # call graph
-golang.org/x/tools/cmd/callgraph@master
-golang.org/x/tools/cmd/digraph@master
-github.com/boyter/scc@latest
-golang.org/x/mobile/cmd/gomobile@latest
-golang.org/x/mobile/cmd/gobind@latest
-github.com/google/wire/cmd/wire@latest
-github.com/kyleconroy/sqlc/cmd/sqlc@latest
-github.com/envoyproxy/protoc-gen-validate@latest
-google.golang.org/protobuf/cmd/protoc-gen-go@latest
-google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-github.com/go-kratos/kratos/cmd/kratos/v2@latest
-github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
-github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-github.com/mattn/goreman@latest
-github.com/spf13/cobra-cli@latest
-github.com/jesseduffield/lazygit@latest
+	#golang.org/x/tools/gopls@latest
+	#github.com/go-delve/delve/cmd/dlv@master       # dlv-dap
+	#github.com/ramya-rao-a/go-outline@latest       # vscode
+	#github.com/haya14busa/goplay/cmd/goplay@latest # vscode
+	#github.com/fatih/gomodifytags@latest           # both option
+	#github.com/josharian/impl@master               # both option: Generate Interface Stubs
+	#github.com/cweill/gotests/gotests@latest       # vscode
+	#honnef.co/go/tools/cmd/staticcheck@latest      # both option: lint tool
+	#github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+	github.com/arl/gitmux@latest # git status on tmux line
+	github.com/google/gops@latest
+	github.com/boyter/scc@latest
+	github.com/jesseduffield/lazygit@latest
+	github.com/muesli/duf@latest
+	github.com/junegunn/fzf@latest
+	github.com/charmbracelet/glow@latest
+
+	github.com/bykof/go-plantuml@latest
+	github.com/ofabry/go-callvis@master # call graph
+	golang.org/x/tools/cmd/callgraph@master
+	golang.org/x/tools/cmd/digraph@master
+
+	golang.org/x/mobile/cmd/gomobile@latest
+	golang.org/x/mobile/cmd/gobind@latest
+
+	github.com/google/wire/cmd/wire@latest
+	github.com/envoyproxy/protoc-gen-validate@latest
+	google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	github.com/go-kratos/kratos/cmd/kratos/v2@latest
+	github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
+	github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+
+	github.com/kyleconroy/sqlc/cmd/sqlc@latest
+	github.com/spf13/cobra-cli@latest
+	github.com/mattn/goreman@latest
+	github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+	github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
 )
 
 for pkg in "${packages[@]}"; do
-    # GO111MODULE=on go get -v golang.org/x/tools/gopls@latest
-    # go 1.17:
-    #    go get: installing executables with 'go get' in module mode is deprecated.
+	# GO111MODULE=on go get -v golang.org/x/tools/gopls@latest
+	# go 1.17:
+	#    go get: installing executables with 'go get' in module mode is deprecated.
 
-    # < 1.17
-    if verlt "$GO_VERSION" 1.17; then
-        GO111MODULE=on go get -u -v "$pkg"
-    else
-        # 1.17+
-        GO111MODULE=on go install -v "$pkg"
-    fi
+	# < 1.17
+	if verlt "$GO_VERSION" 1.17; then
+		GO111MODULE=on go get -u -v "$pkg"
+	else
+		# 1.17+
+		GO111MODULE=on go install -v "$pkg"
+	fi
 done
 
-# dlv-dap
-GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@master
-cp ~/go/bin/dlv ~/go/bin/dlv-dap
-# dlv
-GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@latest
-
-#GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@master && cp ~/go/bin/dlv ~/go/bin/dlv-dap
-#
-#GO111MODULE=on go install -v github.com/arl/gitmux@latest # git status on tmux line
-#GO111MODULE=on go install -v github.com/google/gops@latest
-#GO111MODULE=on go install -v github.com/ofabry/go-callvis@master   # call graph
-#GO111MODULE=on go install -v golang.org/x/tools/cmd/callgraph@master
-#GO111MODULE=on go install -v golang.org/x/tools/cmd/digraph@master
-#GO111MODULE=on go install -v github.com/boyter/scc@latest
-#
-#GO111MODULE=on go install -v golang.org/x/mobile/cmd/gomobile@latest
-#GO111MODULE=on go install -v golang.org/x/mobile/cmd/gobind@latest
-#
-#GO111MODULE=on go install -v github.com/go-kratos/kratos/cmd/kratos/v2@latest
-#GO111MODULE=on go install -v github.com/google/wire/cmd/wire@latest
-#
-#GO111MODULE=on go install -v github.com/kyleconroy/sqlc/cmd/sqlc@latest
-
-
-# github.com/high-moctane/nextword
-# github.com/google/go-dap
+# # dlv-dap
+# GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@master
+# cp ~/go/bin/dlv ~/go/bin/dlv-dap
+# # dlv
+# GO111MODULE=on go install -v github.com/go-delve/delve/cmd/dlv@latest
 
 # github.com/google/gopacket
