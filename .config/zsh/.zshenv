@@ -33,6 +33,6 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_LIB_HOME="$HOME/.local/lib"
 export XDG_BIN_HOME="$HOME/.local/bin"
-# SystemD 默认使用 /run/user/$USER 作为 runtime 目录，0700 权限
+# SystemD 默认使用 /run/user/$UID 作为 runtime 目录，0700 权限
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-$(mktemp -d /tmp/run-"$USER"."$(id -u)XXX")}
 
