@@ -1,9 +1,6 @@
 # https://zh.wikipedia.org/zh-cn/控制字符
 # https://zh.wikipedia.org/zh-cn/软件流控制
 # showkey -a
-# C-j \x0a
-# C-q \x11
-# A-a \x1b\x61
 # A-s \x1b\x73
 key_bindings:
     - { key: N,          mods: Super,         action: SpawnNewInstance } # new alacritty instance
@@ -12,12 +9,13 @@ key_bindings:
     # tmux shortcuts: prefix A-s \x1b\x73
     - { key: R,          mods: Super,         chars: "\x1b\x73\x72" } # reload config
     - { key: R,          mods: Super|Shift,   chars: "\x1b\x73\x52" } # refresh client
-    - { key: T,          mods: Super,         chars: "\x1b\x73\x63" } # new window, C-j c
-    - { key: T,          mods: Super|Shift,   chars: "\x1b\x73\x43" } # new session, C-j S-c
-    - { key: D,          mods: Super,         chars: "\x1b\x73\x5c" } # vertical split
-    - { key: D,          mods: Super|Shift,   chars: "\x1b\x73\x2d" } # horizontal split
+    - { key: T,          mods: Super,         chars: "\x1b\x73\x63" } # new window
+    - { key: T,          mods: Super|Shift,   chars: "\x1b\x73\x43" } # new session
+    - { key: D,          mods: Super,         chars: "\x1b\x73\x64" } # Detach the current client
+    - { key: Backslash,  mods: Super,         chars: "\x1b\x73\x5c" } # Super + \ vertical split
+    - { key: Minus,      mods: Super,         chars: "\x1b\x73\x2d" } # Super + - horizontal split
     - { key: Z,          mods: Super,         chars: "\x1b\x73\x7a" } # tmux pane zoom
-    - { key: S,          mods: Super|Shift,   chars: "\x1b\x73\x73" } # tmux choose tree
+    - { key: E,          mods: Super,         chars: "\x1b\x73\x73" } # tmux choose tree / pane explorer
     - { key: Tab,        mods: Control,       chars: "\x1b\x73\x2e" } # next window
     - { key: Tab,        mods: Control|Shift, chars: "\x1b\x73\x2c" } # previous window
     # https://github.com/rust-windowing/winit/issues/600 Shift Keycode None
@@ -41,7 +39,7 @@ key_bindings:
     - { key: Key8,       mods: Super,         chars: "\x1b\x73\x38" }
     - { key: Key9,       mods: Super,         chars: "\x1b\x73\x39" }
     # 可使用 Super+K/L 在一个方向上循环选择 pane
-    - { key: H,          mods: Super,         chars: "\x1b\x73\x68" } # C-j h 被系统 Hide window 拦截
+    - { key: H,          mods: Super,         chars: "\x1b\x73\x68" } # Super + h 被系统 Hide window 拦截
     - { key: J,          mods: Super,         chars: "\x1b\x73\x6a" }
     - { key: K,          mods: Super,         chars: "\x1b\x73\x6b" }
     - { key: L,          mods: Super,         chars: "\x1b\x73\x6c" }
