@@ -1,0 +1,20 @@
+# https://github.com/shadowsocks/shadowsocks-rust/blob/master/debian/shadowsocks-rust-server%40.service
+# 0. install
+#    - mkdir -p $HOME/.local/{bin,etc}
+#    - wget https://github.com/shadowsocks/shadowsocks-rust/releases/download/v1.15.3/shadowsocks-v1.15.3.x86_64-unknown-linux-gnu.tar.xz
+#    - tar xf shadowsocks-v1.15.3.x86_64-unknown-linux-gnu.tar.xz --directory=$HOME/.local/bin/
+# 1. Copy this to ~/.config/systemd/user/shadowsocks-rust-server.service
+# 2. systemctl --user enable --now shadowsocks-rust-server
+
+[Unit]
+Description=shadowsocks-rust manager server
+Documentation=https://github.com/shadowsocks/shadowsocks-rust
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ssmanager --manager-address 127.0.0.1:8899 -u -c %h/.local/etc/shadowsocks-rust-server.json
+Restart=always
