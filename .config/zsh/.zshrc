@@ -116,9 +116,10 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-ulimit -n 10240
 if type launchctl &>/dev/null; then
     sudo launchctl limit maxfiles 10240 unlimited
+else
+    ulimit -n 64000
 fi
 # ulimit -u 2048  # launchctl limit maxproc
 
