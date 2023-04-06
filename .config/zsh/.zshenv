@@ -17,7 +17,7 @@
 # XDG_LIB_HOME    三方类库，如 ~/.local/lib/python/site-packages, plantuml.jar
 # XDG_BIN_HOME    三方命令，如 ~/.local/bin/poetry, 个人构建及脚本可放在 $HOME/bin
 
-echo "$$ .zshenv" >> /tmp/zsh.log
+echo "$$ .zshenv $(date +"%Y-%m-%d %T.%6N")" >> /tmp/zsh.log
 
 echo "$$ XDG_CONFIG_HOME $XDG_CONFIG_HOME" >> /tmp/zsh.log
 echo "$$ XDG_CACHE_HOME  $XDG_CACHE_HOME"  >> /tmp/zsh.log

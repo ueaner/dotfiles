@@ -58,7 +58,6 @@
 
 # macOS 下系统自带的 /bin/zsh 比 /usr/local/bin/zsh 新打开终端要快
 #
-#
 # 0. 命令参数补全，如: git 等
 #
 # 1. 展开路径匹配
@@ -84,7 +83,7 @@
 # 6. zsh 内置函数，如 zmv 批量修改文件名
 # $ zmv '(*).txt' '$1.html'
 
-echo "$$ .zshrc" >> /tmp/zsh.log
+echo "$$ .zshrc $(date +"%Y-%m-%d %T.%6N")" >> /tmp/zsh.log
 
 # 关闭 XON/XOFF flow control
 # Disable Ctrl-S and Ctrl-Q on terminal, stty -a 查看
