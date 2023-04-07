@@ -19,6 +19,7 @@ indent_style = space
 [*.{js,ts,jsx,tsx}]
 indent_size = 2
 indent_style = tab
+quote_type = double
 
 [*.{yml,yaml}]
 indent_size = 2
