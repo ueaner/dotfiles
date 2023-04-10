@@ -44,6 +44,7 @@ if type fnm &>/dev/null; then
 fi
 export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
 export PNPM_HOME="$HOME/.local/share/pnpm"
+# pnpm 使用 npmrc 配置文件
 # corepack enable pnpm
 # pnpm add -g pnpm  使用 pnpm 的最新版本，由于已经配置了 $PNPM_HOME，也可使用 pnpm 管理其他全局包
 # pnpm add -g vite
