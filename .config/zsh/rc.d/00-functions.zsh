@@ -271,42 +271,44 @@ function version_gt()
         strace $(pidof "${1}" | sed 's/\([0-9]*\)/-p \1/g')
     }
 
-	#alias open='xdg-open'
+    #alias open='xdg-open'
 
 #fi
 
 # `o` with no arguments opens the current directory, otherwise opens the given location
 # macOS
 function o() {
-	if [ $# -eq 0 ]; then
-		open .
-	else
-		open "$@"
-	fi;
+    if [ $# -eq 0 ]; then
+        open .
+    else
+        open "$@"
+    fi;
 }
 
-#if function_exists tmux; then
-    function tt() {
-        if [[ "$TMUX" ]]; then
-            # echo "Already attached session."
-            tmux list-sessions
-            return
-        fi
-        if tmux has-session > /dev/null 2>&1; then
-            tmux attach-session
-        else
-            tmux new-session -s ${1:-SACK}
-        fi
-        # if [[ ! "$TMUX" ]]; then
-        #     tmux attach-session || tmux new-session -s ${1:-SACK}
-        # fi
-    }
-    function tk()
-    {
-        TMUX_SESSION_NAME=${1:-"SACK"}
-        tmux kill-session -t $TMUX_SESSION_NAME
-    }
-#fi
+# tmux session attach/detach toggle
+function tt() {
+    if [[ "$TMUX" ]]; then
+        # echo "Already attached session."
+        tmux list-sessions
+        tmux detach
+        return
+    fi
+
+    if tmux has-session > /dev/null 2>&1; then
+        tmux attach-session
+    else
+        tmux new-session -s ${1:-SACK}
+    fi
+    # if [[ ! "$TMUX" ]]; then
+    #     tmux attach-session || tmux new-session -s ${1:-SACK}
+    # fi
+}
+# tmux kill
+function tk()
+{
+    TMUX_SESSION_NAME=${1:-"SACK"}
+    tmux kill-session -t $TMUX_SESSION_NAME
+}
 
 function pg()
 {
