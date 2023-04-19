@@ -382,8 +382,8 @@ function verlt() {
 }
 
 # dotfiles
-function config {
-   /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
+function dotfiles {
+   /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
 }
 
 # dotlocal

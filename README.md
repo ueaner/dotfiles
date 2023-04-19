@@ -5,25 +5,25 @@
 Home 目录下 dotfiles 文件较多，很多是由安装的工具自动生成的，如果没有使用 [XDG] 规范可能更多；
 这里对于我们关心的配置，可以通过 git 简单有效的管理。
 
-## config 命令
+## dotfiles 命令
 
-把 git 命令参数简单包装为 config 命令，便于使用。
+把 git 命令参数简单包装为 dotfiles 命令，便于使用。
 
-config 的定义，加到 shell 配置中：
+dotfiles 的定义，加到 shell 配置中：
 
 ```sh
-function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 ```
 
-使用 config 命令管理 dotfiles：
+使用 dotfiles 命令：
 
 ```sh
-config status
-config add .vimrc
-config commit -m "Add vimrc"
-config add .bashrc
-config commit -m "Add bashrc"
-config push
+dotfiles status
+dotfiles add .vimrc
+dotfiles commit -m "Add vimrc"
+dotfiles add .bashrc
+dotfiles commit -m "Add bashrc"
+dotfiles push
 ```
 
 只关心需要管理的文件，config add 进来即可，不关心没有 add 进来的文件。
@@ -33,9 +33,9 @@ config push
 从头开始构建 dotfiles 项目。
 
 ```sh
-git init --bare $HOME/.cfg
-function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
-config config status.showUntrackedFiles no
+git init --bare $HOME/.dotfiles
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+dotfiles config --local status.showUntrackedFiles no
 ```
 
 ## 安装到新系统
@@ -43,16 +43,17 @@ config config status.showUntrackedFiles no
 注意备份已有文件。
 
 ```sh
-echo ".cfg" >> .gitignore
-git clone --bare https://github.com/ueaner/dotfiles.git $HOME/.cfg
-function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
-config checkout
+echo ".dotfiles" >> .gitignore
+git clone --bare https://github.com/ueaner/dotfiles.git $HOME/.dotfiles
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+dotfiles checkout
+dotfiles config --local status.showUntrackedFiles no
 ```
 
 如果碰到以下问题：
 
 ```
-Cloning into bare repository '/home/ueaner/.cfg'...
+Cloning into bare repository '/home/ueaner/.dotfiles'...
 error: RPC failed; curl 16 Error in the HTTP2 framing layer
 fatal: expected flush after ref listing
 ```
