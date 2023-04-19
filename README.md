@@ -1,5 +1,4 @@
-Dotfiles
-========
+# Dotfiles
 
 使用 git 管理 Home 目录下的文件。
 
@@ -11,11 +10,13 @@ Home 目录下 dotfiles 文件较多，很多是由安装的工具自动生成�
 把 git 命令参数简单包装为 config 命令，便于使用。
 
 config 的定义，加到 shell 配置中：
+
 ```sh
 function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
 ```
 
 使用 config 命令管理 dotfiles：
+
 ```sh
 config status
 config add .vimrc
@@ -48,9 +49,22 @@ function config { /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@ }
 config checkout
 ```
 
+如果碰到以下问题：
+
+```
+Cloning into bare repository '/home/ueaner/.cfg'...
+error: RPC failed; curl 16 Error in the HTTP2 framing layer
+fatal: expected flush after ref listing
+```
+
+先执行下：
+
+```sh
+git config --global http.version HTTP/1.1
+```
+
 ## 参考
 
 [Dotfiles: Best Way to Store in a Bare Git Repository](https://www.atlassian.com/git/tutorials/dotfiles)
-
 
 [XDG]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
