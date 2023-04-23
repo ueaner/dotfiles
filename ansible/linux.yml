@@ -4,3 +4,4 @@
     - variables/application-versions.yml
   roles:
     - lang
+    - tools
