@@ -8,6 +8,7 @@
     - jq
     - wget
     - entr # Run arbitrary commands when files change
+    - fastfetch
 
 - name: install go tools
   shell: GO111MODULE=on {{ ansible_env.HOME }}/go/bin/go install -v {{ item }}
