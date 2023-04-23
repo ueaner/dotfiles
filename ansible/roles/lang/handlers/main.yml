@@ -1,0 +1,15 @@
+- name: Installed Golang
+  command:
+    cmd: "{{ ansible_env.HOME }}/go/bin/go version"
+
+- name: Installed Rust
+  command:
+    cmd: "{{ ansible_env.HOME }}/.cargo/bin/rustc --version"
+
+- name: Installed Node.js
+  command:
+    cmd: "{{ ansible_env.HOME }}/.local/share/fnm/aliases/default/bin/node --version"
+
+- name: Installed Deno
+  command:
+    cmd: "{{ ansible_env.HOME }}/.cargo/bin/deno --version"
