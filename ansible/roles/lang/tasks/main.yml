@@ -3,15 +3,15 @@
 #----------------------------------------------------------------
 - name: Check if go is installed
   stat:
-    path: "{{ ansible_env.HOME }}/go/bin/go"
-  register: go_installed
+    path: "~/go/bin/go"
+  register: go_check
 
 - name: Installing Golang (if skipping is already installed)
   ansible.builtin.unarchive:
-    src: https://go.dev/dl/go{{ go_version }}.linux-amd64.tar.gz
-    dest: "{{ ansible_env.HOME }}"
+    src: https://go.dev/dl/go{{ versions.go }}.linux-amd64.tar.gz
+    dest: "~"
     remote_src: true
-  when: not go_installed.stat.exists
+  when: not go_check.stat.exists
   notify: Installed Golang
 
 #----------------------------------------------------------------
@@ -19,13 +19,13 @@
 #----------------------------------------------------------------
 - name: Check if rust is installed
   stat:
-    path: "{{ ansible_env.HOME }}/.cargo/bin/rustc"
-  register: rust_installed
+    path: "~/.cargo/bin/rustc"
+  register: rust_check
 
 - name: Installing Rust (if skipping is already installed)
   # -y: auto accept options
   shell: curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
-  when: not rust_installed.stat.exists
+  when: not rust_check.stat.exists
   notify: Installed Rust
 
 #----------------------------------------------------------------
@@ -33,16 +33,16 @@
 #----------------------------------------------------------------
 - name: Check if node is installed
   stat:
-    path: "{{ ansible_env.HOME }}/.local/share/fnm/aliases/default/bin/node"
-  register: node_installed
+    path: "~/.local/share/fnm/aliases/default/bin/node"
+  register: node_check
 
 - name: Installing Node.js (if skipping is already installed)
   shell: |
-    {{ ansible_env.HOME }}/.cargo/bin/cargo install fnm
-    {{ ansible_env.HOME }}/.cargo/bin/fnm install {{ node_version }}
-    {{ ansible_env.HOME }}/.cargo/bin/fnm default {{ node_version }}
-    {{ ansible_env.HOME }}/.local/share/fnm/aliases/default/bin/corepack enable pnpm
-  when: not node_installed.stat.exists
+    ~/.cargo/bin/cargo install fnm
+    ~/.cargo/bin/fnm install {{ versions.node }}
+    ~/.cargo/bin/fnm default {{ versions.node }}
+    ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+  when: not node_check.stat.exists
   notify: Installed Node.js
 
 #----------------------------------------------------------------
@@ -50,14 +50,13 @@
 #----------------------------------------------------------------
 - name: Check if deno is installed
   stat:
-    path: "{{ ansible_env.HOME }}/.cargo/bin/deno"
-  register: deno_installed
+    path: "~/.cargo/bin/deno"
+  register: deno_check
 
 - name: Installing Deno (if skipping is already installed)
   ansible.builtin.unarchive:
-    #src: https://github.com/denoland/deno/releases/download/v{{ deno_version }}/deno-x86_64-unknown-linux-gnu.zip
-    src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ deno_version }}/deno-x86_64-unknown-linux-gnu.zip
-    dest: "{{ ansible_env.HOME }}/.cargo/bin/"
+    src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
+    dest: "~/.cargo/bin/"
     remote_src: true
-  when: not deno_installed.stat.exists
+  when: not deno_check.stat.exists
   notify: Installed Deno
