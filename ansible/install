@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+export PYTHONUSERBASE=~/.local
+
+if [[ ! -x ~/.local/bin/ansible ]]; then
+    # install & upgrade pip
+    python3 -m ensurepip --upgrade --user
+    python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --upgrade --user pip
+    # install ansible
+    python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
+fi
+
+~/.local/bin/ansible --version
+
+# Let's gooooo
+~/.local/bin/ansible-playbook -i ./hosts ./linux.yml --ask-become-pass

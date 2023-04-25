@@ -1,0 +1,34 @@
+- name: Check if the wireless driver (wl) is installed
+  shell: lsmod | grep wl
+  ignore_errors: true
+  register: wl_check
+- debug: var=wl_check.stdout_lines
+
+- name: Install the broadcom wireless driver, and reboot
+  when: wl_check is failed
+  block:
+
+  - name: Install the broadcom wireless packages
+    become: true
+    become_method: sudo
+    dnf:
+      name:
+      - akmods
+      - broadcom-wl
+
+  - name: Run akmods
+    shell: sudo akmods
+
+  # Wait for reboot to complete when operating remotely
+  - name: Reboot host and wait for it to restart (import reboot task)
+    include_tasks: reboot.yml
+
+
+- name: Check if the wireless driver (wl) is installed after reboot
+  shell: lsmod | grep wl
+  ignore_errors: true
+  register: wl_check
+- debug: var=wl_check.stdout_lines
+
+- name: Install the wireless driver packages
+  debug: var=wl_check.rc

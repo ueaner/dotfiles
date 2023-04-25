@@ -1,0 +1,11 @@
+#----------------------------------------------------------------
+# done
+#----------------------------------------------------------------
+- name: ALL DONE
+  file:
+    path: "~/doneplay"
+    state: touch
+
+- name: WELCOME
+  debug:
+    msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"

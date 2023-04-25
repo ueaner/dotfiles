@@ -1,15 +1,23 @@
 - name: Installed Golang
   command:
-    cmd: "{{ ansible_env.HOME }}/go/bin/go version"
+    cmd: "~/go/bin/go version"
+  register: go_version
+- debug: var=go_version.stdout
 
 - name: Installed Rust
   command:
-    cmd: "{{ ansible_env.HOME }}/.cargo/bin/rustc --version"
+    cmd: "~/.cargo/bin/rustc --version"
+  register: rust_version
+- debug: var=rust_version.stdout
 
 - name: Installed Node.js
   command:
-    cmd: "{{ ansible_env.HOME }}/.local/share/fnm/aliases/default/bin/node --version"
+    cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+  register: node_version
+- debug: var=node_version.stdout
 
 - name: Installed Deno
   command:
-    cmd: "{{ ansible_env.HOME }}/.cargo/bin/deno --version"
+    cmd: "~/.cargo/bin/deno --version"
+  register: deno_version
+- debug: var=deno_version.stdout_lines

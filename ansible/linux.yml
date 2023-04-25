@@ -1,7 +1,13 @@
 - name: Setup Linux Workstation
-  hosts: local
+  hosts: cb13
   vars_files:
     - variables/versions.yml
+    - variables/tools.yml
   roles:
-    - lang
+    - prepare
+    - system   # Need to reboot after installing wireless driver under MacBook
+    - dotshell # Provides sources for later `lang` and `tools` installactions
+    - lang     # Languages environment
     - tools
+    - fonts
+    - done

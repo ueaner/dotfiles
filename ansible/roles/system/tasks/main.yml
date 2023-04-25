@@ -1,0 +1,9 @@
+- name: "Change kernel version: {{ ansible_kernel }} -> {{ versions.kernel }}"
+  include_tasks: kernel.yml
+  when:
+  - ansible_kernel != versions.kernel
+  - ansible_product_name.startswith('MacBook')
+
+- name: Install the broadcom wireless driver under MacBook (include broadcom-wl)
+  include_tasks: broadcom-wl.yml
+  when: "ansible_product_name.startswith('MacBook')"

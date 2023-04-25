@@ -5,6 +5,7 @@ versions:
 
   # Kernel - https://www.kernel.org/
   kernel: 6.2.6-300.fc38.x86_64
+  kernel_slash: 6.2.6/300.fc38/x86_64
 
   # Go - https://go.dev/
   go: 1.20.3
