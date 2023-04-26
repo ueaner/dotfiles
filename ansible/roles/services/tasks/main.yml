@@ -1,0 +1,9 @@
+- name: Check if shadowsocks-rust is installed
+  stat:
+    path: "~/.cargo/bin/ssservice"
+  register: ss_check
+
+- name: Install shadowsocks-rust
+  shell: "~/.cargo/bin/cargo install shadowsocks-rust"
+  when: not ss_check.stat.exists
+  notify: start and enable shadowsocks-rust-local service

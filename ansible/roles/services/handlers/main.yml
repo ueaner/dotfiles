@@ -1,0 +1,2 @@
+- name: start and enable shadowsocks-rust-local service
+  shell: systemctl --user enable --now shadowsocks-rust-local

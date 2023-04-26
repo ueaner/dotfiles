@@ -20,8 +20,7 @@
     shell: sudo akmods
 
   # Wait for reboot to complete when operating remotely
-  - name: Reboot host and wait for it to restart (import reboot task)
-    include_tasks: reboot.yml
+  - include_tasks: reboot.yml
 
 
 - name: Check if the wireless driver (wl) is installed after reboot

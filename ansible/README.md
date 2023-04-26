@@ -34,7 +34,7 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
 
 远程部署的好处是，如果目标机器是 MacBook 需要安装 broadcom 无线驱动，等待重启后可继续执行剩下的 task.
 
-本地 MacBook 部署，可能需要重新执行 ansible-playbook 多次（1-3 次），直到看到 `Welcode to Fedora` 表示部署完成。
+本地 MacBook 部署，可能需要重启之后再次执行 ansible-playbook 多次（1-3 次），直到看到 `Welcode to Fedora` 表示部署完成。
 
 ## Let's gooooo
 

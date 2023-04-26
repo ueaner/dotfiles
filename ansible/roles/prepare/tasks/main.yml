@@ -39,5 +39,4 @@
 #----------------------------------------------------------------
 # rpmfusion
 #----------------------------------------------------------------
-- name: Install the rpmfusion repo packages (include rpmfusion)
-  include_tasks: rpmfusion.yml
+- include_tasks: rpmfusion.yml

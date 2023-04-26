@@ -40,8 +40,7 @@
 - debug: var=ansible_kernel
 
 # Wait for reboot to complete when operating remotely
-- name: Reboot host and wait for it to restart (import reboot task)
-  include_tasks: reboot.yml
+- include_tasks: reboot.yml
 
 # Kernel version after reboot the system
 - debug: var=ansible_kernel
