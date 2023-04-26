@@ -390,3 +390,15 @@ function dotfiles {
 function dotlocal {
     /usr/bin/git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@
 }
+
+# append the --user parameter
+# --help -v 等参数就不能用了
+#function flatpak {
+#    if [[ " $* " =~ " -u " ]]; then
+#        /usr/bin/flatpak $@
+#    elif [[ " $* " =~ " --user " ]]; then
+#        /usr/bin/flatpak $@
+#    else
+#        /usr/bin/flatpak --user $@
+#    fi
+#}
