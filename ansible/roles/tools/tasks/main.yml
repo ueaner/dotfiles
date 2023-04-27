@@ -21,3 +21,5 @@
   loop: "{{ tools.python }}"
   environment:
     PYTHONUSERBASE: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local"
+
+- include_tasks: desktop-entries.yml

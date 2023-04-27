@@ -1,0 +1,3 @@
+- name: update desktop database
+  command:
+    cmd: update-desktop-database ~/.local/share/applications

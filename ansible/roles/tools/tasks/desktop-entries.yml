@@ -1,0 +1,19 @@
+- name: Install Alacritty.desktop
+  shell: |
+    curl --create-dirs -L {{url_prefix}}/Alacritty.desktop -o ~/.local/share/applications/Alacritty.desktop
+    curl --create-dirs -L {{url_prefix}}/Alacritty.svg -o ~/.local/share/icons/Alacritty.svg
+    curl --create-dirs -L {{url_prefix}}/alacritty-msg.1.gz -o ~/.local/share/man/man1/alacritty-msg.1.gz
+    curl --create-dirs -L {{url_prefix}}/alacritty.1.gz -o ~/.local/share/man/man1/alacritty.1.gz
+    curl --create-dirs -L {{url_prefix}}/_alacritty -o ~/.local/share/zsh/site-functions/_alacritty
+  vars:
+    url_prefix: https://ghproxy.com/https://github.com/alacritty/alacritty/releases/latest/download
+  notify: update desktop database
+
+- name: fixed Alacritty.desktop font.size under fedora
+  copy:
+    src: files/Alacritty.desktop
+    dest: ~/.local/share/applications/Alacritty.desktop
+  when:
+  - ansible_distribution == "Fedora"
+  - ansible_product_name.startswith('MacBook')
+  notify: update desktop database
