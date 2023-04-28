@@ -271,18 +271,19 @@ function version_gt()
         strace $(pidof "${1}" | sed 's/\([0-9]*\)/-p \1/g')
     }
 
-    #alias open='xdg-open'
-
 #fi
 
-# `o` with no arguments opens the current directory, otherwise opens the given location
-# macOS
-function o() {
-    if [ $# -eq 0 ]; then
-        open .
+function open() {
+    if [[ -x /usr/bin/open ]]; then
+        /usr/bin/open "$@"
+    elif [[ -x /usr/bin/xdg-open ]]; then
+        # $XDG_CONFIG_HOME/mimeapps.list
+        # /usr/share/applications/mimeapps.list
+        /usr/bin/xdg-open "$@"
     else
-        open "$@"
-    fi;
+        echo '"open" or "xdg-open" executable not found'
+        return 1
+    fi
 }
 
 # tmux session attach/detach toggle
