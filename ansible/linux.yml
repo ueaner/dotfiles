@@ -9,6 +9,7 @@
     - dotshell # Provides sources for later `lang` and `tools` installactions
     - lang     # Languages environment
     - tools
+    - alacritty
     - services
     - fonts
     - done

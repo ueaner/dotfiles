@@ -1,0 +1,5 @@
+- name: Install Alacritty
+  include_tasks: alacritty.yml
+  when: ansible_distribution == "Fedora"
+
+# MacOSX

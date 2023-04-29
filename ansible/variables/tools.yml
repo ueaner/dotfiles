@@ -1,75 +1,68 @@
 tools:
 
   dnf:
-  - git
-  - zsh
-  - util-linux-user
-  - tmux
-  - neovim
-  - binutils
-  - cmake
-  - freetype-devel
-  - fontconfig-devel
-  - libxcb-devel
-  - libxkbcommon-devel
-  - gcc-c++
-  - clang
-  - curl
-  - wget
-  - file
-  - entr # Run arbitrary commands when files change
-  - fastfetch
-  - jq
-  - xsel
-  - flatpak
+    - git
+    - zsh
+    - util-linux-user
+    - tmux
+    - neovim
+    - binutils
+    - clang
+    - curl
+    - wget
+    - file
+    - entr # Run arbitrary commands when files change
+    - fastfetch
+    - jq
+    - xsel
+    - flatpak
 
   go:
-  - github.com/junegunn/fzf@latest
-  - github.com/arl/gitmux@latest # git status on tmux line
-  - github.com/google/gops@latest
-  - github.com/boyter/scc@latest
-  - github.com/jesseduffield/lazygit@latest
-  - github.com/muesli/duf@latest
-  - github.com/itchyny/gojq/cmd/gojq@latest
-  - github.com/antonmedv/fx@latest # JSON viewer
-  - github.com/charmbracelet/glow@latest # markdown viewer
-  - github.com/ivaaaan/smug@latest # tmux session manager
+    - github.com/junegunn/fzf@latest
+    - github.com/arl/gitmux@latest # git status on tmux line
+    - github.com/google/gops@latest
+    - github.com/boyter/scc@latest
+    - github.com/jesseduffield/lazygit@latest
+    - github.com/muesli/duf@latest
+    - github.com/itchyny/gojq/cmd/gojq@latest
+    - github.com/antonmedv/fx@latest # JSON viewer
+    - github.com/charmbracelet/glow@latest # markdown viewer
+    - github.com/ivaaaan/smug@latest # tmux session manager
 
-  - github.com/bykof/go-plantuml@latest
-  - github.com/ofabry/go-callvis@master # call graph
-  - golang.org/x/tools/cmd/callgraph@master
-  - golang.org/x/tools/cmd/digraph@master
+    - github.com/bykof/go-plantuml@latest
+    - github.com/ofabry/go-callvis@master # call graph
+    - golang.org/x/tools/cmd/callgraph@master
+    - golang.org/x/tools/cmd/digraph@master
 
-  - golang.org/x/mobile/cmd/gomobile@latest
-  - golang.org/x/mobile/cmd/gobind@latest
+    - golang.org/x/mobile/cmd/gomobile@latest
+    - golang.org/x/mobile/cmd/gobind@latest
 
-  - github.com/google/wire/cmd/wire@latest
-  - github.com/envoyproxy/protoc-gen-validate@latest
-  - google.golang.org/protobuf/cmd/protoc-gen-go@latest
-  - google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-  - github.com/go-kratos/kratos/cmd/kratos/v2@latest
-  - github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
-  - github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+    - github.com/google/wire/cmd/wire@latest
+    - github.com/envoyproxy/protoc-gen-validate@latest
+    - google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    - google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+    - github.com/go-kratos/kratos/cmd/kratos/v2@latest
+    - github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
+    - github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 
-  - github.com/kyleconroy/sqlc/cmd/sqlc@latest
-  - github.com/spf13/cobra-cli@latest
-  - github.com/mattn/goreman@latest
-  - github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-  - github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
+    - github.com/kyleconroy/sqlc/cmd/sqlc@latest
+    - github.com/spf13/cobra-cli@latest
+    - github.com/mattn/goreman@latest
+    - github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+    - github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
 
   rust:
-  - alacritty
-  - bat
-  - git-delta
-  - difftastic
-  - fd-find
-  - ripgrep
-  - zoxide
-  - tealdeer
-  - bottom
-  - bandwhich
-  - procs
-  - dua-cli
+    - bat
+    - git-delta
+    - difftastic
+    - fd-find
+    - ripgrep
+    - zoxide
+    - tealdeer
+    - bottom
+    - bandwhich
+    - procs
+    - dua-cli
 
   python:
-  - ddgr  # DuckDuckGo from the terminal
+    - ddgr  # DuckDuckGo from the terminal
