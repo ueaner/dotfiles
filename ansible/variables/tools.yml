@@ -21,6 +21,7 @@ tools:
   - fastfetch
   - jq
   - xsel
+  - flatpak
 
   go:
   - github.com/junegunn/fzf@latest
