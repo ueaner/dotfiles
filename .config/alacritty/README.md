@@ -144,8 +144,10 @@ Exec=alacritty --option font.size=9.0
 
 # `Super-t` : 实际发送的是 `Alt-s c`, 触发 tmux 新建窗口
 - { key: T, mods: Super, chars: "\x1b\x73\x63" }
-# `Super-Shift-t` : 实际发送的是 `Alt-s C` 触发 tmux 新建会话
-- { key: T, mods: Super|Shift, chars: "\x1b\x73\x43" } # new session
+# `Super-n` : 实际发送的是 `Alt-s C`, 触发 tmux 新建会话
+- { key: N, mods: Super, chars: "\x1b\x73\x43" }
+# `Super-z` : 实际发送的是 `Alt-s z`, 触发 tmux 缩放当前窗格
+- { key: Z, mods: Super, chars: "\x1b\x73\x7a" }
 ```
 
 键映射的 `chars` 部分的十六进制 ASCII 可以通过 `showkey --ascii` 或者 `xxd -psd` 拿到。
