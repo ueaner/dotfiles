@@ -1,0 +1,29 @@
+- name: Detect desktop name
+  shell: |
+    . /etc/os-release
+    if [[ "${VARIANT_ID}" == "workstation" ]]; then
+      echo "gnome"
+    elif [[ "${VARIANT_ID}" == "sway" ]]; then
+      echo "sway"
+    fi
+  register: desktop_name
+- debug: msg="desktop_name is {{ desktop_name.stdout }}"
+
+- name: Check if xremap is installed
+  stat:
+    path: "~/.cargo/bin/xremap"
+  register: xremap_check
+
+- name: Install xremap (GNOME Wayland)
+  when:
+  - not xremap_check.stat.exists
+  - desktop_name.stdout == "gnome"
+  shell: "~/.cargo/bin/cargo install xremap --features gnome"
+  notify: start and enable xremap service
+
+- name: Install xremap (Sway)
+  when:
+  - not xremap_check.stat.exists
+  - desktop_name.stdout == "sway"
+  shell: "~/.cargo/bin/cargo install xremap --features sway"
+  notify: start and enable xremap service
