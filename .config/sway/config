@@ -4,8 +4,6 @@
 #
 # Read `man 5 sway` for a complete reference.
 
-set $XDG_DATA_HOME ${XDG_DATA_HOME:-$HOME/.local/share}
-
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -36,7 +34,7 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg
 #output * bg /usr/share/backgrounds/default.png fill
-output * bg $XDG_DATA_HOME/backgrounds/f37-01-day.png fill
+output * bg $XDG_DATA_HOME/backgrounds/f37-01-night.png fill
 #
 # Example configuration:
 #
@@ -89,10 +87,10 @@ input type:touchpad {
     bindsym $mod+Return exec $term
 
     # Kill focused window
-    bindsym $mod+Shift+q kill
+    bindsym $mod+q kill
 
     # Start your launcher
-    bindsym $mod+d exec $menu
+    bindsym $mod+Space exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -102,7 +100,7 @@ input type:touchpad {
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Shift+c reload
+    bindsym $mod+Alt+r reload
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
@@ -132,6 +130,8 @@ input type:touchpad {
     bindsym $mod+Shift+Right move right
 #
 # Workspaces:
+    bindsym $mod+Ctrl+n workspace next
+    bindsym $mod+Ctrl+p workspace prev
 #
     # Switch to workspace
     bindsym $mod+1 workspace number 1
@@ -172,13 +172,13 @@ input type:touchpad {
     bindsym $mod+e layout toggle split
 
     # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
+    bindsym $mod+Ctrl+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
+    bindsym $mod+Shift+m floating toggle
 
     # Swap focus between the tiling area and the floating area
-    bindsym $mod+space focus mode_toggle
+    bindsym $mod+m focus mode_toggle
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
