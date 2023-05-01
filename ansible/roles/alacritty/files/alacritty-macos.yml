@@ -140,12 +140,12 @@ key_bindings:
   # https://github.com/rust-windowing/winit/issues/600 Shift Keycode None
   - { key: Backslash,  mods: Super,         chars: "\x1b\x73\x5c" } # Super + \ vertical split
   - { key: Backslash,  mods: Super|Shift,   chars: "\x1b\x73\x7c" } # Super + | horizontal split, pipe, on macOS
-  - { key: E,          mods: Super,         chars: "\x1b\x73\x73" } # choose tree / pane explorer
+  - { key: E,          mods: Super,         chars: "\x1b\x73\x65" } # choose tree / pane explorer
   - { key: Z,          mods: Super,         chars: "\x1b\x73\x7a" } # pane zoom
   - { key: Semicolon,  mods: Super,         chars: "\x1b\x73\x3a" } # Super + ; command mode
   - { key: Escape,     mods: Super,         chars: "\x1b\x73\x1b" } # vi-mode
   - { key: F,          mods: Super,         chars: "\x1b\x73\x2f" } # search
-  - { key: M,          mods: Super,         chars: "\x1b\x73\x6d" } # synchronize panes toggle
+  - { key: S,          mods: Super|Shift,   chars: "\x1b\x73\x53" } # synchronize panes toggle
   # <<< tmux shortcuts: prefix A-s \x1b\x73
 
   # TODO macOS 下需要添加以下行 CTRL-Q 才可使用，否则 CTRL-Q 需要按两次才会触发
