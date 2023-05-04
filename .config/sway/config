@@ -1,7 +1,3 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
@@ -13,9 +9,8 @@ set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-# Recommends: foot
 set $term foot
+set $lock swaylock -f
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
@@ -27,7 +22,7 @@ set $rofi_cmd rofi \
 # Shows a combined list of the applications with desktop files and
 # executables from PATH.
 # TODO: add window with the next release of rofi-wayland
-set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
+set $menu $rofi_cmd -show combi -combi-modes "window,drun" -modes combi
 
 ### Output configuration
 #
@@ -100,10 +95,13 @@ input type:touchpad {
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Alt+r reload
+    bindsym $mod+Ctrl+r reload
+
+    # Lock screen
+    bindsym $mod+Ctrl+l exec $lock
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
@@ -130,8 +128,8 @@ input type:touchpad {
     bindsym $mod+Shift+Right move right
 #
 # Workspaces:
-    bindsym $mod+Ctrl+n workspace next
-    bindsym $mod+Ctrl+p workspace prev
+    bindsym $mod+Shift+n workspace next
+    bindsym $mod+Shift+p workspace prev
 #
     # Switch to workspace
     bindsym $mod+1 workspace number 1
@@ -202,16 +200,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 20px
+    bindsym $down resize grow height 20px
+    bindsym $up resize shrink height 20px
+    bindsym $right resize grow width 20px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Left resize shrink width 20px
+    bindsym Down resize grow height 20px
+    bindsym Up resize shrink height 20px
+    bindsym Right resize grow width 20px
 
     # Return to default mode
     bindsym Return mode "default"
