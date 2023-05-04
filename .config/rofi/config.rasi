@@ -1,0 +1,12 @@
+configuration {
+	show-icons: true;
+    combi-hide-mode-prefix: true;
+}
+
+@import "/usr/share/rofi/themes/glue_pro_blue.rasi"
+
+window {
+    border:           0;
+    border-radius:    8;
+    padding:          12;
+}
