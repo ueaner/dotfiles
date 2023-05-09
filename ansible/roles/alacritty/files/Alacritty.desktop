@@ -1,7 +1,8 @@
+# alacritty.desktop for sway, https://github.com/swaywm/sway/pull/7226
 [Desktop Entry]
 Type=Application
 TryExec=alacritty
-Exec=alacritty --option font.size=9.0
+Exec=WINIT_UNIX_BACKEND=x11 alacritty --option font.size=7
 Icon=Alacritty
 Terminal=false
 Categories=System;TerminalEmulator;
@@ -14,4 +15,4 @@ Actions=New;
 
 [Desktop Action New]
 Name=New Terminal
-Exec=alacritty --option font.size=9.0
+Exec=WINIT_UNIX_BACKEND=x11 alacritty --option font.size=7

@@ -30,3 +30,23 @@
   vars:
     url_prefix: https://ghproxy.com/https://github.com/alacritty/alacritty/releases/latest/download
   notify: update desktop database
+
+# fcitx5: show preedit in Alacritty under swaywm
+# https://github.com/swaywm/sway/pull/7226
+- name: Detect desktop name
+  shell: |
+    . /etc/os-release
+    if [[ "${VARIANT_ID}" == "workstation" ]]; then
+      echo "gnome"
+    elif [[ "${VARIANT_ID}" == "sway" ]]; then
+      echo "sway"
+    fi
+  register: desktop_name
+- debug: msg="desktop_name is {{ desktop_name.stdout }}"
+
+- name: Install Alacritty.desktop (Sway)
+  when: desktop_name.stdout == "sway"
+  copy:
+    src: files/Alacritty.desktop
+    dest: ~/.local/share/applications/Alacritty.desktop
+  notify: update desktop database
