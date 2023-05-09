@@ -1,0 +1,5 @@
+- name: modify flathub remote repository to sjtu
+  shell: |
+    flatpak --user remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub
+    wget https://mirror.sjtu.edu.cn/flathub/flathub.gpg -O /tmp/flathub.gpg
+    flatpak --user remote-modify --gpg-import=/tmp/flathub.gpg flathub

@@ -4,6 +4,7 @@
   become_method: sudo
   dnf:
     name: "{{ tools.dnf }}"
+  notify: modify flathub remote repository to sjtu
 
 - name: install go tools
   shell: ~/go/bin/go install -v {{ item }}
