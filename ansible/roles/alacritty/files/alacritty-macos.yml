@@ -1,3 +1,4 @@
+# vim: set filetype=yaml:
 # 配置说明：https://github.com/alacritty/alacritty/blob/master/alacritty.yml
 
 live_config_reload: true
@@ -135,8 +136,6 @@ key_bindings:
   - { key: Tab,        mods: Control|Shift, chars: "\x1b\x73\x2c" } # previous window
   - { key: Period,     mods: Super,         chars: "\x1b\x73\x2e" } # Super + . next window
   - { key: Comma,      mods: Super,         chars: "\x1b\x73\x2c" } # Super + , previous window, Preferences on macOS
-  - { key: RBracket,   mods: Super,         chars: "\x1b\x73\x2e" } # Super + ] next window
-  - { key: LBracket,   mods: Super,         chars: "\x1b\x73\x2c" } # Super + [ previous window
   # https://github.com/rust-windowing/winit/issues/600 Shift Keycode None
   - { key: Backslash,  mods: Super,         chars: "\x1b\x73\x5c" } # Super + \ vertical split
   - { key: Backslash,  mods: Super|Shift,   chars: "\x1b\x73\x7c" } # Super + | horizontal split, pipe, on macOS
