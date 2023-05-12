@@ -33,6 +33,8 @@ keymap:
       #Super-w: [Esc, C-w]       # close tab, Alacritty 被影响了?
       Super-w: C-w              # close tab
       Super-Shift-t: C-Shift-t  # 重新打开刚关闭的标签页
+      Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB      # ] next tab
+      Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB # [ prev tab
       # Editting
       Super-z: C-z              # undo
       Super-Shift-z: C-Shift-z  # redo
