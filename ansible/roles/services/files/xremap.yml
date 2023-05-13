@@ -1,3 +1,5 @@
+---
+
 keymap:
   - name: basic
     # 按键精确匹配的概念，默认 exact_match: false, 映射一个快捷键会扇出多个快捷键
@@ -17,11 +19,11 @@ keymap:
       # Window / Tab
       Super-n: C-n              # new window
       Super-t: C-t              # new tab
-      #Super-w: [Esc, C-w]       # close tab, Alacritty 被影响了?
+      # Super-w: [Esc, C-w]       # close tab, Alacritty 被影响了?
       Super-w: C-w              # close tab
       Super-Shift-t: C-Shift-t  # 重新打开刚关闭的标签页
-      Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB      # ] next tab
-      Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB # [ prev tab
+      Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
+      Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB  # [ prev tab
       # Editting
       Super-z: C-z              # undo
       Super-Shift-z: C-Shift-z  # redo
@@ -40,4 +42,4 @@ keymap:
       Super-o: C-o              # open options or open choose file dialog
       Super-p: C-p              # print
       Super-s: C-s              # save
-      #Ctrl-u: [Shift-Home, Backspace]       # Emacs C-u
+      # Ctrl-u: [Shift-Home, Backspace]       # Emacs C-u
