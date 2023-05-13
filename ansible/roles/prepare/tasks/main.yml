@@ -1,42 +1,54 @@
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # done
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if all done
-  stat:
+  ansible.builtin.stat:
     path: "~/doneplay"
   register: done_check
 
 - name: Welcome when all done
   when: done_check.stat.exists
-  debug:
+  ansible.builtin.debug:
     msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"
 
 - name: All done end play
-  meta: end_play
+  ansible.builtin.meta: end_play
   when: done_check.stat.exists
 
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # sudo without password
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Same thing without a password
-  shell: echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
+  changed_when: false
 
-#----------------------------------------------------------------
+# sudo: xxx: command not found
+# Defaults secure_path = /home/ueaner/.local/bin:/home/ueaner/.cargo/bin:/usr/local/sbin:...
+# sudo ln -sf /home/ueaner/.cargo/bin/* /usr/local/bin/
+
+# ----------------------------------------------------------------
 # prepare tools
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Install prepare tools (if skipping is already installed)
   when: ansible_pkg_mgr == "dnf"
   become: true
   become_method: sudo
-  dnf:
+  ansible.builtin.dnf:
     name:
-    - git
-    - zsh
-    - util-linux-user
-    - wget
+      - git
+      - zsh
+      - util-linux-user
+      - wget
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # rpmfusion
-#----------------------------------------------------------------
-- include_tasks: rpmfusion.yml
+# ----------------------------------------------------------------
+- ansible.builtin.include_tasks: rpmfusion.yml
+
+# ----------------------------------------------------------------
+# os-release
+# ----------------------------------------------------------------
+- ansible.builtin.include_tasks: os-release.yml

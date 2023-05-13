@@ -1,2 +1,2 @@
 dependencies:
-- { role: prepare }
+  - { role: prepare }

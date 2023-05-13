@@ -1,3 +1,4 @@
+# vim: set filetype=yaml.ansible:
 - name: Setup Linux Workstation
   hosts: local
   vars_files:
@@ -11,75 +12,92 @@
           PATH: "{{ ansible_env.PATH }}"
           distribution: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
 
-    - name: kernel version
-      ansible.builtin.debug:
+    - name: Kernel version
+      debug:
         msg: "kernel version: {{ ansible_kernel }} -> {{ versions.kernel }}"
 
-    #----------------------------------------------------------------
+    - name: Include tasks only if one of the files exist, otherwise skip the task
+      ansible.builtin.include_tasks:
+        file: "{{ item }}"
+      with_first_found:
+        - files:
+            - path/tasks.yml
+            - path/other_tasks.yml
+            - "{{ ansible_facts['distribution'] | lower }}.yml"
+            - "{{ ansible_facts['os_family'] | lower }}.yml"
+            - path/defaults.yml
+          skip: true
+
+    # ----------------------------------------------------------------
     # dot
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     - name: Check if dotfiles is exists
-      stat:
+      ansible.builtin.stat:
         path: "$HOME/.dotfiles"
       register: dotfiles_installed
     - debug: var=dotfiles_installed.stat.exists
 
     - name: Check if dotlocal is exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.dotlocal"
       register: dotlocal_installed
     - debug: var=dotlocal_installed.stat.exists
 
     - name: Check if nvimrc is exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.config/nvim"
       register: nvimrc_installed
     - debug: var=nvimrc_installed.stat.exists
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # zsh
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     - name: Use zsh as the default login shell
-      shell: echo "$SHELL is zsh"
+      ansible.builtin.shell: echo "$SHELL is zsh"
+      changed_when: false
       when: "'/zsh' in ansible_env.SHELL"
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # lang
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     - name: Installed Golang
-      command:
+      ansible.builtin.command:
         cmd: "~/go/bin/go version"
+      changed_when: false
       register: go_version
     - debug: var=go_version.stdout
 
     - name: Check if go is installed
-      stat:
+      ansible.builtin.stat:
         path: "~/go/bin/go"
       register: go_installed
     - debug: var=go_installed.stat.exists
 
     - name: Installed Rust
-      command:
+      ansible.builtin.command:
         cmd: "~/.cargo/bin/rustc --version"
+      changed_when: false
       register: rust_version
     - debug: var=rust_version.stdout
 
     - name: Installed Node.js
-      command:
+      ansible.builtin.command:
         cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+      changed_when: false
       register: node_version
     - debug: var=node_version.stdout
 
     - name: Installed Deno
-      command:
+      ansible.builtin.command:
         cmd: "~/.cargo/bin/deno --version"
+      changed_when: false
       register: deno_version
     - debug: var=deno_version.stdout_lines
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # tools
-    #----------------------------------------------------------------
-    - name: install basic tools (dnf)
+    # ----------------------------------------------------------------
+    - name: Install basic tools (dnf)
       when: ansible_pkg_mgr == "dnf"
       debug:
         var: ansible_pkg_mgr
@@ -87,21 +105,22 @@
         verbosity: 2
 
     - name: List go tools
-      debug: var=item
+      debug:
+        var: item
       loop: "{{ tools.go }}"
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # system
-    #----------------------------------------------------------------
-    - name: "Change kernel version: {{ ansible_kernel }} -> {{ versions.kernel }}"
+    # ----------------------------------------------------------------
+    - name: "Change kernel version to {{ versions.kernel }}"
       when:
-      - ansible_kernel != versions.kernel
-      - ansible_product_name.startswith('MacBook')
-      ansible.builtin.debug:
+        - ansible_kernel != versions.kernel
+        - ansible_product_name.startswith('MacBook')
+      debug:
         msg: "Kernel version will be changed to {{ versions.kernel }}"
 
     - name: Check if rpmfusion is installed
-      stat:
+      ansible.builtin.stat:
         path: "/etc/yum.repos.d/{{ item }}"
       with_items:
         - rpmfusion-free.repo
@@ -112,16 +131,17 @@
       debug:
         msg: "`rpmfusion` repo will be installed"
       when:
-      - ansible_distribution == "Fedora"
-      - not rpmfusion_check.results[0].stat.exists or not rpmfusion_check.results[1].stat.exists
+        - ansible_distribution == "Fedora"
+        - not rpmfusion_check.results[0].stat.exists or not rpmfusion_check.results[1].stat.exists
 
-    - name: install the broadcom wireless driver under MacBook
+    - name: Install the broadcom wireless driver under MacBook
       when: ansible_product_name.startswith('MacBook')
-      ansible.builtin.debug:
+      debug:
         msg: "`akmods` and `broadcom-wl` packages will be installed"
 
     - name: Check if the wireless driver (wl) is installed
-      shell: lsmod | grep wl
+      ansible.builtin.shell: lsmod | grep wl
+      changed_when: false
       ignore_errors: true
       register: wl_check
     - debug: var=wl_check.stdout_lines

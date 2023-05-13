@@ -1,8 +1,8 @@
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # Golang
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if go is installed
-  stat:
+  ansible.builtin.stat:
     path: "~/go/bin/go"
   register: go_check
 
@@ -14,42 +14,46 @@
   when: not go_check.stat.exists
   notify: Installed Golang
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # Rust
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if rust is installed
-  stat:
+  ansible.builtin.stat:
     path: "~/.cargo/bin/rustc"
   register: rust_check
 
 - name: Installing Rust (if skipping is already installed)
   # -y: auto accept options
-  shell: curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+  changed_when: false
   when: not rust_check.stat.exists
   notify: Installed Rust
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # Node.js
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if node is installed
-  stat:
+  ansible.builtin.stat:
     path: "~/.local/share/fnm/aliases/default/bin/node"
   register: node_check
 
 - name: Installing Node.js (if skipping is already installed)
-  shell: |
+  ansible.builtin.shell: |
     ~/.cargo/bin/cargo install fnm
     ~/.cargo/bin/fnm install {{ versions.node }}
     ~/.cargo/bin/fnm default {{ versions.node }}
     ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+  changed_when: false
   when: not node_check.stat.exists
   notify: Installed Node.js
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # Deno
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if deno is installed
-  stat:
+  ansible.builtin.stat:
     path: "~/.cargo/bin/deno"
   register: deno_check
 

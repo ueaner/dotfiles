@@ -1,51 +1,55 @@
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # dotfiles
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if dotfiles is exists
-  stat:
+  ansible.builtin.stat:
     path: "$HOME/.dotfiles"
   register: dotfiles_check
 
 - name: Install dotfiles (if skipping is already installed)
-  shell: |
+  ansible.builtin.shell: |
     git config --global http.version HTTP/1.1
     git clone --bare https://github.com/ueaner/dotfiles.git $HOME/.dotfiles
     git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME checkout
     git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME config --local status.showUntrackedFiles no
+  changed_when: false
   when: not dotfiles_check.stat.exists
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # dotlocal
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if dotlocal is exists
-  stat:
+  ansible.builtin.stat:
     path: "$HOME/.dotlocal"
   register: dotlocal_check
 
 - name: Install dotlocal (if skipping is already installed)
-  shell: |
+  ansible.builtin.shell: |
     git config --global http.version HTTP/1.1
     git clone --bare https://github.com/ueaner/local.git $HOME/.dotlocal
     git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local checkout
     git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local config --local status.showUntrackedFiles no
+  changed_when: false
   when: not dotlocal_check.stat.exists
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # nvimrc
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Check if nvimrc is exists
-  stat:
+  ansible.builtin.stat:
     path: "$HOME/.config/nvim"
   register: nvimrc_check
 
 - name: Install nvimrc (if skipping is already installed)
-  shell: |
+  ansible.builtin.shell: |
     git clone https://github.com/ueaner/nvimrc.git $HOME/.config/nvim
+  changed_when: false
   when: not nvimrc_check.stat.exists
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # zsh
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: Use zsh as the default login shell
-  shell: chsh -s $(which zsh)
+  ansible.builtin.shell: chsh -s $(which zsh)
+  changed_when: false
   when: "'/zsh' not in ansible_env.SHELL"

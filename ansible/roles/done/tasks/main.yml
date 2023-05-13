@@ -1,11 +1,12 @@
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 # done
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
 - name: ALL DONE
-  file:
+  ansible.builtin.file:
     path: "~/doneplay"
     state: touch
+    mode: "0644"
 
 - name: WELCOME
-  debug:
+  ansible.builtin.debug:
     msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"

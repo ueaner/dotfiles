@@ -1,9 +1,10 @@
 - name: Check if shadowsocks-rust is installed
-  stat:
+  ansible.builtin.stat:
     path: "~/.cargo/bin/ssservice"
   register: ss_check
 
 - name: Install shadowsocks-rust
-  shell: "~/.cargo/bin/cargo install shadowsocks-rust"
+  ansible.builtin.command: "~/.cargo/bin/cargo install shadowsocks-rust"
+  changed_when: false
   when: not ss_check.stat.exists
-  notify: start and enable shadowsocks-rust-local service
+  notify: Start and enable shadowsocks-rust-local service

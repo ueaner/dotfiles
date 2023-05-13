@@ -1,3 +1,4 @@
-- name: update desktop database
-  command:
+- name: Update desktop database
+  ansible.builtin.command:
     cmd: update-desktop-database ~/.local/share/applications
+  changed_when: false

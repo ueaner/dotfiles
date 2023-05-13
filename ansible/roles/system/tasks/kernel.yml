@@ -1,46 +1,51 @@
 - name: Create kernel directory
-  file:
-    path: ~/kernel-{{versions.kernel}}
+  ansible.builtin.file:
+    path: ~/kernel-{{ versions.kernel }}
     state: directory
+    mode: '0755'
 
-#- name: download kernel-headers package
-#  shell:
-#    url="https://kojipkgs.fedoraproject.org/packages/kernel-headers/{{versions.kernel_slash}}/{{item}}-{{versions.kernel}}.rpm";
-#    dir_prefix="~/kernel-{{versions.kernel}}";
-#    wget -c -P "$dir_prefix" "$url"
-#  loop:
-#  - kernel-headers
+# - name: download kernel-headers package
+#   shell:
+#     url="https://kojipkgs.fedoraproject.org/packages/kernel-headers/{{versions.kernel_slash}}/{{item}}-{{versions.kernel}}.rpm";
+#     dir_prefix="~/kernel-{{versions.kernel}}";
+#     wget -c -P "$dir_prefix" "$url"
+#   loop:
+#   - kernel-headers
 
 - name: Download kernel-headers package
-  get_url:
-    url: "https://kojipkgs.fedoraproject.org/packages/kernel-headers/{{versions.kernel_slash}}/{{item}}-{{versions.kernel}}.rpm"
-    dest: "~/kernel-{{versions.kernel}}/{{item}}-{{versions.kernel}}.rpm"
+  ansible.builtin.get_url:
+    url: "https://kojipkgs.fedoraproject.org/packages/kernel-headers/{{ versions.kernel_slash }}/{{ item }}-{{ versions.kernel }}.rpm"
+    dest: "~/kernel-{{ versions.kernel }}/{{ item }}-{{ versions.kernel }}.rpm"
+    mode: "0644"
   loop:
-  - kernel-headers
+    - kernel-headers
 
 - name: Download kernel packages
-  get_url:
-    url: "https://kojipkgs.fedoraproject.org/packages/kernel/{{versions.kernel_slash}}/{{item}}-{{versions.kernel}}.rpm"
-    dest: "~/kernel-{{versions.kernel}}/{{item}}-{{versions.kernel}}.rpm"
+  ansible.builtin.get_url:
+    url: "https://kojipkgs.fedoraproject.org/packages/kernel/{{ versions.kernel_slash }}/{{ item }}-{{ versions.kernel }}.rpm"
+    dest: "~/kernel-{{ versions.kernel }}/{{ item }}-{{ versions.kernel }}.rpm"
+    mode: "0644"
   loop:
-  - kernel
-  - kernel-core
-  - kernel-devel
-  - kernel-devel-matched
-  - kernel-modules
-  - kernel-modules-core
-  - kernel-modules-extra
-  - kernel-modules-internal
-  - kernel-uki-virt
+    - kernel
+    - kernel-core
+    - kernel-devel
+    - kernel-devel-matched
+    - kernel-modules
+    - kernel-modules-core
+    - kernel-modules-extra
+    - kernel-modules-internal
+    - kernel-uki-virt
 
 - name: Install kernel & kernel-headers packages
-  shell: sudo dnf install ~/kernel-{{versions.kernel}}/kernel*.rpm
+  ansible.builtin.shell:
+    sudo dnf install ~/kernel-{{ versions.kernel }}/kernel*.rpm
+  changed_when: false
 
 # Kernel version before reboot the system
-- debug: var=ansible_kernel
+- ansible.builtin.debug: var=ansible_kernel
 
 # Wait for reboot to complete when operating remotely
-- include_tasks: reboot.yml
+- ansible.builtin.include_tasks: reboot.yml
 
 # Kernel version after reboot the system
-- debug: var=ansible_kernel
+- ansible.builtin.debug: var=ansible_kernel

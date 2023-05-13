@@ -1,0 +1,24 @@
+- name: Detect desktop name
+  ansible.builtin.shell: |
+    if [[ "{{ ansible_facts.distribution }}" == "MacOSX" ]]; then
+      echo "aqua"
+    elif [[ "{{ ansible_facts.distribution }}" == "Fedora" ]]; then
+      . /etc/os-release
+      if [[ "${VARIANT_ID}" == "workstation" ]]; then
+        echo "gnome"
+      elif [[ "${VARIANT_ID}" == "sway" ]]; then
+        echo "sway"
+      fi
+    else
+      echo "undefined"
+    fi
+  changed_when: false
+  register: desktop_name
+
+- name: DEBUG desktop_name
+  ansible.builtin.debug:
+    msg: "desktop_name is '{{ desktop_name.stdout }}'."
+
+- name: Setting prepare facts
+  ansible.builtin.set_fact:
+    desktop_name: "{{ desktop_name.stdout }}"

@@ -1,33 +1,36 @@
 - name: Check if the wireless driver (wl) is installed
-  shell: lsmod | grep wl
+  ansible.builtin.shell: lsmod | grep wl
+  changed_when: false
   ignore_errors: true
   register: wl_check
-- debug: var=wl_check.stdout_lines
+- ansible.builtin.debug: var=wl_check.stdout_lines
 
 - name: Install the broadcom wireless driver, and reboot
   when: wl_check is failed
   block:
 
-  - name: Install the broadcom wireless packages
-    become: true
-    become_method: sudo
-    dnf:
-      name:
-      - akmods
-      - broadcom-wl
+    - name: Install the broadcom wireless packages
+      become: true
+      become_method: sudo
+      ansible.builtin.dnf:
+        name:
+          - akmods
+          - broadcom-wl
 
-  - name: Run akmods
-    shell: sudo akmods
+    - name: Run akmods
+      ansible.builtin.command: sudo akmods
+      changed_when: false
 
-  # Wait for reboot to complete when operating remotely
-  - include_tasks: reboot.yml
+    # Wait for reboot to complete when operating remotely
+    - ansible.builtin.include_tasks: reboot.yml
 
 
 - name: Check if the wireless driver (wl) is installed after reboot
-  shell: lsmod | grep wl
+  ansible.builtin.shell: lsmod | grep wl
+  changed_when: false
   ignore_errors: true
   register: wl_check
-- debug: var=wl_check.stdout_lines
+- ansible.builtin.debug: var=wl_check.stdout_lines
 
 - name: Install the wireless driver packages
-  debug: var=wl_check.rc
+  ansible.builtin.debug: var=wl_check.rc

@@ -1,3 +1,4 @@
+# vim: set filetype=yaml.ansible:
 - name: Setup Linux Workstation
   hosts: cb13
   vars_files:
@@ -12,4 +13,5 @@
     - alacritty
     - services
     - fonts
+    - fcitx5
     - done

@@ -1,0 +1,12 @@
+# https://github.com/hosxy/Fcitx5-Material-Color
+- name: Install fcitx5
+  when: ansible_distribution == "Fedora"
+  become: true
+  become_method: sudo
+  ansible.builtin.dnf:
+    name:
+      - fcitx5
+      - fcitx5-chinese-addons
+      - fcitx5-autostart
+
+# reboot

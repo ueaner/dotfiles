@@ -1,4 +1,4 @@
 - name: Download Nerd Fonts
-  include_tasks: download.yml
+  ansible.builtin.include_tasks: download.yml
   loop:
     - SourceCodePro

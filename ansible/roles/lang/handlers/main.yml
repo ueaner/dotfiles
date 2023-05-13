@@ -1,23 +1,27 @@
 - name: Installed Golang
-  command:
+  ansible.builtin.command:
     cmd: "~/go/bin/go version"
+  changed_when: false
   register: go_version
-- debug: var=go_version.stdout
+- ansible.builtin.debug: var=go_version.stdout
 
 - name: Installed Rust
-  command:
+  ansible.builtin.command:
     cmd: "~/.cargo/bin/rustc --version"
+  changed_when: false
   register: rust_version
-- debug: var=rust_version.stdout
+- ansible.builtin.debug: var=rust_version.stdout
 
 - name: Installed Node.js
-  command:
+  ansible.builtin.command:
     cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+  changed_when: false
   register: node_version
-- debug: var=node_version.stdout
+- ansible.builtin.debug: var=node_version.stdout
 
 - name: Installed Deno
-  command:
+  ansible.builtin.command:
     cmd: "~/.cargo/bin/deno --version"
+  changed_when: false
   register: deno_version
-- debug: var=deno_version.stdout_lines
+- ansible.builtin.debug: var=deno_version.stdout_lines

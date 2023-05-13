@@ -1,7 +1,9 @@
-- name: start and enable shadowsocks-rust-local service
-  shell: systemctl --user enable --now shadowsocks-rust-local
+- name: Start and enable shadowsocks-rust-local service
+  ansible.builtin.command: systemctl --user enable --now shadowsocks-rust-local
+  changed_when: false
   when: ansible_distribution == "Fedora"
 
-- name: start and enable xremap service
-  shell: systemctl --user enable --now xremap
+- name: Start and enable xremap service
+  ansible.builtin.command: systemctl --user enable --now xremap
+  changed_when: false
   when: ansible_distribution == "Fedora"

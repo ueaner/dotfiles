@@ -1,6 +1,6 @@
 - name: Install shadowsocks
-  include_tasks: shadowsocks.yml
+  ansible.builtin.include_tasks: shadowsocks.yml
 
 - name: Install xremap
-  include_tasks: xremap.yml
+  ansible.builtin.include_tasks: xremap.yml
   when: ansible_distribution == "Fedora"
