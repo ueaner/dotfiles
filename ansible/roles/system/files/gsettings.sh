@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 #
-# Sway: 没有 shell, mutter, settings-daemon
-# - org.gnome.desktop
-# - org.gnome.nm-applet
-#
-# No such schema “org.gnome.mutter”
-# No such schema “org.gnome.mutter.keybindings”
-# No such schema “org.gnome.mutter.wayland.keybindings”
-# No such schema “org.gnome.settings-daemon.plugins.media-keys”
-# No such schema “org.gnome.settings-daemon.plugins.power”
-# No such schema “org.gnome.shell”
-# No such schema “org.gnome.shell.keybindings”
+# Fedora Sway Spin removes gnome's
+#   - org.gnome.shell (screenshot, toggle-overview, etc.)
+#   - org.gnome.mutter (switch-monitor, toggle-tiled, etc.)
+#   - org.gnome.settings-daemon (power, lock, logout, screensaver, search, etc.)
+# and includes
+#   - org.gnome.desktop (interface, wm, peripherals, input-sources, etc.)
+#   - org.gnome.nm-applet
 #
 # 1. View configuration items and values:
 # gsettings list-recursively | grep org.gnome.desktop.peripherals
@@ -65,6 +61,7 @@ gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
 
 # Touchpad enabled: org.gnome.desktop.peripherals.touchpad send-events 'enabled'
 
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true                  # false
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true               # true
 gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true # false
 
@@ -73,6 +70,8 @@ gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag true      # tr
 gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag-lock true # false
 
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true # true
+
+# Gesture Improvements: https://extensions.gnome.org/extension/4245/gesture-improvements/
 
 # Defines the mapping between the number of fingers and touchpad buttons.
 # The default is to have a 1, 2 and 3 finger tap to map to the left, right and middle button ("lrm"), respectively.

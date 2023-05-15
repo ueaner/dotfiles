@@ -11,3 +11,7 @@
 - name: Run gsettings script (include gsettings)
   ansible.builtin.include_tasks: gsettings.yml
   when: ansible_distribution == "Fedora"
+
+- name: Make gnome more lightweight
+  ansible.builtin.script: files/lightweight.sh
+  when: desktop_name == "gnome"
