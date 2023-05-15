@@ -1,3 +1,12 @@
 - name: Run gsettings script
   ansible.builtin.script: files/gsettings.sh
   when: desktop_name == "gnome"
+
+- name: Make gnome more lightweight
+  ansible.builtin.script: files/lightweight.sh
+  when: desktop_name == "gnome"
+
+- name: Install gnome shell extensions
+  delegate_to: localhost
+  ansible.builtin.script: files/gnome-shell-extensions.sh
+  when: desktop_name == "gnome"
