@@ -1,4 +1,6 @@
 # vim: set filetype=yaml.ansible:
+---
+
 - name: Setup Linux Workstation
   hosts: cb13
   vars_files:
@@ -6,9 +8,9 @@
     - variables/tools.yml
   roles:
     - prepare
-    - system   # Need to reboot after installing wireless driver under MacBook
-    - dotshell # Provides sources for later `lang` and `tools` installactions
-    - lang     # Languages environment
+    - system    # Need to reboot after installing wireless driver under MacBook
+    - dotshell  # Provides sources for later `lang` and `tools` installactions
+    - lang      # Languages environment
     - tools
     - alacritty
     - services

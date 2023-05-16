@@ -1,3 +1,5 @@
+---
+
 - name: Install basic tools (dnf)
   when: ansible_pkg_mgr == "dnf"
   become: true

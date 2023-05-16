@@ -1,3 +1,5 @@
+---
+
 - name: Run gsettings script
   ansible.builtin.script: files/gsettings.sh
   when: desktop_name == "gnome"

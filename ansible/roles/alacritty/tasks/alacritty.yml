@@ -1,3 +1,5 @@
+---
+
 # https://github.com/alacritty/alacritty/blob/master/INSTALL.md#fedora
 - name: Install Alacritty Dependencies
   become: true

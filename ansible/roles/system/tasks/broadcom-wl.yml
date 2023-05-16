@@ -1,3 +1,5 @@
+---
+
 - name: Check if the wireless driver (wl) is installed
   ansible.builtin.shell: lsmod | grep wl
   changed_when: false

@@ -1,3 +1,5 @@
+---
+
 - name: Check if xremap is installed
   ansible.builtin.stat:
     path: "~/.cargo/bin/xremap"

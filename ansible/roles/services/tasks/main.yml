@@ -1,3 +1,5 @@
+---
+
 - name: Install shadowsocks
   ansible.builtin.include_tasks: shadowsocks.yml
 

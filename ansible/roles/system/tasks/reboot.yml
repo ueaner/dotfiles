@@ -1,3 +1,5 @@
+---
+
 # Wait for reboot to complete when operating remotely
 - name: Reboot host and wait for it to restart
   become: true

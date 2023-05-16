@@ -1,4 +1,6 @@
 # vim: set filetype=yaml.ansible:
+---
+
 tools:
 
   dnf:
@@ -12,7 +14,7 @@ tools:
     - curl
     - wget
     - file
-    - entr # Run arbitrary commands when files change
+    - entr  # Run arbitrary commands when files change
     - fastfetch
     - jq
     - xsel
@@ -20,18 +22,18 @@ tools:
 
   go:
     - github.com/junegunn/fzf@latest
-    - github.com/arl/gitmux@latest # git status on tmux line
+    - github.com/arl/gitmux@latest  # git status on tmux line
     - github.com/google/gops@latest
     - github.com/boyter/scc@latest
     - github.com/jesseduffield/lazygit@latest
     - github.com/muesli/duf@latest
     - github.com/itchyny/gojq/cmd/gojq@latest
-    - github.com/antonmedv/fx@latest # JSON viewer
-    - github.com/charmbracelet/glow@latest # markdown viewer
-    - github.com/ivaaaan/smug@latest # tmux session manager
+    - github.com/antonmedv/fx@latest  # JSON viewer
+    - github.com/charmbracelet/glow@latest  # markdown viewer
+    - github.com/ivaaaan/smug@latest  # tmux session manager
 
     - github.com/bykof/go-plantuml@latest
-    - github.com/ofabry/go-callvis@master # call graph
+    - github.com/ofabry/go-callvis@master  # call graph
     - golang.org/x/tools/cmd/callgraph@master
     - golang.org/x/tools/cmd/digraph@master
 

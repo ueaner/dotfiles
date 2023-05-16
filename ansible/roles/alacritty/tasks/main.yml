@@ -1,3 +1,5 @@
+---
+
 - name: Install Alacritty
   ansible.builtin.include_tasks: alacritty.yml
   when: ansible_distribution == "Fedora"

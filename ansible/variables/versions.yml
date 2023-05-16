@@ -1,4 +1,6 @@
 # vim: set filetype=yaml.ansible:
+---
+
 # {{ ansible_kernel }}
 # {{ versions.kernel }}
 

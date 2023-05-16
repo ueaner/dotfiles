@@ -1,3 +1,5 @@
+---
+
 - name: Modify flathub remote repository to sjtu
   ansible.builtin.shell: |
     flatpak --user remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub

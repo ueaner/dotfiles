@@ -1,4 +1,6 @@
 # vim: set filetype=yaml.ansible:
+---
+
 - name: Setup Linux Workstation
   hosts: local
   vars_files:

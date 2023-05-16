@@ -1,3 +1,5 @@
+---
+
 - name: Create directory -> {{ item }}
   ansible.builtin.file:
     path: ~/.local/share/fonts/{{ item }}

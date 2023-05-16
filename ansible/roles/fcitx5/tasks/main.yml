@@ -1,3 +1,5 @@
+---
+
 # https://github.com/hosxy/Fcitx5-Material-Color
 - name: Install fcitx5
   when: ansible_distribution == "Fedora"

@@ -1,3 +1,5 @@
+---
+
 - name: Detect desktop name
   ansible.builtin.shell: |
     if [[ "{{ ansible_facts.distribution }}" == "MacOSX" ]]; then

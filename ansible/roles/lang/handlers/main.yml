@@ -1,3 +1,5 @@
+---
+
 - name: Installed Golang
   ansible.builtin.command:
     cmd: "~/go/bin/go version"
