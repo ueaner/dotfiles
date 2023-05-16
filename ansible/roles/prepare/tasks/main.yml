@@ -1,3 +1,5 @@
+---
+
 # ----------------------------------------------------------------
 # done
 # ----------------------------------------------------------------
@@ -19,7 +21,19 @@
 # ----------------------------------------------------------------
 # sudo without password
 # ----------------------------------------------------------------
-- name: Same thing without a password
+- name: Check if user has sudo access
+  ansible.builtin.shell:
+    if sudo -n true 2>/dev/null; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+  changed_when: false
+  ignore_errors: true
+  register: sudoers_check
+
+- name: Same thing without a password (if skipping is user has sudo access)
+  when: sudoers_check.stdout == "no"
   ansible.builtin.shell: |
     set -o pipefail
     echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
@@ -32,7 +46,7 @@
 # ----------------------------------------------------------------
 # prepare tools
 # ----------------------------------------------------------------
-- name: Install prepare tools (if skipping is already installed)
+- name: Install prepare tools
   when: ansible_pkg_mgr == "dnf"
   become: true
   become_method: sudo
