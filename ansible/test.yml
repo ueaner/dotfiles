@@ -15,7 +15,7 @@
           distribution: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
 
     - name: Kernel version
-      debug:
+      ansible.builtin.debug:
         msg: "kernel version: {{ ansible_kernel }} -> {{ versions.kernel }}"
 
     - name: Include tasks only if one of the files exist, otherwise skip the task
@@ -33,19 +33,19 @@
     # ----------------------------------------------------------------
     # dot
     # ----------------------------------------------------------------
-    - name: Check if dotfiles is exists
+    - name: Check if dotfiles exists
       ansible.builtin.stat:
         path: "$HOME/.dotfiles"
       register: dotfiles_installed
     - debug: var=dotfiles_installed.stat.exists
 
-    - name: Check if dotlocal is exists
+    - name: Check if dotlocal exists
       ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.dotlocal"
       register: dotlocal_installed
     - debug: var=dotlocal_installed.stat.exists
 
-    - name: Check if nvimrc is exists
+    - name: Check if nvimrc exists
       ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.config/nvim"
       register: nvimrc_installed
@@ -101,13 +101,13 @@
     # ----------------------------------------------------------------
     - name: Install basic tools (dnf)
       when: ansible_pkg_mgr == "dnf"
-      debug:
+      ansible.builtin.debug:
         var: ansible_pkg_mgr
         # verbosity: [0: default, 1: -v, 2: -vv, 3: -vvv, ...]
         verbosity: 2
 
     - name: List go tools
-      debug:
+      ansible.builtin.debug:
         var: item
       loop: "{{ tools.go }}"
 
@@ -118,7 +118,7 @@
       when:
         - ansible_kernel != versions.kernel
         - ansible_product_name.startswith('MacBook')
-      debug:
+      ansible.builtin.debug:
         msg: "Kernel version will be changed to {{ versions.kernel }}"
 
     - name: Check if rpmfusion is installed
@@ -130,7 +130,7 @@
       register: rpmfusion_check
 
     - name: Install the rpmfusion repo packages
-      debug:
+      ansible.builtin.debug:
         msg: "`rpmfusion` repo will be installed"
       when:
         - ansible_distribution == "Fedora"
@@ -138,7 +138,7 @@
 
     - name: Install the broadcom wireless driver under MacBook
       when: ansible_product_name.startswith('MacBook')
-      debug:
+      ansible.builtin.debug:
         msg: "`akmods` and `broadcom-wl` packages will be installed"
 
     - name: Check if the wireless driver (wl) is installed
@@ -150,5 +150,5 @@
 
     - name: Install the wireless driver packages
       when: wl_check is failed
-      debug:
+      ansible.builtin.debug:
         msg: "broadcom wireless driver installation failed"

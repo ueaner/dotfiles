@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------
 # dotfiles
 # ----------------------------------------------------------------
-- name: Check if dotfiles is exists
+- name: Check if dotfiles exists
   ansible.builtin.stat:
     path: "$HOME/.dotfiles"
   register: dotfiles_check
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------
 # dotlocal
 # ----------------------------------------------------------------
-- name: Check if dotlocal is exists
+- name: Check if dotlocal exists
   ansible.builtin.stat:
     path: "$HOME/.dotlocal"
   register: dotlocal_check
@@ -37,7 +37,7 @@
 # ----------------------------------------------------------------
 # nvimrc
 # ----------------------------------------------------------------
-- name: Check if nvimrc is exists
+- name: Check if nvimrc exists
   ansible.builtin.stat:
     path: "$HOME/.config/nvim"
   register: nvimrc_check
