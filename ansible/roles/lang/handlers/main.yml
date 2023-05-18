@@ -5,25 +5,33 @@
     cmd: "~/go/bin/go version"
   changed_when: false
   register: go_version
-- ansible.builtin.debug: var=go_version.stdout
+- name: DEBUG go version
+  ansible.builtin.debug:
+    var: go_version.stdout
 
 - name: Installed Rust
   ansible.builtin.command:
     cmd: "~/.cargo/bin/rustc --version"
   changed_when: false
   register: rust_version
-- ansible.builtin.debug: var=rust_version.stdout
+- name: DEBUG rust --version
+  ansible.builtin.debug:
+    var: rust_version.stdout
 
 - name: Installed Node.js
   ansible.builtin.command:
     cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
   changed_when: false
   register: node_version
-- ansible.builtin.debug: var=node_version.stdout
+- name: DEBUG node --version
+  ansible.builtin.debug:
+    var: node_version.stdout
 
 - name: Installed Deno
   ansible.builtin.command:
     cmd: "~/.cargo/bin/deno --version"
   changed_when: false
   register: deno_version
-- ansible.builtin.debug: var=deno_version.stdout_lines
+- name: DEBUG deno --version
+  ansible.builtin.debug:
+    var: deno_version.stdout

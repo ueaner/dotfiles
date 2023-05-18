@@ -6,16 +6,16 @@
 - name: Check if all done
   ansible.builtin.stat:
     path: "~/doneplay"
-  register: done_check
+  register: prepare_done_check
 
 - name: Welcome when all done
-  when: done_check.stat.exists
+  when: prepare_done_check.stat.exists
   ansible.builtin.debug:
     msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"
 
 - name: All done end play
   ansible.builtin.meta: end_play
-  when: done_check.stat.exists
+  when: prepare_done_check.stat.exists
 
 
 # ----------------------------------------------------------------
@@ -30,10 +30,10 @@
     fi
   changed_when: false
   ignore_errors: true
-  register: sudoers_check
+  register: prepare_sudoers_check
 
 - name: Same thing without a password (if skipping is user has sudo access)
-  when: sudoers_check.stdout == "no"
+  when: prepare_sudoers_check.stdout == "no"
   ansible.builtin.shell: |
     set -o pipefail
     echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
@@ -60,9 +60,11 @@
 # ----------------------------------------------------------------
 # rpmfusion
 # ----------------------------------------------------------------
-- ansible.builtin.include_tasks: rpmfusion.yml
+- name: Install the rpmfusion repo packages (by include_tasks)
+  ansible.builtin.include_tasks: rpmfusion.yml
 
 # ----------------------------------------------------------------
 # os-release
 # ----------------------------------------------------------------
-- ansible.builtin.include_tasks: os-release.yml
+- name: Setting prepare facts (by include_tasks)
+  ansible.builtin.include_tasks: os-release.yml

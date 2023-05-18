@@ -29,14 +29,16 @@
         mode: "0644"
 
     - name: Install Alacritty.desktop
+      # noqa command-instead-of-module
       ansible.builtin.shell: |
-        curl --create-dirs -L {{ url_prefix }}/Alacritty.desktop -o ~/.local/share/applications/Alacritty.desktop
-        curl --create-dirs -L {{ url_prefix }}/Alacritty.svg -o ~/.local/share/icons/Alacritty.svg
-        curl --create-dirs -L {{ url_prefix }}/alacritty-msg.1.gz -o ~/.local/share/man/man1/alacritty-msg.1.gz
-        curl --create-dirs -L {{ url_prefix }}/alacritty.1.gz -o ~/.local/share/man/man1/alacritty.1.gz
-        curl --create-dirs -L {{ url_prefix }}/_alacritty -o ~/.local/share/zsh/site-functions/_alacritty
+        curl --create-dirs -L {{ alacritty_url_prefix }}/Alacritty.desktop -o ~/.local/share/applications/Alacritty.desktop
+        curl --create-dirs -L {{ alacritty_url_prefix }}/Alacritty.svg -o ~/.local/share/icons/Alacritty.svg
+        curl --create-dirs -L {{ alacritty_url_prefix }}/alacritty-msg.1.gz -o ~/.local/share/man/man1/alacritty-msg.1.gz
+        curl --create-dirs -L {{ alacritty_url_prefix }}/alacritty.1.gz -o ~/.local/share/man/man1/alacritty.1.gz
+        curl --create-dirs -L {{ alacritty_url_prefix }}/_alacritty -o ~/.local/share/zsh/site-functions/_alacritty
       vars:
-        url_prefix: https://ghproxy.com/https://github.com/alacritty/alacritty/releases/latest/download
+        # noqa var-naming[no-role-prefix]
+        alacritty_url_prefix: https://ghproxy.com/https://github.com/alacritty/alacritty/releases/latest/download
       changed_when: false
       notify: Update desktop database
 

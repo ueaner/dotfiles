@@ -1,11 +1,13 @@
 ---
 
 - name: Start and enable shadowsocks-rust-local service
+  # noqa command-instead-of-module
   ansible.builtin.command: systemctl --user enable --now shadowsocks-rust-local
   changed_when: false
   when: ansible_distribution == "Fedora"
 
 - name: Start and enable xremap service
+  # noqa command-instead-of-module
   ansible.builtin.command: systemctl --user enable --now xremap
   changed_when: false
   when: ansible_distribution == "Fedora"

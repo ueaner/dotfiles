@@ -6,14 +6,14 @@
 - name: Check if go is installed
   ansible.builtin.stat:
     path: "~/go/bin/go"
-  register: go_check
+  register: lang_go_check
 
 - name: Installing Golang (if skipping is already installed)
   ansible.builtin.unarchive:
     src: https://go.dev/dl/go{{ versions.go }}.linux-amd64.tar.gz
     dest: "~"
     remote_src: true
-  when: not go_check.stat.exists
+  when: not lang_go_check.stat.exists
   notify: Installed Golang
 
 # ----------------------------------------------------------------
@@ -22,7 +22,7 @@
 - name: Check if rust is installed
   ansible.builtin.stat:
     path: "~/.cargo/bin/rustc"
-  register: rust_check
+  register: lang_rust_check
 
 - name: Installing Rust (if skipping is already installed)
   # -y: auto accept options
@@ -30,7 +30,7 @@
     set -o pipefail
     curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
   changed_when: false
-  when: not rust_check.stat.exists
+  when: not lang_rust_check.stat.exists
   notify: Installed Rust
 
 # ----------------------------------------------------------------
@@ -39,7 +39,7 @@
 - name: Check if node is installed
   ansible.builtin.stat:
     path: "~/.local/share/fnm/aliases/default/bin/node"
-  register: node_check
+  register: lang_node_check
 
 - name: Installing Node.js (if skipping is already installed)
   ansible.builtin.shell: |
@@ -48,7 +48,7 @@
     ~/.cargo/bin/fnm default {{ versions.node }}
     ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
   changed_when: false
-  when: not node_check.stat.exists
+  when: not lang_node_check.stat.exists
   notify: Installed Node.js
 
 # ----------------------------------------------------------------
@@ -57,12 +57,12 @@
 - name: Check if deno is installed
   ansible.builtin.stat:
     path: "~/.cargo/bin/deno"
-  register: deno_check
+  register: lang_deno_check
 
 - name: Installing Deno (if skipping is already installed)
   ansible.builtin.unarchive:
     src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
     dest: "~/.cargo/bin/"
     remote_src: true
-  when: not deno_check.stat.exists
+  when: not lang_deno_check.stat.exists
   notify: Installed Deno

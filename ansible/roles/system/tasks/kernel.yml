@@ -43,11 +43,14 @@
     sudo dnf install ~/kernel-{{ versions.kernel }}/kernel*.rpm
   changed_when: false
 
-# Kernel version before reboot the system
-- ansible.builtin.debug: var=ansible_kernel
+- name: DEBUG Kernel version before reboot the system
+  ansible.builtin.debug:
+    var: ansible_kernel
 
 # Wait for reboot to complete when operating remotely
-- ansible.builtin.include_tasks: reboot.yml
+- name: Reboot host and wait for it to restart (by include_tasks)
+  ansible.builtin.include_tasks: reboot.yml
 
-# Kernel version after reboot the system
-- ansible.builtin.debug: var=ansible_kernel
+- name: DEBUG Kernel version after reboot the system
+  ansible.builtin.debug:
+    var: ansible_kernel

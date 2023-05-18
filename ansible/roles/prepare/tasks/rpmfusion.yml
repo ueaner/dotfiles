@@ -6,12 +6,12 @@
   with_items:
     - rpmfusion-free.repo
     - rpmfusion-nonfree.repo
-  register: rpmfusion_check
+  register: prepare_rpmfusion_check
 
 # - name: Install the rpmfusion repo packages
 #   when:
 #   - ansible_distribution == "Fedora"
-#   - not rpmfusion_check.results[0].stat.exists or not rpmfusion_check.results[1].stat.exists
+#   - not prepare_rpmfusion_check.results[0].stat.exists or not prepare_rpmfusion_check.results[1].stat.exists
 #   become: true
 #   become_method: sudo
 #   dnf:
@@ -26,7 +26,7 @@
 - name: Install the rpmfusion repo packages
   when:
     - ansible_distribution == "Fedora"
-    - not rpmfusion_check.results[0].stat.exists or not rpmfusion_check.results[1].stat.exists
+    - not prepare_rpmfusion_check.results[0].stat.exists or not prepare_rpmfusion_check.results[1].stat.exists
   ansible.builtin.shell: |
     sudo dnf install distribution-gpg-keys -y
     sudo rpmkeys --import /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-$(rpm -E %fedora)

@@ -4,11 +4,13 @@
   ansible.builtin.shell: lsmod | grep wl
   changed_when: false
   ignore_errors: true
-  register: wl_check
-- ansible.builtin.debug: var=wl_check.stdout_lines
+  register: system_wl_check
+- name: DEBUG wireless driver (wl) is installed
+  ansible.builtin.debug:
+    var: system_wl_check.stdout_lines
 
 - name: Install the broadcom wireless driver, and reboot
-  when: wl_check is failed
+  when: system_wl_check is failed
   block:
 
     - name: Install the broadcom wireless packages
@@ -24,15 +26,19 @@
       changed_when: false
 
     # Wait for reboot to complete when operating remotely
-    - ansible.builtin.include_tasks: reboot.yml
+    - name: Reboot host and wait for it to restart (by include_tasks)
+      ansible.builtin.include_tasks: reboot.yml
 
 
 - name: Check if the wireless driver (wl) is installed after reboot
   ansible.builtin.shell: lsmod | grep wl
   changed_when: false
   ignore_errors: true
-  register: wl_check
-- ansible.builtin.debug: var=wl_check.stdout_lines
+  register: system_wl_check
+- name: DEBUG wireless driver (wl) is installed, again
+  ansible.builtin.debug:
+    var: system_wl_check.stdout_lines
 
-- name: Install the wireless driver packages
-  ansible.builtin.debug: var=wl_check.rc
+- name: DEBUG wireless driver (wl) is installed, again, rc
+  ansible.builtin.debug:
+    var: system_wl_check.rc
