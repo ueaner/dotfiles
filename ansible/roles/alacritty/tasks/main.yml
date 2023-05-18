@@ -1,7 +1,53 @@
 ---
 
 - name: Install Alacritty
-  ansible.builtin.include_tasks: alacritty.yml
   when: ansible_distribution == "Fedora"
+  block:  # Avoid checking alacritty.yml schemas with SchemaStore.nvim
+
+    # https://github.com/alacritty/alacritty/blob/master/INSTALL.md#fedora
+    - name: Install Alacritty Dependencies
+      become: true
+      become_method: sudo
+      ansible.builtin.dnf:
+        name:
+          - cmake
+          - freetype-devel
+          - fontconfig-devel
+          - libxcb-devel
+          - libxkbcommon-devel
+          - gcc-c++
+
+    - name: Install Alacritty by cargo
+      ansible.builtin.command: "~/.cargo/bin/cargo install alacritty"
+      changed_when: false
+
+    - name: Install Alacritty.yml
+      when: ansible_distribution == "Fedora"
+      ansible.builtin.copy:
+        src: files/alacritty-linux.yml
+        dest: ~/.config/alacritty/alacritty.yml
+        mode: "0644"
+
+    - name: Install Alacritty.desktop
+      ansible.builtin.shell: |
+        curl --create-dirs -L {{ url_prefix }}/Alacritty.desktop -o ~/.local/share/applications/Alacritty.desktop
+        curl --create-dirs -L {{ url_prefix }}/Alacritty.svg -o ~/.local/share/icons/Alacritty.svg
+        curl --create-dirs -L {{ url_prefix }}/alacritty-msg.1.gz -o ~/.local/share/man/man1/alacritty-msg.1.gz
+        curl --create-dirs -L {{ url_prefix }}/alacritty.1.gz -o ~/.local/share/man/man1/alacritty.1.gz
+        curl --create-dirs -L {{ url_prefix }}/_alacritty -o ~/.local/share/zsh/site-functions/_alacritty
+      vars:
+        url_prefix: https://ghproxy.com/https://github.com/alacritty/alacritty/releases/latest/download
+      changed_when: false
+      notify: Update desktop database
+
+    # fcitx5: show preedit in Alacritty under swaywm
+    # https://github.com/swaywm/sway/pull/7226
+    - name: Install Alacritty.desktop (Sway)
+      when: desktop_name == "sway"
+      ansible.builtin.copy:
+        src: files/Alacritty.desktop
+        dest: ~/.local/share/applications/Alacritty.desktop
+        mode: "0644"
+      notify: Update desktop database
 
 # MacOSX
