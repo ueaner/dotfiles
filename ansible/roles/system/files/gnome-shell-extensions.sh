@@ -8,6 +8,8 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user gnome-ext
 ~/.local/bin/gext install kimpanel@kde.org
 # https://extensions.gnome.org/extension/3724/net-speed-simplified/
 ~/.local/bin/gext install netspeedsimplified@prateekmedia.extension
+# https://extensions.gnome.org/extension/5060/xremap/
+~/.local/bin/gext install xremap@k0kubun.com
 
 # gesture improvements preferences
 cp "$HOME/ansible/roles/system/files/gesture-improvements.xml" \
