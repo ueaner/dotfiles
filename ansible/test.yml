@@ -7,7 +7,9 @@
     - variables/versions.yml
     - variables/tools.yml
   tasks:
-    - debug: var=debug_vars
+    - name: DEBUG debug_vars
+      ansible.builtin.debug:
+        var: debug_vars
       vars:
         debug_vars:
           SHELL: "{{ ansible_env.SHELL }}"
@@ -37,19 +39,25 @@
       ansible.builtin.stat:
         path: "$HOME/.dotfiles"
       register: dotfiles_installed
-    - debug: var=dotfiles_installed.stat.exists
+    - name: DEBUG dotfiles_installed exists
+      ansible.builtin.debug:
+        var: dotfiles_installed.stat.exists
 
     - name: Check if dotlocal exists
       ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.dotlocal"
       register: dotlocal_installed
-    - debug: var=dotlocal_installed.stat.exists
+    - name: DEBUG dotlocal_installed exists
+      ansible.builtin.debug:
+        var: dotlocal_installed.stat.exists
 
     - name: Check if nvimrc exists
       ansible.builtin.stat:
         path: "{{ ansible_env.HOME }}/.config/nvim"
       register: nvimrc_installed
-    - debug: var=nvimrc_installed.stat.exists
+    - name: DEBUG nvimrc_installed exists
+      ansible.builtin.debug:
+        var: nvimrc_installed.stat.exists
 
     # ----------------------------------------------------------------
     # zsh
@@ -67,34 +75,44 @@
         cmd: "~/go/bin/go version"
       changed_when: false
       register: go_version
-    - debug: var=go_version.stdout
+    - name: DEBUG go version
+      ansible.builtin.debug:
+        var: go_version.stdout
 
     - name: Check if go is installed
       ansible.builtin.stat:
         path: "~/go/bin/go"
       register: go_installed
-    - debug: var=go_installed.stat.exists
+    - name: DEBUG go installed
+      ansible.builtin.debug:
+        var: go_installed.stat.exists
 
     - name: Installed Rust
       ansible.builtin.command:
         cmd: "~/.cargo/bin/rustc --version"
       changed_when: false
       register: rust_version
-    - debug: var=rust_version.stdout
+    - name: DEBUG rust version
+      ansible.builtin.debug:
+        var: rust_version.stdout
 
     - name: Installed Node.js
       ansible.builtin.command:
         cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
       changed_when: false
       register: node_version
-    - debug: var=node_version.stdout
+    - name: DEBUG node version
+      ansible.builtin.debug:
+        var: node_version.stdout
 
     - name: Installed Deno
       ansible.builtin.command:
         cmd: "~/.cargo/bin/deno --version"
       changed_when: false
       register: deno_version
-    - debug: var=deno_version.stdout_lines
+    - name: DEBUG deno version
+      ansible.builtin.debug:
+        var: deno_version.stdout_lines
 
     # ----------------------------------------------------------------
     # tools
@@ -146,7 +164,9 @@
       changed_when: false
       ignore_errors: true
       register: wl_check
-    - debug: var=wl_check.stdout_lines
+    - name: DEBUG wireless driver (wl) is installed
+      ansible.builtin.debug:
+        var: wl_check.stdout_lines
 
     - name: Install the wireless driver packages
       when: wl_check is failed
