@@ -13,3 +13,15 @@
 - name: Run gsettings script (include gsettings)
   ansible.builtin.include_tasks: gsettings.yml
   when: ansible_distribution == "Fedora"
+
+# sudo dnf update --exclude="kernel*"
+- name: Upgrade all packages, excluding kernel (dnf)
+  become: true
+  become_method: sudo
+  when: ansible_pkg_mgr == "dnf"
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest  # noqa package-latest
+    exclude: 'kernel*'
+  tags:
+    - update
