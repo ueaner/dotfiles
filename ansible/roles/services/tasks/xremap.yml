@@ -1,5 +1,7 @@
 ---
 
+# Install xremap config
+
 - name: Install xremap/config.yml (chromebook link)
   when: ansible_product_name == 'Link'
   ansible.builtin.copy:
@@ -14,20 +16,41 @@
     dest: ~/.config/xremap/config.yml
     mode: "0644"
 
-- name: Check if input.rules exists
+# Running xremap without sudo
+
+# https://github.com/k0kubun/xremap#running-xremap-without-sudo
+# https://discussion.fedoraproject.org/t/fedora-38-dleyna-renderer-connector-dbus-not-found/81257
+- name: Check if /etc/udev/rules.d/input.rules exists
   ansible.builtin.stat:
     path: "/etc/udev/rules.d/input.rules"
   register: services_input_rules_check
 
-- name: Running xremap without sudo (reboot)
+- name: Running xremap without sudo (+uaccess)
   when: not services_input_rules_check.stat.exists
   ansible.builtin.shell: |
     set -o pipefail
     sudo gpasswd -a $USER input
-    echo 'KERNEL=="uinput", GROUP="input", TAG+="uaccess"' | sudo tee /etc/udev/rules.d/input.rules
-    # https://discussion.fedoraproject.org/t/fedora-38-dleyna-renderer-connector-dbus-not-found/81257
+    echo 'KERNEL=="uinput", MODE="0660", GROUP="input", TAG+="uaccess"' | sudo tee /etc/udev/rules.d/input.rules
+
     sudo dnf install dleyna-connector-dbus
   changed_when: false
+
+# https://github.com/chrippa/ds4drv/issues/93#issuecomment-265300511
+# https://github.com/k0kubun/xremap#arch-linux-1
+- name: Check if /etc/modules-load.d/uinput.conf exists
+  ansible.builtin.stat:
+    path: "/etc/modules-load.d/uinput.conf"
+  register: services_mod_uinput_check
+
+- name: Running xremap without sudo (load uinput module)
+  when: not services_mod_uinput_check.stat.exists
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo 'uinput' | sudo tee /etc/modules-load.d/uinput.conf
+  changed_when: false
+
+# Install and enable xremap service
+# https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
 
 - name: Check if xremap is installed
   ansible.builtin.stat:

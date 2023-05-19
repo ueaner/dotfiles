@@ -2,23 +2,19 @@
 # 0. cargo install xremap --features gnome
 # 1. Copy this to ~/.config/systemd/user/xremap.service
 # 2. systemctl --user enable --now xremap
-# 3. journalctl --user -f / systemctl --user status xremap
+# 3. journalctl -b --user -u xremap.service -f / systemctl --user status xremap
 
 [Unit]
 Description=Key remapper for Linux
 Documentation=https://github.com/k0kubun/xremap
 
 [Install]
-# systemctl --user 使用 default.target 代替 multi-user.target
+# systemctl `--user` use default.target instead of multi-user.target
 WantedBy=default.target
 
 [Service]
 KillMode=process
-# Running xremap with sudo
-# %h resolves to $HOME for --user services
-#ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device'
-#ExecStart=/usr/bin/sudo $HOME/.cargo/bin/xremap $HOME/.config/xremap/config.yml
 # Running xremap without sudo
-ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml
+ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=config
 ExecStop=/usr/bin/killall xremap
 Restart=always
