@@ -7,6 +7,20 @@
     - variables/versions.yml
     - variables/tools.yml
   tasks:
+    - name: Dump vars
+      ansible.builtin.copy:
+        content: "{{ hostvars[inventory_hostname] | to_nice_yaml }}"
+        dest: "/tmp/{{ inventory_hostname }}_vars.txt"
+        mode: "0644"
+      delegate_to: control
+
+    - name: Dump facts
+      ansible.builtin.copy:
+        content: "{{ ansible_facts | to_nice_yaml }}"
+        dest: "/tmp/{{ inventory_hostname }}_facts.txt"
+        mode: "0644"
+      delegate_to: control
+
     - name: DEBUG debug_vars
       ansible.builtin.debug:
         var: debug_vars
