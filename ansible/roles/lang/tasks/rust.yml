@@ -1,0 +1,56 @@
+# ----------------------------------------------------------------
+# Rust, Install/Upgrade
+# ----------------------------------------------------------------
+
+---
+
+- name: Install/Upgrade Rust
+  tags:
+    - upgrade
+  block:
+
+    # Install rust, check file stat
+
+    - name: Check if rust is installed
+      ansible.builtin.stat:
+        path: "~/.cargo/bin/rustc"
+      register: lang_rust_check
+
+    - name: Installing Rust (if skipping is already installed)
+      when: not lang_rust_check.stat.exists
+      # -y: auto accept options
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+      changed_when: false
+
+    # Upgrade rust, check version
+
+    - name: Check if rust version is {{ versions.rust }}
+      ansible.builtin.command:
+        cmd: "~/.cargo/bin/rustc --version"
+      changed_when: false
+      register: lang_rust_version
+
+    - name: Upgrading Rust (if skipping version is already {{ versions.rust }})
+      when: "versions.rust not in lang_rust_version.stdout"
+      ansible.builtin.shell: |
+        rustup self update
+        rustup update
+      changed_when: false
+
+    # Rust Installation Finished, echo version
+
+    - name: Rust Installation Finished
+      ansible.builtin.command:
+        cmd: "~/.cargo/bin/rustc --version"
+      changed_when: false
+      register: lang_rust_version
+
+    - name: DEBUG Check if need to update `versions.rust` in `variables/versions.yml` file
+      when: "versions.rust not in lang_rust_version.stdout"
+      ansible.builtin.debug:
+        msg:
+          - "versions.rust: {{ versions.rust }} in `variables/versions.yml` file"
+          - "Need to update to the below version ↓"
+          - "rustc --version: {{ lang_rust_version.stdout }}"

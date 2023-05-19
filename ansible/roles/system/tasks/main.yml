@@ -24,4 +24,4 @@
     state: latest  # noqa package-latest
     exclude: 'kernel*'
   tags:
-    - update
+    - upgrade

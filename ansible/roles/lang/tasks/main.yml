@@ -1,68 +1,61 @@
+# ----------------------------------------------------------------
+# Lang, Install/Upgrade
+# ----------------------------------------------------------------
+
 ---
 
 # ----------------------------------------------------------------
 # Golang
 # ----------------------------------------------------------------
-- name: Check if go is installed
-  ansible.builtin.stat:
-    path: "~/go/bin/go"
-  register: lang_go_check
-
-- name: Installing Golang (if skipping is already installed)
-  ansible.builtin.unarchive:
-    src: https://go.dev/dl/go{{ versions.go }}.linux-amd64.tar.gz
-    dest: "~"
-    remote_src: true
-  when: not lang_go_check.stat.exists
-  notify: Installed Golang
+- name: Install/Upgrade Golang (include_tasks)
+  ansible.builtin.include_tasks: go.yml
+  tags:
+    - upgrade
 
 # ----------------------------------------------------------------
 # Rust
 # ----------------------------------------------------------------
-- name: Check if rust is installed
-  ansible.builtin.stat:
-    path: "~/.cargo/bin/rustc"
-  register: lang_rust_check
-
-- name: Installing Rust (if skipping is already installed)
-  # -y: auto accept options
-  ansible.builtin.shell: |
-    set -o pipefail
-    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
-  changed_when: false
-  when: not lang_rust_check.stat.exists
-  notify: Installed Rust
+- name: Install/Upgrade Rust (include_tasks)
+  ansible.builtin.include_tasks: rust.yml
+  tags:
+    - upgrade
 
 # ----------------------------------------------------------------
 # Node.js
 # ----------------------------------------------------------------
-- name: Check if node is installed
-  ansible.builtin.stat:
-    path: "~/.local/share/fnm/aliases/default/bin/node"
-  register: lang_node_check
-
-- name: Installing Node.js (if skipping is already installed)
-  ansible.builtin.shell: |
-    ~/.cargo/bin/cargo install fnm
-    ~/.cargo/bin/fnm install {{ versions.node }}
-    ~/.cargo/bin/fnm default {{ versions.node }}
-    ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
-  changed_when: false
-  when: not lang_node_check.stat.exists
-  notify: Installed Node.js
+- name: Install/Upgrade Node.js (include_tasks)
+  ansible.builtin.include_tasks: node.yml
+  tags:
+    - upgrade
 
 # ----------------------------------------------------------------
 # Deno
 # ----------------------------------------------------------------
-- name: Check if deno is installed
-  ansible.builtin.stat:
-    path: "~/.cargo/bin/deno"
-  register: lang_deno_check
+- name: Install/Upgrade Deno (include_tasks)
+  ansible.builtin.include_tasks: deno.yml
+  tags:
+    - upgrade
 
-- name: Installing Deno (if skipping is already installed)
-  ansible.builtin.unarchive:
-    src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
-    dest: "~/.cargo/bin/"
-    remote_src: true
-  when: not lang_deno_check.stat.exists
-  notify: Installed Deno
+
+#
+# Combining `when` to implement `Tags AND operators`
+#
+# main.yml:
+# Not executed by default, only executed when the `upgrade` tag parameter is passed in.
+# - name: Upgrade lang
+#   when: "'upgrade' in ansible_run_tags"
+#   ansible.builtin.include_tasks: upgrade.yml
+#   tags:
+#     - upgrade
+
+# upgrade.yml:
+# Tags AND operators, eg: --tags "upgrade,go"
+# - name: Just Upgrade Go
+#   when:
+#     - '"upgrade" in ansible_run_tags'
+#     - '"go" in ansible_run_tags'
+#   ansible.builtin.debug:
+#     msg: "Just upgrade golang"
+#   tags:
+#     - upgrade
+#     - go

@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------
+# Node.js, Install/Upgrade
+# ----------------------------------------------------------------
+
+---
+
+- name: Install/Upgrade Node.js
+  tags:
+    - upgrade
+  block:
+
+    # Install node.js, check file stat
+
+    - name: Check if node.js is installed
+      ansible.builtin.stat:
+        path: "~/.local/share/fnm/aliases/default/bin/node"
+      register: lang_node_check
+
+    - name: Installing Node.js (if skipping is already installed)
+      when: not lang_node_check.stat.exists
+      ansible.builtin.shell: |
+        ~/.cargo/bin/cargo install fnm
+        ~/.cargo/bin/fnm install {{ versions.node }}
+        ~/.cargo/bin/fnm default {{ versions.node }}
+        ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+        ~/.local/share/fnm/aliases/default/bin/pnpm install -g pnpm
+      changed_when: false
+
+    # Upgrade node.js, check version
+
+    - name: Check if node.js version is {{ versions.node }}
+      ansible.builtin.command:
+        cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+      changed_when: false
+      register: lang_node_version
+
+    - name: Upgrading Node.js (if skipping version is already {{ versions.node }})
+      when: "versions.node not in lang_node_version.stdout"
+      ansible.builtin.shell: |
+        ~/.cargo/bin/cargo install fnm
+        ~/.cargo/bin/fnm install {{ versions.node }}
+        ~/.cargo/bin/fnm default {{ versions.node }}
+        ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+        ~/.local/share/fnm/aliases/default/bin/pnpm install -g pnpm
+      changed_when: false
+
+    # Node.js Installation Finished, echo version
+
+    - name: Node.js Installation Finished
+      ansible.builtin.command:
+        cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+      changed_when: false
+      register: lang_node_version
+
+    - name: DEBUG node version
+      ansible.builtin.debug:
+        var: lang_node_version.stdout

@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------
+# Deno, Install/Upgrade
+# ----------------------------------------------------------------
+
+---
+
+- name: Install/Upgrade Deno
+  tags:
+    - upgrade
+  block:
+
+    # Install deno, check file stat
+
+    - name: Check if deno is installed
+      ansible.builtin.stat:
+        path: "~/.cargo/bin/deno"
+      register: lang_deno_check
+
+    - name: Installing Deno (if skipping is already installed)
+      when: not lang_deno_check.stat.exists
+      ansible.builtin.unarchive:
+        src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
+        dest: "~/.cargo/bin/"
+        remote_src: true
+      changed_when: false
+
+    # Upgrade deno, check version
+
+    - name: Check if deno version is {{ versions.deno }}
+      ansible.builtin.command:
+        cmd: "~/.cargo/bin/deno --version"
+      changed_when: false
+      register: lang_deno_version
+
+    - name: Upgrading Deno (if skipping version is already {{ versions.deno }})
+      when: "versions.deno not in lang_deno_version.stdout"
+      ansible.builtin.unarchive:
+        src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
+        dest: "~/.cargo/bin/"
+        remote_src: true
+      changed_when: false
+
+    # Deno Installation Finished, echo version
+
+    - name: Deno Installation Finished
+      ansible.builtin.command:
+        cmd: "~/.cargo/bin/deno --version"
+      changed_when: false
+      register: lang_deno_version
+
+    - name: DEBUG deno version
+      ansible.builtin.debug:
+        var: lang_deno_version.stdout_lines
