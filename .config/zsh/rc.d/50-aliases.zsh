@@ -66,7 +66,7 @@ alias last='fc -ln -1 | clipcopy'
 
 # rg search-text | vim -
 
-alias free='ruby $HOME/bin/free-memory.rb'
+#alias free='ruby $HOME/bin/free-memory.rb'
 
 alias myip='ifconfig|grep "inet "'
 
