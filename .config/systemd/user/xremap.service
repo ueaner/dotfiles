@@ -19,6 +19,6 @@ KillMode=process
 #ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device'
 #ExecStart=/usr/bin/sudo $HOME/.cargo/bin/xremap $HOME/.config/xremap/config.yml
 # Running xremap without sudo
-ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device
+ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml
 ExecStop=/usr/bin/killall xremap
 Restart=always
