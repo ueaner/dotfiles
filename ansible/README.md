@@ -56,6 +56,8 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
 
 2. [ansible-lint rules]: 可以在 ansible-lint 的执行结果中看到 rule-name, 然后通过注释 `# noqa rule-name` 避免检查
 
+3. [All three possible ways of ignoring rules]
+
     - `noqa` inline -> for individual tasks
     - `skip_list` in config file -> for general deactivation
     - `.ansible-lint-ignore` -> for deactivation on file level
@@ -66,3 +68,4 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
 
 [6 troubleshooting skills for Ansible playbooks]: https://www.redhat.com/sysadmin/troubleshoot-ansible-playbooks
 [ansible-lint rules]: https://ansible-lint.readthedocs.io/rules/
+[All three possible ways of ignoring rules]: https://github.com/ansible/ansible-lint/issues/3068#issuecomment-1438617565
