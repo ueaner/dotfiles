@@ -1,6 +1,7 @@
 ---
 
 - name: Modify flathub remote repository to sjtu
+  # ~/.local/share/flatpak/repo/config
   ansible.builtin.shell: |
     flatpak --user remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub
     wget https://mirror.sjtu.edu.cn/flathub/flathub.gpg -O /tmp/flathub.gpg
@@ -8,7 +9,7 @@
   changed_when: false
 
 # chrome://flags/#ozone-platform-hint
-- name: Native Wayland for Chrome
+- name: Native Wayland for Chrome (unsupported chinese input method)
   block:
 
     # - name: Copy com.google.Chrome.desktop
