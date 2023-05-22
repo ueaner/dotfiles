@@ -9,6 +9,19 @@
     name: "{{ tools.dnf }}"
   notify: Modify flathub remote repository to sjtu
 
+- name: Install gui tools (flatpak)
+  community.general.flatpak:
+    name: "{{ tools.flatpak }}"
+    method: user
+  notify:
+    - Native Wayland for Chrome
+
+- name: Upgrade gui tools (flatpak)
+  ansible.builtin.command: flatpak --user update
+  changed_when: false
+  tags:
+    - upgrade
+
 - name: Install/Upgrade go tools
   ansible.builtin.command: ~/go/bin/go install -v {{ item }}
   changed_when: false

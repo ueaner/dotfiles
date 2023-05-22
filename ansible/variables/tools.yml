@@ -19,6 +19,18 @@ tools:
     - jq
     - xsel
     - flatpak
+    - xlsclients  # list x11 client applications running on a display
+
+  # flatpak --user list --app
+  flatpak:
+    - com.google.Chrome
+    - io.podman_desktop.PodmanDesktop
+    - com.github.phase1geo.minder
+    - com.jgraph.drawio.desktop
+    - org.gimp.GIMP
+    - com.visualstudio.code
+    - org.videolan.VLC
+    - com.qq.QQ
 
   go:
     - github.com/junegunn/fzf@latest

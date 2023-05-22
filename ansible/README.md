@@ -25,6 +25,9 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --upgrade --user
 # install ansible
 python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
 ~/.local/bin/ansible --version
+
+# install ansible community.general modules
+~/.local/bin/ansible-galaxy collection install community.general
 ```
 
 目标机器和本地机器非同一台，进行远程部署：

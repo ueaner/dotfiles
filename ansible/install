@@ -14,5 +14,7 @@ fi
 
 ~/.local/bin/ansible --version
 
+~/.local/bin/ansible-galaxy collection install community.general
+
 # Let's gooooo
 ~/.local/bin/ansible-playbook -i ./hosts ./linux.yml --ask-become-pass
