@@ -1,3 +1,5 @@
+# Copy this to ~/.config/xremap/config.yml
+
 ---
 
 modmap:
@@ -9,29 +11,25 @@ modmap:
       SUPER_L: ALT_L
 
 keymap:
-  - name: basic
-    # 按键精确匹配的概念，默认 exact_match: false, 映射一个快捷键会扇出多个快捷键
-    # 如映射了 Super-n: down
-    #   按下 Super-Shift-n 会触发 Shift-down
-    #   按下 Super-Control-n 会触发 Control-down
-    # 很可能稍不留神就拦截到系统定义的快捷键
-    # 使用精确匹配，只拦截显式定义的快捷键
+  - name: macOS-ish basic
     exact_match: true
     application:
-      # tmux 的快捷键配合 Alacritty 进行定义
-      not: Alacritty
+      # tmux shortcuts are defined with Alacritty
+      not: [Alacritty]
     remap:
       # Super-tab switch applications
       #  Ctrl-tab switch tabs
-      #  Super-`  当前选中的应用窗口间切换
+      #  Super-`  switch windows of application
       # Window / Tab
       Super-n: C-n              # new window
       Super-t: C-t              # new tab
-      # Super-w: [Esc, C-w]       # close tab, Alacritty 被影响了?
       Super-w: C-w              # close tab
-      Super-Shift-t: C-Shift-t  # 重新打开刚关闭的标签页
+      Super-Shift-t: C-Shift-t  # reopen the last closed tab
       Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
       Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB  # [ prev tab
+      # Super-h                 # set in gsettings
+      # Super-q                 # set in gsettings
+
       # Editting
       Super-z: C-z              # undo
       Super-Shift-z: C-Shift-z  # redo
@@ -41,13 +39,28 @@ keymap:
       Super-f: C-f              # find
       Super-g: C-g              # find next
       Super-Shift-g: C-Shift-g  # find previous
-      Super-l: [Esc, C-l]       # Location Bar / Select Line
-      # C-a 会覆盖 GNOME gtk-key-theme=Emacs 跳转到行首的动作，使用 C-/ 代替 C-a 触发全选
-      # / 特殊字符使用 KEY_XXX 的形式定义
-      # https://github.com/k0kubun/xremap#keymap
-      # https://github.com/emberian/evdev/blob/1d020f11b283b0648427a2844b6b980f1a268221/src/scancodes.rs#L78
-      Super-a: C-KEY_SLASH      # Select All
-      Super-o: C-o              # open options or open choose file dialog
+      Super-l: [Esc, C-l]       # address bar / select line
+      Super-a: C-KEY_SLASH      # select all, use `C-/` instead of `C-a`
+      Super-o: C-o              # open options / open choose file dialog
       Super-p: C-p              # print
       Super-s: C-s              # save
       # Ctrl-u: [Shift-Home, Backspace]       # Emacs C-u
+
+  - name: macOS-ish font zoom
+    exact_match: true
+    remap:
+      Super-KEY_0: C-KEY_0          # reset font size
+      Super-KEY_EQUAL: C-KEY_EQUAL  # increase font size
+      Super-KEY_MINUS: C-KEY_MINUS  # decrease font size
+
+  - name: Chrome
+    exact_match: true
+    application:
+      only: [Google-chrome, google-chrome]
+    remap:
+      Super-Shift-n: C-Shift-n  # open a new window in Incognito mode
+      Super-Alt_l-i: C-Shift-i  # open developer tools
+      Super-j: C-j              # open download page
+      Super-d: C-d              # save page to bookmarks
+      Super-r: C-r              # reload page
+      Super-9: C-9              # jump to the last page
