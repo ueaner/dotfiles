@@ -5,6 +5,8 @@
 
 更多特性请查看[Alacritty features]
 
+个人使用的 [alacritty.yml] 配置文件。
+
 ## 序言
 
 [Alacritty] 并不维护各个平台源（各个平台的包管理工具可谓是百花齐放），

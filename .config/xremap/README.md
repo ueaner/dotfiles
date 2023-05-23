@@ -4,6 +4,8 @@
 
 个人使用的桌面环境是 `GNOME Wayland` 和 `Sway`, 这里只关注这两个桌面环境下的安装、使用及注意事项。
 
+个人使用的 systemd [xremap.service] 启动文件和 [xremap.yml] 配置文件，以及 [gsettings.sh] 脚本文件。
+
 ## 安装
 
 先[安装 Rust], 安装后会在 `~/.cargo/bin/` 目录下产生 rustc, cargo 等 Rust 构建工具，再根据实际环境通过 cargo 安装 xremap:
@@ -137,3 +139,4 @@ journalctl -b --user -u xremap.service -f
 [xremap.service]: https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
 [xremap.yml]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/services/files/xremap-link.yml
 [应用名称]: https://github.com/k0kubun/xremap#application
+[gsettings.sh]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/system/files/gsettings.sh

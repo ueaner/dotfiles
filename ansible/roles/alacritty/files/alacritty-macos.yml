@@ -1,5 +1,6 @@
 # vim: set filetype=yaml:
-# 配置说明：https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+# Copy this to ~/.config/xremap/config.yml
+# Reference：https://github.com/alacritty/alacritty/blob/master/alacritty.yml
 
 ---
 # yamllint disable rule:commas rule:braces rule:colons rule:line-length
