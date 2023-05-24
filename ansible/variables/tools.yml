@@ -3,6 +3,7 @@
 
 tools:
 
+  # sudo dnf history userinstalled
   dnf:
     - git
     - zsh
@@ -13,13 +14,16 @@ tools:
     - clang
     - curl
     - wget
+    - telnet
     - file
     - entr  # Run arbitrary commands when files change
     - fastfetch
     - jq
-    - xsel
+    - wl-clipboard
     - flatpak
     - xlsclients  # list x11 client applications running on a display
+    - android-tools
+    - tig
 
   # flatpak --user list --app
   flatpak:

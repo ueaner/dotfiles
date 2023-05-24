@@ -47,3 +47,6 @@
     PYTHONUSERBASE: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local"
   tags:
     - upgrade
+
+- name: Install neovide (include_tasks)
+  ansible.builtin.include_tasks: neovide.yml

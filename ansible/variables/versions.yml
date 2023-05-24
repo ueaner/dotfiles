@@ -21,3 +21,6 @@ versions:
 
   # Deno - https://deno.land/
   deno: 1.33.4
+
+  # Neovide - https://neovide.dev/
+  neovide: 0.10.4
