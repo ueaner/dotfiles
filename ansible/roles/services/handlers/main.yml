@@ -6,8 +6,9 @@
   changed_when: false
   when: ansible_distribution == "Fedora"
 
-- name: Start and enable xremap service
+# Use ~/.config/autostart/xremap.desktop on desktop environment startup
+- name: Start xremap service
   # noqa command-instead-of-module
-  ansible.builtin.command: systemctl --user enable --now xremap
+  ansible.builtin.command: systemctl --user start xremap
   changed_when: false
   when: ansible_distribution == "Fedora"

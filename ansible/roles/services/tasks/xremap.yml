@@ -35,22 +35,9 @@
     sudo dnf install dleyna-connector-dbus
   changed_when: false
 
-# https://github.com/chrippa/ds4drv/issues/93#issuecomment-265300511
-# https://github.com/k0kubun/xremap#arch-linux-1
-- name: Check if /etc/modules-load.d/uinput.conf exists
-  ansible.builtin.stat:
-    path: "/etc/modules-load.d/uinput.conf"
-  register: services_mod_uinput_check
-
-- name: Running xremap without sudo (load uinput module)
-  when: not services_mod_uinput_check.stat.exists
-  ansible.builtin.shell: |
-    set -o pipefail
-    echo 'uinput' | sudo tee /etc/modules-load.d/uinput.conf
-  changed_when: false
-
-# Install and enable xremap service
+# Install and start xremap service
 # https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
+# https://github.com/ueaner/dotfiles/tree/main/.config/autostart/xremap.desktop
 
 - name: Check if xremap is installed
   ansible.builtin.stat:
@@ -63,7 +50,7 @@
     - desktop_name == "gnome"
   ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features gnome"
   changed_when: false
-  notify: Start and enable xremap service
+  notify: Start xremap service
 
 - name: Install xremap (Sway)
   when:
@@ -71,4 +58,4 @@
     - desktop_name == "sway"
   ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features sway"
   changed_when: false
-  notify: Start and enable xremap service
+  notify: Start xremap service

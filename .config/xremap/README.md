@@ -91,32 +91,67 @@ application-client: GNOME (supported: false)
 
 使得 Xremap 服务无法区分当前活动的应用程序，有 rootless 方式 [不使用 sudo 运行]，所以专注使用 rootless 方式。
 
-2. 在使用 rootless 方式时遇到的问题：
+2. systemd 自启动使用 rootless 方式遇到的问题：
 
 ```
 Error: Failed to prepare an output device: Permission denied (os error 13)
 ```
 
-用户对输入设备没有读写权限，监听不到输入键，按照官方文档[不使用 sudo 运行]，正常应该不会报此问题，解决方法：
+用户对输入设备没有读写权限，监听不到输入键，按照官方文档[不使用 sudo 运行]，解决方法：
 
 -   加入 input 组: `sudo gpasswd -a $USER input`
 -   为 input 组赋予读写权限: `echo 'KERNEL=="uinput", MODE="0660", GROUP="input", TAG+="uaccess"' | sudo tee /etc/udev/rules.d/input.rules`
+-   reboot
 
 `grep -r -w "input" /usr/lib/udev/rules.d/` 这里有一些默认规则可供参考。
 
-但是有的时候会发现日志中，连续 6 次启动还是起不来，有时候是前 5 次失败，第 6 起来了。
+处理完之后确实可以使用了；但是通过 journalctl 看日志有时候会发现，依然会报权限问题，然后连续 6 次启动起不来，就不继续启动了，有时候是前 5 次失败，第 6 起来了。
 
-好像是 `systemd --user 自启动服务` 和 `udev 自动处理加载驱动模块` 的执行顺序问题，解决方法：
+看 [systemd bootup] 的执行顺序, systemd-udevd.service 明显是优先于 default.target 执行, duang...
+可能有几个因素影响了 systemd 的执行顺序: systemd 跨单元服务依赖，并行执行, udev 自动处理内核模块的机制及加载 udev rules 的时机, `/dev/uinput` 的创建时机, duangduang...
+
+`解决方法 1, 把 uinput 驱动模块加载提前`：
 
 ```sh
 echo 'uinput' | sudo tee /etc/modules-load.d/uinput.conf
 ```
 
-让 uinput 驱动模块，在 boot 时加载。[参考](https://github.com/chrippa/ds4drv/issues/93#issuecomment-265300511)
+让 uinput 驱动模块，在 boot 时加载，结果确实是好用。[参考](https://github.com/chrippa/ds4drv/issues/93#issuecomment-265300511)
 
-3. `--watch=config` 参数，可能并没有准确的重新加载。配置文件更改之后依然需要重新启动服务。
+把视野再放宽一些，最终关心的是在桌面环境下使用 xremap, 不去关心 systemd 的服务启动顺序和设备驱动模块加载机制，等所有的系统服务都启动完了，在桌面环境启动时再启动，通过 [XDG Autostart] 规范搭配 systemd 即可简单实现, [xremap 作者也使用了这种方式]
 
-4. 保持耐心，重启后等几秒。
+`解决方法 2, 把 xremap 的启动延后`，先把 xremap 通过 systemd 的自启动 disable 掉 `systemctl --user disable xremap`,
+创建 [~/.config/autostart/xremap.desktop] 文件，内容为:
+
+```desktop
+[Desktop Entry]
+Type=Application
+Name=Xremap
+Exec=systemctl --user start xremap
+Terminal=false
+```
+
+[~/.config/systemd/user/xremap.service] 的最终内容为：
+
+```systemd
+[Unit]
+Description=Key remapper for Linux
+Documentation=https://github.com/k0kubun/xremap
+
+[Service]
+ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device
+ExecStop=/usr/bin/killall xremap
+KillMode=process
+Restart=always
+```
+
+之后系统重启 xremap 也跟着自启动了。
+
+推荐使用 [XDG Autostart] 的方法。[参考](https://wiki.archlinux.org/title/autostarting)
+
+3. `--watch=config` 参数，[在某些设备上重新加载有问题], 配置文件更改之后需要重新启动服务。
+
+4. 保持耐心，重启后如果在特定应用上不能及时生效，等几秒。
 
 5. 相关排查脚本
 
@@ -140,3 +175,9 @@ journalctl -b --user -u xremap.service -f
 [xremap.yml]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/services/files/xremap-link.yml
 [应用名称]: https://github.com/k0kubun/xremap#application
 [gsettings.sh]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/system/files/gsettings.sh
+[systemd bootup]: https://www.freedesktop.org/software/systemd/man/bootup.html
+[xremap 作者也使用了这种方式]: https://github.com/k0kubun/xremap/issues/188#issuecomment-1413332943
+[在某些设备上重新加载有问题]: https://github.com/k0kubun/xremap/issues/221
+[XDG Autostart]: https://specifications.freedesktop.org/autostart-spec/autostart-spec-latest.html
+[~/.config/autostart/xremap.desktop]: https://github.com/ueaner/dotfiles/tree/main/.config/autostart/xremap.desktop
+[~/.config/systemd/user/xremap.service]: https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
