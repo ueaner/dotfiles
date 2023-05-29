@@ -1,0 +1,15 @@
+---
+
+# Exec=/opt/google/chrome/google-chrome --user-data-dir=$HOME/.config/google-chrome --profile-directory=Default --app-id=igjlkppeiblpajggoemlefobffhaimnm
+# Icon=chrome-igjlkppeiblpajggoemlefobffhaimnm-Default
+# StartupWMClass=crx_igjlkppeiblpajggoemlefobffhaimnm
+- name: Create Web Apps
+  ansible.builtin.template:
+    src: "~/ansible/roles/web/templates/app.j2"
+    dest: "~/.local/share/applications/web-{{ item.name | lower | regex_replace(' ', '-') }}.desktop"
+    mode: "0644"
+  loop:
+    - { name: "Gmail", url: "https://mail.google.com/mail/u/0/#inbox" }
+    - { name: "WeChat filehelper", url: "https://filehelper.weixin.qq.com/" }
+    - { name: "Google Keep", url: "https://keep.google.com/u/0/", icon: "notes" }
+    - { name: "Google Calendar", url: "https://calendar.google.com/calendar/u/0/r" }
