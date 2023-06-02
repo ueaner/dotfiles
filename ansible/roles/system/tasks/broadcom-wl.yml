@@ -15,7 +15,6 @@
 
     - name: Install the broadcom wireless packages
       become: true
-      become_method: sudo
       ansible.builtin.dnf:
         name:
           - akmods

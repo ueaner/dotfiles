@@ -46,7 +46,6 @@
 - name: Install prepare tools
   when: ansible_pkg_mgr == "dnf"
   become: true
-  become_method: sudo
   ansible.builtin.dnf:
     name:
       - git

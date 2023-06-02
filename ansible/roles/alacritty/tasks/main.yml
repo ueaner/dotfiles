@@ -7,7 +7,6 @@
     # https://github.com/alacritty/alacritty/blob/master/INSTALL.md#fedora
     - name: Install Alacritty Dependencies
       become: true
-      become_method: sudo
       ansible.builtin.dnf:
         name:
           - cmake

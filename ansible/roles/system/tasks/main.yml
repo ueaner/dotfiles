@@ -17,7 +17,6 @@
 # sudo dnf update --exclude="kernel*"
 - name: Upgrade all packages, excluding kernel (dnf)
   become: true
-  become_method: sudo
   when: ansible_pkg_mgr == "dnf"
   ansible.builtin.dnf:
     name: "*"

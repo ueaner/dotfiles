@@ -13,8 +13,7 @@
 #   - ansible_distribution == "Fedora"
 #   - not prepare_rpmfusion_check.results[0].stat.exists or not prepare_rpmfusion_check.results[1].stat.exists
 #   become: true
-#   become_method: sudo
-#   dnf:
+#   ansible.builtin.dnf:
 #     name: "{{ item }}"
 #     state: present
 #   with_items:

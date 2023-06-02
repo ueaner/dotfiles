@@ -3,7 +3,6 @@
 # Wait for reboot to complete when operating remotely
 - name: Reboot host and wait for it to restart
   become: true
-  become_method: sudo
   ansible.builtin.reboot:
     msg: "Reboot initiated by Ansible"
     connect_timeout: 5
