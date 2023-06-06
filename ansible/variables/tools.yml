@@ -24,6 +24,7 @@ tools:
     - xlsclients  # list x11 client applications running on a display
     - android-tools
     - tig
+    - git-lfs
 
   # flatpak --user list --app
   flatpak:
@@ -35,6 +36,7 @@ tools:
     - com.visualstudio.code
     - org.videolan.VLC
     - com.qq.QQ
+    - com.slack.Slack
 
   go:
     - github.com/junegunn/fzf@latest
@@ -70,6 +72,15 @@ tools:
     - github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
     - github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
 
+    # go tools for vscode
+    - github.com/cweill/gotests/gotests@v1.6.0
+    - github.com/fatih/gomodifytags@latest
+    - github.com/josharian/impl@latest
+    - github.com/haya14busa/goplay/cmd/goplay@v1.0.0
+    - github.com/go-delve/delve/cmd/dlv@latest
+    - honnef.co/go/tools/cmd/staticcheck@latest
+    - golang.org/x/tools/gopls@latest
+
   rust:
     - bat
     - git-delta
@@ -82,6 +93,11 @@ tools:
     - bandwhich
     - procs
     - dua-cli
+    - cargo-nextest --locked
 
   python:
     - ddgr  # DuckDuckGo from the terminal
+    # yt-dlp --proxy socks5://127.0.0.1:1080/ -f '(bestvideo+bestaudio/best)[protocol^=http]' --audio-quality 0 --cookies-from-browser chrome:~/.var/app/com.google.Chrome/ -o '/tmp/%(title)s.%(ext)s' 'https://domain.com/some/uri'
+    - yt-dlp
+    - secretstorage
+    - edir  # rename, remove, and copy files and directories using your editor
