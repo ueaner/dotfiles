@@ -35,6 +35,7 @@ alias vimrc="vim +'e \$MYVIMRC'"
 #alias tt='f(){ tmux attach-session || tmux new-session -s ${1:-SACK}; unset -f f; };f'
 #alias tk='f(){ tmux kill-session -t ${1:-SACK}; unset -f f; };f'
 
+# https://www.thorsten-hans.com/5-types-of-zsh-aliases
 # suffix aliases
 alias -s {yml,yaml}=vim
 # global aliases
@@ -52,6 +53,11 @@ alias -g N:='| tr -s ":" "\n"'
 alias -g N,='| tr -s "," "\n"'
 # PathSeparator
 alias -g N/='| tr -s "/" "\n"'
+
+# lazygit DOT
+alias -g DOT='--git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+# lazygit LOC
+alias -g LOC='--git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local'
 
 # python 格式化 json | bat 高亮字段
 # curl http://httpbin.org/json | json
