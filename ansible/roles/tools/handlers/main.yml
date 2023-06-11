@@ -29,3 +29,10 @@
         src: files/chrome-flags.conf
         dest: ~/.var/app/com.google.Chrome/config/chrome-flags.conf
         mode: "0644"
+
+- name: Upgrade neovim
+  ansible.builtin.shell: |
+    rm -rf ~/.local/opt/nvim
+    mv ~/.local/opt/nvim-linux64 ~/.local/opt/nvim
+    ln -sf ~/.local/opt/nvim/bin/nvim ~/.local/bin/nvim
+  changed_when: false
