@@ -49,6 +49,7 @@ tools:
     - github.com/antonmedv/fx@latest  # JSON viewer
     - github.com/charmbracelet/glow@latest  # markdown viewer
     - github.com/ivaaaan/smug@latest  # tmux session manager
+    - github.com/traefik/yaegi/cmd/yaegi@latest
 
     - github.com/bykof/go-plantuml@latest
     - github.com/ofabry/go-callvis@master  # call graph
@@ -96,6 +97,7 @@ tools:
     - cargo-nextest --locked
 
   python:
+    - ipython
     - ddgr  # DuckDuckGo from the terminal
     # yt-dlp --proxy socks5://127.0.0.1:1080/ -f '(bestvideo+bestaudio/best)[protocol^=http]' --audio-quality 0 --cookies-from-browser chrome:~/.var/app/com.google.Chrome/ -o '/tmp/%(title)s.%(ext)s' 'https://domain.com/some/uri'
     - yt-dlp
