@@ -47,5 +47,5 @@
   tags:
     - upgrade
 
-- name: Install neovide (include_tasks)
-  ansible.builtin.include_tasks: neovide.yml
+- name: Install neovim (include_tasks)
+  ansible.builtin.include_tasks: neovim.yml
