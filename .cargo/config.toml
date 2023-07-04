@@ -8,3 +8,7 @@ registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 
 [net]
 git-fetch-with-cli = true
+
+[build]
+# base target directory: ~/.target
+target-dir = ".target"
