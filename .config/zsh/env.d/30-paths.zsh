@@ -40,6 +40,7 @@ $XDG_BIN_HOME # 三方可执行脚本文件
 $HOME/go/bin
 $HOME/.cargo/bin
 $HOME/.local/share/pnpm
+$HOME/.rye/shims
 $path
 )
 
