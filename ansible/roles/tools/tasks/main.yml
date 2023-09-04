@@ -49,3 +49,10 @@
 
 - name: Install neovim (include_tasks)
   ansible.builtin.include_tasks: neovim.yml
+  tags:
+    - upgrade
+
+- name: Install drawio (include_tasks)
+  ansible.builtin.include_tasks: drawio.yml
+  tags:
+    - upgrade
