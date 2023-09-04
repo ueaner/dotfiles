@@ -1,16 +1,65 @@
-python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user gnome-extensions-cli
+sudo dnf install gnome-browser-connector
 
 # NOTE: Need to run locally, click `Install` to confirm the extension installation
+# OR re-login
 
-# https://extensions.gnome.org/extension/4245/gesture-improvements/
-~/.local/bin/gext install gestureImprovements@gestures
-# https://extensions.gnome.org/extension/261/kimpanel/
-~/.local/bin/gext install kimpanel@kde.org
-# https://extensions.gnome.org/extension/3724/net-speed-simplified/
-~/.local/bin/gext install netspeedsimplified@prateekmedia.extension
-# https://extensions.gnome.org/extension/5060/xremap/
-~/.local/bin/gext install xremap@k0kubun.com
+# python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user gnome-extensions-cli
+# ~/.local/bin/gext install gestureImprovements@gestures
 
-# gesture improvements preferences
-cp "$HOME/ansible/roles/system/files/gesture-improvements.xml" \
-    "$HOME/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/org.gnome.shell.extensions.gestureImprovements.gschema.xml"
+# installation directory
+# ~/.local/share/gnome-shell/extensions/<uuid>
+
+# - find by pk
+# curl --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=44" --data-urlencode "pk=4245"
+# json .download_url: https://extensions.gnome.org/download-extension/gestureImprovements@gestures.shell-extension.zip?version_tag=40446
+#           http 302: https://extensions.gnome.org/extension-data/gestureImprovementsgestures.v5.shell-extension.zip
+# metadata .uuid: unzip -c ~/Downloads/gestureImprovementsgestures.v25.shell-extension.zip metadata.json | grep uuid | cut -d \" -f4
+#
+# - find by uuid:
+# curl -v --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=44" --data-urlencode "uuid=gestureImprovements@gestures"
+
+# https://medium.com/@ankurloriya/install-gnome-extension-using-command-line-736199be1cda
+
+sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
+
+# Make sure the uuid exists
+uuids=(
+    "gestureImprovements@gestures"              # https://extensions.gnome.org/extension/4245/gesture-improvements/
+    "kimpanel@kde.org"                          # https://extensions.gnome.org/extension/261/kimpanel/
+    "xremap@k0kubun.com"                        # https://extensions.gnome.org/extension/5060/xremap/
+    "netspeedsimplified@prateekmedia.extension" # https://extensions.gnome.org/extension/3724/net-speed-simplified/
+    "gsconnect@andyholmes.github.io"            # https://extensions.gnome.org/extension/1319/gsconnect/
+)
+
+for uuid in "${uuids[@]}"; do
+    if [ -f "$HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json" ]; then
+        echo "$uuid already installed"
+        continue
+    fi
+
+    # Parse the download url
+    json=$(curl --get --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid" "https://extensions.gnome.org/extension-info/")
+    download_url=$(echo "$json" | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['download_url'])")
+    # Download the extension package
+    echo "https://extensions.gnome.org$download_url"
+    curl -L "https://extensions.gnome.org$download_url" -o "/tmp/$uuid.zip"
+
+    # # Create extension directory
+    # mkdir -p "$HOME/.local/share/gnome-shell/extensions/$uuid"
+    # # Unzip the extension package
+    # unzip -q "/tmp/$uuid.zip" -d "$HOME/.local/share/gnome-shell/extensions/$uuid/"
+    # # enable extension: Extension "<UUID>" does not exist
+    # gnome-extensions enable "$uuid"
+
+    # Unzip the extension package
+    gnome-extensions install "/tmp/$uuid.zip"
+
+    # install & enable extension, click `Install` to confirm the extension installation
+    gdbus call --session \
+        --dest org.gnome.Shell.Extensions \
+        --object-path /org/gnome/Shell/Extensions \
+        --method org.gnome.Shell.Extensions.InstallRemoteExtension \
+        "$uuid"
+
+    gnome-extensions info "$uuid"
+done
