@@ -16,7 +16,7 @@
     - Native Wayland for Chrome
 
 - name: Upgrade gui tools (flatpak)
-  ansible.builtin.command: flatpak --user update
+  ansible.builtin.command: flatpak --user update -y
   changed_when: false
   tags:
     - upgrade
