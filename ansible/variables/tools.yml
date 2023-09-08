@@ -29,6 +29,16 @@ tools:
     - alsa-lib-devel  # sniffnet
     - libpcap-devel  # sniffnet
     - lshw
+    # sudo dnf --setopt=install_weak_deps=False install tinygo
+    - binaryen
+    - llvm-devel
+    - lld-libs
+    - lld
+    - glibc
+    - libgcc
+    - libstdc++
+    - lld
+    - llvm-libs
 
   # flatpak --user list --app
   flatpak:
@@ -55,7 +65,7 @@ tools:
     - github.com/antonmedv/fx@latest  # JSON viewer
     - github.com/charmbracelet/glow@latest  # markdown viewer
     - github.com/ivaaaan/smug@latest  # tmux session manager
-    - github.com/traefik/yaegi/cmd/yaegi@latest
+    - github.com/traefik/yaegi/cmd/yaegi@latest  # repl
 
     - github.com/bykof/go-plantuml@latest
     - github.com/ofabry/go-callvis@master  # call graph
