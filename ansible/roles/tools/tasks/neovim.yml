@@ -7,6 +7,8 @@
     dest: ~/.local/opt
     remote_src: true
   notify: Upgrade neovim
+  tags:
+    - upgrade
 
 - name: Install neovide
   ansible.builtin.unarchive:
@@ -14,6 +16,8 @@
     dest: "~/.cargo/bin/"
     remote_src: true
   changed_when: false
+  tags:
+    - upgrade
 
 - name: Install neovide.desktop
   ansible.builtin.copy:
