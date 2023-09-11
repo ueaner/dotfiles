@@ -112,6 +112,7 @@ tools:
     - dua-cli
     - cargo-nextest --locked
     - sniffnet
+    - wasm-pack
 
   python:
     - ipython
