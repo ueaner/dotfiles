@@ -113,6 +113,7 @@ tools:
     - cargo-nextest --locked
     - sniffnet
     - wasm-pack
+    - cargo-depgraph
 
   python:
     - ipython
