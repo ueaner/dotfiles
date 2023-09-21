@@ -12,7 +12,7 @@
 
 - name: Install neovide
   ansible.builtin.unarchive:
-    src: https://ghproxy.com/https://github.com/neovide/neovide/releases/latest/download/neovide.tar.gz
+    src: https://ghproxy.com/https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz
     dest: "~/.cargo/bin/"
     remote_src: true
   changed_when: false
