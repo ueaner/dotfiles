@@ -83,7 +83,7 @@ function detect-clipboard() {
   elif [ -n "${TMUX:-}" ] && (( ${+commands[tmux]} )); then
     function clipcopy() { tmux load-buffer "${1:--}"; }
     function clippaste() { tmux save-buffer -; }
-  elif [[ $(uname -r) = *icrosoft* ]]; then
+  elif (( $+commands[clip.exe] )) && (( $+commands[powershell.exe] )); then
     function clipcopy() { cat "${1:-/dev/stdin}" | clip.exe; }
     function clippaste() { powershell.exe -noprofile -command Get-Clipboard; }
   else
@@ -102,8 +102,9 @@ function detect-clipboard() {
   fi
 }
 
-# Detect at startup. A non-zero exit here indicates that the dummy clipboards were set,
-# which is not really an error. If the user calls them, they will attempt to redetect
-# (for example, perhaps the user has now installed xclip) and then either print an error
-# or proceed successfully.
-detect-clipboard || true
+# load clipboard on usage
+function clipcopy clippaste {
+  unfunction clipcopy clippaste
+  detect-clipboard || true # let one retry
+  "$0" "$@"
+}
