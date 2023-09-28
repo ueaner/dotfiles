@@ -23,7 +23,7 @@
         ~/.cargo/bin/fnm install {{ versions.node }}
         ~/.cargo/bin/fnm default {{ versions.node }}
         ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
-        ~/.local/share/fnm/aliases/default/bin/pnpm install -g pnpm
+        ~/.local/share/fnm/aliases/default/bin/pnpm install -g tsx
       changed_when: false
 
     # Upgrade node.js, check version
