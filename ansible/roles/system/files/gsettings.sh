@@ -17,6 +17,7 @@
 #
 # or use dconf-editor
 #
+# <Super> <Control> <Alt> <Shift>
 
 #----------------------------------------------------------------
 # RELEASE
@@ -30,7 +31,7 @@ gsettings set org.gnome.mutter.wayland.keybindings restore-shortcuts "[]" # ['<S
 
 # [RELEASE] `<Super>Space` for fcitx5, `<Ctrl>Space` to switch input source, `Shift` to switch Chinese and English
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source "[]"          # ['<Super>space', 'XF86Keyboard']
-gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Shift><Super>space', '<Shift>XF86Keyboard']
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Super><Shift>space', '<Shift>XF86Keyboard']
 
 # [RELEASE] `Left Super`, avoid `<Super>tab` cannot switch the application in time
 # Search Applications (<Super>Space) / Toggle Overview (F3) is the same effect.
@@ -127,13 +128,13 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super
 #----------------------------------------------------------------
 
 # Take a screenshot
-gsettings set org.gnome.shell.keybindings screenshot "['<Shift><Super>3']"
+gsettings set org.gnome.shell.keybindings screenshot "['<Super><Shift>3']"
 # Take a screenshot interactively
-gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Shift><Super>4']"
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Super><Shift>4']"
 # Record a screencast interactively
-gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Shift><Super>5']"
+gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Super><Shift>5']"
 # Take a screenshot of a window
-gsettings set org.gnome.shell.keybindings screenshot-window "['<Control><Super>a']"
+gsettings set org.gnome.shell.keybindings screenshot-window "['<Super><Control>a']"
 
 #----------------------------------------------------------------
 # Applications & Windows
@@ -172,13 +173,20 @@ gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
 
 # Default
 gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab', '<Alt>Tab']"
-gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Super>Tab', '<Shift><Alt>Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Super><Shift>Tab', '<Alt><Shift>Tab']"
 
-# Switch workspaces with arrow keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control>Right']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Control><Shift>Left', '<Control><Alt>Left', '<Control><Shift><Alt>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Control><Shift>Right', '<Control><Alt>Right', '<Control><Shift><Alt>Right']"
+# Switch workspaces with alt+arrow keys
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control><Alt>Right']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control><Alt>Left']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "['<Control><Alt>Down']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['<Control><Alt>Up']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Control><Alt>End']"
+# Move workspaces with shift+arrow keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Control><Shift>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Control><Shift>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "['<Control><Shift>Down']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "['<Control><Shift>Up']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Control><Shift>End']"
 
 # Switch workspaces with number keys
 # gsettings set org.gnome.desktop.wm.preferences num-workspaces 10 # 4
