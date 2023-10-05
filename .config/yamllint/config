@@ -1,0 +1,5 @@
+---
+rules:
+  comments:
+    # prettier compatibility
+    min-spaces-from-content: 1
