@@ -56,6 +56,6 @@
   when:
     - not services_xremap_check.stat.exists
     - desktop_name == "sway"
-  ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features sway"
+  ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features wlroots"
   changed_when: false
   notify: Start xremap service

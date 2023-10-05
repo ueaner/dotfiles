@@ -13,8 +13,8 @@
 摘录 [Xremap 官方的安装文档]:
 
 ```bash
-cargo install xremap --features gnome # GNOME Wayland
-cargo install xremap --features sway  # Sway
+cargo install xremap --features gnome   # GNOME Wayland
+cargo install xremap --features wlroots # Sway, Hyprland, etc.
 ```
 
 ## 使用
