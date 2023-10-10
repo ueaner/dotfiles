@@ -40,16 +40,13 @@ tools:
     - lld
     - llvm-libs
 
-  # flatpak --user list --app
+  # flatpak --user list --app --help
+  # flatpak list --columns=application,runtime,version,size
   flatpak:
     - com.google.Chrome
     - io.podman_desktop.PodmanDesktop
     - com.github.phase1geo.minder
-    - org.gimp.GIMP
-    - com.visualstudio.code
-    - org.videolan.VLC
     - com.qq.QQ
-    - com.slack.Slack
 
     # NOTE: Drawio installed with flatpak cannot input Chinese
     # - com.jgraph.drawio.desktop
