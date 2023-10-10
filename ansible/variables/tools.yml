@@ -114,6 +114,7 @@ tools:
     - sniffnet
     - wasm-pack
     - cargo-depgraph
+    - fnm
 
   python:
     - ipython
@@ -123,3 +124,9 @@ tools:
     - spotdl
     - secretstorage
     - edir  # rename, remove, and copy files and directories using your editor
+
+  node:
+    - pnpm
+    - tsx
+    - eslint
+    - npm-check-updates  # ncu

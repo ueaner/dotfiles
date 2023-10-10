@@ -47,6 +47,13 @@
   tags:
     - upgrade
 
+- name: Install/Upgrade node.js tools
+  ansible.builtin.command: ~/.local/share/fnm/aliases/default/bin/pnpm install -g {{ item }}
+  changed_when: false
+  loop: "{{ tools.node }}"
+  tags:
+    - upgrade
+
 - name: Install neovim (include_tasks)
   ansible.builtin.include_tasks: neovim.yml
   tags:
