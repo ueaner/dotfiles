@@ -11,13 +11,13 @@ versions:
   kernel_slash: 6.4.4/200.fc38/x86_64
 
   # Go - https://go.dev/
-  go: 1.21.0
+  go: 1.21.2
 
   # Rust - https://www.rust-lang.org/
-  rust: 1.72.0
+  rust: 1.73.0
 
   # Node.js - https://nodejs.org/
-  node: 18.17.1
+  node: 18.18.0
 
   # Deno - https://deno.land/
-  deno: 1.36.4
+  deno: 1.37.1
