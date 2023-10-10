@@ -125,5 +125,4 @@ tools:
   node:
     - pnpm
     - tsx
-    - eslint
     - npm-check-updates  # ncu
