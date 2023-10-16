@@ -53,5 +53,3 @@ $path
 export PATH
 
 export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
-
-export RIPGREP_CONFIG_PATH=$HOME/ripgrep/ripgreprc
