@@ -1,0 +1,24 @@
+---
+
+- name: Install zk
+  tags:
+    - upgrade
+  block:
+
+    - name: Get zk download URL
+      when: ansible_pkg_mgr == "dnf"
+      ansible.builtin.shell: |
+        set -o pipefail
+        URL=$(curl -s https://api.github.com/repos/mickael-menu/zk/releases/latest | grep browser_download_url | grep 'linux-amd64' | cut -d '"' -f 4)
+        echo -n "https://ghproxy.com/$URL"
+      changed_when: false
+      register: tools_zk_url
+
+    - name: Install zk
+      ansible.builtin.unarchive:
+        src: "{{ item }}"
+        dest: "~/.local/bin/"
+        remote_src: true
+      with_items:
+        - "{{ tools_zk_url.stdout }}"
+      changed_when: false
