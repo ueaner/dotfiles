@@ -112,6 +112,7 @@ tools:
     - wasm-pack
     - cargo-depgraph
     - fnm
+    - mdbook
 
   python:
     - ipython
