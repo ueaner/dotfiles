@@ -68,3 +68,8 @@
   ansible.builtin.include_tasks: zk.yml
   tags:
     - upgrade
+
+- name: Install plantuml.jar (include_tasks)
+  ansible.builtin.include_tasks: plantuml.yml
+  tags:
+    - upgrade

@@ -1,0 +1,27 @@
+---
+
+# /usr/bin/java -Djava.awt.headless=true -Dapple.awt.UIElement=true -jar ~/.local/lib/java/plantuml.jar /path/to/some.puml
+- name: Install plantuml.jar
+  tags:
+    - upgrade
+  block:
+
+    - name: Get plantuml.jar download URL
+      when: ansible_pkg_mgr == "dnf"
+      ansible.builtin.shell: |
+        set -o pipefail
+        mkdir -p ~/.local/lib/java/
+        URL=$(curl -s https://api.github.com/repos/plantuml/plantuml/releases/latest | grep browser_download_url | grep 'plantuml.jar"' | cut -d '"' -f 4)
+        echo -n "https://ghproxy.com/$URL"
+      changed_when: false
+      register: tools_plantuml_jar_url
+
+    - name: Install plantuml.jar
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: "~/.local/lib/java/"
+        mode: "0644"
+        force: true
+      with_items:
+        - "{{ tools_plantuml_jar_url.stdout }}"
+      changed_when: false

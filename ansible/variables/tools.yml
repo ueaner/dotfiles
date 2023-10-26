@@ -113,6 +113,8 @@ tools:
     - cargo-depgraph
     - fnm
     - mdbook
+    - mdbook-plantuml
+    - mdbook-mermaid
 
   python:
     - ipython
