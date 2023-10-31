@@ -7,12 +7,13 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
 indent_style = space
+max_line_length = 140
 
 [*.{go}]
 indent_size = 4
 indent_style = tab
 
-[*.{md,rs,py,php,java}]
+[*.{rs,py,php,java}]
 indent_size = 4
 indent_style = space
 
@@ -29,6 +30,6 @@ quote_type = double
 indent_size = 2
 indent_style = space
 
-[*.{lua,vim}]
+[*.{lua,vim,md}]
 indent_size = 2
 indent_style = space
