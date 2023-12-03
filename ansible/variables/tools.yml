@@ -115,6 +115,8 @@ tools:
     - mdbook
     - mdbook-plantuml
     - mdbook-mermaid
+    - mdbook-toc
+    - mdbook-pagetoc
 
   python:
     - ipython
@@ -126,7 +128,6 @@ tools:
     - edir  # rename, remove, and copy files and directories using your editor
 
   node:
-    - pnpm
     - tsx
     - npm-check-updates  # ncu
     - eslint
