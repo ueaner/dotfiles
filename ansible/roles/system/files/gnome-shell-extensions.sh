@@ -2,6 +2,7 @@ sudo dnf install gnome-browser-connector
 
 # NOTE: Need to run locally, click `Install` to confirm the extension installation
 # OR re-login
+# NOT SUPPORT UPGRADE. Upgrade use firefox to visit https://extensions.gnome.org/local/
 
 # python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user gnome-extensions-cli
 # ~/.local/bin/gext install gestureImprovements@gestures
