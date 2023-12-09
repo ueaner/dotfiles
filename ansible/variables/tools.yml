@@ -16,6 +16,7 @@ tools:
     - wget
     - telnet
     - file
+    - foot
     - entr  # Run arbitrary commands when files change
     - fastfetch
     - jq
