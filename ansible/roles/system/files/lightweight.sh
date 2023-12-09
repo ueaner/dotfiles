@@ -38,3 +38,7 @@ systemctl --user mask evolution-addressbook-factory.service
 systemctl --user mask evolution-calendar-factory.service
 systemctl --user mask evolution-source-registry.service
 systemctl --user mask evolution-user-prompter.service
+
+# remove unused packages
+dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese
+dnf remove libreoffice\*
