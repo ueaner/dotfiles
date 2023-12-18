@@ -1,18 +1,21 @@
 # /usr/local/bin/npm config ls -l
+shell-emulator=true
+engine-strict=true
 registry=https://registry.npmmirror.com/
-disturl=https://npmmirror.com/mirrors/node
-sass_binary_site=https://npmmirror.com/mirrors/node-sass
-phantomjs_cdnurl=https://npmmirror.com/mirrors/phantomjs
-chromedriver_cdnurl=https://npmmirror.com/mirrors/chromedriver
-operadriver_cdnurl=https://npmmirror.com/mirrors/operadriver
-electron_mirror=https://npmmirror.com/mirrors/electron
-electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries
-python_mirror=https://npmmirror.com/mirrors/python
-node_sqlite3_binary_host_mirror=https://npmmirror.com/mirrors
-puppeteer_download_host=https://npmmirror.com/mirrors
-sharp_binary_host=https://npmmirror.com/mirrors/sharp
-sharp_libvips_binary_host=https://npmmirror.com/mirrors/sharp-libvips
-canvas_binary_host_mirror=https://npmmirror.com/mirrors/node-canvas-prebuilt
+disturl=https://cdn.npmmirror.com/binaries/node
+sass_binary_site=https://cdn.npmmirror.com/binaries/node-sass
+phantomjs_cdnurl=https://cdn.npmmirror.com/binaries/phantomjs
+chromedriver_cdnurl=https://cdn.npmmirror.com/binaries/chromedriver
+operadriver_cdnurl=https://cdn.npmmirror.com/binaries/operadriver
+electron_mirror=https://cdn.npmmirror.com/binaries/electron
+electron_mirror="https://cdn.npmmirror.com/binaries/electron/"
+electron_builder_binaries_mirror=https://cdn.npmmirror.com/binaries/electron-builder-binaries
+python_mirror=https://cdn.npmmirror.com/binaries/python
+node_sqlite3_binary_host_mirror=https://cdn.npmmirror.com/binaries
+puppeteer_download_base_url=https://cdn.npmmirror.com/binaries/chrome-for-testing
+sharp_binary_host=https://cdn.npmmirror.com/binaries/sharp
+sharp_libvips_binary_host=https://cdn.npmmirror.com/binaries/sharp-libvips
+canvas_binary_host_mirror=https://cdn.npmmirror.com/binaries/node-canvas-prebuilt
 cache=~/.cache/npm
 # /usr/local/bin/npm get prefix -g
 prefix=~/.local
