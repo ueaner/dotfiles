@@ -4,3 +4,6 @@
   ansible.builtin.shell: |
     sudo dnf --setopt=install_weak_deps=False install tinygo -y
   changed_when: false
+  tags:
+    - upgrade
+    - tinygo

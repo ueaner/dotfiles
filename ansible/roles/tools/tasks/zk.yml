@@ -3,6 +3,7 @@
 - name: Install zk
   tags:
     - upgrade
+    - zk
   block:
 
     - name: Get zk download URL

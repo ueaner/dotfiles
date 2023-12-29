@@ -1,19 +1,34 @@
 # vim: set filetype=yaml.ansible:
 ---
 
+# Usage example: ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "go"  --list-tasks
+# Usage example: ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "deno" -vvv
+
 - name: Setup Linux Workstation
-  hosts: cb13
+  hosts: local
   vars_files:
     - variables/versions.yml
     - variables/tools.yml
+  vars:
+    # By default, "role=all" is overridden by the `--extra-vars "role=xxx"` passed on the command line.
+    role: all
   roles:
-    - prepare
-    - system    # Need to reboot after installing wireless driver under MacBook
-    - dotshell  # Provides sources for later `lang` and `tools` installactions
-    - lang      # Languages environment
-    - tools
-    - alacritty
-    - services
-    - fonts
-    - fcitx5
-    - done
+    - role: prepare
+      when: (role == "all") or (role == "prepare")
+    - role: system    # Need to reboot after installing wireless driver under MacBook
+      when: (role == "all") or (role == "system")
+    - role: dotshell  # Provides sources for later `lang` and `tools` installactions
+      when: (role == "all") or (role == "dotshell")
+    - role: lang      # Languages environment
+      when: (role == "all") or (role == "lang")
+    - role: tools
+      when: (role == "all") or (role == "tools")
+    - role: alacritty
+      when: (role == "all") or (role == "alacritty")
+    - role: services
+      when: (role == "all") or (role == "services")
+    - role: fonts
+      when: (role == "all") or (role == "fonts")
+    - role: fcitx5
+      when: (role == "all") or (role == "fcitx5")
+    - role: done

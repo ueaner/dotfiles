@@ -20,6 +20,7 @@
   changed_when: false
   tags:
     - upgrade
+    - gui
 
 - name: Install/Upgrade go tools
   ansible.builtin.command: ~/go/bin/go install -v {{ item }}
@@ -30,6 +31,7 @@
     GOPROXY: https://goproxy.cn,https://goproxy.io,direct
   tags:
     - upgrade
+    - go
 
 - name: Install/Upgrade rust tools
   ansible.builtin.command: "~/.cargo/bin/cargo install {{ item }}"
@@ -37,6 +39,7 @@
   loop: "{{ tools.rust }}"
   tags:
     - upgrade
+    - rust
 
 - name: Install/Upgrade python tools
   ansible.builtin.command: "~/.local/bin/pip3 install --upgrade --user {{ item }}"
@@ -46,6 +49,7 @@
     PYTHONUSERBASE: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local"
   tags:
     - upgrade
+    - python
 
 - name: Install/Upgrade node.js tools
   ansible.builtin.command: ~/.local/share/fnm/aliases/default/bin/pnpm install -g {{ item }}
@@ -53,23 +57,29 @@
   loop: "{{ tools.node }}"
   tags:
     - upgrade
+    - node
 
-- name: Install neovim (include_tasks)
+- name: Install/Upgrade neovim (include_tasks)
   ansible.builtin.include_tasks: neovim.yml
   tags:
     - upgrade
+    - neovim
+    - neovide
 
 - name: Install drawio (include_tasks)
   ansible.builtin.include_tasks: drawio.yml
   tags:
     - upgrade
+    - drawio
 
 - name: Install zk (include_tasks)
   ansible.builtin.include_tasks: zk.yml
   tags:
     - upgrade
+    - zk
 
 - name: Install plantuml.jar (include_tasks)
   ansible.builtin.include_tasks: plantuml.yml
   tags:
     - upgrade
+    - plantuml

@@ -11,6 +11,7 @@
   ansible.builtin.include_tasks: go.yml
   tags:
     - upgrade
+    - go
 
 # ----------------------------------------------------------------
 # Rust
@@ -19,6 +20,7 @@
   ansible.builtin.include_tasks: rust.yml
   tags:
     - upgrade
+    - rust
 
 # ----------------------------------------------------------------
 # Node.js
@@ -27,6 +29,7 @@
   ansible.builtin.include_tasks: node.yml
   tags:
     - upgrade
+    - node
 
 # ----------------------------------------------------------------
 # Deno
@@ -35,6 +38,7 @@
   ansible.builtin.include_tasks: deno.yml
   tags:
     - upgrade
+    - deno
 
 
 #

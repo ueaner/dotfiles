@@ -9,6 +9,7 @@
   notify: Upgrade neovim
   tags:
     - upgrade
+    - neovim
 
 - name: Install neovide
   ansible.builtin.unarchive:
@@ -18,14 +19,21 @@
   changed_when: false
   tags:
     - upgrade
+    - neovide
 
 - name: Install neovide.desktop
   ansible.builtin.copy:
     src: files/neovide.desktop
     dest: ~/.local/share/applications/neovide.desktop
     mode: "0644"
+  tags:
+    - upgrade
+    - neovide
 
 - name: Update desktop database
   ansible.builtin.command:
     cmd: update-desktop-database ~/.local/share/applications
   changed_when: false
+  tags:
+    - upgrade
+    - neovide

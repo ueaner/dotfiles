@@ -4,6 +4,7 @@
 - name: Install plantuml.jar
   tags:
     - upgrade
+    - plantuml
   block:
 
     - name: Get plantuml.jar download URL
