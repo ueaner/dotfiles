@@ -2,8 +2,8 @@
 
 - name: Download neovim nightly
   ansible.builtin.unarchive:
-    # src: https://ghproxy.com/https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-    src: https://ghproxy.com/https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+    # src: https://mirror.ghproxy.com/https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+    src: https://mirror.ghproxy.com/https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
     dest: ~/.local/opt
     remote_src: true
   notify: Upgrade neovim
@@ -12,7 +12,7 @@
 
 - name: Install neovide
   ansible.builtin.unarchive:
-    src: https://ghproxy.com/https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz
+    src: https://mirror.ghproxy.com/https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz
     dest: "~/.cargo/bin/"
     remote_src: true
   changed_when: false

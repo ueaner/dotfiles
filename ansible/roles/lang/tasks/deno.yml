@@ -19,7 +19,7 @@
     - name: Installing Deno (if skipping is already installed)
       when: not lang_deno_check.stat.exists
       ansible.builtin.unarchive:
-        src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
+        src: https://mirror.ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
         dest: "~/.cargo/bin/"
         remote_src: true
       changed_when: false
@@ -35,7 +35,7 @@
     - name: Upgrading Deno (if skipping version is already {{ versions.deno }})
       when: "versions.deno not in lang_deno_version.stdout"
       ansible.builtin.unarchive:
-        src: https://ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
+        src: https://mirror.ghproxy.com/https://github.com/denoland/deno/releases/download/v{{ versions.deno }}/deno-x86_64-unknown-linux-gnu.zip
         dest: "~/.cargo/bin/"
         remote_src: true
       changed_when: false
