@@ -20,3 +20,5 @@ cache=~/.cache/npm
 # /usr/local/bin/npm get prefix -g
 prefix=~/.local
 coc.nvim:registry=https://registry.npmmirror.com/
+# run pre/post scripts
+enable-pre-post-scripts=true
