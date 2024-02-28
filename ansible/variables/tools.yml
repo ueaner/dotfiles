@@ -44,10 +44,11 @@ tools:
   # flatpak --user list --app --help
   # flatpak list --columns=application,runtime,version,size
   flatpak:
+    - com.qq.QQ
     - com.google.Chrome
     - io.podman_desktop.PodmanDesktop
     - com.github.phase1geo.minder
-    - com.qq.QQ
+    - io.gitlab.news_flash.NewsFlash
 
     # NOTE: Drawio installed with flatpak cannot input Chinese
     # - com.jgraph.drawio.desktop
