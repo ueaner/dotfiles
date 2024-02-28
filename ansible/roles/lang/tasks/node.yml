@@ -7,6 +7,7 @@
 - name: Install/Upgrade Node.js
   tags:
     - upgrade
+    - node
   block:
 
     # Install node.js, check file stat
