@@ -7,6 +7,7 @@
 - name: Install/Upgrade Rust
   tags:
     - upgrade
+    - rust
   block:
 
     # Install rust, check file stat
