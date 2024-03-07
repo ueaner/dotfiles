@@ -54,10 +54,10 @@
       - wget
 
 # ----------------------------------------------------------------
-# rpmfusion
+# rpmfusion and tsinghua repositories
 # ----------------------------------------------------------------
-- name: Install the rpmfusion repo packages (by include_tasks)
-  ansible.builtin.include_tasks: rpmfusion.yml
+- name: Repositories (by include_tasks)
+  ansible.builtin.include_tasks: repos.yml
 
 # ----------------------------------------------------------------
 # os-release
