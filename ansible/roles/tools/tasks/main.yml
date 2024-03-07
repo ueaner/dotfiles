@@ -83,3 +83,8 @@
   tags:
     - upgrade
     - plantuml
+
+- name: Install wasm (include_tasks)
+  ansible.builtin.include_tasks: wasm.yml
+  tags:
+    - wasm

@@ -1,7 +1,6 @@
 ---
 
 - name: Install emscripten latest
-  when: ansible_pkg_mgr == "dnf"
   ansible.builtin.shell: |
     cd ~/sdk
     git clone https://github.com/emscripten-core/emsdk.git
