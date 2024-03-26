@@ -14,10 +14,10 @@ versions:
   go: 1.22.1
 
   # Rust - https://www.rust-lang.org/
-  rust: 1.76.0
+  rust: 1.77.0
 
   # Node.js - https://nodejs.org/
   node: 20.11.1
 
   # Deno - https://deno.land/
-  deno: 1.41.2
+  deno: 1.41.3
