@@ -23,8 +23,8 @@
     - name: Install Alacritty.yml
       when: ansible_distribution == "Fedora"
       ansible.builtin.copy:
-        src: files/alacritty-linux.yml
-        dest: ~/.config/alacritty/alacritty.yml
+        src: files/alacritty-linux.toml
+        dest: ~/.config/alacritty/alacritty.toml
         mode: "0644"
 
     - name: Install Alacritty.desktop
