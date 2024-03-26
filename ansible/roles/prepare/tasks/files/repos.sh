@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # https://mirrors.tuna.tsinghua.edu.cn/help/fedora/
 
+if grep -q tsinghua /etc/yum.repos.d/fedora.repo; then
+    echo "tsinghua repo already exists"
+    exit 0
+fi
+
 sudo sed -e 's|^metalink=|#metalink=|g' \
     -e 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.tuna.tsinghua.edu.cn/fedora|g' \
     -i.bak \

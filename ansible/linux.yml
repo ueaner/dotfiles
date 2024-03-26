@@ -32,3 +32,4 @@
     - role: fcitx5
       when: (role == "all") or (role == "fcitx5")
     - role: done
+      when: (role == "all") or (role == "done")

@@ -3,4 +3,4 @@
 - name: Download Nerd Fonts
   ansible.builtin.include_tasks: download.yml
   loop:
-    - SourceCodePro
+    - SourceCodePro  # SauceCodePro Nerd Font
