@@ -2,7 +2,7 @@
 
 - name: Install Alacritty
   when: ansible_distribution == "Fedora"
-  block:  # Avoid checking alacritty.yml schemas with SchemaStore.nvim
+  block:
 
     # https://github.com/alacritty/alacritty/blob/master/INSTALL.md#fedora
     - name: Install Alacritty Dependencies
@@ -20,7 +20,7 @@
       ansible.builtin.command: "~/.cargo/bin/cargo install alacritty"
       changed_when: false
 
-    - name: Install Alacritty.yml
+    - name: Install Alacritty.toml
       when: ansible_distribution == "Fedora"
       ansible.builtin.copy:
         src: files/alacritty-linux.toml
