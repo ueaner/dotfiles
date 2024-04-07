@@ -7,24 +7,29 @@ gui:
   sidePanelWidth: 0.3333 # number from 0 to 1
   expandFocusedSidePanel: false
   mainPanelSplitMode: "flexible" # one of 'horizontal' | 'flexible' | 'vertical'
-  language: "auto" # one of 'auto' | 'en' | 'zh' | 'pl' | 'nl'
+  language: "auto" # one of 'auto' | 'en' | 'zh-TW' | 'zh-CN' | 'pl' | 'nl' | 'ja' | 'ko' | 'ru'
+  nerdFontsVersion: "3"
   theme:
-    lightTheme: false # For terminals with a light background
     activeBorderColor:
-      - white
-      - bold
-    inactiveBorderColor:
-      - green
-    optionsTextColor:
-      - blue
-    selectedLineBgColor:
-      - reverse
-    selectedRangeBgColor:
-      - reverse
+      - "#ff966c"
+      - "bold"
     cherryPickedCommitBgColor:
-      - blue
+      - "#c099ff"
     cherryPickedCommitFgColor:
-      - cyan
+      - "#82aaff"
+    defaultFgColor:
+      - "#c8d3f5"
+    inactiveBorderColor:
+      - "#589ed7"
+    optionsTextColor:
+      - "#82aaff"
+    searchingActiveBorderColor:
+      - "#ff966c"
+      - "bold"
+    selectedLineBgColor:
+      - "#2d3f76"
+    unstagedChangesColor:
+      - "#c53b53"
   commitLength:
     show: true
   mouseEvents: true
@@ -36,7 +41,7 @@ gui:
   showCommandLog: true
   commandLogSize: 8
   authorColors: # in case you're not happy with the randomly assigned colour
-    "Jose Alvarez": "#88C0D0"
+    "ueaner": "#88C0D0"
 git:
   paging:
     colorArg: always
@@ -64,6 +69,7 @@ git:
 os:
   edit: "{{editor}} {{filename}}"
   editInTerminal: true
+  editPreset: "nvim-remote"
 refresher:
   refreshInterval: 10 # file/submodule refresh interval in seconds
   fetchInterval: 60 # re-fetch interval in seconds
