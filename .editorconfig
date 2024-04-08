@@ -37,3 +37,7 @@ indent_style = space
 [{Makefile,**.mk}]
 # Use tabs for indentation (Makefiles require tabs)
 indent_style = tab
+
+[{Caddyfile,*.Caddyfile,Caddyfile.*}]
+# Use tabs for indentation (Caddyfiles require tabs)
+indent_style = tab
