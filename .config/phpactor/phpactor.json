@@ -1,0 +1,6 @@
+{
+    "$schema": "~/.local/share/nvim/mason/packages/phpactor/phpactor.schema.json",
+    "phpunit.enabled": true,
+    "language_server_php_cs_fixer.enabled": true,
+    "language_server_php_cs_fixer.bin": "~/.local/share/nvim/mason/bin/php-cs-fixer"
+}
