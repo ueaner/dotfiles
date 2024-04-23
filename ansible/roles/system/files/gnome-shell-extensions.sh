@@ -32,18 +32,28 @@ uuids=(
     "gsconnect@andyholmes.github.io"            # https://extensions.gnome.org/extension/1319/gsconnect/
 )
 
+force=false
+if [ "$1" == "-f" ] || [ "$1" == "--force" ]; then
+    force=true
+fi
+
 for uuid in "${uuids[@]}"; do
-    if [ -f "$HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json" ]; then
-        echo "$uuid already installed"
+    if [ -f "$HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json" ] && ! $force; then
+        echo "$uuid is installed to $HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json"
         continue
     fi
 
-    # Parse the download url
-    json=$(curl --get --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid" "https://extensions.gnome.org/extension-info/")
-    download_url=$(echo "$json" | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['download_url'])")
-    # Download the extension package
-    echo "https://extensions.gnome.org$download_url"
-    curl -L "https://extensions.gnome.org$download_url" -o "/tmp/$uuid.zip"
+    if [[ "$uuid" == "gestureImprovements@gestures" ]]; then
+        # GNOME 46
+        curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "/tmp/$uuid.zip"
+    else
+        # Parse the download url
+        json=$(curl --get --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid" "https://extensions.gnome.org/extension-info/")
+        download_url=$(echo "$json" | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['download_url'])")
+        # Download the extension package
+        echo "https://extensions.gnome.org$download_url"
+        curl -L "https://extensions.gnome.org$download_url" -o "/tmp/$uuid.zip"
+    fi
 
     # # Create extension directory
     # mkdir -p "$HOME/.local/share/gnome-shell/extensions/$uuid"
@@ -53,7 +63,7 @@ for uuid in "${uuids[@]}"; do
     # gnome-extensions enable "$uuid"
 
     # Unzip the extension package
-    gnome-extensions install "/tmp/$uuid.zip"
+    gnome-extensions install -f "/tmp/$uuid.zip"
 
     # install & enable extension, click `Install` to confirm the extension installation
     gdbus call --session \
