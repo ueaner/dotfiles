@@ -29,6 +29,6 @@ mkdir -p "$download_dir"
 cd "$download_dir" || return
 
 printf '%s\n' "${rpms[@]}"
-wget -c -nv "${rpms[@]}"
+wget -c "${rpms[@]}"
 
 echo "Download to $download_dir directory"
