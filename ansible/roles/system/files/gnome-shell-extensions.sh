@@ -28,6 +28,7 @@ uuids=(
     "gestureImprovements@gestures"              # https://extensions.gnome.org/extension/4245/gesture-improvements/
     "kimpanel@kde.org"                          # https://extensions.gnome.org/extension/261/kimpanel/
     "xremap@k0kubun.com"                        # https://extensions.gnome.org/extension/5060/xremap/
+    "color-picker@tuberry"                      # https://extensions.gnome.org/extension/3396/color-picker/
     "netspeedsimplified@prateekmedia.extension" # https://extensions.gnome.org/extension/3724/net-speed-simplified/
     "gsconnect@andyholmes.github.io"            # https://extensions.gnome.org/extension/1319/gsconnect/
 )
