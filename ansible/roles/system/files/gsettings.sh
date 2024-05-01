@@ -107,8 +107,11 @@ gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # tr
 # Color scheme
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# Show weekday in clock
+# Show date/weekday in clock
+gsettings set org.gnome.desktop.interface clock-format '24h'      # '12h'
+gsettings set org.gnome.desktop.interface clock-show-date true    # false
 gsettings set org.gnome.desktop.interface clock-show-weekday true # false
+
 # Show battery percentage
 gsettings set org.gnome.desktop.interface show-battery-percentage true # false
 
