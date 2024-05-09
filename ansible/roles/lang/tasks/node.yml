@@ -23,8 +23,11 @@
         ~/.cargo/bin/cargo install fnm
         ~/.cargo/bin/fnm install {{ versions.node }}
         ~/.cargo/bin/fnm default {{ versions.node }}
+        ~/.local/share/fnm/aliases/default/bin/corepack use pnpm@latest
         ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
       changed_when: false
+      environment:
+        COREPACK_NPM_REGISTRY: "https://registry.npmmirror.com"
 
     # Upgrade node.js, check version
 
@@ -40,8 +43,11 @@
         ~/.cargo/bin/cargo install fnm
         ~/.cargo/bin/fnm install {{ versions.node }}
         ~/.cargo/bin/fnm default {{ versions.node }}
+        ~/.local/share/fnm/aliases/default/bin/corepack use pnpm@latest
         ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
       changed_when: false
+      environment:
+        COREPACK_NPM_REGISTRY: "https://registry.npmmirror.com"
 
     # Node.js Installation Finished, echo version
 
