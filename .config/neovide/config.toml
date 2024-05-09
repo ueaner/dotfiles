@@ -1,0 +1,13 @@
+# ~/.config/neovide/config.toml
+
+title-hidden = true
+
+# For Linux, use `Noto Sans Mono CJK SC` font provided by `google-noto-sans-mono-cjk-vf-fonts`
+# fc-list | grep 'Noto Sans Mono CJK SC'
+
+[font]
+size = 12
+
+[font.normal]
+family = "Noto Sans Mono CJK SC"
+style = "Regular"
