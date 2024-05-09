@@ -49,6 +49,7 @@ tools:
     - io.podman_desktop.PodmanDesktop
     - com.github.phase1geo.minder
     - io.gitlab.news_flash.NewsFlash
+    - org.inkscape.Inkscape
 
     # See: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/tools/tasks/drawio.yml
     # NOTE: Drawio installed with flatpak cannot input Chinese
