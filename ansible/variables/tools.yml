@@ -111,10 +111,9 @@ tools:
     - tealdeer
     - bottom
     - bandwhich
+    - sniffnet
     - procs
     - dua-cli
-    - cargo-nextest --locked
-    - sniffnet
     - wasm-pack
     - cargo-depgraph
     - fnm

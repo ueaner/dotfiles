@@ -55,3 +55,10 @@
           - "versions.rust: {{ versions.rust }} in `variables/versions.yml` file"
           - "Need to update to the below version ↓"
           - "rustc --version: {{ lang_rust_version.stdout }}"
+
+    - name: Installing cargo-nextest (Linux x86_64)
+      when: ansible_pkg_mgr == "dnf"
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+      changed_when: false
