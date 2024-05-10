@@ -1,8 +1,9 @@
 # vim: set filetype=yaml.ansible:
 ---
 
-# Usage example: ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "go"  --list-tasks
-# Usage example: ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "deno" -vvv
+# Usage examples:
+# ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "go"  --list-tasks
+# ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "deno" -vvv
 
 - name: Setup Linux Workstation
   hosts: local

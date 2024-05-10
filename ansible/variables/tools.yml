@@ -15,6 +15,7 @@ tools:
     - curl
     - wget
     - telnet
+    - lsof
     - file
     - foot
     - entr  # Run arbitrary commands when files change
@@ -40,6 +41,7 @@ tools:
     - libstdc++
     - lld
     - llvm-libs
+    - fswatch  # vim.lsp: File watcher WARNING libuv-watchdirs has known performance issues. Consider installing fswatch.
 
   # flatpak --user list --app --help
   # flatpak list --columns=application,runtime,version,size
