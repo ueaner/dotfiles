@@ -24,3 +24,11 @@
     exclude: 'kernel*'
   tags:
     - upgrade
+
+- name: Fix too many open files - fs.inotify
+  when: ansible_pkg_mgr == "dnf"
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo 'fs.inotify.max_user_instances=1024' | sudo tee /etc/sysctl.d/local.conf
+    sudo sysctl -p /etc/sysctl.d/local.conf
+  changed_when: false
