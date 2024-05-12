@@ -42,6 +42,7 @@ tools:
     - lld
     - llvm-libs
     - fswatch  # vim.lsp: File watcher WARNING libuv-watchdirs has known performance issues. Consider installing fswatch.
+    - java-latest-openjdk-devel
 
   # flatpak --user list --app --help
   # flatpak list --columns=application,runtime,version,size
