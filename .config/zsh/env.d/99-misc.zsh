@@ -1,4 +1,4 @@
-[[ -f $HOME/.local/etc/token.zsh ]] && source $HOME/.local/etc/token.zsh
+[[ -f $HOME/.local/etc/token.sh ]] && source $HOME/.local/etc/token.sh
 
 [[ -f $HOME/sdk/emsdk/emsdk_env.sh ]] && source $HOME/sdk/emsdk/emsdk_env.sh
 
