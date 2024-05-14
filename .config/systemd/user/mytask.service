@@ -1,0 +1,5 @@
+[Unit]
+Description=My Scheduled Task
+
+[Service]
+ExecStart=%h/.config/systemd/user/mytask.sh

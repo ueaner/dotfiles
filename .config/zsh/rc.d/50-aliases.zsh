@@ -17,6 +17,11 @@ alias path='echo -e ${PATH//:/\\n}'
 # macOS 使用 Preview 打开 manpage
 alias preman='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
 
+# Ctrl-z freezes all current and future user terminals
+# See: https://github.com/neovim/neovim/issues/28149
+# NOTE: Waiting for `https://src.fedoraproject.org/rpms/kernel-headers` to release v6.8.5+
+alias nvim="UV_USE_IO_URING=0 nvim"
+
 alias vim='nvim'
 alias vimdiff="vim -d"
 alias ls="ls --color=auto --time-style=long-iso"

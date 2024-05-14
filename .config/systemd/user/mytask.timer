@@ -1,0 +1,22 @@
+# start:  systemctl --user start mytask.timer
+# status: systemctl --user status mytask.timer
+# enable: systemctl --user enable --now mytask.timer
+# timers: systemctl --user list-timers
+# tail:   journalctl -f --user-unit mytask.timer
+# reload config: systemctl --user daemon-reload
+# cat config:    systemctl --user cat mytask.timer
+# service log:   journalctl -f --user-unit mytask.service
+
+# call graph: .timer -> .service -> .sh
+
+[Unit]
+Description=My Timer
+
+[Timer]
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html
+OnUnitActiveSec=12h
+Unit=mytask.service
+
+[Install]
+# WantedBy=multi-user.target
+WantedBy=default.target
