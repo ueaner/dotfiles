@@ -14,7 +14,8 @@ Description=My Timer
 
 [Timer]
 # https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html
-OnUnitActiveSec=12h
+OnStartupSec=10min
+OnUnitActiveSec=6h
 Unit=mytask.service
 
 [Install]
