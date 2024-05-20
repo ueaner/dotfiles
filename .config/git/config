@@ -15,6 +15,7 @@
 
     # View abbreviated SHA, description, and history graph of the latest 20 commits.
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --stat
+    ld = "-c diff.external=difft log -p --ext-diff"
 
     # View the current working tree status using the short format.
     s = status -sb
@@ -125,36 +126,8 @@
     editor = nvim
     quotepath = false
 
-    pager = delta
     # 始终使用 Unix-style line endings (LF), Git v2.10+
     #autocrlf = input
-
-[pager]
-    difftool = true
-
-[interactive]
-    diffFilter = delta --color-only
-
-# delta --diff-so-fancy --show-config
-# git grep
-# git diff
-# git show
-# git log -p
-# git stash show -p
-# git reflog -p
-# git add -p
-# git merge
-# git blame
-[delta]
-    navigate = true
-    line-numbers = true
-    side-by-side = true
-    # 这里设置完后 line-number 就没了
-    # line-numbers-left-format = ""
-    # line-numbers-right-format = "│ "
-    features = unobtrusive-line-numbers decorations
-
-
 
 [color]
 
@@ -187,14 +160,18 @@
     # export GPG_TTY=$(tty)
     # gpgsign = true
 
+[pager]
+
+    difftool = true
+
 [diff]
 
     # Detect copies as well as renames.
     renames = copies
-    # tool = icdiff
-    tool = delta
-    # tool = difftastic
     colorMoved = default
+    tool = difftastic
+    # Difftastic By Default
+    external = difft
 
 [diff "bin"]
 
@@ -204,6 +181,10 @@
 [difftool]
 
     prompt = false
+
+[difftool "difftastic"]
+
+    cmd = difft "$LOCAL" "$REMOTE"
 
 [difftool "icdiff"]
 
@@ -220,10 +201,6 @@
 [difftool "delta"]
 
     cmd = delta $LOCAL $REMOTE
-
-[difftool "difftastic"]
-
-    cmd = difft "$LOCAL" "$REMOTE"
 
 [merge]
 
