@@ -39,6 +39,14 @@ systemctl --user mask evolution-calendar-factory.service
 systemctl --user mask evolution-source-registry.service
 systemctl --user mask evolution-user-prompter.service
 
+# Disable Tracker fs
+cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
+echo -e "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
+gsettings set org.freedesktop.Tracker3.Miner.Files crawling-interval -2  # -1
+gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false # true
+# Cleanup the Tracker database: tracker3 reset --filesystem --rss
+tracker3 reset --filesystem
+
 # remove unused packages
-dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese
+dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese gnome-terminal-nautilus gnome-terminal
 dnf remove libreoffice\*
