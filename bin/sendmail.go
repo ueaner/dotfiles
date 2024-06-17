@@ -31,6 +31,11 @@ func send() {
 	// Message.
 	contents := os.Args[1:]
 	contents = append(contents, "\n\nhttps://src.fedoraproject.org/rpms/kernel-headers")
+	contents = append(contents, "\n\nUpgrading Kernel:")
+	contents = append(contents, "\n    sudo dnf update")
+	contents = append(contents, "\n    sudo akmods")
+	contents = append(contents, "\n    reboot")
+
 	body := strings.Join(contents, "\n")
 
 	msg := fmt.Sprintf(`From: %s <%s>
