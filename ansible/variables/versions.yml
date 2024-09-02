@@ -7,17 +7,17 @@
 versions:
 
   # Kernel - https://www.kernel.org/
-  kernel: 6.9.4-200.fc40.x86_64
-  kernel_slash: 6.9.4/200.fc40/x86_64
+  kernel: 6.10.3-200.fc40.x86_64
+  kernel_slash: 6.10.3/200.fc40/x86_64
 
   # Go - https://go.dev/
-  go: 1.22.4
+  go: 1.23.0
 
   # Rust - https://www.rust-lang.org/
-  rust: 1.78.0
+  rust: 1.80.1
 
   # Node.js - https://nodejs.org/
-  node: 20.14.0
+  node: 20.17.0
 
   # Deno - https://deno.land/
-  deno: 1.44.1
+  deno: 1.46.2
