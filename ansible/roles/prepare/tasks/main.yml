@@ -28,7 +28,7 @@
   ignore_errors: true
   register: prepare_sudoers_check
 
-- name: Same thing without a password (if skipping is user has sudo access)
+- name: Same thing without a password (Skip this task if the user has sudo access)
   # when: prepare_sudoers_check.stdout == "no"
   when: prepare_sudoers_check.rc != 0
   ansible.builtin.shell: |
