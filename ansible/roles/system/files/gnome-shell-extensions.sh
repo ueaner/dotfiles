@@ -1,14 +1,25 @@
-sudo dnf install gnome-browser-connector
+#
+# General Installation Steps:
+#
+#   0. Visit https://extensions.gnome.org/
+#   1. Search extension
+#   2. Click "Install" to confirm extension installation
+#  *3. Re-login to enable extensions [unavoidable]
+#
+# https://medium.com/@ankurloriya/install-gnome-extension-using-command-line-736199be1cda
+# https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936/4
+#
+# Automatically install extensions to avoid pop-ups:
+#
+#   1. Configure the extension uuid
+#   2. Download the extension package and unzip it to the extension directory
+#
 
-# NOTE: Need to run locally, click `Install` to confirm the extension installation
-# OR re-login
-# NOT SUPPORT UPGRADE. Upgrade use firefox to visit https://extensions.gnome.org/local/
+DOWNLOAD_TMPDIR="/tmp"
+EXTENSIONS_SITE="https://extensions.gnome.org"
 
-# python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user gnome-extensions-cli
-# ~/.local/bin/gext install gestureImprovements@gestures
-
-# installation directory
-# ~/.local/share/gnome-shell/extensions/<uuid>
+USER_EXTDIR="$HOME/.local/share/gnome-shell/extensions"
+SYSTEM_EXTDIR="/usr/share/gnome-shell/extensions"
 
 # - find by pk
 # curl --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=44" --data-urlencode "pk=4245"
@@ -19,59 +30,111 @@ sudo dnf install gnome-browser-connector
 # - find by uuid:
 # curl -v --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=44" --data-urlencode "uuid=gestureImprovements@gestures"
 
-# https://medium.com/@ankurloriya/install-gnome-extension-using-command-line-736199be1cda
-
-sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
-
 # Make sure the uuid exists
 uuids=(
-    "gestureImprovements@gestures"              # https://extensions.gnome.org/extension/4245/gesture-improvements/
-    "kimpanel@kde.org"                          # https://extensions.gnome.org/extension/261/kimpanel/
-    "xremap@k0kubun.com"                        # https://extensions.gnome.org/extension/5060/xremap/
-    "color-picker@tuberry"                      # https://extensions.gnome.org/extension/3396/color-picker/
-    "netspeedsimplified@prateekmedia.extension" # https://extensions.gnome.org/extension/3724/net-speed-simplified/
-    "gsconnect@andyholmes.github.io"            # https://extensions.gnome.org/extension/1319/gsconnect/
+    "gestureImprovements@gestures"                             # https://extensions.gnome.org/extension/4245/gesture-improvements/
+    "kimpanel@kde.org"                                         # https://extensions.gnome.org/extension/261/kimpanel/
+    "xremap@k0kubun.com"                                       # https://extensions.gnome.org/extension/5060/xremap/
+    "color-picker@tuberry"                                     # https://extensions.gnome.org/extension/3396/color-picker/
+    "gsconnect@andyholmes.github.io"                           # https://extensions.gnome.org/extension/1319/gsconnect/
+    "system-monitor@gnome-shell-extensions.gcampax.github.com" # https://extensions.gnome.org/extension/3724/net-speed-simplified/
+    "clipboard-indicator@tudmotu.com"                          # https://extensions.gnome.org/extension/779/clipboard-indicator/ <Super>[bracketleft/bracketright]
 )
 
 force=false
-if [ "$1" == "-f" ] || [ "$1" == "--force" ]; then
+if [[ "$1" == "-f" ]] || [[ "$1" == "--force" ]]; then
     force=true
 fi
 
+# extension::download <uuid>
+function extension::download() {
+    [[ -n "$1" ]] || return # return 1
+    local uuid="$1"
+    # Parsing the gnome shell major version
+    sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
+    # Parsing the extension's download URL
+    json=$(curl --get --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid" "$EXTENSIONS_SITE/extension-info/")
+    download_url=$(echo "$json" | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['download_url'])")
+    # Download the extension package
+    echo "$EXTENSIONS_SITE$download_url"
+    curl -L "$EXTENSIONS_SITE$download_url" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+    return $?
+}
+
+# gnome-extensions install <path-to-uuid.zip>
+# extension::install <uuid>
+function extension::install() {
+    [[ -n "$1" ]] || return
+    local uuid="$1"
+    # Unzip the extension package
+    unzip -q "$DOWNLOAD_TMPDIR/$uuid.zip" -d "$HOME/.local/share/gnome-shell/extensions/$uuid/"
+}
+
+# gnome-extensions show <uuid>
+# extension::exists <uuid>
+# extension::exists <uuid> --user
+# extension::exists <uuid> --system
+function extension::exists() {
+    [[ -n "$1" ]] || return
+    local uuid="$1"
+    local scope="$2"
+
+    local userext="$USER_EXTDIR/$uuid"
+    local systemext="$SYSTEM_EXTDIR/$uuid"
+
+    if [[ "$scope" == "--user" ]]; then
+        [[ -d "$userext" ]]
+        return $?
+    fi
+    if [[ "$scope" == "--system" ]]; then
+        [[ -d "$systemext" ]]
+        return $?
+    fi
+
+    [[ -d "$userext" ]] || [[ -d "$systemext" ]]
+    return $?
+}
+
 for uuid in "${uuids[@]}"; do
-    if [ -f "$HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json" ] && ! $force; then
-        echo "$uuid is installed to $HOME/.local/share/gnome-shell/extensions/$uuid/metadata.json"
+    if extension::exists "$uuid" --system; then
+        echo "$uuid is installed to $SYSTEM_EXTDIR/$uuid/metadata.json"
+        continue
+    fi
+
+    if extension::exists "$uuid" --user && ! $force; then
+        echo "$uuid is installed to $USER_EXTDIR/$uuid/metadata.json"
         continue
     fi
 
     if [[ "$uuid" == "gestureImprovements@gestures" ]]; then
         # GNOME 46
-        curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "/tmp/$uuid.zip"
+        curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+        # Unzip the extension package
+        # gnome-extensions install -f "/tmp/$uuid.zip"
     else
-        # Parse the download url
-        json=$(curl --get --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid" "https://extensions.gnome.org/extension-info/")
-        download_url=$(echo "$json" | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['download_url'])")
-        # Download the extension package
-        echo "https://extensions.gnome.org$download_url"
-        curl -L "https://extensions.gnome.org$download_url" -o "/tmp/$uuid.zip"
+        extension::download "$uuid"
+
+        # Unzip the extension package
+        # gnome-extensions install -f "/tmp/$uuid.zip"
+
+        # Error: enable extension: Extension "<UUID>" does not exist
+        # gnome-extensions enable "$uuid"
+        # gnome-extensions info "$uuid"
+
+        # NOTE: Download and install the extension, click "Install" to confirm the extension installation
+        # gdbus call --session \
+        #     --dest org.gnome.Shell.Extensions \
+        #     --object-path /org/gnome/Shell/Extensions \
+        #     --method org.gnome.Shell.Extensions.InstallRemoteExtension \
+        #     "$uuid"
     fi
 
-    # # Create extension directory
-    # mkdir -p "$HOME/.local/share/gnome-shell/extensions/$uuid"
-    # # Unzip the extension package
-    # unzip -q "/tmp/$uuid.zip" -d "$HOME/.local/share/gnome-shell/extensions/$uuid/"
-    # # enable extension: Extension "<UUID>" does not exist
-    # gnome-extensions enable "$uuid"
+    extension::install "$uuid"
 
-    # Unzip the extension package
-    gnome-extensions install -f "/tmp/$uuid.zip"
+    if extension::exists "$uuid" --user; then
+        echo "$uuid installed successfully, to $USER_EXTDIR/$uuid/metadata.json"
+    else
+        echo "$uuid installation failed."
+    fi
 
-    # install & enable extension, click `Install` to confirm the extension installation
-    gdbus call --session \
-        --dest org.gnome.Shell.Extensions \
-        --object-path /org/gnome/Shell/Extensions \
-        --method org.gnome.Shell.Extensions.InstallRemoteExtension \
-        "$uuid"
-
-    gnome-extensions info "$uuid"
 done
