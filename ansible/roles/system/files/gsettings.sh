@@ -51,6 +51,9 @@ gsettings set org.gnome.shell.keybindings switch-to-application-7 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-8 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-9 "[]"
 
+# [RELEASE] `<Super>period` for alacritty/tmux
+gsettings set org.freedesktop.ibus.panel.emoji hotkey "['<Super>semicolon']" # ['<Super>period', '<Super>semicolon']
+
 #----------------------------------------------------------------
 # Emacs Input: browser location bar, input box, etc.
 #----------------------------------------------------------------
@@ -79,11 +82,34 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true #
 # > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 
 #----------------------------------------------------------------
-# Caps Lock
+# Keyboard
 #----------------------------------------------------------------
+# Settings -> Keyboard -> Input Sources -> [+] -> Chinese (China) -> Chinese (Intelligent Pinyin)
+gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'libpinyin'), ('xkb', 'us')]" # []
 # Make Caps Lock an additional Esc
-# NOTE: No Caps Lock button under chromebook
 gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']" # []
+
+# Run `ibus-setup` to start `IBus Preferences`
+gsettings set org.freedesktop.ibus.general.hotkey triggers "['<Control>space']" # ['<Super>space']
+gsettings set org.freedesktop.ibus.general preload-engines "['libpinyin']"      # []
+
+# ibus-libpinyin: Intelligent Pinyin engine based on libpinyin for IBus
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin main-switch "<Shift>"  # '<Shift>'
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin comma-period-page true # Use comma and period to flip page
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin correct-pinyin false   # true
+
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin dictionaries "9;15"  # Life;Technology
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin fuzzy-pinyin false   # true
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin init-chinese false   # true
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin init-full false      # false
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin init-full-punct true # true
+
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin dynamic-adjust true       # true
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin remember-every-input true # false
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin sort-candidate-option 0   # 1
+
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin english-input-mode false # true
+gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin table-input-mode false   # true
 
 #----------------------------------------------------------------
 # Power
@@ -204,3 +230,36 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 "['<Super>8
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-9 "['<Super>9']"
 # <Super>0: reset font size
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-10 "[]"
+
+# GNOME Shell Extensions
+#
+# 1. Lists keys and values in SCHEMA:
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/ list-recursively org.gnome.shell.extensions.gestureImprovements
+# Default values in ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/org.gnome.shell.extensions.gestureImprovements.gschema.xml
+#
+# 2. Open the UUID Preferences dialog:
+# gnome-extensions prefs gestureImprovements@gestures
+#
+# 3. Monitors KEY for changes and prints the changed values
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/ monitor org.gnome.shell.extensions.gestureImprovements
+
+# Clipboard Indicator
+schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas/
+if [[ -d $schemadir ]]; then
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']"
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"
+fi
+
+# System Monitor
+schemadir=~/.local/share/gnome-shell/extensions/system-monitor@gnome-shell-extensions.gcampax.github.com/schemas/
+if [[ -d $schemadir ]]; then
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.system-monitor show-download true
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.system-monitor show-upload true
+fi
+
+# Gesture Improvements
+schemadir=~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/
+if [[ -d $schemadir ]]; then
+    # forward-back-gesture for Firefox/Chrome
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-forward-back-gesture true
+fi
