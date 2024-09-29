@@ -8,7 +8,9 @@
     flatpak --user remote-modify --gpg-import=/tmp/flathub.gpg flathub
   changed_when: false
 
-# chrome://flags/#ozone-platform-hint
+# chrome://flags/#ozone-platform-hint -> Preferred Ozone platform -> Wayland
+# See: chrome://version -> Command Line
+# Use: https://www.google.com/intl/zh-CN/inputtools/chrome/
 - name: Native Wayland for Chrome (unsupported chinese input method)
   block:
 
