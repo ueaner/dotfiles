@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net/smtp"
 	"os"
@@ -29,20 +30,29 @@ func send() {
 	to := os.Getenv("MAIL_163_USERNAME")
 
 	// Message.
-	contents := os.Args[1:]
-	contents = append(contents, "\n\nhttps://src.fedoraproject.org/rpms/kernel-headers")
-	contents = append(contents, "\n\nUpgrading Kernel:")
-	contents = append(contents, "\n    sudo dnf update")
-	contents = append(contents, "\n    sudo akmods")
-	contents = append(contents, "\n    reboot")
+	subject := ""
+	body := ""
 
-	body := strings.Join(contents, "\n")
+	switch args := len(os.Args); args {
+	case 1:
+		panic("No subject parameter.")
+	case 2:
+		subject = os.Args[1]
+		var err error
+		body, err = getMailBodyFromStdio()
+		if err != nil {
+			panic(err)
+		}
+	default:
+		subject = os.Args[1]
+		body = strings.Join(os.Args[2:], "\n")
+	}
 
 	msg := fmt.Sprintf(`From: %s <%s>
 To: %s <%s>
 Subject: %s
 
-%s`, "Hello Notification", sender.Username, "ueaner", to, "Fedora kernel-headers updates available", body)
+%s`, "Hello Notification", sender.Username, "ueaner", to, subject, body)
 
 	// Authentication.
 	auth := smtp.PlainAuth("", sender.Username, sender.Password, sender.Host)
@@ -51,12 +61,41 @@ Subject: %s
 	addr := fmt.Sprintf("%s:%d", sender.Host, sender.Port)
 	err := smtp.SendMail(addr, auth, sender.Username, []string{to}, []byte(msg))
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
 	fmt.Println("Email Sent Successfully!")
 }
 
+func getMailBodyFromStdio() (body string, err error) {
+	contents := []string{}
+	// 验证 stdio 的状态，确认是否有 heredoc 格式的 body 参数内容
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		return
+	}
+
+	// No input from stdin.
+	if info.Mode()&os.ModeCharDevice != 0 {
+		return
+	}
+
+	// 从标准输入读取内容
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		line := scanner.Text()
+		contents = append(contents, line)
+		// fmt.Println("Received:", line)
+	}
+	if err = scanner.Err(); err != nil {
+		// fmt.Fprintln(os.Stderr, "Error reading input:", err)
+		return
+	}
+
+	body = strings.Join(contents, "\n")
+	return
+}
+
+// sendmail.go <subject> <body>
 func main() {
 	send()
 }
