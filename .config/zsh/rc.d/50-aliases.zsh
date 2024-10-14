@@ -20,7 +20,7 @@ alias preman='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
 # Ctrl-z freezes all current and future user terminals
 # See: https://github.com/neovim/neovim/issues/28149
 # NOTE: Waiting for `https://src.fedoraproject.org/rpms/kernel-headers` to release v6.8.5+
-alias nvim="UV_USE_IO_URING=0 nvim"
+# alias nvim="UV_USE_IO_URING=0 nvim"
 
 alias vim='nvim'
 alias vimdiff="vim -d"
@@ -61,8 +61,8 @@ alias -g N/='| tr -s "/" "\n"'
 
 # lazygit DOT
 alias -g DOT='--git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-# lazygit LOC
-alias -g LOC='--git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local'
+# lazygit LOCAL
+alias -g LOCAL='--git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local'
 
 # python 格式化 json | bat 高亮字段
 # curl http://httpbin.org/json | json
@@ -116,3 +116,5 @@ alias unproxy='unset all_proxy'
 alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs nvim'
 
 alias dnf='sudo dnf'
+
+alias dus='du -d 1 * | sort -nr | cut -f2- | xargs du -sh | grep -v "^0"'
