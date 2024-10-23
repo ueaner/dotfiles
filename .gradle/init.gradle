@@ -1,90 +1,15 @@
 // https://developer.aliyun.com/mvn/guide
 gradle.projectsLoaded {
     rootProject.allprojects {
-        buildscript {
-            repositories {
-                // aliyun 文档上显示 public 是 central 仓和 jcenter 仓的聚合仓
-                // 实际上有一些下载不下来，如 https://repo1.maven.org/maven2/org/apache/cordova/framework/10.1.2/
-                // 还是使用单独的 CENTRAL_URL
-                def PUBLIC_URL  = 'https://maven.aliyun.com/repository/public'
-                // def CENTRAL_URL = 'https://maven.aliyun.com/repository/central'
-                def CENTRAL_URL = 'https://plugins.gradle.org/m2/'
-                def GOOGLE_URL  = 'https://maven.aliyun.com/repository/google'
-
-                all { ArtifactRepository repo ->
-                    if (repo instanceof MavenArtifactRepository) {
-                        def url = repo.url.toString()
-                        if (url.startsWith('https://jcenter.bintray.com/')) {
-                            project.logger.lifecycle "Repository ${repo.url} replaced by ${PUBLIC_URL}."
-                            println("buildscript ${repo.url} replaced by ${PUBLIC_URL}.")
-                            remove repo
-                        }
-                        else if (url.startsWith('https://repo1.maven.org/maven2')) {
-                            project.logger.lifecycle "Repository ${repo.url} replaced by ${CENTRAL_URL}."
-                            println("buildscript ${repo.url} replaced by ${CENTRAL_URL}.")
-                            remove repo
-                        }
-                        else if (url.startsWith('https://dl.google.com/dl/android/maven2/')) {
-                            project.logger.lifecycle "Repository ${repo.url} replaced by ${GOOGLE_URL}."
-                            println("buildscript ${repo.url} replaced by ${GOOGLE_URL}.")
-                            remove repo
-                        }
-                    }
-                }
-                jcenter {
-                    url PUBLIC_URL
-                }
-                // jcenter 被 mavenCentral 替代
-                // mavenCentral {
-                //     url CENTRAL_URL
-                // }
-                maven {
-                    url PUBLIC_URL
-                    // url CENTRAL_URL
-                }
-                google {
-                    url GOOGLE_URL
-                }
-            }
-        }
         repositories {
-            def PUBLIC_URL = 'https://maven.aliyun.com/repository/public'
-            // def CENTRAL_URL = 'https://maven.aliyun.com/repository/central'
-            def CENTRAL_URL = 'https://plugins.gradle.org/m2/'
-            def GOOGLE_URL = 'https://maven.aliyun.com/repository/google'
-            all { ArtifactRepository repo ->
-                if (repo instanceof MavenArtifactRepository) {
-                    def url = repo.url.toString()
-                    if (url.startsWith('https://jcenter.bintray.com/')) {
-                        project.logger.lifecycle "Repository ${repo.url} replaced by ${PUBLIC_URL}."
-                        println("buildscript ${repo.url} replaced by ${PUBLIC_URL}.")
-                        remove repo
-                    }
-                    else if (url.startsWith('https://repo1.maven.org/maven2')) {
-                        project.logger.lifecycle "Repository ${repo.url} replaced by ${CENTRAL_URL}."
-                        println("buildscript ${repo.url} replaced by ${CENTRAL_URL}.")
-                        remove repo
-                    }
-                    else if (url.startsWith('https://dl.google.com/dl/android/maven2/')) {
-                        project.logger.lifecycle "Repository ${repo.url} replaced by ${GOOGLE_URL}."
-                        println("buildscript ${repo.url} replaced by ${GOOGLE_URL}.")
-                        remove repo
-                    }
-                }
-            }
-            jcenter {
-                url PUBLIC_URL
-            }
-            // mavenCentral {
-            //     url CENTRAL_URL
-            // }
             maven {
-                url PUBLIC_URL
-                // url CENTRAL_URL
+                url 'https://maven.aliyun.com/repository/public/'
             }
-            google {
-                url GOOGLE_URL
+            maven {
+                url 'https://maven.aliyun.com/repository/central'
             }
+            mavenLocal()
+            mavenCentral()
         }
     }
 }
