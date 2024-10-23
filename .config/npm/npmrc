@@ -2,23 +2,31 @@
 shell-emulator=true
 engine-strict=true
 registry=https://registry.npmmirror.com/
-disturl=https://cdn.npmmirror.com/binaries/node
-sass_binary_site=https://cdn.npmmirror.com/binaries/node-sass
-phantomjs_cdnurl=https://cdn.npmmirror.com/binaries/phantomjs
-chromedriver_cdnurl=https://cdn.npmmirror.com/binaries/chromedriver
-operadriver_cdnurl=https://cdn.npmmirror.com/binaries/operadriver
-electron_mirror=https://cdn.npmmirror.com/binaries/electron
-electron_mirror="https://cdn.npmmirror.com/binaries/electron/"
-electron_builder_binaries_mirror=https://cdn.npmmirror.com/binaries/electron-builder-binaries
-python_mirror=https://cdn.npmmirror.com/binaries/python
-node_sqlite3_binary_host_mirror=https://cdn.npmmirror.com/binaries
-puppeteer_download_base_url=https://cdn.npmmirror.com/binaries/chrome-for-testing
-sharp_binary_host=https://cdn.npmmirror.com/binaries/sharp
-sharp_libvips_binary_host=https://cdn.npmmirror.com/binaries/sharp-libvips
-canvas_binary_host_mirror=https://cdn.npmmirror.com/binaries/node-canvas-prebuilt
+corepack_npm_registry=https://registry.npmmirror.com/
+# - https://npmmirror.com/mirrors/
+# - https://github.com/cnpm/binary-mirror-config/blob/master/package.json
+disturl=https://npmmirror.com/mirrors/node/
+nodejs_org_mirror=https://npmmirror.com/mirrors/node/
+sass_binary_site=https://npmmirror.com/mirrors/node-sass/
+swc_binary_site=https://npmmirror.com/mirrors/node-swc/
+phantomjs_cdnurl=https://npmmirror.com/mirrors/phantomjs/
+edgedriver_cdnurl=https://npmmirror.com/mirrors/edgedriver/
+chromedriver_cdnurl=https://npmmirror.com/mirrors/chromedriver/
+operadriver_cdnurl=https://npmmirror.com/mirrors/operadriver/
+puppeteer_download_host=https://npmmirror.com/mirrors/chrome-for-testing/
+puppeteer_download_base_url=https://npmmirror.com/mirrors/chrome-for-testing/
+playwright_download_host=https://npmmirror.com/mirrors/playwright/
+electron_mirror=https://npmmirror.com/mirrors/electron/
+electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries/
+python_mirror=https://npmmirror.com/mirrors/python/
+node_sqlite3_binary_host_mirror=https://npmmirror.com/mirrors/sqlite3/
+better_sqlite3_binary_host_mirror=https://npmmirror.com/mirrors/better-sqlite3/
+sharp_binary_host=https://npmmirror.com/mirrors/sharp/
+sharp_libvips_binary_host=https://npmmirror.com/mirrors/sharp-libvips/
+canvas_binary_host_mirror=https://npmmirror.com/mirrors/node-canvas-prebuilt/
+sentrycli_cdnurl=https://npmmirror.com/mirrors/sentry-cli/
 cache=~/.cache/npm
-# /usr/local/bin/npm get prefix -g
+# npm get prefix -g
 prefix=~/.local
-coc.nvim:registry=https://registry.npmmirror.com/
 # run pre/post scripts
 enable-pre-post-scripts=true
