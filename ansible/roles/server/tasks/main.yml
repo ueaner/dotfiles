@@ -1,0 +1,22 @@
+---
+
+- name: Install shadowsocks-rust (server)
+  ansible.builtin.include_tasks: shadowsocks.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - upgrade
+    - ssserver
+
+- name: Install ss nginx proxy (server)
+  ansible.builtin.include_tasks: ss-nginx-proxy.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - upgrade
+    - ssproxy
+
+- name: Install ss ssh tunnel (server)
+  ansible.builtin.include_tasks: ss-ssh-tunnel.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - upgrade
+    - sstunnel

@@ -2,6 +2,9 @@
 
 - name: Install shadowsocks
   ansible.builtin.include_tasks: shadowsocks.yml
+  tags:
+    - upgrade
+    - sslocal
 
 - name: Install xremap
   ansible.builtin.include_tasks: xremap.yml

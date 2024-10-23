@@ -1,0 +1,27 @@
+---
+
+# Server Only
+
+- name: Install ssh tunnel
+  when: ansible_distribution == "CentOS"
+  delegate_to: sp
+  tags:
+    - upgrade
+    - sstunnel
+  block:
+    - name: Welcome to {{ ansible_distribution }}
+      ansible.builtin.debug:
+        msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Auto-login to ss via ssh
+      ansible.builtin.copy:
+        src: ~/.ssh/boxkey/id_rsa
+        dest: /root/.ssh/id_rsa
+        mode: "0600"
+
+    - name: Install nginx.conf file
+      ansible.builtin.copy:
+        src: ~/.local/etc/ss-ssh-tunnel.service
+        dest: /etc/systemd/system/ss-ssh-tunnel.service
+        mode: "0644"
+      notify: Start and enable ss-ssh-tunnel

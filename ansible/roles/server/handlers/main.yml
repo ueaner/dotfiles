@@ -1,0 +1,22 @@
+---
+
+# Server Only
+
+- name: Start and enable shadowsocks-rust-server service
+  # noqa command-instead-of-module
+  # ansible.builtin.command: systemctl --user enable --now shadowsocks-rust-server
+  ansible.builtin.command: systemctl enable --now shadowsocks-rust-server
+  changed_when: false
+  when: ansible_distribution == "CentOS"
+
+- name: Start and enable nginx
+  # noqa command-instead-of-module
+  ansible.builtin.command: systemctl enable --now nginx
+  changed_when: false
+  when: ansible_distribution == "CentOS"
+
+- name: Start and enable ss-ssh-tunnel
+  # noqa command-instead-of-module
+  ansible.builtin.command: systemctl enable --now ss-ssh-tunnel.service
+  changed_when: false
+  when: ansible_distribution == "CentOS"
