@@ -1,5 +1,5 @@
-if [[ "`uname -s`" != "Darwin" ]]; then
-	return
+if [[ "$(uname -s)" != "Darwin" ]]; then
+    return
 fi
 
 # brew cask: downloads folder ~/Library/Caches/Homebrew/Cask
@@ -10,10 +10,11 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_FORCE_BREWED_CURL=1
 export HOMEBREW_FORCE_BREWED_GIT=1
+export HOMEBREW_INSTALL_FROM_API=1
 
 # 安装相关编译工具: xcode-select —install
 # 10.15 定义 CPATH 代替软链 /usr/include
-export CPATH=`xcrun --show-sdk-path`/usr/include
+export CPATH=$(xcrun --show-sdk-path)/usr/include
 
 # /usr/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
 # export JAVA_HOME=`/usr/libexec/java_home`

@@ -7,6 +7,7 @@
 # https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
 # yarn 使用 ~/.yarnrc.yml 来管理
@@ -29,7 +30,6 @@ export FLUTTER_STORAGE_BASE_URL=https://mirrors.tuna.tsinghua.edu.cn/flutter
 export PUB_HOSTED_URL=https://mirrors.tuna.tsinghua.edu.cn/dart-pub
 #export FLUTTER_STORAGE_BASE_URL="https://storage.flutter-io.cn"
 #export PUB_HOSTED_URL="https://pub.flutter-io.cn"
-
 
 # node fnm
 #export FNM_NODE_DIST_MIRROR=https://registry.npmmirror.com/dist
