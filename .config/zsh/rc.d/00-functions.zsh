@@ -33,13 +33,12 @@
 # $ command -V fg
 # fg is a shell builtin
 
-
 # 判断函数是否存在
 # if ! function_exists some_func; then
 #     do something ...
 # fi
 function function_exists() {
-    type -a $1 > /dev/null
+    type -a $1 >/dev/null
     return $?
 }
 
@@ -53,7 +52,7 @@ function function_exists() {
 # if command_exists some_command; then echo yes; else echo no; fi
 # 不需要 return，会自动把结果返回去
 function command_exists() {
-    command -v "$1" > /dev/null 2>&1
+    command -v "$1" >/dev/null 2>&1
 }
 
 # if url_exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz'; then echo "Y"; else echo "N"; fi
@@ -65,13 +64,10 @@ function url_exists() {
     return $?
 }
 
-function scriptname() {
-    # NOTE: 以下代码需要在指定脚本中执行
-    # SCRIPT_NAME=`basename ${BASH_SOURCE[0]:-${(%):-%x}}`
-    # SCRIPTS_ROOT=`dirname ${BASH_SOURCE[0]:-${(%):-%x}}`
-    echo `basename ${BASH_SOURCE[0]:-${(%):-%x}}`
-    echo $_
-}
+# 获取脚本文件名称 sh/bash/zsh
+# SCRIPT_NAME=`basename ${BASH_SOURCE[0]:-${(%):-%x}}`
+# SCRIPTS_ROOT=`dirname ${BASH_SOURCE[0]:-${(%):-%x}}`
+# echo $_
 
 function isZshOrBash() {
     if [[ -z ${BASH_VERSINFO+x} ]]; then
@@ -82,9 +78,9 @@ function isZshOrBash() {
 }
 
 function zsh_stats() {
-  fc -l 1 \
-    | awk '{ CMD[$2]++; count++; } END { for (a in CMD) print CMD[a] " " CMD[a]*100/count "% " a }' \
-    | grep -v "./" | sort -nr | head -n 20 | column -c3 -s " " -t | nl
+    fc -l 1 |
+        awk '{ CMD[$2]++; count++; } END { for (a in CMD) print CMD[a] " " CMD[a]*100/count "% " a }' |
+        grep -v "./" | sort -nr | head -n 20 | column -c3 -s " " -t | nl
 }
 
 # 存在则引入文件，imagemagick 包中有 import 命令
@@ -95,12 +91,12 @@ function require() {
 
 # Check if we can read given files and source those we can.
 function xsource() {
-    if (( ${#argv} < 1 )) ; then
+    if ((${#argv} < 1)); then
         printf 'usage: xsource FILE(s)...\n' >&2
         return 1
     fi
 
-    while (( ${#argv} > 0 )) ; do
+    while ((${#argv} > 0)); do
         [[ -r "$1" ]] && source "$1"
         shift
     done
@@ -119,83 +115,57 @@ function xsource() {
 # zless test.gz
 
 function is_mac() {
-    [[ `uname -s` = Darwin ]]
+    [[ $(uname -s) = Darwin ]]
     return $?
 }
 
 # $MY_OS_NAME
 case $(uname | tr '[:upper:]' '[:lower:]') in
-    linux*)
-        export MY_OS_NAME=linux
-        ;;
-    darwin*)
-        export MY_OS_NAME=darwin
-        ;;
-    msys*)
-        export MY_OS_NAME=windows
-        ;;
-    *)
-        export MY_OS_NAME=notset
-        ;;
+linux*)
+    export MY_OS_NAME=linux
+    ;;
+darwin*)
+    export MY_OS_NAME=darwin
+    ;;
+msys*)
+    export MY_OS_NAME=windows
+    ;;
+*)
+    export MY_OS_NAME=notset
+    ;;
 esac
 
 # 最常用的10条命令
 # @see http://linux.byexamples.com/archives/332/what-is-your-10-common-linux-commands/
-function tophistory()
-{
+function tophistory() {
     n=${1:-10}
     history |
-    awk '{CMD[$2]++;count++;}END \
+        awk '{CMD[$2]++;count++;}END \
     { for (a in CMD)print CMD[a] " " \
     CMD[a]/count*100 "% " a;}' |
-    grep -v "./" |
-    column -c3 -s " " -t |
-    sort -nr |
-    nl |
-    head -n$n
+        grep -v "./" |
+        column -c3 -s " " -t |
+        sort -nr |
+        nl |
+        head -n$n
 }
 
-function topmemory()
-{
+function topmemory() {
     n=${1:-10}
     ps aux | sort -k4nr | head -n $n
 }
 
-function top-procname()
-{
+function top-procname() {
     if [ "$1" != "" ]; then
-        htop -p `pgrep -d',' -f $1`
+        htop -p $(pgrep -d',' -f $1)
     else
         echo Please input process name
     fi
 }
 
-# 排序输出某一个目录下的子目录(文件)大小
-# dus: du + sort
-# 使用：dus [目录，默认为当前目录]
-# Mac && Linux
-function dus()
-{
-    tmpfile=/tmp/$(date +%s).$RANDOM
-    currdir=${1:-.}
-
-    du -sh $currdir/* | sort -rn > $tmpfile
-
-    cat $tmpfile | grep $'G\t' && \
-    echo -----------------------------
-    cat $tmpfile | grep $'M\t' && \
-    echo -----------------------------
-    cat $tmpfile | grep $'K\t' && \
-    echo -----------------------------
-    cat $tmpfile | grep $'B\t'
-
-    rm -f $tmpfile
-}
-
-function tcpstats()
-{
+function tcpstats() {
     #netstatan=`netstat -an | grep '^tcp\|^udp'`
-    netstatan=`netstat -an`
+    netstatan=$(netstat -an)
 
     # stats
     echo $netstatan | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}' # | sort
@@ -230,8 +200,7 @@ function tcpstats()
     fi
 }
 
-function tcplisten()
-{
+function tcplisten() {
     if is_mac; then
         netstat -anL
     else
@@ -239,37 +208,34 @@ function tcplisten()
     fi
 }
 
-function version_gt()
-{
-    test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1";
+function version_gt() {
+    test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1"
 }
 
 # 只做方法定义，不做方法执行，在打开新标签页的时候会执行这部分 shell 代码，这样的情况越多，打开的标签页的速度越慢。
 #if is_mac; then
 # macOS 下专用函数
 
-    # 查看 plist xml
-    function plistview()
-    {
-        plutil -convert xml1 -o /tmp/tmp_plist.xml $1
-        more /tmp/tmp_plist.xml
-        rm -f /tmp/tmp_plist.xml
-    }
+# 查看 plist xml
+function plistview() {
+    plutil -convert xml1 -o /tmp/tmp_plist.xml $1
+    more /tmp/tmp_plist.xml
+    rm -f /tmp/tmp_plist.xml
+}
 
-    # 查看进程运行所在目录
-    # pwdx process-id
-    # pwdx pid1 pid2 pid3
-    function pwdx {
-        lsof -a -d cwd -p $1 -n -Fn | awk '/^n/ {print substr($0,2)}'
-    }
+# 查看进程运行所在目录
+# pwdx process-id
+# pwdx pid1 pid2 pid3
+function pwdx {
+    lsof -a -d cwd -p $1 -n -Fn | awk '/^n/ {print substr($0,2)}'
+}
 
 #else
 # LINUX 下专用函数
 
-    function straceall()
-    {
-        strace $(pidof "${1}" | sed 's/\([0-9]*\)/-p \1/g')
-    }
+function straceall() {
+    strace $(pidof "${1}" | sed 's/\([0-9]*\)/-p \1/g')
+}
 
 #fi
 
@@ -304,14 +270,12 @@ function tt() {
     tmux attach-session
 }
 # tmux kill
-function tk()
-{
+function tk() {
     SESS_NAME=${1:-"SACK"}
     tmux kill-session -t $SESS_NAME
 }
 
-function pg()
-{
+function pg() {
     if [ "$1" == "" ]; then
         echo Usages: pp [-ef] php or pp aux php
         exit
@@ -327,17 +291,18 @@ function pg()
         GREP_STR="\\[${1:0:1}]${1:1}"
     fi
 
-    ps $ARGS | head -1; ps $ARGS | grep $GREP_STR
+    ps $ARGS | head -1
+    ps $ARGS | grep $GREP_STR
 }
 
-function ll {
+function ll() {
     # --full-time: 2022-02-05 22:08:29.398690498 +0800
     command ls -AlF -h --color=always -v --time-style=long-iso "$@"
 }
 
 # translate-shell 中英互译
 # 输出语言默认应该是翻译成 $LANG 环境变量设定的语言
-function trans {
+function trans() {
     if [[ ! -n $1 ]]; then
         command trans -shell
     elif [[ $1 = *[:-]* ]]; then
@@ -351,9 +316,8 @@ function trans {
     fi
 }
 
-
 # fg JOBNUMBER => fg %JOBNUMBER
-function fg {
+function fg() {
     if [[ ! -n $1 ]]; then
         builtin fg
     elif [[ $1 =~ ^%[0-9]+$ ]]; then
@@ -364,7 +328,7 @@ function fg {
     fi
 }
 
-function jobs {
+function jobs() {
     # 显示进程号
     builtin jobs -l
 }
@@ -383,12 +347,12 @@ function verlt() {
 }
 
 # dotfiles
-function dotfiles {
-   /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
+function dotfiles() {
+    /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
 }
 
 # dotlocal
-function dotlocal {
+function dotlocal() {
     /usr/bin/git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@
 }
 
@@ -403,3 +367,17 @@ function dotlocal {
 #        /usr/bin/flatpak --user $@
 #    fi
 #}
+
+# Select neovim configuration
+function vv() {
+    # Assumes all configs exist in directories named ~/.config/nvim-*
+    # ls -d ~/.config/nvim* | tr -s ' ' '\n'
+    # fd --max-depth 1 --glob 'nvim*' ~/.config
+    config=$(echo ~/.config/nvim* | tr -s ' ' '\n' | fzf --prompt="Neovim Configs > " --exit-0)
+
+    # If I exit fzf without selecting a config, don't open Neovim
+    [[ -z "$config" ]] && echo "No config selected" && return
+
+    # Open Neovim with the selected config
+    NVIM_APPNAME=$(basename "$config") nvim "$@"
+}
