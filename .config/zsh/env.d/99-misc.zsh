@@ -7,6 +7,10 @@ export MOZ_ENABLE_WAYLAND=1
 
 export ZK_NOTEBOOK_DIR=$HOME/projects/notebook/src
 
+# export GTK_IM_MODULE=xim
+# export QT_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
+
 # Native Wayland for Chrome
 # Go to chrome://flags
 # Search "Preferred Ozone platform"

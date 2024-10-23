@@ -9,20 +9,6 @@ export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebr
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
-# - https://npmmirror.com/mirrors
-# - https://github.com/cnpm/binary-mirror-config/blob/master/package.json
-# electron
-#export ELECTRON_MIRROR=http://npm.taobao.org/mirrors/electron/
-#export ELECTRON_BUILDER_BINARIES_MIRROR=http://npm.taobao.org/mirrors/electron-builder-binaries/
-export ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
-export ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
-
-export NVM_NODEJS_ORG_MIRROR=http://npmmirror.com/mirrors/node
-export SWC_BINARY_SITE=https://npmmirror.com/mirrors/node-swc/
-export SENTRYCLI_CDNURL=https://npmmirror.com/mirrors/sentry-cli/
-export SASS_BINARY_SITE=http://npmmirror.com/mirrors/node-sass
-export PYTHON_MIRROR=http://npmmirror.com/mirrors/python
-
 # yarn 使用 ~/.yarnrc.yml 来管理
 # https://liuwenzhuang.github.io/2020/08/07/Yarn2-install-and-usage.html
 # export YARN_ENABLE_GLOBAL_CACHE=true

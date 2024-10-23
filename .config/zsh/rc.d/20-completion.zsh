@@ -33,7 +33,6 @@ setopt globdots          # Include hidden files. or: _comp_options+=(globdots)
 # 参考：
 # https://thevaluable.dev/zsh-completion-guide-examples/
 # https://thevaluable.dev/zsh-install-configure-mouseless/
-# https://thevaluable.dev/zsh-install-configure-mouseless/
 # 不再考虑使用 zsh isearch 做 fuzzy completion，有点鸡肋。
 # XXX: `xxx --help` 命令参数的菜单补全在体验上期望像 fzf 一样的 fuzzy completion
 
