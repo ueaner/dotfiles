@@ -29,7 +29,7 @@ gui:
   sidePanelWidth: 0.3333
   expandFocusedSidePanel: false
   mainPanelSplitMode: flexible
-  language: zh-CN
+  language: auto
   timeFormat: 02 Jan 06 15:04 MST
   commitLength:
     show: true
@@ -44,7 +44,7 @@ gui:
 git:
   paging:
     colorArg: always
-    pager: delta --dark --paging=never
+    pager: delta --dark --paging=never # or: externalDiffCommand: difft --color=always
     useConfig: false
   commit:
     signOff: false
