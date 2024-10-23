@@ -346,16 +346,6 @@ function verlt() {
     ! verlte "$2" "$1"
 }
 
-# dotfiles
-function dotfiles() {
-    /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
-}
-
-# dotlocal
-function dotlocal() {
-    /usr/bin/git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@
-}
-
 # append the --user parameter
 # --help -v 等参数就不能用了
 #function flatpak {

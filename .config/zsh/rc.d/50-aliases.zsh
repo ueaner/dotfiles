@@ -3,13 +3,13 @@
 # 跨平台命令抹平
 
 # Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hd="hexdump -C"
+command -v hd >/dev/null || alias hd="hexdump -C"
 
 # macOS has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
+command -v md5sum >/dev/null || alias md5sum="md5"
 
 # macOS has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
+command -v sha1sum >/dev/null || alias sha1sum="shasum"
 
 # Pretty print the path
 alias path='echo -e ${PATH//:/\\n}'
@@ -64,6 +64,11 @@ alias -g DOT='--git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # lazygit LOCAL
 alias -g LOCAL='--git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local'
 
+# 使用 alias 定义 dotfiles 命令，可以直接使用 git 的自动补全
+# alias dotfiles='f(){ git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@; };f'
+alias dotfiles='git DOT'
+alias dotlocal='git LOCAL'
+
 # python 格式化 json | bat 高亮字段
 # curl http://httpbin.org/json | json
 alias json="python -m json.tool | bat -p -l json"
@@ -88,7 +93,6 @@ alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[
 
 # Show active network interfaces
 alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
-
 
 alias ssh-agent-restart='killall ssh-agent; eval `ssh-agent`'
 
