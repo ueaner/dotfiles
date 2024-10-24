@@ -177,7 +177,7 @@ Exec=alacritty --option font.size=9.0
 - [Ctrl+q not working]
 
 碰到类似的情况需要使用 `alacritty --print-events | grep "KeyboardInput"` 查看其日志，给官方提交 issues.
-现在把 [tmux prefix] 改成了 `Alt-s` 使用感受也还是不错。速度又起飞了。
+现在把 [tmux prefix] 改成了 `Alt-s` 使用感受还不错。速度又起飞了。
 
 ## 参考
 
@@ -203,4 +203,5 @@ https://zh.wikipedia.org/zh-cn/软件流控制
 [alacritty.toml]: https://github.com/ueaner/dotfiles/blob/main/.config/alacritty/alacritty.toml
 [tmux.conf]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
 [tmux prefix]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
+[winit]: https://github.com/rust-windowing/winit
 [Ctrl+q not working]: https://github.com/alacritty/alacritty/issues/1359
