@@ -1,4 +1,5 @@
-# alacritty.desktop for sway, https://github.com/swaywm/sway/pull/7226
+# Alacritty.desktop for sway, see https://github.com/swaywm/sway/pull/7226 and wait for 1.10.
+# Under gnome use `Exec=alacritty --option font.size=9.0`
 [Desktop Entry]
 Type=Application
 TryExec=alacritty

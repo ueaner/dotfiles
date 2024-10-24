@@ -9,14 +9,14 @@
 
 ## 序言
 
-[Alacritty] 并不维护各个平台源（各个平台的包管理工具可谓是百花齐放），
+[Alacritty] 并不维护各个平台源（各平台的包管理工具可谓是百花齐放），
 新版本发布后，通常由社区人员自发在各个平台的包管理源上提交更新。
 
-不得不说 macOS 下 brew 社区是真的活跃，基本上一两天就更新了，
+题外话：不得不说 macOS 下 brew 社区是真的活跃，基本上一两天就更新了，
 `brew install --cask alacritty` 就可以安装最新版本了，
 大概是由于 brew 提供了一种简单的包定义方式和贡献方式有关。
 
-Linux 平台下有着清晰的目录结构，制作 desktop launcher 并不复杂，同时也不会污染系统文件。
+但 Linux 平台下有清晰的目录结构，制作 desktop launcher 并不复杂。
 
 开始在 Fedora 下安装 Alacritty 的最新版本。
 
@@ -40,14 +40,14 @@ cargo install alacritty
 
 ```bash
 > alacritty --version
-alacritty 0.13.2
+alacritty 0.14.0
 ```
 
 如果有命令未找到之类的提示，查看 `~/.cargo/bin` 是否在 `$PATH` 变量中。
 
 直接在命令行执行 `alacritty` 就可以使用上最新版的 Alacritty 终端了。
 
-如果不介意 Alacritty 是否可以出现在应用列表中，或者配置一个全局的 Alacritty 启动快捷键，现在就算是完成安装/升级了。
+接下来制作 desktop launcher, 让 Alacritty 出现在应用列表中。
 
 ## Alacritty desktop launcher
 
@@ -100,8 +100,11 @@ launcher 一般变动很少，这里做完了 launcher，之后的升级也不�
 ### 跨系统共用配置文件
 
 Linux 和 macOS 下共用 [alacritty.toml] 配置文件时，两边的 font.size 显示大小不一致，
-而 Linux 下通过 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=9.0`
+而 Linux 下使用 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=9.0`
 指定参数，覆盖配置文件中的 font size, 达到两边系统无缝共用的效果。
+
+另 sway 目前不支持中文输入法弹窗，需要等 1.10 版本发布。
+sway 下暂时使用 `Exec=WINIT_UNIX_BACKEND=x11 alacritty --option font.size=7`
 
 最后看下 [Alacritty.desktop] 的完整内容：
 
@@ -117,6 +120,7 @@ Categories=System;TerminalEmulator;
 Name=Alacritty
 GenericName=Terminal
 Comment=A fast, cross-platform, OpenGL terminal emulator
+StartupNotify=true
 StartupWMClass=Alacritty
 Actions=New;
 
@@ -125,7 +129,7 @@ Name=New Terminal
 Exec=alacritty --option font.size=9.0
 ```
 
-如果某个键映射在某个系统环境下无法找到正确的 `keycode` 键码，可能依然需要考虑不同系统环境使用不同的配置文件。
+推荐使用自动化部署编排工具进行管理，具体[参见](https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/tasks/main.yml)
 
 ### 键映射
 
@@ -142,76 +146,38 @@ Exec=alacritty --option font.size=9.0
 
 ```toml
 # 假定 tmux 的 prefix 前缀键是 `Alt-s`, 对应的 Unicode 为 `\u001Bs`
-# 按下 `Super-t` 实际发送 `Alt-s c` 触发 tmux 新建窗口
+# 按下 `Super-t` 实际发送 `Alt-s t` 触发 tmux 新建窗口
 { key: "T", mods: "Super", chars: "\u001Bsc" }
-# 按下 `Super-n` 实际发送 `Alt-s C` 触发 tmux 新建会话
-{ key: "N", mods: "Super", chars: "\u001BsC" }
+# 按下 `Super-n` 实际发送 `Alt-s n` 触发 tmux 新建会话
+{ key: "N", mods: "Super", chars: "\u001Bsn" }
 # 按下 `Super-z` 实际发送 `Alt-s z` 触发 tmux 缩放还原当前窗格
 { key: "Z", mods: "Super", chars: "\u001Bsz" }
 ```
 
 **键盘映射的注意事项**：
 
-1. 尽可能使用跨系统通用的快捷键，降低记忆负担，拓展肌肉记忆
+1. 尽可能使用跨系统通用的快捷键，降低记忆负担，强化肌肉记忆
 
 - 使用 Super 代替 Command 以便绑定的快捷键可跨系统使用
 - 使用 `Super-n` 打开新实例, `Super-t` 打开新窗口, `Ctrl-Tab` 切换标签页等
 
 2. 尽可能对常用操作使用便利的快捷键
 
-- 使用 `Super-,` 切换到上个标签页, `Super-.` 切换到下一个标签页等
+- 使用 `Super->` 切换到上个标签页, `Super-<` 切换到下一个标签页等
 
-3. 注意和系统键冲突，必要时释放系统快捷键，或者对快捷键重新映射
+3. 注意和系统键冲突，必要时释放系统快捷键，或者对快捷键重新映射，或者直接使用触摸板/鼠标
 
 - Linux 下 Super/Command 键由操作系统捕获（截获）如 `Super-h` 隐藏应用, `Super-l` 锁屏等，应用定义的快捷键不会起作用，tmux 切换窗格使用触摸板拍一拍
-- GNOME 下释放系统 `Super-[number]` 切换 workspace 快捷键，给 tmux 切换标签页用
+- GNOME 下释放系统 `Super-[number]` 切换应用快捷键，给切换工作区用
+- GNOME 下释放系统 `Super-.` iBus emoji 快捷键，给 tmux 快速切换活动窗口用
 
-5. 由于不同系统桌面环境间的差异，以及 [winit] 基础库对面向终端场景的支持不足，
-   对于一些特殊按键如 `Shift-,` `Shift-.` `Shift-/` Alacritty 可能会无法找到正确的 `keycode` 键码，而返回 `None`，两个典型的 issues:
+5. 由于不同系统桌面环境间的差异, [winit] 基础库对面向各终端场景的支持有待完善，
+   一些特殊组合键需要明确在配置文件中，告知 Alacritty 其按键的行为，以便 Alacritty 可以正确处理，如：
 
-- [KeyCode not sent for modified keys]
-- [MacOS not sending ReceivedCharacter event]
+- [Ctrl+q not working]
 
-Alacritty 提供了一种[解决方案](https://github.com/alacritty/alacritty/wiki/Keyboard-mappings#the-virtual_keycode-is-none)，
-键映射的 `key` 支持 `scancode`, 通过执行 `alacritty --print-events` 可在输出的日志中记录相应的 `scancode`。
-也可以通过 `sudo showkey --keycodes` 找输出了特定字符那一行。
-
-具体操作执行 `alacritty --print-events | egrep "KeyboardInput|ReceivedCharacter"` 后，会打开一个新的终端，
-在 Linux 下输入 `Super-Shift-,` 输出的日志中，大概有这样一部分内容：
-
-```
-winit event: WindowEvent { window_id: WindowId(WindowId(94640704908160)), event: KeyboardInput { device_id: DeviceId(Wayland(DeviceId)), input: KeyboardInput { scancode: 51, state: Pressed, virtual_keycode: None, modifiers: SHIFT | LOGO }, is_synthetic: false } }
-winit event: WindowEvent { window_id: WindowId(WindowId(94640704908160)), event: ReceivedCharacter('<') }
-```
-
-可以看到产生了 `virtual_keycode: None` 拿到的 `scancode: 51`, 使用 scancode 进行映射：
-
-```toml
-# 按下 `Super-Shift-,` 实际发送 `Alt-s ,` 触发 tmux 切换到上一个窗口
-
-{ key: 51, mods: "Super|Shift", chars: "\u001Bs," }
-# 按下 `Super-Shift-.` 实际发送 `Alt-s .` 触发 tmux 切换到下一个窗口
-{ key: 52, mods: "Super|Shift", chars: "\u001Bs." }
-```
-
-添加 scancode 映射后 Linux 下可以正常工作了。
-
-但是在 macOS 下得到的 scancode 并不一样，对比如下：
-
-```
-Fedora:
-`Super-Shift-,` (Comma) : { scancode: 51, state: Released, virtual_keycode: None, modifiers: SHIFT | LOGO }
-`Super-Shift-.` (Period): { scancode: 52, state: Pressed, virtual_keycode: None, modifiers: SHIFT | LOGO }
-
-macOS:
-`Super-Shift-,` (Comma) : { scancode: 43, state: Released, virtual_keycode: Some(Comma), modifiers: SHIFT | LOGO }
-`Super-Shift-.` (Period): { scancode: 47, state: Pressed, virtual_keycode: Some(Period), modifiers: SHIFT | LOGO }
-```
-
-解决方案：
-
-1. 改成两个系统都支持的键，如 `Super-,` `Super-.` / `Ctrl-Shift-Tab` `Ctrl-Tab`；[参见](https://github.com/ueaner/dotfiles/blob/fa81c99df8f67b286293103de0c33ada8b69f1af/ansible/roles/alacritty/files/alacritty-linux.toml#L89-L94) 切换窗口部分
-2. 不同系统环境使用不同的配置文件，推荐使用自动化部署编排工具进行管理，[参见](https://github.com/ueaner/dotfiles/blob/fa81c99df8f67b286293103de0c33ada8b69f1af/ansible/roles/alacritty/tasks/main.yml#L26) `Install Alacritty.toml` 部分
+碰到类似的情况需要使用 `alacritty --print-events | grep "KeyboardInput"` 查看其日志，给官方提交 issues.
+现在把 [tmux prefix] 改成了 `Alt-s` 使用感受也还是不错。速度又起飞了。
 
 ## 参考
 
@@ -233,10 +199,8 @@ https://zh.wikipedia.org/zh-cn/软件流控制
 [Cargo]: https://doc.rust-lang.org/cargo/
 [Desktop Entry]: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
 [刷新 Desktop Entries 数据库]: https://wiki.archlinux.org/title/desktop_entries#Update_database_of_desktop_entries
-[alacritty.toml]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/files/alacritty-linux.toml
-[命名键码]: https://docs.rs/winit/latest/winit/keyboard/enum.NamedKey.html#variants
-[KeyCode not sent for modified keys]: https://github.com/rust-windowing/winit/issues/600
-[MacOS not sending ReceivedCharacter event]: https://github.com/rust-windowing/winit/issues/1267
-[winit]: https://github.com/rust-windowing/winit
 [Alacritty.desktop]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/files/Alacritty.desktop
+[alacritty.toml]: https://github.com/ueaner/dotfiles/blob/main/.config/alacritty/alacritty.toml
 [tmux.conf]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
+[tmux prefix]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
+[Ctrl+q not working]: https://github.com/alacritty/alacritty/issues/1359

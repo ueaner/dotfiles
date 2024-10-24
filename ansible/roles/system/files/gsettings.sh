@@ -40,7 +40,7 @@ gsettings set org.gnome.mutter overlay-key '' # 'Super_L'
 # [RELEASE] `<Super>v` and `<Super>m`
 gsettings set org.gnome.shell.keybindings toggle-message-tray "[]" # ['<Super>v', '<Super>m']
 
-# [RELEASE] `<Super>1-9` for Workspace
+# [RELEASE] `<Super>1-9` for switch workspaces
 gsettings set org.gnome.shell.keybindings switch-to-application-1 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-2 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-3 "[]"
@@ -51,8 +51,8 @@ gsettings set org.gnome.shell.keybindings switch-to-application-7 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-8 "[]"
 gsettings set org.gnome.shell.keybindings switch-to-application-9 "[]"
 
-# [RELEASE] `<Super>period` for alacritty/tmux
-gsettings set org.freedesktop.ibus.panel.emoji hotkey "['<Super>semicolon']" # ['<Super>period', '<Super>semicolon']
+# [RELEASE] `<Super>period` for alacritty/tmux, `<Super>semicolon` for clipboard menu
+gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '<Super>semicolon']
 
 #----------------------------------------------------------------
 # Emacs Input: browser location bar, input box, etc.
@@ -246,8 +246,9 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-10 "[]"
 # Clipboard Indicator
 schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas/
 if [[ -d $schemadir ]]; then
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']"
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>semicolon']"   # <Super>;
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']" # <Super>]
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"  # <Super>[
 fi
 
 # System Monitor

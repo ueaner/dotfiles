@@ -20,13 +20,6 @@
       ansible.builtin.command: "~/.cargo/bin/cargo install alacritty"
       changed_when: false
 
-    - name: Install Alacritty.toml
-      when: ansible_distribution == "Fedora"
-      ansible.builtin.copy:
-        src: files/alacritty-linux.toml
-        dest: ~/.config/alacritty/alacritty.toml
-        mode: "0644"
-
     - name: Install Alacritty.desktop
       # noqa command-instead-of-module
       ansible.builtin.shell: |
@@ -42,7 +35,7 @@
       notify: Update desktop database
 
     # fcitx5: show preedit in Alacritty under swaywm
-    # https://github.com/swaywm/sway/pull/7226
+    # See https://github.com/swaywm/sway/pull/7226 and wait for sway 1.10.
     - name: Install Alacritty.desktop (Sway)
       when: desktop_name == "sway"
       ansible.builtin.copy:
@@ -51,4 +44,4 @@
         mode: "0644"
       notify: Update desktop database
 
-# MacOSX
+# macOS
