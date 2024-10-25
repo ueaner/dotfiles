@@ -121,4 +121,4 @@ alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs nvi
 
 alias dnf='sudo dnf'
 
-alias dus='du -d 1 * | sort -nr | cut -f2- | xargs du -sh | grep -v "^0"'
+alias dus='du -d 1 * -h | sort -h'
