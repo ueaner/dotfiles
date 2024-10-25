@@ -252,10 +252,8 @@ function open() {
     fi
 }
 
-# tmux session attach/detach toggle
+# tmux session attach/detach/select
 function tt() {
-    SESS_NAME=${1:-"SACK"}
-
     if [[ "$TMUX" ]]; then
         # echo "Already attached session."
         tmux list-sessions
@@ -265,14 +263,28 @@ function tt() {
 
     if ! tmux has-session; then
         # -d: start the new session in detached mode
-        tmux new-session -d -s $SESS_NAME
+        tmux new-session -d -s "SACK"
+        tmux attach-session -t "SACK"
+        return
     fi
-    tmux attach-session
+
+    SESSIONS=$(tmux list-sessions -F \#S)
+    if (($(echo "$SESSIONS" | wc -l) > 1)); then
+        SESS_NAME=$(echo "$SESSIONS" | fzf --prompt="tmux sessions > " --exit-0)
+        [[ -z "$SESS_NAME" ]] && echo "No session selected" && return
+
+        tmux attach-session -t "$SESS_NAME"
+    else
+        tmux attach-session
+    fi
 }
+
 # tmux kill
 function tk() {
-    SESS_NAME=${1:-"SACK"}
-    tmux kill-session -t $SESS_NAME
+    SESS_NAME=$(tmux list-sessions -F \#S | fzf --prompt="tmux sessions > " --exit-0)
+    [[ -z "$SESS_NAME" ]] && echo "No session selected" && return
+
+    tmux kill-session -t "$SESS_NAME"
 }
 
 function pg() {

@@ -29,8 +29,8 @@ fi
 
 ### Check if fedora 41 has been released
 
-# ver=$((`awk '{print $3}' < /etc/redhat-release`))
-ver=$(expr "$(awk '{print $3}' </etc/redhat-release)" + 1)
+ver=$(($(awk '{print $3}' </etc/redhat-release) + 1))
+# ver=$(expr "$(awk '{print $3}' </etc/redhat-release)" + 1)
 httpcode=$(curl --silent --head "https://mirror.nyist.edu.cn/fedora/releases/$ver/" | awk '/^HTTP/{print $2}')
 
 if [ "$httpcode" != "200" ]; then
