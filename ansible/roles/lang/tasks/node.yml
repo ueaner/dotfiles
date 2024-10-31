@@ -25,6 +25,8 @@
         ~/.cargo/bin/fnm default {{ versions.node }}
         ~/.local/share/fnm/aliases/default/bin/corepack use pnpm@latest
         ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+        PATH=~/.local/bin:$PATH
+        ~/.local/share/fnm/aliases/default/bin/pnpm config set global-bin-dir ~/.local/bin
       changed_when: false
       environment:
         COREPACK_NPM_REGISTRY: "https://registry.npmmirror.com"
