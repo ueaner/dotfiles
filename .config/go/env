@@ -1,30 +1,10 @@
-# GOENV 文件中的环境变量，不可以使用 ~ $HOME 表达家目录，必须使用完整的目录
 # https://go.dev/doc/install/source#environment
-# https://go.dev/doc/go1.8#gopath
-# Go 1.8+: $HOME/go on Unix-like systems, %USERPROFILE%\go on Windows
-# go env GOPATH
-# GOBIN=$GOPATH/bin
+# Environment variables such as ~ or $HOME cannot be used in GOENV, absolute paths must be used.
+# go env GOROOT
 
-GO111MODULE=on
 GOPROXY=https://goproxy.cn,https://goproxy.io,direct
-# 运行不同版本、不同位置的 go 命令时会自动探测，不需要手工配置
-#GOROOT=/Users/ueaner/sdk/go1.18
-#GOPROXY=https://goproxy.io,direct
 
-# Go 相关环境变量
-# GO111MODULE="auto"
-# GOPATH=/Users/ueaner/go
 # GOPRIVATE=git.private.com
 # GONOSUMDB=git.private.com
-# GOSUMDB=sum.golang.org
-# GOMOD=
-# GOMODCACHE=/Users/ueaner/go/pkg/mod
-# GOROOT=/usr/local/opt/go/libexec
-# GOINSECURE=
 # GONOPROXY=git.private.com
-# GOPROXY=https://goproxy.cn,direct
-# GO111MODULE=auto
-# GOCACHE=/Users/ueaner/Library/Caches/go-build
-#GOCACHE=~/.cache/go-build
-# GOFLAGS=
-
+# GOSUMDB=sum.golang.org
