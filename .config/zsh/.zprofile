@@ -1,3 +1,5 @@
+# zsh profile
+#
 # Login shell 引入此文件，定义环境变量
 # GNOME Session Login shell 引入此文件, env.d 下配置变更需要退出重登陆
 #
@@ -11,7 +13,7 @@
 # b. 国家代码 (Country Code)
 # c. 编码 (Encoding)
 
-echo "$$ .zprofile $(date +"%Y-%m-%d %T.%6N")" >> /tmp/zsh.log
+echo "$$ .zprofile $(date +"%Y-%m-%d %T.%6N")" >>/tmp/zsh.log
 
 if [[ "$(uname -s)" != "Linux" ]]; then
     export LANG=zh_CN.UTF-8
@@ -27,7 +29,7 @@ export VISUAL=nvim
 export GIT_TERMINAL_PROMPT=1
 
 # 使用数字开头，可以定义文件的加载顺序
-for envfile in ~/.config/zsh/env.d/[0-9][0-9]*[^~] ; do
+for envfile in ~/.config/zsh/env.d/[0-9][0-9]*[^~]; do
     # echo $envfile
     source $envfile
 done
