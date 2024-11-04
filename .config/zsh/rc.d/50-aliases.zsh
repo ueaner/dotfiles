@@ -13,6 +13,7 @@ command -v sha1sum >/dev/null || alias sha1sum="shasum"
 
 # Pretty print the path
 alias path='echo -e ${PATH//:/\\n}'
+alias fpath='echo -e ${FPATH//:/\\n}'
 
 # macOS 使用 Preview 打开 manpage
 alias preman='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
@@ -24,8 +25,6 @@ alias preman='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
 
 alias vim='nvim'
 alias vimdiff="vim -d"
-alias ls="ls --color=auto --time-style=long-iso"
-alias ll="ls --color=always -AlF -h -v --time-style=long-iso"
 alias jobs="jobs -l"
 alias grep='grep --color=auto --exclude-dir={.git}'
 alias ssh="TERM=xterm-256color ssh"
@@ -75,14 +74,21 @@ alias json="python -m json.tool | bat -p -l json"
 # curl http://httpbin.org/json JSON
 alias -g JSON="| python -m json.tool | bat -p -l json"
 
+# https://www.stefaanlippens.net/pretty-csv.html
+alias csv="column -t -s,"
+alias tsv="column -t -s $'\t'"
+
 alias mux='tmuxinator'
 
 # 拷贝最后一条命令
-alias last='fc -ln -1 | clipcopy'
+alias lcp="fc -ln -1 | tr -d '\n' | clipcopy"
 
 # rg search-text | vim -
 
 #alias free='ruby $HOME/bin/free-memory.rb'
+
+# named directories: cd ~www
+hash -d www=/usr/local/www/
 
 alias myip='ifconfig|grep "inet "'
 
@@ -105,8 +111,6 @@ alias arch='vim ~/.arch0.md'
 # 命令行打开 xdebug profile
 alias phprofiler="php -d xdebug.profiler_enable=1"
 #alias phpunit="phpunit -d xdebug.show_exception_trace=0"
-
-alias www='cd /usr/local/var/www'
 
 # 安装 groff 1.22.4 版本
 # man -w   列出 man 文件的引用路径
