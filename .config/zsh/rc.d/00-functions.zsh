@@ -64,6 +64,27 @@ function url_exists() {
     return $?
 }
 
+# 过滤不存在的目录路径
+function dirs_exists() {
+    # shellcheck disable=SC2206,SC2207
+    [ -z "$1" ] && in=($(</dev/stdin)) || in=($@)
+    # if [ -z "$in" ]; then
+    if ((${#in[@]} == 0)); then
+        echo "Please enter a list of paths"
+        return
+    fi
+
+    dirs=()
+
+    for p in "${in[@]}"; do
+        if [[ -d "${p}" ]]; then
+            dirs+=("${p}")
+        fi
+    done
+
+    echo "${dirs[@]}"
+}
+
 # 获取脚本文件名称 sh/bash/zsh
 # SCRIPT_NAME=`basename ${BASH_SOURCE[0]:-${(%):-%x}}`
 # SCRIPTS_ROOT=`dirname ${BASH_SOURCE[0]:-${(%):-%x}}`
@@ -305,11 +326,6 @@ function pg() {
 
     ps $ARGS | head -1
     ps $ARGS | grep $GREP_STR
-}
-
-function ll() {
-    # --full-time: 2022-02-05 22:08:29.398690498 +0800
-    command ls -AlF -h --color=always -v --time-style=long-iso "$@"
 }
 
 # translate-shell 中英互译
