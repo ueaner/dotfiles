@@ -4,7 +4,6 @@
 
 modmap:
   - name: chromebook link
-    exact_match: true
     remap:
       # Swap `left alt` and `left super` keys
       ALT_L: SUPER_L
@@ -26,7 +25,8 @@ keymap:
       Super-w: C-w              # close tab
       Super-Shift-t: C-Shift-t  # reopen the last closed tab
       Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
-      Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB  # [ prev tab
+      Super-Shift-KEY_LEFTBRACE:  C-Shift-KEY_TAB # [ prev tab
+      Super-KEY_COMMA: C-KEY_COMMA # Super-, preferences / settings
       # Super-h                 # set in gsettings
       # Super-q                 # set in gsettings
 

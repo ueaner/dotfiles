@@ -8,7 +8,7 @@
 
 - name: Installing {{ item }}
   ansible.builtin.unarchive:
-    src: https://mirror.ghproxy.com/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ item }}.zip
+    src: https://ghp.ci/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ item }}.zip
     dest: ~/.local/share/fonts/{{ item }}
     creates: ~/.local/share/fonts/{{ item }}/done
     remote_src: true

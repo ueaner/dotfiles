@@ -37,14 +37,13 @@
   changed_when: false
 
 # sudo: xxx: command not found
-# Defaults secure_path = /home/ueaner/.local/bin:/home/ueaner/.cargo/bin:/usr/local/sbin:...
-# sudo ln -sf /home/ueaner/.cargo/bin/* /usr/local/bin/
+# sudo ln -sf $CARGO_HOME/bin/* /usr/local/bin/
 
 # ----------------------------------------------------------------
 # prepare tools
 # ----------------------------------------------------------------
 - name: Install prepare tools
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_distribution == "Fedora"
   become: true
   ansible.builtin.dnf:
     name:

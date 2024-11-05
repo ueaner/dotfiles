@@ -1,52 +1,65 @@
-# 语言和相关工具的环境配置
 #
-# Go 优先按不同的系统平台返回了不同的目录，统一按 Unix-like 定义在 XDG_CONFIG_HOME 目录下
-# $GOROOT/src/os/file.go@UserConfigDir()
+# 语言和相关版本管理/包管理工具的环境配置
+#
+# - /usr/local/bin/
+#   - ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+#   - ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+# - ~/.local/bin/ - $XDG_BIN_HOME
+#   - cargo install
+#   - go install
+#   - pip install
+#   - pnpm install
+#   - deno install
+#   - plantuml.jar
+#
+
+# python3 -m site --user-base
+# https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
+export PYTHONUSERBASE=~/.local # ~/.local/{bin,lib}
+
+# $(go env GOROOT)/src/os/file.go os.UserConfigDir()
 # https://golang.org/design/30411-env
 export GOENV=$XDG_CONFIG_HOME/go/env
+# go install -v github.com/jesseduffield/lazygit@latest
+export GOBIN=$XDG_BIN_HOME
+export GOCACHE=$XDG_CACHE_HOME/go-build
+export GOMODCACHE=$XDG_CACHE_HOME/go-mod # $GOPATH/pkg/mod
 
-# python3 https://endoflife.date/python
-# NOTE: $PYTHONUSERBASE/bin 目录会安装 python 扩展的 bin 文件，可能会覆盖 $XDG_BIN_HOME 文件
-export PYTHONUSERBASE=~/.local
-#PATH="`/usr/local/bin/python3 -m site --user-base`/bin:$PATH"
+# https://doc.rust-lang.org/cargo/reference/environment-variables.html
+export CARGO_HOME=$XDG_DATA_HOME/cargo
+export RUSTUP_HOME=$XDG_DATA_HOME/rustup
+export CARGO_INSTALL_ROOT=~/.local # ~/.local/bin
+# base target directory: ~/.target
+# export CARGO_BUILD_TARGET_DIR=~/.target
+export CARGO_BUILD_TARGET_DIR=$XDG_CACHE_HOME/cargo-build
 
-export DENO_DIR=$HOME/.cache/deno
+# https://docs.deno.com/runtime/reference/env_variables/
+export DENO_DIR=$XDG_DATA_HOME/deno
+export DENO_INSTALL_ROOT=$XDG_BIN_HOME
 
-# vim gtags 多目录
-#export GTAGSLIBPATH=/usr/local/var/www/soliphp/soli-full-build
-#export GTAGSLABEL=ctags
+# $ANDROID_HOME/platform-tools/adb
+# $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list_installed
+#
+# https://developer.android.com/tools/variables
+# https://developer.android.com/ndk/guides/graphics/getting-started#creating
+export ANDROID_HOME=$XDG_DATA_HOME/android
+export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+# for tauri only
+# https://tauri.app/start/prerequisites/#android
+export NDK_HOME=$ANDROID_NDK_HOME
 
-# android，整体思路是只使用 ANDROID_SDK_ROOT 一个环境变量，ndk 在 ANDROID_SDK_ROOT/ndk/ 目录下，可以通过配置指定使用某个 NDK 版本
-# $ANDROID_SDK_ROOT/platform-tools/adb
-# $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --list_installed
-#export ANDROID_SDK_ROOT=$HOME/sdk
-#export ANDROID_SDK_ROOT=$HOME/Library/Android/sdk
-export ANDROID_SDK_ROOT=$HOME/sdk/android
-export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk-bundle    # 22.1.7171670
-#export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/21.4.7075529
-#export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/22.1.7171670
-#export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/23.2.8568313
-#export ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/24.0.8215888
-
-# for gomobile only
-export ANDROID_HOME=$ANDROID_SDK_ROOT
-export ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
-
-# flutter
-export ENABLE_FLUTTER_DESKTOP=true
-
-# Node.js version manager
-# eval "$(fnm env --use-on-cd)"
-export FNM_DIR="$HOME/.local/share/fnm"
+# fnm install --lts
+# fnm default lts-latest
+# Node.js manager
+export FNM_DIR=$XDG_DATA_HOME/fnm
 if type fnm &>/dev/null; then
-  # GNOME Session relogin: fnm env 会重新生成新的路径，再次添加到 PATH 变量
-  source <(fnm env --use-on-cd)
+    source <(fnm env --use-on-cd)
 fi
-export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
-export PNPM_HOME="$HOME/.local/share/pnpm"
-# pnpm 使用 npmrc 配置文件
+# Node.js package manager
+export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
+# corepack use pnpm@latest
 # corepack enable pnpm
-# pnpm add -g pnpm  使用 pnpm 的最新版本，由于已经配置了 $PNPM_HOME，也可使用 pnpm 管理其他全局包
-# pnpm add -g vite
-# pnpm ls -g
-# pnpm outdated -g
+# pnpm config set global-bin-dir ~/.local/bin
+export PNPM_HOME=$HOME/.local/share/pnpm
+export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
+export COREPACK_ENABLE_AUTO_PIN=0

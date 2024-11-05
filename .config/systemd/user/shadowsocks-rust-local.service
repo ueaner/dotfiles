@@ -13,5 +13,5 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=%h/.cargo/bin/ssservice local --log-without-time -c %h/.local/etc/shadowsocks-rust-local.json
+ExecStart=%h/.local/bin/ssservice local --log-without-time -c %h/.local/etc/shadowsocks-rust-local.json
 Restart=always

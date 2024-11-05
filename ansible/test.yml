@@ -103,7 +103,7 @@
 
     - name: Installed Rust
       ansible.builtin.command:
-        cmd: "~/.cargo/bin/rustc --version"
+        cmd: "rustc --version"
       changed_when: false
       register: rust_version
     - name: DEBUG rust version
@@ -121,7 +121,7 @@
 
     - name: Installed Deno
       ansible.builtin.command:
-        cmd: "~/.cargo/bin/deno --version"
+        cmd: "deno --version"
       changed_when: false
       register: deno_version
     - name: DEBUG deno version
@@ -132,7 +132,7 @@
     # tools
     # ----------------------------------------------------------------
     - name: Install basic tools (dnf)
-      when: ansible_pkg_mgr == "dnf"
+      when: ansible_distribution == "Fedora"
       ansible.builtin.debug:
         var: ansible_pkg_mgr
         # verbosity: [0: default, 1: -v, 2: -vv, 3: -vvv, ...]

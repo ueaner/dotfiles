@@ -2,7 +2,7 @@
 
 - name: Installed Golang
   ansible.builtin.command:
-    cmd: "~/go/bin/go version"
+    cmd: "go version"
   changed_when: false
   register: go_version
 - name: DEBUG go version
@@ -11,7 +11,7 @@
 
 - name: Installed Rust
   ansible.builtin.command:
-    cmd: "~/.cargo/bin/rustc --version"
+    cmd: "rustc --version"
   changed_when: false
   register: rust_version
 - name: DEBUG rust --version
@@ -29,7 +29,7 @@
 
 - name: Installed Deno
   ansible.builtin.command:
-    cmd: "~/.cargo/bin/deno --version"
+    cmd: "deno --version"
   changed_when: false
   register: deno_version
 - name: DEBUG deno --version

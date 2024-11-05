@@ -6,19 +6,19 @@
 
 [Unit]
 Description=Key remapper for Linux
-Documentation=https://github.com/k0kubun/xremap
+Documentation=https://github.com/xremap/xremap
 
 # Use ~/.config/autostart/xremap.desktop on desktop environment startup
-# [Install]
-# # systemctl --user: use default.target instead of multi-user.target
-# WantedBy=default.target
+# systemctl --user: use default.target instead of multi-user.target
+[Install]
+WantedBy=default.target
 
 [Service]
 # %h resolves to $HOME for --user services
 # Running xremap with sudo
 #ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device'
 # Running xremap without sudo
-ExecStart=%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device
+ExecStart=%h/.local/bin/xremap %h/.config/xremap/config.yml --watch=device
 ExecStop=/usr/bin/killall xremap
 KillMode=process
 Restart=always

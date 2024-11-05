@@ -8,25 +8,28 @@
   tags:
     - upgrade
     - node
+  environment:
+    FNM_DIR: "{{ lookup('ansible.builtin.env', 'FNM_DIR', default='$HOME/.local/share/fnm') }}"
+    CARGO_INSTALL_ROOT: "{{ lookup('ansible.builtin.env', 'CARGO_INSTALL_ROOT', default='$HOME/.local/bin') }}"
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   block:
 
     # Install node.js, check file stat
 
     - name: Check if node.js is installed
       ansible.builtin.stat:
-        path: "~/.local/share/fnm/aliases/default/bin/node"
+        path: "$FNM_DIR/aliases/default/bin/node"
       register: lang_node_check
 
     - name: Installing Node.js (Skip this task if already installed)
       when: not lang_node_check.stat.exists
       ansible.builtin.shell: |
-        ~/.cargo/bin/cargo install fnm
-        ~/.cargo/bin/fnm install {{ versions.node }}
-        ~/.cargo/bin/fnm default {{ versions.node }}
-        ~/.local/share/fnm/aliases/default/bin/corepack use pnpm@latest
-        ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
-        PATH=~/.local/bin:$PATH
-        ~/.local/share/fnm/aliases/default/bin/pnpm config set global-bin-dir ~/.local/bin
+        cargo install fnm
+        fnm install {{ versions.node }}
+        fnm default {{ versions.node }}
+        $FNM_DIR/aliases/default/bin/corepack use pnpm@latest
+        $FNM_DIR/aliases/default/bin/corepack enable pnpm
+        $FNM_DIR/aliases/default/bin/pnpm config set global-bin-dir ~/.local/bin
       changed_when: false
       environment:
         COREPACK_NPM_REGISTRY: "https://registry.npmmirror.com"
@@ -35,18 +38,18 @@
 
     - name: Check if node.js version is {{ versions.node }}
       ansible.builtin.command:
-        cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+        cmd: "$FNM_DIR/aliases/default/bin/node --version"
       changed_when: false
       register: lang_node_version
 
     - name: Upgrading Node.js (Skip this task if version is already {{ versions.node }})
       when: "versions.node not in lang_node_version.stdout"
       ansible.builtin.shell: |
-        ~/.cargo/bin/cargo install fnm
-        ~/.cargo/bin/fnm install {{ versions.node }}
-        ~/.cargo/bin/fnm default {{ versions.node }}
-        ~/.local/share/fnm/aliases/default/bin/corepack use pnpm@latest
-        ~/.local/share/fnm/aliases/default/bin/corepack enable pnpm
+        cargo install fnm
+        fnm install {{ versions.node }}
+        fnm default {{ versions.node }}
+        $FNM_DIR/aliases/default/bin/corepack use pnpm@latest
+        $FNM_DIR/aliases/default/bin/corepack enable pnpm
       changed_when: false
       environment:
         COREPACK_NPM_REGISTRY: "https://registry.npmmirror.com"
@@ -55,7 +58,7 @@
 
     - name: Node.js Installation Finished
       ansible.builtin.command:
-        cmd: "~/.local/share/fnm/aliases/default/bin/node --version"
+        cmd: "$FNM_DIR/aliases/default/bin/node --version"
       changed_when: false
       register: lang_node_version
 

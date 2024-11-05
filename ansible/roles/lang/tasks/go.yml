@@ -14,50 +14,50 @@
 
     - name: Check if go is installed
       ansible.builtin.stat:
-        path: "~/go/bin/go"
+        path: "$XDG_DATA_HOME/go/bin/go"
       register: lang_go_check
 
     - name: Installing Golang (Skip this task if already installed)
       when: not lang_go_check.stat.exists
-      ansible.builtin.shell: |
-        mkdir -p ~/sdk/
-        wget -P ~/sdk/ -c https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz
-        rm -rf ~/sdk/go && tar -C ~/sdk/ -xzf ~/sdk/go{{ versions.go }}.linux-amd64.tar.gz
-
-        mkdir -p ~/go/bin/
-        ln -sf ~/sdk/go/bin/go ~/go/bin/go
-        ln -sf ~/sdk/go/bin/gofmt ~/go/bin/gofmt
+      ansible.builtin.unarchive:
+        src: https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz
+        dest: "$XDG_DATA_HOME/"
+        remote_src: true
       changed_when: false
 
-    # - name: Installing Golang (Skip this task if already installed)
-    #   ansible.builtin.unarchive:
-    #     src: https://go.dev/dl/go{{ versions.go }}.linux-amd64.tar.gz
-    #     dest: "~/sdk/"
-    #     remote_src: true
-    #   when: not lang_go_check.stat.exists
-    #   notify: Installed Golang
+    - name: Symlink golang bin to /usr/local/bin/
+      ansible.builtin.command:
+        cmd: sudo ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+      changed_when: false
 
     # Upgrade golang, check version
+    # go install golang.org/dl/go{{ versions.go }}@latest
+    # go{{ versions.go }} download
 
     - name: Check if golang version is {{ versions.go }}
       ansible.builtin.command:
-        cmd: "~/go/bin/go version"
+        cmd: "go version"
       changed_when: false
       register: lang_go_version
 
     - name: Upgrading Golang (Skip this task if version is already {{ versions.go }})
       when: "versions.go not in lang_go_version.stdout"
-      ansible.builtin.shell: |
-        ~/go/bin/go install golang.org/dl/go{{ versions.go }}@latest
-        ~/go/bin/go{{ versions.go }} download
-        rm -rf ~/sdk/go && cp -r ~/sdk/go{{ versions.go }} ~/sdk/go
+      ansible.builtin.unarchive:
+        src: https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz
+        dest: "$XDG_DATA_HOME/"
+        remote_src: true
+      changed_when: false
+
+    - name: Symlink golang bin to /usr/local/bin/
+      ansible.builtin.command:
+        cmd: sudo ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
       changed_when: false
 
     # Golang Installation Finished, echo version
 
     - name: Golang Installation Finished
       ansible.builtin.command:
-        cmd: "~/go/bin/go version"
+        cmd: "go version"
       changed_when: false
       register: lang_go_version
 

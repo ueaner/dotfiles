@@ -9,6 +9,11 @@ registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 [net]
 git-fetch-with-cli = true
 
-[build]
-# base target directory: ~/.target
-target-dir = ".target"
+# use CARGO_BUILD_TARGET_DIR to specify the target directory
+# [build]
+# # base target directory: ~/.target, work.
+# target-dir = ".target"
+
+# [install]
+# # build binary to ~/.local/bin, cann't work!
+# root = ".local"

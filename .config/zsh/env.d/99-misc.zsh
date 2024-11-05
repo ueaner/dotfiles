@@ -1,6 +1,6 @@
 [[ -f $HOME/.local/etc/token.sh ]] && source $HOME/.local/etc/token.sh
 
-[[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh
+[[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
 
 # Native Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1

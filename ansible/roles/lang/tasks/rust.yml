@@ -14,7 +14,7 @@
 
     - name: Check if rust is installed
       ansible.builtin.stat:
-        path: "~/.cargo/bin/rustc"
+        path: "$CARGO_HOME/bin/rustc"
       register: lang_rust_check
 
     - name: Installing Rust (Skip this task if already installed)
@@ -23,13 +23,15 @@
       ansible.builtin.shell: |
         set -o pipefail
         curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+
+        sudo ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
       changed_when: false
 
     # Upgrade rust, check version
 
     - name: Check if rust version is {{ versions.rust }}
       ansible.builtin.command:
-        cmd: "~/.cargo/bin/rustc --version"
+        cmd: "rustc --version"
       changed_when: false
       register: lang_rust_version
 
@@ -38,13 +40,15 @@
       ansible.builtin.shell: |
         rustup self update
         rustup update
+
+        sudo ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
       changed_when: false
 
     # Rust Installation Finished, echo version
 
     - name: Rust Installation Finished
       ansible.builtin.command:
-        cmd: "~/.cargo/bin/rustc --version"
+        cmd: "rustc --version"
       changed_when: false
       register: lang_rust_version
 
@@ -57,10 +61,10 @@
           - "rustc --version: {{ lang_rust_version.stdout }}"
 
     - name: Installing cargo-nextest (Linux x86_64)
-      when: ansible_pkg_mgr == "dnf"
+      when: ansible_distribution == "Fedora"
       ansible.builtin.shell: |
         set -o pipefail
-        # curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+        # curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_INSTALL_ROOT:-~/.local}/bin
         URL=$(curl -s https://api.github.com/repos/nextest-rs/nextest/releases/latest | grep browser_download_url | grep 'x86_64-unknown-linux-gnu' | cut -d '"' -f 4)
-        curl -LsSf https://mirror.ghproxy.com/${URL} | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+        curl -LsSf https://ghp.ci/${URL} | tar zxf - -C ${CARGO_INSTALL_ROOT:-~/.local}/bin
       changed_when: false

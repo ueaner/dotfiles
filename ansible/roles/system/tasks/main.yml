@@ -17,7 +17,7 @@
 # sudo dnf update --exclude="kernel*"
 - name: Upgrade all packages, excluding kernel (dnf)
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_distribution == "Fedora"
   ansible.builtin.dnf:
     name: "*"
     state: latest  # noqa package-latest
@@ -26,7 +26,7 @@
     - upgrade
 
 - name: Fix too many open files - fs.inotify
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_distribution == "Fedora"
   ansible.builtin.shell: |
     set -o pipefail
     echo 'fs.inotify.max_user_instances=1024' | sudo tee /etc/sysctl.d/local.conf

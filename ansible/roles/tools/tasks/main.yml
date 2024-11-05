@@ -2,7 +2,7 @@
 
 # `dnf update` in `system role`
 - name: Install basic tools (dnf)
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_distribution == "Fedora"
   become: true
   ansible.builtin.dnf:
     name: "{{ tools.dnf }}"
@@ -34,7 +34,7 @@
     - go
 
 - name: Install/Upgrade rust tools
-  ansible.builtin.command: "~/.cargo/bin/cargo install {{ item }}"
+  ansible.builtin.command: "cargo install {{ item }}"
   changed_when: false
   loop: "{{ tools.rust }}"
   tags:

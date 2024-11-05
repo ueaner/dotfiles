@@ -33,6 +33,7 @@
     git clone --bare https://github.com/ueaner/local.git $HOME/.dotlocal
     git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local checkout
     git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local config --local status.showUntrackedFiles no
+    cp ~/.local/share/pixmaps/faces/flathat.png ~/.face
   changed_when: false
   when: not dotshell_dotlocal_check.stat.exists
 

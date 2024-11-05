@@ -48,5 +48,9 @@ gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false # true
 tracker3 reset --filesystem
 
 # remove unused packages
-dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese gnome-terminal-nautilus gnome-terminal
-dnf remove libreoffice\*
+sudo dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese gnome-terminal-nautilus gnome-terminal
+sudo dnf remove libreoffice\*
+sudo dnf remove gnome-shell-extension\*
+
+sudo dnf list --autoremove
+sudo dnf autoremove

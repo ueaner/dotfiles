@@ -41,14 +41,14 @@
 
 - name: Check if xremap is installed
   ansible.builtin.stat:
-    path: "~/.cargo/bin/xremap"
+    path: "~/.local/bin/xremap"
   register: services_xremap_check
 
 - name: Install xremap (GNOME Wayland)
   when:
     - not services_xremap_check.stat.exists
     - desktop_name == "gnome"
-  ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features gnome"
+  ansible.builtin.command: "cargo install xremap --features gnome"
   changed_when: false
   notify: Start xremap service
 
@@ -56,6 +56,6 @@
   when:
     - not services_xremap_check.stat.exists
     - desktop_name == "sway"
-  ansible.builtin.command: "~/.cargo/bin/cargo install xremap --features wlroots"
+  ansible.builtin.command: "cargo install xremap --features wlroots"
   changed_when: false
   notify: Start xremap service

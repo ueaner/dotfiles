@@ -108,6 +108,10 @@ alias vimtips='vim ~/.gitpages/vim/vimtips'
 alias todo='vim ~/.todo.md'
 alias arch='vim ~/.arch0.md'
 
+# dnf
+# rq coreutils util-linux
+alias rq='(){ sudo dnf repoquery -l $@ | rg "/bin/"; }'
+
 # 命令行打开 xdebug profile
 alias phprofiler="php -d xdebug.profiler_enable=1"
 #alias phpunit="phpunit -d xdebug.show_exception_trace=0"

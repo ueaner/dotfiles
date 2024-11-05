@@ -108,7 +108,9 @@ for uuid in "${uuids[@]}"; do
 
     if [[ "$uuid" == "gestureImprovements@gestures" ]]; then
         # GNOME 46
-        curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+        # curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+        # GNOME 47
+        curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
         # Unzip the extension package
         # gnome-extensions install -f "/tmp/$uuid.zip"
     else
