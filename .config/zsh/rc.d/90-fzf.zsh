@@ -14,9 +14,9 @@
 
 # Auto-completion
 if [[ $- == *i* ]]; then
+    # macOS by brew
     [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
-    # https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_69
-    # Fedora 下 completion.zsh 放在了 /usr/share/zsh/site-functions/fzf 在 FPATH 路径下
+    # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_70
     [[ -f "/usr/share/zsh/site-functions/fzf" ]] && . "/usr/share/zsh/site-functions/fzf"
 fi
 
@@ -25,6 +25,10 @@ fi
 [[ -f "/usr/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/usr/local/opt/fzf/shell/key-bindings.zsh"
 # Fedora by dnf
 [[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
+
+# 生成 fzf 在 zsh 下的命令自动补全
+# https://github.com/junegunn/fzf/issues/3349#issuecomment-1619425209
+[[ -f "/etc/bash_completion.d/fzf" ]] && compdef _gnu_generic fzf
 
 # > man fzf
 # ANSI COLORS:
@@ -60,12 +64,13 @@ fi
 
 # 默认触发文件/目录补全，Vim 中使用 terminal 进行渲染颜色有点暗
 export FZF_COMPLETION_TRIGGER=';'
-export FZF_DEFAULT_OPTS=$(printf '%s' \
-    " --layout=reverse --height 50% --inline-info" \
-    " --preview-window 'right:60%:hidden' --preview '(bat {} || cat {} || tree -C -L 2 {}) 2> /dev/null | head -500'" \
-    " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | clipcopy)+abort'" \
-    " --header '[CTRL-Y] copy line, [?] toggle preview, [TAB] and [Shift-TAB] to mark multiple items' --header-lines=0 " \
-    " --ansi --color=bg:black,hl:yellow,hl+:red,fg+:blue,bg+:black,info:yellow,border:blue,prompt:magenta,pointer:red,marker:red,spinner:yellow,header:gray"
+export FZF_DEFAULT_OPTS=$(
+    printf '%s' \
+        " --layout=reverse --height 50% --inline-info" \
+        " --preview-window 'right:60%:hidden' --preview '(bat {} || cat {} || tree -C -L 2 {}) 2> /dev/null | head -500'" \
+        " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | clipcopy)+abort'" \
+        " --header '[CTRL-Y] copy line, [?] toggle preview, [TAB] and [Shift-TAB] to mark multiple items' --header-lines=0 " \
+        " --ansi --color=bg:black,hl:yellow,hl+:red,fg+:blue,bg+:black,info:yellow,border:blue,prompt:magenta,pointer:red,marker:red,spinner:yellow,header:gray"
 )
 
 export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --preview 'echo {}'"
@@ -76,14 +81,13 @@ export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow --ex
 _fzf_compgen_path() {
     # 去除前缀 ./
     fd --type=file --type=symlink --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" \
-        2> /dev/null | sed 's@^\./@@'
+        2>/dev/null | sed 's@^\./@@'
 }
 # cd **<tab>
 _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" \
-        2> /dev/null | sed 's@^\./@@'
+        2>/dev/null | sed 's@^\./@@'
 }
-
 
 # vim **<tab>
 # function _fzf_complete_vim() {
@@ -109,4 +113,3 @@ function _fzf_complete_tldr() {
 # }
 # bindkey '^E' fzf-dict-widget
 # zle     -N   fzf-dict-widget
-
