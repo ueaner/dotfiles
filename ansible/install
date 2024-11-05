@@ -7,9 +7,9 @@ export PYTHONUSERBASE=~/.local
 if [[ ! -x ~/.local/bin/ansible ]]; then
     # install & upgrade pip
     python3 -m ensurepip --upgrade --user
-    python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --upgrade --user pip
+    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --upgrade --user pip
     # install ansible
-    python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
+    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --user ansible
 fi
 
 ~/.local/bin/ansible --version
