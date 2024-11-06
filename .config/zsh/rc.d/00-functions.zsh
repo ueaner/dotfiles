@@ -65,7 +65,9 @@ function url_exists() {
 }
 
 # 过滤不存在的目录路径
+# dirs_exists /path/to1 /path/to2 ...
 function dirs_exists() {
+    # read array
     # shellcheck disable=SC2206,SC2207
     [ -z "$1" ] && in=($(</dev/stdin)) || in=($@)
     # if [ -z "$in" ]; then
@@ -83,6 +85,25 @@ function dirs_exists() {
     done
 
     echo "${dirs[@]}"
+}
+
+# Duration of loading specified code under zsh
+# loadtime "$(zoxide init zsh)"
+function loadtime() {
+    # read string
+    [ -z "$1" ] && in=$(</dev/stdin) || in=$*
+    if [ -z "$in" ]; then
+        echo "Please enter source code"
+        return
+    fi
+
+    zmodload zsh/datetime
+    local -F start=EPOCHREALTIME
+    eval "$in"
+    local -F6 t=$((EPOCHREALTIME - start))
+    printf "\n\n%s\n\n  Duration: %ss\n\n" "$in" "$t" >>/tmp/loadtime.log
+
+    echo "Duration: $t, see /tmp/loadtime.log for details"
 }
 
 # 获取脚本文件名称 sh/bash/zsh
