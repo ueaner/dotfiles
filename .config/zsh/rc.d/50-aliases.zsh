@@ -15,29 +15,13 @@ command -v sha1sum >/dev/null || alias sha1sum="shasum"
 alias path='echo -e ${PATH//:/\\n}'
 alias fpath='echo -e ${FPATH//:/\\n}'
 
-# macOS 使用 Preview 打开 manpage
-alias preman='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
-
-# Ctrl-z freezes all current and future user terminals
-# See: https://github.com/neovim/neovim/issues/28149
-# NOTE: Waiting for `https://src.fedoraproject.org/rpms/kernel-headers` to release v6.8.5+
-# alias nvim="UV_USE_IO_URING=0 nvim"
-
 alias vim='nvim'
 alias vimdiff="vim -d"
-alias jobs="jobs -l"
-alias grep='grep --color=auto --exclude-dir={.git}'
-alias ssh="TERM=xterm-256color ssh"
 
 # 快速访问配置文件
 alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc'
 # vim +'e $MYVIMRC'
 alias vimrc="vim +'e \$MYVIMRC'"
-
-#alias t='tail -f'
-
-#alias tt='f(){ tmux attach-session || tmux new-session -s ${1:-SACK}; unset -f f; };f'
-#alias tk='f(){ tmux kill-session -t ${1:-SACK}; unset -f f; };f'
 
 # https://www.thorsten-hans.com/5-types-of-zsh-aliases
 # suffix aliases
@@ -78,17 +62,18 @@ alias -g JSON="| python -m json.tool | bat -p -l json"
 alias csv="column -t -s,"
 alias tsv="column -t -s $'\t'"
 
+# named directories: cd ~www
+hash -d www=/usr/local/www/
+
 alias mux='tmuxinator'
+
+alias grep='grep --color=auto --exclude-dir={.git}'
+alias ssh="TERM=xterm-256color ssh"
 
 # 拷贝最后一条命令
 alias lcp="fc -ln -1 | tr -d '\n' | clipcopy"
 
 # rg search-text | vim -
-
-#alias free='ruby $HOME/bin/free-memory.rb'
-
-# named directories: cd ~www
-hash -d www=/usr/local/www/
 
 alias myip='ifconfig|grep "inet "'
 
