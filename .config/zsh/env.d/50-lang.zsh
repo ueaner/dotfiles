@@ -52,9 +52,6 @@ export NDK_HOME=$ANDROID_NDK_HOME
 # fnm default lts-latest
 # Node.js manager
 export FNM_DIR=$XDG_DATA_HOME/fnm
-if type fnm &>/dev/null; then
-    source <(fnm env --use-on-cd)
-fi
 # Node.js package manager
 export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
 # corepack use pnpm@latest
