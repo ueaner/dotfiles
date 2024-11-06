@@ -2,7 +2,7 @@
 
 - name: Install emscripten latest
   ansible.builtin.shell: |
-    cd ~/sdk
+    cd ~/.local/share/
     git clone https://github.com/emscripten-core/emsdk.git
     cd emsdk
     git pull
