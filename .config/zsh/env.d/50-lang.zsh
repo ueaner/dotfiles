@@ -4,6 +4,8 @@
 # - /usr/local/bin/
 #   - ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
 #   - ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+#   - ln -sf $ANDROID_HOME/platform-tools/adb /usr/local/bin/
+#   - ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/
 # - ~/.local/bin/ - $XDG_BIN_HOME
 #   - cargo install
 #   - go install
@@ -37,9 +39,6 @@ export CARGO_BUILD_TARGET_DIR=$XDG_CACHE_HOME/cargo-build
 export DENO_DIR=$XDG_DATA_HOME/deno
 export DENO_INSTALL_ROOT=$XDG_BIN_HOME
 
-# $ANDROID_HOME/platform-tools/adb
-# $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list_installed
-#
 # https://developer.android.com/tools/variables
 # https://developer.android.com/ndk/guides/graphics/getting-started#creating
 export ANDROID_HOME=$XDG_DATA_HOME/android
