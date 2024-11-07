@@ -11,6 +11,7 @@
     - variables/versions.yml
     - variables/tools.yml
   vars:
+    ansible_python_interpreter: /usr/bin/python3
     # By default, "role=all" is overridden by the `--extra-vars "role=xxx"` passed on the command line.
     role: all
   roles:

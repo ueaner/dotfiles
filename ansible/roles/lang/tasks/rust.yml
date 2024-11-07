@@ -24,7 +24,7 @@
         set -o pipefail
         curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
 
-        sudo ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+        ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
       changed_when: false
 
     # Upgrade rust, check version
@@ -41,7 +41,7 @@
         rustup self update
         rustup update
 
-        sudo ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+        ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
       changed_when: false
 
     # Rust Installation Finished, echo version

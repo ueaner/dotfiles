@@ -5,21 +5,18 @@ localhost
 ansible_connection=local
 
 [cb13]
-192.168.31.237
+192.168.31.12
+
+[mac14]
+192.168.31.251
 
 [mac15]
 192.168.31.184
 
-[ss]
+[srv]
 ss
-
-[ss:vars]
-ansible_connection=ssh
-ansible_user=root
-
-[sp]
 sp
 
-[sp:vars]
+[srv:vars]
 ansible_connection=ssh
 ansible_user=root

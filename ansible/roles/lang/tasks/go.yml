@@ -27,7 +27,7 @@
 
     - name: Symlink golang bin to /usr/local/bin/
       ansible.builtin.command:
-        cmd: sudo ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+        cmd: ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
       changed_when: false
 
     # Upgrade golang, check version
@@ -50,7 +50,7 @@
 
     - name: Symlink golang bin to /usr/local/bin/
       ansible.builtin.command:
-        cmd: sudo ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+        cmd: ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
       changed_when: false
 
     # Golang Installation Finished, echo version

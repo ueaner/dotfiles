@@ -10,16 +10,16 @@
     - name: Dump vars
       ansible.builtin.copy:
         content: "{{ hostvars[inventory_hostname] | to_nice_yaml }}"
-        dest: "/tmp/{{ inventory_hostname }}_vars.txt"
+        dest: "/tmp/{{ inventory_hostname }}_vars.yml"
         mode: "0644"
-      delegate_to: control
+      delegate_to: localhost
 
     - name: Dump facts
       ansible.builtin.copy:
         content: "{{ ansible_facts | to_nice_yaml }}"
-        dest: "/tmp/{{ inventory_hostname }}_facts.txt"
+        dest: "/tmp/{{ inventory_hostname }}_facts.yml"
         mode: "0644"
-      delegate_to: control
+      delegate_to: localhost
 
     - name: DEBUG debug_vars
       ansible.builtin.debug:

@@ -13,6 +13,7 @@ if [[ ! -x ~/.local/bin/ansible ]]; then
 fi
 
 ~/.local/bin/ansible --version
+~/.local/bin/ansible-config dump --only-changed -t all
 
 ~/.local/bin/ansible-galaxy collection install community.general
 
