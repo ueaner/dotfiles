@@ -11,7 +11,7 @@
 echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
 
 # install prerequisites
-sudo dnf install git zsh util-linux-user
+sudo dnf install git zsh util-linux
 ```
 
 本地机器：
@@ -77,34 +77,34 @@ ansible task 中使用到的一些判断标识：
 - Distribution: macOS(brew), Fedora(dnf)
 - Desktop: aqua, gnome, sway
 
-| #   | Feature       | Role      | Distribution | Desktop     | Reboot | Remark                          |
-| --- | ------------- | --------- | ------------ | ----------- | ------ | ------------------------------- |
-| [ ] | sudo          | prepare   | all          | all         | -      | without password                |
-| [ ] | prepare tools | prepare   | all          | all         | -      | git, zsh, util-linux-user, wget |
-| [ ] | prepare facts | prepare   | all          | all         | -      | desktop name, etc               |
-| [ ] | rpmfusion     | prepare   | Fedora       | all         | -      | -                               |
-| [ ] | kernel        | system    | Fedora       | gnome       | Y      | -                               |
-| [ ] | broadcom-wl   | system    | Fedora       | gnome       | Y      | MacBook                         |
-| [ ] | gsettings     | system    | Fedora       | gnome       | Y      | -                               |
-| [ ] | dotfiles      | dotshell  | all          | all         | -      | -                               |
-| [ ] | nvimrc        | dotshell  | all          | all         | -      | -                               |
-| [ ] | zsh           | dotshell  | all          | all         | -      | -                               |
-| [ ] | go            | lang      | all          | all         | -      | -                               |
-| [ ] | rust          | lang      | all          | all         | -      | -                               |
-| [ ] | node          | lang      | all          | all         | -      | -                               |
-| [ ] | deno          | lang      | all          | all         | -      | -                               |
-| [ ] | dnf tools     | tools     | Fedora       | gnome, sway | -      | -                               |
-| [ ] | flatpak tools | tools     | Fedora       | gnome, sway | -      | -                               |
-| [ ] | go tools      | tools     | all          | all         | -      | -                               |
-| [ ] | rust tools    | tools     | all          | all         | -      | -                               |
-| [ ] | python tools  | tools     | all          | all         | -      | -                               |
-| [ ] | neovim        | tools     | all          | all         | -      | neovide                         |
-| [ ] | alacritty     | alacritty | all          | all         | -      | -                               |
-| [ ] | shadowsocks   | services  | all          | all         | -      | -                               |
-| [ ] | xremap        | services  | Fedora       | gnome, sway | -      | -                               |
-| [ ] | fonts         | fonts     | all          | all         | -      | -                               |
-| [ ] | fcitx5        | fcitx5    | Fedora       | gnome, sway | Y      | -                               |
-| [ ] | web apps      | web       | Fedora       | gnome, sway | Y      | -                               |
+| #   | Feature       | Role      | Distribution | Desktop     | Reboot | Remark                     |
+| --- | ------------- | --------- | ------------ | ----------- | ------ | -------------------------- |
+| [ ] | sudo          | prepare   | all          | all         | -      | without password           |
+| [ ] | prepare tools | prepare   | all          | all         | -      | git, zsh, util-linux, wget |
+| [ ] | prepare facts | prepare   | all          | all         | -      | desktop name, etc          |
+| [ ] | rpmfusion     | prepare   | Fedora       | all         | -      | -                          |
+| [ ] | kernel        | system    | Fedora       | gnome       | Y      | -                          |
+| [ ] | broadcom-wl   | system    | Fedora       | gnome       | Y      | MacBook                    |
+| [ ] | gsettings     | system    | Fedora       | gnome       | Y      | -                          |
+| [ ] | dotfiles      | dotshell  | all          | all         | -      | -                          |
+| [ ] | nvimrc        | dotshell  | all          | all         | -      | -                          |
+| [ ] | zsh           | dotshell  | all          | all         | -      | -                          |
+| [ ] | go            | lang      | all          | all         | -      | -                          |
+| [ ] | rust          | lang      | all          | all         | -      | -                          |
+| [ ] | node          | lang      | all          | all         | -      | -                          |
+| [ ] | deno          | lang      | all          | all         | -      | -                          |
+| [ ] | dnf tools     | tools     | Fedora       | gnome, sway | -      | -                          |
+| [ ] | flatpak tools | tools     | Fedora       | gnome, sway | -      | -                          |
+| [ ] | go tools      | tools     | all          | all         | -      | -                          |
+| [ ] | rust tools    | tools     | all          | all         | -      | -                          |
+| [ ] | python tools  | tools     | all          | all         | -      | -                          |
+| [ ] | neovim        | tools     | all          | all         | -      | neovide                    |
+| [ ] | alacritty     | alacritty | all          | all         | -      | -                          |
+| [ ] | shadowsocks   | services  | all          | all         | -      | -                          |
+| [ ] | xremap        | services  | Fedora       | gnome, sway | -      | -                          |
+| [ ] | fonts         | fonts     | all          | all         | -      | -                          |
+| [ ] | fcitx5        | fcitx5    | Fedora       | gnome, sway | Y      | -                          |
+| [ ] | web apps      | web       | Fedora       | gnome, sway | Y      | -                          |
 
 ## 注意事项
 

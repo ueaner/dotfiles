@@ -13,3 +13,15 @@
   changed_when: false
   tags:
     - wasm
+
+# Optimizer and compiler/toolchain library for WebAssembly
+- name: Install binaryen
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - binaryen
+
+- name: Install wasm-pack
+  ansible.builtin.command:
+    cmd: cargo install wasm-pack
+  changed_when: false

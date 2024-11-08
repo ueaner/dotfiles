@@ -3,123 +3,102 @@
 
 tools:
 
-  # sudo dnf history userinstalled
+  # sudo dnf repoquery --userinstalled -q --qf '%{name}\n'
   dnf:
+    - coreutils
+    - util-linux
+    - binutils
     - git
+    - tig
     - zsh
-    - util-linux-user
     - tmux
     - neovim
-    - binutils
-    - clang
     - curl
     - wget
+    - grpcurl
     - telnet
+    - mtr
+    - nmap
+    - nmap-ncat
     - lsof
     - file
-    - foot
     - entr  # Run arbitrary commands when files change
     - fastfetch
-    - jq
-    - wl-clipboard
-    - flatpak
-    - xlsclients  # list x11 client applications running on a display
-    - android-tools
-    - tig
-    - git-lfs
-    - ffmpeg
-    - alsa-lib-devel  # sniffnet
-    - libpcap-devel  # sniffnet
     - lshw
-    # sudo dnf --setopt=install_weak_deps=False install tinygo
-    - binaryen
-    - llvm-devel
-    - lld-libs
-    - lld
-    - glibc
-    - libgcc
-    - libstdc++
-    - lld
-    - llvm-libs
-    - fswatch  # vim.lsp: File watcher WARNING libuv-watchdirs has known performance issues. Consider installing fswatch.
-    - java-latest-openjdk-devel
+    - wl-clipboard
+    - clang
+    - android-tools
+    - java-21-openjdk-devel
+    - xlsclients  # list x11 client applications running on a display
+    - ImageMagick
+    - ffmpeg
+    - chafa  # terminal graphics
+    - fzf  # go
+    - duf  # go: disk
+    - gojq  # pure Go implementation of jq
+    - gops
+    - hyperfine  # rust: A command-line benchmarking tool
+    - git-delta  # rust: git diff
+    - difftastic  # rust: git diff
+    - dua-cli  # rust: disk
+    - bat  # rust: bat replacement for cat
+    - fd-find  # rust: fd replacement for find
+    - ripgrep  # rust: rg replacement for grep
+    - zoxide  # rust: z/zi replacement for cd
+    - tree-sitter-cli  # rust: tree-sitter
+    - tealdeer  # rust: tldr
+    - procs  # rust: procs replacement for ps
+    - flatpak
+    - draw.io  # [No official flatpak version](https://github.com/jgraph/drawio-desktop/issues/1834#issuecomment-2317783404)
+    - firewall-config  # firewalld gui
 
-  # flatpak --user list --app --help
-  # flatpak list --columns=application,runtime,version,size
   flatpak:
+    - dconf-editor
+    - com.github.tchx84.Flatseal
     - com.qq.QQ
+    - com.tencent.WeChat
+    - com.baidu.NetDisk
     - com.google.Chrome
     - io.podman_desktop.PodmanDesktop
     - com.github.phase1geo.minder
     - io.gitlab.news_flash.NewsFlash
     - org.inkscape.Inkscape
+    - org.shotcut.Shotcut
 
-    # See: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/tools/tasks/drawio.yml
     # NOTE: Drawio installed with flatpak cannot input Chinese
     # - com.jgraph.drawio.desktop
 
   go:
-    - github.com/junegunn/fzf@latest
-    - github.com/arl/gitmux@latest  # git status on tmux line
-    - github.com/google/gops@latest
-    - github.com/boyter/scc@latest
-    - github.com/jesseduffield/lazygit@latest
-    - github.com/muesli/duf@latest
-    - github.com/itchyny/gojq/cmd/gojq@latest
-    - github.com/antonmedv/fx@latest  # JSON viewer
-    - github.com/charmbracelet/glow@latest  # markdown viewer
     - github.com/ivaaaan/smug@latest  # tmux session manager
+    - github.com/arl/gitmux@latest  # git status on tmux line
+    - github.com/jesseduffield/lazygit@latest  # dnf copr enable atim/lazygit
+    - github.com/antonmedv/fx@latest  # terminal JSON viewer
+    - go install github.com/mikefarah/yq/v4@latest  # YAML, JSON, XML, CSV, TOML and properties processor
+    - github.com/charmbracelet/glow@latest  # terminal markdown viewer
+    - github.com/boyter/scc@latest  # such as tokei based on rust
+    - github.com/mattn/goreman@latest  # manage Procfile-based applications
     - github.com/traefik/yaegi/cmd/yaegi@latest  # repl
 
     - github.com/bykof/go-plantuml@latest
-    - github.com/ofabry/go-callvis@master  # call graph
-    - golang.org/x/tools/cmd/callgraph@master
-    - golang.org/x/tools/cmd/digraph@master
+    - github.com/ofabry/go-callvis@latest  # call graph
+    - golang.org/x/tools/cmd/callgraph@latest
+    - golang.org/x/tools/cmd/digraph@latest
 
-    - golang.org/x/mobile/cmd/gomobile@latest
-    - golang.org/x/mobile/cmd/gobind@latest
-
-    - github.com/google/wire/cmd/wire@latest
-    - github.com/envoyproxy/protoc-gen-validate@latest
-    - google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    - google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-    - github.com/go-kratos/kratos/cmd/kratos/v2@latest
-    - github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
-    - github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-
-    - github.com/sqlc-dev/sqlc/cmd/sqlc@latest
     - github.com/spf13/cobra-cli@latest
-    - github.com/mattn/goreman@latest
-    - github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
     - github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
 
+    - github.com/sqlc-dev/sqlc/cmd/sqlc@latest
     - -tags 'postgres mysql sqlite3' github.com/xo/usql@latest
 
-    # go tools for vscode
-    - github.com/cweill/gotests/gotests@v1.6.0
-    - github.com/fatih/gomodifytags@latest
-    - github.com/josharian/impl@latest
-    - github.com/haya14busa/goplay/cmd/goplay@v1.0.0
-    - github.com/go-delve/delve/cmd/dlv@latest
-    - honnef.co/go/tools/cmd/staticcheck@latest
-    - golang.org/x/tools/gopls@latest
-
   rust:  # cargo
-    - bat
-    - git-delta
-    - difftastic
-    - fd-find
-    - ripgrep
-    - zoxide
-    - tealdeer
-    - bottom
-    - bandwhich
-    - sniffnet
-    - procs
-    - dua-cli
-    - wasm-pack
+    - bottom  # btm process/system monitor, dnf copr enable atim/bottom
+    - websocat  # dnf copr enable atim/websocat
+    - gping  # dnf copr enable atim/gping
+    - bandwhich  # dnf copr enable atim/bandwhich
+    - netscanner  # network scanner & diagnostic tool
+    - trippy  # A network diagnostic tool
+    - fselect  # find files with SQL-like queries
     - cargo-depgraph
-    - fnm
     - mdbook
     - mdbook-plantuml
     - mdbook-mermaid
@@ -129,14 +108,12 @@ tools:
   python:  # pip
     - ipython
     - ddgr  # DuckDuckGo from the terminal
-    # yt-dlp --proxy socks5://127.0.0.1:1080/ -f '(bestvideo+bestaudio/best)[protocol^=http]' --audio-quality 0 --cookies-from-browser chrome:~/.var/app/com.google.Chrome/ -o '/tmp/%(title)s.%(ext)s' 'https://domain.com/some/uri'
     - yt-dlp
     - spotdl
-    - secretstorage
     - edir  # rename, remove, and copy files and directories using your editor
     - mycli  # mycli -h 127.0.0.1 -uroot
 
   node:  # pnpm
     - tsx
     - npm-check-updates  # ncu
-    - eslint
+    - vite
