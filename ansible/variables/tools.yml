@@ -53,15 +53,17 @@ tools:
     - firewall-config  # firewalld gui
 
   flatpak:
-    - dconf-editor
+    - ca.desrt.dconf-editor
+    - com.baidu.NetDisk
+    - com.github.phase1geo.minder
     - com.github.tchx84.Flatseal
+    - com.google.Chrome
     - com.qq.QQ
     - com.tencent.WeChat
-    - com.baidu.NetDisk
-    - com.google.Chrome
-    - io.podman_desktop.PodmanDesktop
-    - com.github.phase1geo.minder
+    - dev.zed.Zed
     - io.gitlab.news_flash.NewsFlash
+    - io.podman_desktop.PodmanDesktop
+    - org.blender.Blender
     - org.inkscape.Inkscape
     - org.shotcut.Shotcut
 
