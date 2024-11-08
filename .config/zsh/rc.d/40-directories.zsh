@@ -12,6 +12,6 @@ alias -g ....='../../..'
 alias -g .....='../../../..'
 alias -g ......='../../../../..'
 
-alias ls="ls --color=auto --time-style=long-iso"
+alias ls="ls --color=auto -h --time-style=long-iso"
 alias ll="ls --color=always -AlF -h -v --time-style=long-iso"
 alias l="ls -lh"
