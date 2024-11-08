@@ -15,6 +15,7 @@
   when: ansible_distribution == "Fedora"
 
 # sudo dnf update --exclude="kernel*"
+# [main] exclude=kernel* kernel-* in /etc/dnf/dnf.conf
 - name: Upgrade all packages, excluding kernel (dnf)
   become: true
   when: ansible_distribution == "Fedora"

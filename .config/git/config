@@ -184,6 +184,7 @@
 
 [difftool "difftastic"]
 
+    # can not display unicode symbols
     cmd = difft "$LOCAL" "$REMOTE"
 
 [difftool "icdiff"]
