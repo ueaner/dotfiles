@@ -25,6 +25,8 @@
         curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
 
         ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+        ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d " " -f1)/share/zsh/site-functions/_cargo ~/.local/share/zsh/site-functions/_cargo
+        rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
       changed_when: false
 
     # Upgrade rust, check version
@@ -38,10 +40,13 @@
     - name: Upgrading Rust (Skip this task if version is already {{ versions.rust }})
       when: "versions.rust not in lang_rust_version.stdout"
       ansible.builtin.shell: |
+        set -o pipefail
         rustup self update
         rustup update
 
         ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+        ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d " " -f1)/share/zsh/site-functions/_cargo ~/.local/share/zsh/site-functions/_cargo
+        rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
       changed_when: false
 
     # Rust Installation Finished, echo version
