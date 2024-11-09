@@ -42,10 +42,10 @@
       changed_when: false
 
     # Deno Installation Finished, echo version
-
     - name: Deno Installation Finished
-      ansible.builtin.command:
-        cmd: "~/.local/bin/deno --version"
+      ansible.builtin.shell: |
+        ~/.local/bin/deno --version
+        ~/.local/bin/deno completions zsh > ~/.local/share/zsh/site-functions/_deno
       changed_when: false
       register: lang_deno_version
 
