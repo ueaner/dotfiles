@@ -23,7 +23,7 @@
     - gui
 
 - name: Install/Upgrade go tools
-  ansible.builtin.command: ~/go/bin/go install -v {{ item }}
+  ansible.builtin.command: go install -v {{ item }}
   changed_when: false
   loop: "{{ tools.go }}"
   environment:

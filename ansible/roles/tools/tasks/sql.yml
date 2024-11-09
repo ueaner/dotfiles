@@ -1,0 +1,14 @@
+---
+
+- name: Install/Upgrade sql tools
+  ansible.builtin.command: go install -v {{ item }}
+  changed_when: false
+  loop:
+    - github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+    - -tags 'postgres mysql sqlite3' github.com/xo/usql@latest
+  environment:
+    GO111MODULE: "on"
+    GOPROXY: https://goproxy.cn,https://goproxy.io,direct
+  tags:
+    - upgrade
+    - sql

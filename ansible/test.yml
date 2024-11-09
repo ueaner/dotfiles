@@ -46,6 +46,15 @@
             - path/defaults.yml
           skip: true
 
+    - name: Command loop, each command is executed independently
+      ansible.builtin.command: "{{ item }}"
+      loop:
+        - echo first cmd
+        - echo second cmd
+        - echo third cmd
+      changed_when: false
+
+
     # ----------------------------------------------------------------
     # dot
     # ----------------------------------------------------------------
@@ -86,7 +95,7 @@
     # ----------------------------------------------------------------
     - name: Installed Golang
       ansible.builtin.command:
-        cmd: "~/go/bin/go version"
+        cmd: "go version"
       changed_when: false
       register: go_version
     - name: DEBUG go version
@@ -95,7 +104,7 @@
 
     - name: Check if go is installed
       ansible.builtin.stat:
-        path: "~/go/bin/go"
+        path: "$XDG_DATA_HOME/go/bin/go"
       register: go_installed
     - name: DEBUG go installed
       ansible.builtin.debug:

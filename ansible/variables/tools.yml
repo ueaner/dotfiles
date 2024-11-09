@@ -66,6 +66,7 @@ tools:
     - org.blender.Blender
     - org.inkscape.Inkscape
     - org.shotcut.Shotcut
+    - org.videolan.VLC
 
     # NOTE: Drawio installed with flatpak cannot input Chinese
     # - com.jgraph.drawio.desktop
@@ -75,7 +76,7 @@ tools:
     - github.com/arl/gitmux@latest  # git status on tmux line
     - github.com/jesseduffield/lazygit@latest  # dnf copr enable atim/lazygit
     - github.com/antonmedv/fx@latest  # terminal JSON viewer
-    - go install github.com/mikefarah/yq/v4@latest  # YAML, JSON, XML, CSV, TOML and properties processor
+    - github.com/mikefarah/yq/v4@latest  # YAML, JSON, XML, CSV, TOML and properties processor
     - github.com/charmbracelet/glow@latest  # terminal markdown viewer
     - github.com/boyter/scc@latest  # such as tokei based on rust
     - github.com/mattn/goreman@latest  # manage Procfile-based applications
@@ -88,9 +89,6 @@ tools:
 
     - github.com/spf13/cobra-cli@latest
     - github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@latest
-
-    - github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-    - -tags 'postgres mysql sqlite3' github.com/xo/usql@latest
 
   rust:  # cargo
     - bottom  # btm process/system monitor, dnf copr enable atim/bottom
