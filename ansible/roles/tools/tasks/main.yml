@@ -66,11 +66,18 @@
     - neovim
     - neovide
 
-- name: Install drawio (include_tasks)
-  ansible.builtin.include_tasks: drawio.yml
+- name: Install/Upgrade mdbook (include_tasks)
+  ansible.builtin.command: "cargo install {{ item }}"
+  changed_when: false
+  loop:
+    - mdbook
+    - mdbook-plantuml
+    - mdbook-mermaid
+    - mdbook-toc
+    - mdbook-pagetoc
   tags:
     - upgrade
-    - drawio
+    - mdbook
 
 - name: Install zk (include_tasks)
   ansible.builtin.include_tasks: zk.yml
