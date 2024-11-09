@@ -9,10 +9,22 @@
 # - ~/.local/bin/ - $XDG_BIN_HOME
 #   - cargo install
 #   - go install
-#   - pip install
-#   - pnpm install
-#   - deno install
+#   - pip install --user
+#   - pnpm install -g
+#   - deno install -g
+#   - composer global install
 #   - plantuml.jar
+#
+# See what filetypes are in the ~/.local/bin/ directory:
+#
+# > file -F" " --mime-type * | awk '{print $2 $3, $1}' | column -t | sort
+#
+#   application/octet-stream      composer
+#   application/x-executable      caddy
+#   application/x-pie-executable  alacritty
+#   application/zip               plantuml.jar
+#   text/x-script.python          ansible
+#   text/x-shellscript            tsx
 #
 
 # python3 -m site --user-base
