@@ -15,8 +15,7 @@ command -v sha1sum >/dev/null || alias sha1sum="shasum"
 alias path='echo -e ${PATH//:/\\n}'
 alias fpath='echo -e ${FPATH//:/\\n}'
 
-alias vim='nvim'
-alias vimdiff="vim -d"
+alias vimdiff="nvim -d"
 
 # 快速访问配置文件
 alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc'
