@@ -19,7 +19,8 @@ keymap:
       Super-Shift-t: C-Shift-t  # reopen the last closed tab
       Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
       Super-Shift-KEY_LEFTBRACE:  C-Shift-KEY_TAB # [ prev tab
-      Super-KEY_COMMA: C-KEY_COMMA # Super-, preferences / settings
+      Super-KEY_COMMA: C-KEY_COMMA  # Super-, preferences / settings
+      Super-i: M-Enter          # Super-i -> Alt-Enter: Properties
       # Super-h                 # set in gsettings
       # Super-q                 # set in gsettings
 
