@@ -382,6 +382,7 @@ function jobs() {
     builtin jobs -l
 }
 
+# less than or equal: $1 <= $2
 function verlte() {
     printf '%s\n%s' "$1" "$2" | sort -C -V
 }
@@ -391,6 +392,7 @@ function verlte() {
 # else
 #     echo "no"
 # fi
+# less than: $1 < $2
 function verlt() {
     ! verlte "$2" "$1"
 }
