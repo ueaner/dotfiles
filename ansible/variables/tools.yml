@@ -36,7 +36,8 @@ tools:
     - fzf  # go
     - duf  # go: disk
     - gojq  # pure Go implementation of jq
-    - gops
+    - yq  # go: jq replacement for YAML
+    - gops  # go
     - hyperfine  # rust: A command-line benchmarking tool
     - git-delta  # rust: git diff
     - difftastic  # rust: git diff
@@ -76,7 +77,6 @@ tools:
     - github.com/arl/gitmux@latest  # git status on tmux line
     - github.com/jesseduffield/lazygit@latest  # dnf copr enable atim/lazygit
     - github.com/antonmedv/fx@latest  # terminal JSON viewer
-    - github.com/mikefarah/yq/v4@latest  # YAML, JSON, XML, CSV, TOML and properties processor
     - github.com/charmbracelet/glow@latest  # terminal markdown viewer
     - github.com/boyter/scc@latest  # such as tokei based on rust
     - github.com/mattn/goreman@latest  # manage Procfile-based applications
