@@ -38,6 +38,12 @@ export GOENV=$XDG_CONFIG_HOME/go/env
 export GOBIN=$XDG_BIN_HOME
 export GOCACHE=$XDG_CACHE_HOME/go-build
 export GOMODCACHE=$XDG_CACHE_HOME/go-mod # $GOPATH/pkg/mod
+GOVERSION=$(go version | {
+    # go version go1.23.3 linux/amd64
+    read -r _ _ v _
+    echo "${v#go}"
+})
+export GOVERSION
 
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 export CARGO_HOME=$XDG_DATA_HOME/cargo
@@ -54,10 +60,13 @@ export DENO_INSTALL_ROOT=$XDG_BIN_HOME
 # https://developer.android.com/tools/variables
 # https://developer.android.com/ndk/guides/graphics/getting-started#creating
 export ANDROID_HOME=$XDG_DATA_HOME/android
-export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
-# for tauri only
-# https://tauri.app/start/prerequisites/#android
-export NDK_HOME=$ANDROID_NDK_HOME
+
+if [[ -d "$ANDROID_HOME/ndk" ]]; then
+    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+    # for tauri only
+    # https://tauri.app/start/prerequisites/#android
+    export NDK_HOME=$ANDROID_NDK_HOME
+fi
 
 # fnm install --lts
 # fnm default lts-latest
