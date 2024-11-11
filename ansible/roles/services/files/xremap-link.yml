@@ -26,8 +26,10 @@ keymap:
       Super-Shift-t: C-Shift-t  # reopen the last closed tab
       Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
       Super-Shift-KEY_LEFTBRACE:  C-Shift-KEY_TAB # [ prev tab
-      Super-KEY_COMMA: C-KEY_COMMA # Super-, preferences / settings
-      # Super-h                 # set in gsettings
+      Super-Shift-KEY_SLASH: C-Shift-KEY_SLASH    # Super-Shift-? Keyboard shortcuts (Help)
+      Super-KEY_COMMA: C-KEY_COMMA  # Super-, preferences / settings
+      Super-i: M-Enter          # Super-i -> Alt-Enter: Properties
+      # Super-h/m               # set in gsettings
       # Super-q                 # set in gsettings
 
       # Editting
@@ -53,6 +55,7 @@ keymap:
       Super-KEY_EQUAL: C-KEY_EQUAL  # increase font size
       Super-KEY_MINUS: C-KEY_MINUS  # decrease font size
 
+  # Chrome More shortcuts: Alt-E-...
   - name: Chrome
     exact_match: true
     application:
