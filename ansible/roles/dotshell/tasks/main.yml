@@ -1,6 +1,18 @@
 ---
 
 # ----------------------------------------------------------------
+# prepare tools
+# ----------------------------------------------------------------
+- name: Install prepare tools
+  when: ansible_distribution == "Fedora"
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - git
+      - zsh
+      - util-linux  # chsh
+
+# ----------------------------------------------------------------
 # dotfiles
 # ----------------------------------------------------------------
 - name: Check if dotfiles exists

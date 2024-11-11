@@ -1,6 +1,6 @@
 ---
 
-- name: Using Tsinghua Repository
+- name: Using Tsinghua/USTC Repository
   ansible.builtin.script: files/repos.sh
   when: ansible_distribution == "Fedora"
 

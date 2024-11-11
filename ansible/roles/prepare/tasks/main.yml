@@ -52,19 +52,6 @@
     mode: '0755'
 
 # ----------------------------------------------------------------
-# prepare tools
-# ----------------------------------------------------------------
-- name: Install prepare tools
-  when: ansible_distribution == "Fedora"
-  become: true
-  ansible.builtin.dnf:
-    name:
-      - git
-      - zsh
-      - util-linux
-      - wget
-
-# ----------------------------------------------------------------
 # rpmfusion and tsinghua repositories
 # ----------------------------------------------------------------
 - name: Repositories (by include_tasks)
