@@ -100,11 +100,8 @@ launcher 一般变动很少，这里做完了 launcher，之后的升级也不�
 ### 跨系统共用配置文件
 
 Linux 和 macOS 下共用 [alacritty.toml] 配置文件时，两边的 font.size 显示大小不一致，
-而 Linux 下使用 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=9.0`
+而 Linux 下使用 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=10.50`
 指定参数，覆盖配置文件中的 font size, 达到两边系统无缝共用的效果。
-
-另 sway 目前不支持中文输入法弹窗，需要等 1.10 版本发布。
-sway 下暂时使用 `Exec=WINIT_UNIX_BACKEND=x11 alacritty --option font.size=7`
 
 最后看下 [Alacritty.desktop] 的完整内容：
 
@@ -112,7 +109,7 @@ sway 下暂时使用 `Exec=WINIT_UNIX_BACKEND=x11 alacritty --option font.size=7
 [Desktop Entry]
 Type=Application
 TryExec=alacritty
-Exec=alacritty --option font.size=9.0
+Exec=alacritty --option font.size=10.50
 Icon=Alacritty
 Terminal=false
 Categories=System;TerminalEmulator;
@@ -126,7 +123,7 @@ Actions=New;
 
 [Desktop Action New]
 Name=New Terminal
-Exec=alacritty --option font.size=9.0
+Exec=alacritty --option font.size=10.50
 ```
 
 推荐使用自动化部署编排工具进行管理，具体[参见](https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/tasks/main.yml)

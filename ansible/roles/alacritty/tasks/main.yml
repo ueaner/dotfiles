@@ -34,14 +34,4 @@
       changed_when: false
       notify: Update desktop database
 
-    # fcitx5: show preedit in Alacritty under swaywm
-    # See https://github.com/swaywm/sway/pull/7226 and wait for sway 1.10.
-    - name: Install Alacritty.desktop (Sway)
-      when: desktop_name == "sway"
-      ansible.builtin.copy:
-        src: files/Alacritty.desktop
-        dest: ~/.local/share/applications/Alacritty.desktop
-        mode: "0644"
-      notify: Update desktop database
-
 # macOS
