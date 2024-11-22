@@ -19,11 +19,16 @@ fi
 
 ### check-update kernel-headers
 
-source /etc/os-release
-latest_version=$(curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | yq -p json ".updates.F$VERSION_ID.stable")
-current_version=$(rpm -q --queryformat '%{name}-%{version}-%{release}' kernel-headers)
+function check-update-kernel-headers() {
+    source /etc/os-release
+    latest_version=$(curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | yq -p json ".updates.F$VERSION_ID.stable")
+    current_version=$(rpm -q --queryformat '%{name}-%{version}-%{release}' kernel-headers)
 
-if verlt "$current_version" "$latest_version"; then
+    if [[ "$latest_version" == "null" ]] || verlte "$latest_version" "$current_version"; then
+        printf "Fedora kernel-headers no updates available\n" >>/tmp/mytask.log
+        return
+    fi
+
     printf "Fedora kernel-headers updates available\n%s\n" "$latest_version" >>/tmp/mytask.log
     # shellcheck source=/dev/null
     source "$HOME/.local/etc/token.sh"
@@ -43,19 +48,22 @@ ${latest_version}
     reboot
 
 EOF
-else
-    printf "Fedora kernel-headers no updates available\n" >>/tmp/mytask.log
-fi
+}
 
-### Check if fedora 42 has been released
+check-update-kernel-headers
 
-ver=$(($(awk '{print $3}' </etc/redhat-release) + 1))
-# ver=$(expr "$(awk '{print $3}' </etc/redhat-release)" + 1)
-httpcode=$(curl --silent --head "https://mirror.nyist.edu.cn/fedora/releases/$ver/" | awk '/^HTTP/{print $2}')
+### Check for updates to the Fedora release
 
-if [ "$httpcode" != "200" ]; then
-    echo "Fedora $ver Unreleased, $httpcode" >>/tmp/mytask.log
-else
+function check-update-fedora-release() {
+    ver=$(($(awk '{print $3}' </etc/redhat-release) + 1))
+    # ver=$(expr "$(awk '{print $3}' </etc/redhat-release)" + 1)
+    httpcode=$(curl --silent --head "https://mirror.nyist.edu.cn/fedora/releases/$ver/" | awk '/^HTTP/{print $2}')
+
+    if [ "$httpcode" != "200" ]; then
+        echo "Fedora $ver Unreleased, $httpcode" >>/tmp/mytask.log
+        return
+    fi
+
     echo "Fedora $ver Released" >>/tmp/mytask.log
     # shellcheck source=/dev/null
     source "$HOME/.local/etc/token.sh"
@@ -66,4 +74,6 @@ https://fedoraproject.org/zh-Hans/workstation/download
 https://mirror.nyist.edu.cn/fedora/releases/$ver/
 
 EOF
-fi
+}
+
+check-update-fedora-release
