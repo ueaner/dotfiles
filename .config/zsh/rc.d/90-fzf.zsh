@@ -89,15 +89,7 @@ _fzf_compgen_dir() {
         2>/dev/null | sed 's@^\./@@'
 }
 
-# vim **<tab>
-# function _fzf_complete_vim() {
-#     _fzf_complete '-m' "$@" < <(
-#         command fd --type=file --type=symlink --hidden --follow --exclude ".git"
-#         # command rg --files --hidden --follow --smart-case --glob '!.git/'
-#     )
-# }
-
-function _fzf_complete_tldr() {
+_fzf_complete_tldr() {
     _fzf_complete '-m' "$@" < <(
         # 官方 nodejs 版本输出的是以逗号分隔的列表
         # command tldr --list | tr -d "[:space:]" | tr ", " "\n"
