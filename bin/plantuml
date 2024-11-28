@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Generate an image from a plantuml file and open it automatically
+
+PLANTUML_JAR=$HOME/.local/bin/plantuml.jar
+output_dir=/tmp/puml
+
+OPTIONS=""
+OPEN="xdg-open"
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    # Avoiding the "Run awt" popup window
+    OPTIONS="-Dapple.awt.UIElement=true"
+    OPEN="open"
+fi
+
+# Display help message
+case "$1" in
+-h | --help)
+    echo java -jar $OPTIONS "$PLANTUML_JAR" -h
+    java -jar $OPTIONS "$PLANTUML_JAR" -h
+    exit
+    ;;
+esac
+
+# Generates PNG format by default
+java -jar $OPTIONS "$PLANTUML_JAR" "$@" -o $output_dir
+
+# Open the latest generated file
+latest_file=$(find $output_dir -type f -exec ls -t1 {} + | head -1)
+$OPEN "$latest_file"
