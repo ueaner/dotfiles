@@ -1,61 +1,22 @@
 # functions.sh 常用自定义 shell 函数
-# 使用：. /path/to/functions.sh
-#   或将此句放到当前使用 shell 环境配置文件中, 如: .bashrc, .zshrc
-#   以便每次 shell 加载都可以直接用到这些函数
 
-# 列出所以已定义变量(包括环境变量)和函数列表：set
-
-# 删除已经定义函数 unset -f some_func
-# 删除已经定义变量 unset some_var
-# 删除已经定义别名 unalias some_alias
-
-# 执行 shell 内置命令
-# builtin some_shell_builtin_command
-# 执行一个可执行命令，**查找的 $PATH 路径中的可执行文件**
-# command some_command
-
-# 优先级: shell function > shell builtin > $PATH
-
-# 感受下 command 命令的工作方式:
-# $ type -a fg
-# fg is a shell function
-# fg is a shell builtin
-# fg is /usr/bin/fg
-#
-# ~ $ command -V fg
-# fg is a shell function
-#
-# $ command -pV fg      # 指定从 builtin / $PATH 路径中取
-# fg is a shell builtin
-#
-# $ unset -f fg
-#
-# $ command -V fg
-# fg is a shell builtin
-
-# 判断函数是否存在
+# Check if `alias/function/command` exists
 # if ! function_exists some_func; then
 #     do something ...
 # fi
 function_exists() {
-    type -a $1 >/dev/null
+    type -a "$1" >/dev/null
     return $?
 }
 
-# -x 检查某个文件是否有可执行权限，使用 man test 查看详情
-# 对于一个自定义 function / alias 不能使用 -x 检查
-# if ! [ -x "$(command -v git)" ]; then
-#   echo 'Error: git is not installed.' >&2
-#   exit 1
-# fi
-
 # if command_exists some_command; then echo yes; else echo no; fi
-# 不需要 return，会自动把结果返回去
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# if url_exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz'; then echo "Y"; else echo "N"; fi
+# if url_exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz'; then
+#     do something ...
+# fi
 url_exists() {
     # 下载第一个字节，检测 URL 是否存在
     curl -L --output /dev/null --silent --fail -r 0-0 "$URL"
@@ -64,8 +25,8 @@ url_exists() {
     return $?
 }
 
-# 过滤不存在的目录路径
-# dirs_exists /path/to1 /path/to2 ...
+# Filter out non-existent directories
+# dirs_exists /path/foo /path/bar ...
 dirs_exists() {
     # read array
     # shellcheck disable=SC2206,SC2207
@@ -87,37 +48,7 @@ dirs_exists() {
     echo "${dirs[@]}"
 }
 
-# Duration of loading specified code under zsh
-# loadtime "$(zoxide init zsh)"
-loadtime() {
-    # read string
-    [ -z "$1" ] && in=$(</dev/stdin) || in=$*
-    if [ -z "$in" ]; then
-        echo "Please enter source code"
-        return
-    fi
-
-    zmodload zsh/datetime
-    local -F start=EPOCHREALTIME
-    eval "$in"
-    local -F6 t=$((EPOCHREALTIME - start))
-    printf "\n\n%s\n\n  Duration: %ss\n\n" "$in" "$t" >>/tmp/loadtime.log
-
-    echo "Duration: $t, see /tmp/loadtime.log for details"
-}
-
-# 获取脚本文件名称 sh/bash/zsh
-# SCRIPT_NAME=`basename ${BASH_SOURCE[0]:-${(%):-%x}}`
-# SCRIPTS_ROOT=`dirname ${BASH_SOURCE[0]:-${(%):-%x}}`
-# echo $_
-
-stats_history() {
-    fc -l 1 |
-        awk '{ CMD[$2]++; count++; } END { for (a in CMD) print CMD[a] " " CMD[a]*100/count "% " a }' |
-        grep -v "./" | sort -nr | head -n "${1:-20}" | column -c3 -s " " -t | nl
-}
-
-# 存在则引入文件，imagemagick 包中有 import 命令
+# Require the file if it exists
 # Usage: require filename
 require() {
     [[ -r $1 ]] && . $1
@@ -137,45 +68,29 @@ xsource() {
     return 0
 }
 
-topmemory() {
-    ps aux | sort -k4nr | head -n "${1:-10}"
+# Duration of loading specified code under zsh
+# loadtime "$(zoxide init zsh)"
+loadtime() {
+    # read string
+    [ -z "$1" ] && in=$(</dev/stdin) || in=$*
+    if [ -z "$in" ]; then
+        echo "Please enter source code"
+        return
+    fi
+
+    zmodload zsh/datetime
+    local -F start=EPOCHREALTIME
+    eval "$in"
+    local -F6 t=$((EPOCHREALTIME - start))
+    printf "\n\n%s\n\n  Duration: %ss\n\n" "$in" "$t" >>/tmp/loadtime.log
+
+    echo "Duration: $t, see /tmp/loadtime.log for details"
 }
 
-tcpstats() {
-    #netstatan=`netstat -an | grep '^tcp\|^udp'`
-    netstatan=$(netstat -an)
-
-    # stats
-    echo $netstatan | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}' # | sort
-
-    # Active Internet connections
-    if [[ $(uname -s) = Darwin ]]; then
-        # Mac
-        echo -----------------------------------servers------------------------------------
-        echo $netstatan | grep LISTEN | sort
-        #echo -------------------------------established------------------------------------
-        #netstat -p tcp
-        #netstat -p udp
-    else
-        # LINUX
-        echo -----------------------------------servers------------------------------------
-        netstat -lnptue
-        #echo -------------------------------established------------------------------------
-        #netstat -nptue
-
-        # default: established
-        # -l listening
-        # -a all listening + established
-        # -n number
-        # -p PID/Program name
-        # -t tcp
-        # -u udp
-        # -e more information
-        # -s networking statistics
-        # -r route
-
-        # ifconfig = netstat -ei
-    fi
+history_stats() {
+    fc -l 1 |
+        awk '{ CMD[$2]++; count++; } END { for (a in CMD) print CMD[a] " " CMD[a]*100/count "% " a }' |
+        grep -v "./" | sort -nr | head -n "${1:-20}" | column -c3 -s " " -t | nl
 }
 
 tcplisten() {
@@ -186,12 +101,7 @@ tcplisten() {
     fi
 }
 
-version_gt() {
-    test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1"
-}
-
-# 查看进程运行所在目录
-# pwdx process-id
+# Print name of directory where the process is running
 # pwdx pid1 pid2 pid3
 pwdx() {
     lsof -a -d cwd -p "${1:-$$}" -n -Fn | awk '/^n/ {print substr($0,2)}'
@@ -284,21 +194,6 @@ jobs() {
     builtin jobs -l
 }
 
-# less than or equal: $1 <= $2
-verlte() {
-    printf '%s\n%s' "$1" "$2" | sort -C -V
-}
-
-# if verlt "v2.5.5" "v2.5.6"; then
-#     echo "yes" # yes
-# else
-#     echo "no"
-# fi
-# less than: $1 < $2
-verlt() {
-    ! verlte "$2" "$1"
-}
-
 # Select neovim configuration
 vv() {
     # Assumes all configs exist in directories named ~/.config/nvim-*
@@ -311,6 +206,21 @@ vv() {
 
     # Open Neovim with the selected config
     NVIM_APPNAME=$(basename "$config") nvim "$@"
+}
+
+# less than or equal: $1 <= $2
+version_lte() {
+    printf '%s\n%s' "$1" "$2" | sort -C -V
+}
+
+# if verlt "v2.5.5" "v2.5.6"; then
+#     echo "yes" # yes
+# else
+#     echo "no"
+# fi
+# less than: $1 < $2
+version_lt() {
+    ! verlte "$2" "$1"
 }
 
 # Only for macOS
