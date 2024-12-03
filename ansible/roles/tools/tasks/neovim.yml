@@ -51,11 +51,19 @@
         remote_src: true
       changed_when: false
 
-    - name: Install neovide.desktop
-      ansible.builtin.copy:
-        src: files/neovide.desktop
-        dest: ~/.local/share/applications/neovide.desktop
+    - name: Download neovide desktop files
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
         mode: "0644"
+        force: true
+      loop:
+        - { url: '{{ neovide_url_prefix }}/neovide.svg', dest: '~/.local/share/icons/neovide.svg' }
+        - { url: '{{ neovide_url_prefix }}/neovide.desktop', dest: '~/.local/share/applications/neovide.desktop' }
+      vars:
+        # noqa var-naming[no-role-prefix]
+        neovide_url_prefix: https://ghp.ci/https://github.com/neovide/neovide/raw/refs/heads/main/assets
+      changed_when: false
 
     - name: Update desktop database
       ansible.builtin.command:
