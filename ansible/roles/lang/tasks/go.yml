@@ -53,6 +53,14 @@
         cmd: ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
       changed_when: false
 
+    - name: Install zsh completion for go
+      when: ansible_user_shell.endswith('zsh')
+      ansible.builtin.get_url:
+        url: https://ghp.ci/https://github.com/zsh-users/zsh-completions/raw/refs/heads/master/src/_golang
+        dest: "~/.local/share/zsh/site-functions/"
+        mode: "0644"
+        force: true
+
     # Golang Installation Finished, echo version
 
     - name: Golang Installation Finished
