@@ -149,6 +149,7 @@ gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
 # Background & Night light
 gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
 gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
+gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700        # 2700
 gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
 gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"
 gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
