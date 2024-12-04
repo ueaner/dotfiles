@@ -56,6 +56,7 @@ gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '
 
 #----------------------------------------------------------------
 # Emacs Input: browser location bar, input box, etc.
+# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
 #----------------------------------------------------------------
 gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
 
@@ -144,6 +145,13 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true # false
 # Press `Left Ctrl` to highlights the current location of the pointer.
 gsettings set org.gnome.desktop.interface locate-pointer true # false
 gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
+
+# Background & Night light
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
+gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"
+gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
 
 #----------------------------------------------------------------
 # Logout & Lock screen
