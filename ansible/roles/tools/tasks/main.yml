@@ -6,7 +6,9 @@
   become: true
   ansible.builtin.dnf:
     name: "{{ tools.dnf }}"
-  notify: Modify flathub remote repository to sjtu
+  notify:
+    - Change flathub remote repository to sjtu
+    - Alacritty desktop entry add font.size option
 
 - name: Install gui tools (flatpak)
   community.general.flatpak:

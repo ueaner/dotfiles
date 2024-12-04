@@ -25,8 +25,8 @@
       when: (role == "all") or (role == "lang")
     - role: tools
       when: (role == "all") or (role == "tools")
-    - role: alacritty
-      when: (role == "all") or (role == "alacritty")
+    # - role: alacritty
+    #   when: (role == "all") or (role == "alacritty")
     - role: services
       when: (role == "all") or (role == "services")
     - role: fonts

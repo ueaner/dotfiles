@@ -10,6 +10,7 @@ tools:
     - binutils
     - git
     - tig
+    - alacritty
     - zsh
     - tmux
     - neovim
@@ -22,6 +23,7 @@ tools:
     - nmap-ncat
     - lsof
     - file
+    - strace
     - entr  # Run arbitrary commands when files change
     - fastfetch
     - lshw
