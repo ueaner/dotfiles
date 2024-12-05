@@ -1,0 +1,135 @@
+# Copy this to ~/.config/xremap/config.yml
+
+# keymap & exact_match
+# - https://github.com/xremap/xremap#keymap
+# application names:
+# - https://github.com/xremap/xremap#application
+# application-specific key overrides:
+# - https://github.com/xremap/xremap#application-specific-key-overrides
+
+---
+
+# Swapping the Left Alt Key and Left Super Key in ~/.config/sway/config
+# See https://github.com/ueaner/dotfiles/commit/a6e6da1
+#
+# modmap:
+#   - name: Chromebook keyboard
+#     remap:
+#       # Swap `left alt` and `left super` keys
+#       ALT_L: SUPER_L
+#       SUPER_L: Esc
+
+keymap:
+
+  - name: Ptyxis for GNOME
+    exact_match: true
+    application:
+      only: Ptyxis
+    remap:
+      # Super-n: C-Shift-n                          # new window
+      # Super-t: C-Shift-t                          # new tab
+      # Super-w: C-Shift-w                          # close tab
+      # Super-Shift-t: C-ALT-Shift-t                # reopen the last closed tab
+      # Super-Shift-KEY_RIGHTBRACE: C-KEY_PAGEDOWN  # ] next tab
+      # Super-Shift-KEY_LEFTBRACE: C-KEY_PAGEUP     # [ prev tab
+      # Super-KEY_EQUAL: C-Shift-KEY_EQUAL          # increase font size
+      # Super-f: C-Shift-f                          # find
+      Super-a: C-Shift-a                          # select all
+      Super-c: C-Shift-c                          # Copy
+      Super-v: C-Shift-v                          # Paste
+
+      # tmux shortcuts: prefix Alt-s \u001Bs
+      Super-r: [ALT-s, r]                                        # Tmux: Reload Config
+      Super-Shift-r: [ALT-s, SHIFT-R]                            # Client: Refresh
+      Super-d: [ALT-s, d]                                        # Client: Detach
+      Super-n: [ALT-s, n]                                        # Session: New
+      Super-Shift-n: [ALT-s, SHIFT-n]                            # Session: reName
+      Super-KEY_COMMA: [ALT-s, KEY_COMMA]                        # Session: Explorer, eg: numbers, hljk, search
+      Super-i: [ALT-s, i]                                        # Window: Info
+      Super-t: [ALT-s, t]                                        # Window: New
+      Super-w: [ALT-s, w]                                        # Window: Close
+      C-KEY_TAB: [ALT-s, SHIFT-KEY_DOT]                          # Window: Next
+      C-Shift-KEY_TAB: [ALT-s, SHIFT-KEY_COMMA]                  # Window: Previous
+      Super-Shift-KEY_DOT: [ALT-s, SHIFT-KEY_DOT]                # Window: > Next
+      Super-Shift-KEY_COMMA: [ALT-s, SHIFT-KEY_COMMA]            # Window: < Previous
+      Super-KEY_DOT: [ALT-s, ALT-s]                              # Window: . Last active
+      Super-Shift-KEY_MINUS: [ALT-s, SHIFT-KEY_MINUS]            # Window: _ Vertical Split
+      Super-Shift-KEY_BACKSLASH: [ALT-s, SHIFT-KEY_BACKSLASH]    # Window: | Previous
+      Super-KEY_APOSTROPHE: [ALT-s, KEY_APOSTROPHE]              # Pane: ' Last active
+      Super-Shift-KEY_APOSTROPHE: [ALT-s, SHIFT-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
+      Super-z: [ALT-s, z]                                        # Pane: Zoom
+      Super-x: [ALT-s, x]                                        # Pane: Kill
+      Super-Shift-e: [ALT-s, SHIFT-e]                            # Pane: Evenly Layout
+      Super-KEY_BACKSLASH: [ALT-s, KEY_SPACE]                    # Pane: \ Next Layout
+      Super-KEY_ESC: [ALT-s, KEY_ESC]                            # Mode: Copy Mode vi
+      Super-Shift-KEY_SEMICOLON: [ALT-s, SHIFT-KEY_SEMICOLON]    # Mode: : Command mode
+      Super-KEY_SLASH: [ALT-s, KEY_SLASH]                        # Search: / in copy mode
+      Super-f: [ALT-s, KEY_SLASH]                                # Search: / in copy mode
+      Super-Shift-KEY_SLASH: [ALT-s, SHIFT-KEY_SLASH]            # Help: ? List key bindings
+
+  - name: Firefox
+    exact_match: true
+    application:
+      only: firefox
+    remap:
+      Super-w: C-F4  # Overrides the Super-w key for close tab
+
+  # Chrome More shortcuts: Alt-E-...
+  - name: Chrome
+    exact_match: true
+    application:
+      only: [Google-chrome, google-chrome]
+    remap:
+      Super-w: [Esc, C-w]       # Overrides the Super-w key for close tab
+      Super-Shift-n: C-Shift-n  # open a new window in Incognito mode
+      Super-Alt_l-i: C-Shift-i  # open developer tools
+      Super-j: C-j              # open download page
+      Super-d: C-d              # save page to bookmarks
+      Super-9: C-9              # jump to the last page
+
+  - name: macOS-ish basic
+    exact_match: true
+    application:
+      # tmux shortcuts are defined with Alacritty
+      not: [Alacritty]
+    remap:
+      # Super-tab switch applications
+      #  Ctrl-tab switch tabs
+      #  Super-`  switch windows of application
+      # Window / Tab
+      # Super-h/m               # set in gsettings
+      # Super-q                 # set in gsettings
+      Super-n: C-n              # new window
+      Super-t: C-t              # new tab
+      Super-w: C-w              # close tab
+      Super-Shift-t: C-Shift-t  # reopen the last closed tab
+      Super-Shift-KEY_RIGHTBRACE: C-KEY_TAB       # ] next tab
+      Super-Shift-KEY_LEFTBRACE: C-Shift-KEY_TAB  # [ prev tab
+      Super-Shift-KEY_SLASH: C-Shift-KEY_SLASH    # Super-Shift-? Keyboard shortcuts (Help)
+      Super-KEY_COMMA: C-KEY_COMMA                # Super-, preferences / settings
+      Super-i: ALT-KEY_ENTER                      # Super-i -> Alt-Return: Properties
+
+      # Editting
+      Super-z: C-z              # undo
+      Super-Shift-z: C-Shift-z  # redo
+      Super-x: C-x              # Cut
+      Super-c: C-c              # Copy
+      Super-v: C-v              # Paste
+      Super-f: C-f              # find
+      Super-g: C-g              # find next
+      Super-Shift-g: C-Shift-g  # find previous
+      Super-l: [Esc, C-l]       # location bar / select line
+      Super-a: C-KEY_SLASH      # select all, use `C-/` instead of `C-a`
+      Super-o: C-o              # open options / open choose file dialog
+      Super-p: C-p              # print
+      Super-s: C-s              # save
+      Super-Shift-s: C-Shift-s  # save as
+      Super-r: C-r              # reload page
+      # Ctrl-u: [Shift-Home, Backspace]       # underline, Emacs C-u
+
+  - name: macOS-ish font zoom
+    exact_match: true
+    remap:
+      Super-KEY_0: C-KEY_0                # reset font size
+      Super-KEY_EQUAL: C-Shift-KEY_EQUAL  # increase font size (Ctrl++)
+      Super-KEY_MINUS: C-KEY_MINUS        # decrease font size (Ctrl+-)

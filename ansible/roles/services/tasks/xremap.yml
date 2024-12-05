@@ -1,21 +1,5 @@
 ---
 
-# Install xremap config
-
-- name: Install xremap/config.yml (chromebook link)
-  when: ansible_product_name == 'Link'
-  ansible.builtin.copy:
-    src: files/xremap-link.yml
-    dest: ~/.config/xremap/config.yml
-    mode: "0644"
-
-- name: Install xremap/config.yml
-  when: ansible_product_name != 'Link'
-  ansible.builtin.copy:
-    src: files/xremap.yml
-    dest: ~/.config/xremap/config.yml
-    mode: "0644"
-
 # Running xremap without sudo
 
 # https://github.com/k0kubun/xremap#running-xremap-without-sudo
