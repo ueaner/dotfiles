@@ -70,6 +70,29 @@ input type:touchpad {
     accel_profile adaptive
     #pointer_accel 0.5
 }
+
+# https://github.com/swaywm/sway/wiki#input-configuration
+input type:keyboard {
+    # See /usr/share/X11/xkb/rules/base.lst
+    #
+    # Chromebook keyboard:
+    # - Left Alt is swapped with Left Win
+    xkb_options altwin:swap_lalt_lwin
+
+    # Regular keyboard:
+    # - Left Alt is swapped with Left Win
+    # - Make Caps Lock an additional Esc
+    # - [ ] Swap the Fn and Left Ctrl keys. -> Go to UEFI/BIOS
+    #       Run "sudo libinput debug-events", press the Fn key and output KEY_FN
+    #       https://www.reddit.com/r/linux4noobs/comments/3n7itn/switch_the_fn_key_and_control_key/
+    # xkb_options altwin:swap_lalt_lwin,caps:escape
+
+    # Apple keyboard:
+    # https://discussion.fedoraproject.org/t/way-to-switch-fn-and-right-control-key/107703/6
+    # - Make Caps Lock an additional Esc
+    # xkb_options caps:escape
+}
+
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
