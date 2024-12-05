@@ -97,8 +97,8 @@ keymap:
       #  Ctrl-tab switch tabs
       #  Super-`  switch windows of application
       # Window / Tab
-      # Super-h/m               # set in gsettings
-      # Super-q                 # set in gsettings
+      # Super-h/m               # Hide, set in gsettings
+      # Super-q                 # Quit, set in gsettings
       Super-n: C-n              # new window
       Super-t: C-t              # new tab
       Super-w: C-w              # close tab
