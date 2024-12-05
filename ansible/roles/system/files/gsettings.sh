@@ -190,24 +190,15 @@ gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>'
 
 # Activate the window menu: Take Screenshot, Hide, Move to Workspace Right, etc.
 gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>space']"     # ['<Alt>space']
-gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super><Control>f']" # []
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q', '<Control>q']"        # ['<Alt>F4']
-
-# Switch monitor shortcut key changed from `<Super>p` to `<Super><Shift>p`, [RELEASE] `<Super>p`
-# NOTE: Sway: floating window
-gsettings set org.gnome.mutter.keybindings switch-monitor "['<Super><Shift>m']" # ['<Super>p', 'XF86Display']
-
-# Default
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Super><Shift>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Super><Shift>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Super><Shift>Down']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Super><Shift>Up']"
-
+gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super><Control>f']" # []
 # Default under GNOME Shell, NOTE: focus around for Sway
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>Left']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>Right']"
 gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Super>Down']"
 gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
+gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>h']"
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super><Alt>h']" # []
 
 # Default
 gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab', '<Alt>Tab']"
@@ -239,6 +230,22 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 "['<Super>8
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-9 "['<Super>9']"
 # <Super>0: reset font size
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-10 "[]"
+
+#----------------------------------------------------------------
+# Monitor
+#----------------------------------------------------------------
+
+# [RELEASE] `<Super>p` for Print
+# Switch monitor shortcut key changed from `<Super>p` to `<Super><Shift>m`
+# NOTE: Sway: floating window
+gsettings set org.gnome.mutter.keybindings switch-monitor "['<Super><Shift>m']" # ['<Super>p', 'XF86Display']
+
+# Default
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Super><Shift>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Super><Shift>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Super><Shift>Down']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Super><Shift>Up']"
+
 
 # GNOME Shell Extensions
 #
