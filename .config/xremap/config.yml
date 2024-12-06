@@ -1,4 +1,9 @@
 # Copy this to ~/.config/xremap/config.yml
+#
+# https://en.wikipedia.org/wiki/Table_of_keyboard_shortcuts
+# https://developer.gnome.org/hig/reference/keyboard.html
+# https://support.apple.com/en-us/102650
+# https://support.microsoft.com/en-us/windows/keyboard-shortcuts-in-windows-dcc61a57-8ff0-cffe-9796-cb9706c75eec
 
 # keymap & exact_match
 # - https://github.com/xremap/xremap#keymap
@@ -16,8 +21,11 @@
 #   - name: Chromebook keyboard
 #     remap:
 #       # Swap `left alt` and `left super` keys
+#       # XXX: Pressing Super-t sends Super-C-t, then C-t
 #       ALT_L: SUPER_L
-#       SUPER_L: Esc
+#       SUPER_L: ALT_L
+#       # Make Caps Lock an additional Esc
+#       # SUPER_L: Esc
 
 keymap:
 
@@ -40,7 +48,7 @@ keymap:
 
       # tmux shortcuts: prefix Alt-s \u001Bs
       Super-r: [ALT-s, r]                                        # Tmux: Reload Config
-      Super-Shift-r: [ALT-s, SHIFT-R]                            # Client: Refresh
+      Super-Shift-r: [ALT-s, SHIFT-r]                            # Client: Refresh
       Super-d: [ALT-s, d]                                        # Client: Detach
       Super-n: [ALT-s, n]                                        # Session: New
       Super-Shift-n: [ALT-s, SHIFT-n]                            # Session: reName
@@ -54,7 +62,7 @@ keymap:
       Super-Shift-KEY_COMMA: [ALT-s, SHIFT-KEY_COMMA]            # Window: < Previous
       Super-KEY_DOT: [ALT-s, ALT-s]                              # Window: . Last active
       Super-Shift-KEY_MINUS: [ALT-s, SHIFT-KEY_MINUS]            # Window: _ Vertical Split
-      Super-Shift-KEY_BACKSLASH: [ALT-s, SHIFT-KEY_BACKSLASH]    # Window: | Previous
+      Super-Shift-KEY_BACKSLASH: [ALT-s, SHIFT-KEY_BACKSLASH]    # Window: | Horizontal Split
       Super-KEY_APOSTROPHE: [ALT-s, KEY_APOSTROPHE]              # Pane: ' Last active
       Super-Shift-KEY_APOSTROPHE: [ALT-s, SHIFT-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
       Super-z: [ALT-s, z]                                        # Pane: Zoom
@@ -122,6 +130,7 @@ keymap:
       Super-a: C-KEY_SLASH      # select all, use `C-/` instead of `C-a`
       Super-o: C-o              # open options / open choose file dialog
       Super-p: C-p              # print
+      Super-Shift-p: C-Shift-p  # preview
       Super-s: C-s              # save
       Super-Shift-s: C-Shift-s  # save as
       Super-r: C-r              # reload page
