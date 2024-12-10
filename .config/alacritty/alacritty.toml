@@ -98,12 +98,14 @@ bindings = [
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
     { key = "W",           mods = "Super",         chars = "\u001Bsw"          }, # Window: Close
-    { key = "Tab",         mods = "Control",       chars = "\u001Bs>"          }, # Window: Next
-    { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs<"          }, # Window: Previous
+    { key = "Tab",         mods = "Control",       chars = "\u001Bs]"          }, # Window: Next
+    { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs["          }, # Window: Previous
     # https://github.com/alacritty/alacritty/issues/7604#issuecomment-1886539740
-    { key = ">",           mods = "Super|Shift",   chars = "\u001Bs>"          }, # Window: Next
-    { key = "<",           mods = "Super|Shift",   chars = "\u001Bs<"          }, # Window: Previous
-    { key = ".",           mods = "Super",         chars = "\u001Bs\u001Bs"    }, # Window: Last active
+    { key = "{",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
+    { key = "}",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
+    { key = ">",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
+    { key = "<",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
+    { key = ".",           mods = "Super",         chars = "\u001Bs."          }, # Window: Last active
     { key = "_",           mods = "Super|Shift",   chars = "\u001Bs_"          }, # Window: Vertical Split
     { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Window: Horizontal Split
     { key = "'",           mods = "Super",         chars = "\u001Bs'"          }, # Pane: Last active
