@@ -1,3 +1,6 @@
+# https://gnome.pages.gitlab.gnome.org/gnome-browser-integration/pages/installation-guide.html
+# - https://gitlab.gnome.org/GNOME/gnome-browser-connector
+# - https://gitlab.gnome.org/GNOME/gnome-browser-extension
 #
 # General Installation Steps:
 #
