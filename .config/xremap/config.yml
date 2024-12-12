@@ -43,8 +43,8 @@ keymap:
       Super-z: [Alt-s, z]                                        # Pane: Zoom
       Super-x: [Alt-s, x]                                        # Pane: Kill
       Shift-Super-e: [Alt-s, Shift-e]                            # Pane: Evenly Layout
-      Super-KEY_BACKSLASH: [Alt-s, KEY_SPACE]                    # Pane: \ Next Layout
-      Super-KEY_ESC: [Alt-s, KEY_ESC]                            # Mode: Copy Mode vi
+      Super-KEY_BACKSLASH: [Alt-s, Space]                        # Pane: \ Next Layout
+      Super-Esc: [Alt-s, Esc]                                    # Mode: Copy Mode vi
       Shift-Super-KEY_SEMICOLON: [Alt-s, Shift-KEY_SEMICOLON]    # Mode: : Command mode
       Super-KEY_SLASH: [Alt-s, KEY_SLASH]                        # Search: / in copy mode
       Super-f: [Alt-s, KEY_SLASH]                                # Search: / in copy mode
@@ -56,7 +56,10 @@ keymap:
       only: firefox
     remap:
       Shift-Super-j: Shift-Ctrl-y        # Downloads page
-      # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u, Page Source
+      Alt-Super-u: [Tab, Ctrl-u]         # Page Source, Need to lose focus on the input box first
+      Shift-Super-n: Shift-Ctrl-p        # New Private Window
+      Shift-Super-p: Esc                 # Dummy
+      # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
       # Super-l: [Esc, Ctrl-l]           # Location bar / Select line, Sway needs Super-l
 
   # More shortcuts: Alt-E-...
@@ -66,6 +69,8 @@ keymap:
       only: [Google-chrome, google-chrome]
     remap:
       Super-9: Ctrl-9              # jump to the last page
+      Ctrl-Up: Home                # Go to Top of Page
+      Ctrl-Down: End               # Go to Bottom of Page
       # Super-w: [Esc, Ctrl-w]       # Overrides the Super-w key for close tab
       # Super-KEY_COMMA: [Ctrl-l, "chrome://settings/", KEY_ENTER]  # Settings
 
@@ -81,11 +86,11 @@ keymap:
       Shift-Super-h: Alt-Home       # Home page
       Super-y: Ctrl-h               # History page
       Shift-Super-j: Ctrl-j         # Downloads page, Override in Firefox section
+      Super-Esc: Shift-Esc          # Task Manager
       Alt-Super-i: Shift-Ctrl-i     # Developer tools
+      Alt-Super-j: Shift-Ctrl-j     # JavaScript Console
       Alt-Super-b: Shift-Ctrl-o     # Bookmark Manager
       Alt-Super-u: Ctrl-u           # Page Source
-      Alt-Super-j: Shift-Ctrl-j     # JavaScript Console
-      Super-KEY_ESC: Shift-KEY_ESC  # Task Manager
 
   - name: macOS-ish basic
     exact_match: true

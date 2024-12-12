@@ -18,7 +18,7 @@ keymap:
     application:
       only: [Google-chrome, google-chrome, firefox]
     remap:
-      Ctrl-Super-i: Shift-Ctrl-i  # Developer tools
-      Ctrl-Super-b: Shift-Ctrl-o  # Bookmark Manager
-      Ctrl-Super-u: Ctrl-u        # Page Source
-      Ctrl-Super-j: Shift-Ctrl-j  # JavaScript Console
+      Ctrl-Super-i: Shift-Ctrl-i   # Developer tools
+      Ctrl-Super-j: Shift-Ctrl-j   # JavaScript Console
+      Ctrl-Super-b: Shift-Ctrl-o   # Bookmark Manager
+      Ctrl-Super-u: [Tab, Ctrl-u]  # Page Source
