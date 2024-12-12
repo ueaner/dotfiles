@@ -1,4 +1,4 @@
-# https://github.com/k0kubun/xremap/blob/6e8e1f21285ecedfa7ac88d703ad80d25a2699dd/examples/systemd/xremap.service
+# https://github.com/xremap/xremap/blob/6e8e1f21285ecedfa7ac88d703ad80d25a2699dd/examples/systemd/xremap.service
 # 0. cargo install xremap --features gnome
 # 1. Copy this to ~/.config/systemd/user/xremap.service
 # 2. Use ~/.config/autostart/xremap.desktop on desktop environment startup
@@ -14,11 +14,25 @@ Documentation=https://github.com/xremap/xremap
 WantedBy=default.target
 
 [Service]
+# sleep workaround from https://github.com/k0kubun/xremap/issues/105#issuecomment-1190994137
+ExecStartPre=/usr/bin/sleep 1
 # %h resolves to $HOME for --user services
 # Running xremap with sudo
 #ExecStart=/usr/bin/sudo /usr/bin/bash -lc '%h/.cargo/bin/xremap %h/.config/xremap/config.yml --watch=device'
+
 # Running xremap without sudo
-ExecStart=%h/.local/bin/xremap %h/.config/xremap/config.yml --watch=device
+# GNOME
+#ExecStart=%h/.local/bin/xremap %h/.config/xremap/config.yml --watch=device
+# Sway: sleep 1; xremap chromebook.yml config.yml
+#ExecStart=%h/.local/bin/xremap %h/.config/xremap/chromebook.yml %h/.config/xremap/config.yml --watch=device
+ExecStart=/usr/bin/bash -c \
+'\
+  if [[ "$(cat /sys/devices/virtual/dmi/id/product_name)" == "Link" ]]; then\
+    %h/.local/bin/xremap %h/.config/xremap/chromebook.yml %h/.config/xremap/config.yml --watch=device;\
+  else\
+    %h/.local/bin/xremap %h/.config/xremap/config.yml --watch=device;\
+  fi\
+'
 ExecStop=/usr/bin/killall xremap
 KillMode=process
 Restart=always

@@ -1,0 +1,24 @@
+# Copy this to ~/.config/xremap/chromebook.yml
+# Keymap for Chromebook only
+
+---
+
+# Swap keys under Chromebook
+modmap:
+  - name: Chromebook modmaps
+    remap:
+      # Swap `left alt` and `left super` keys
+      ALT_L: SUPER_L
+      SUPER_L: ALT_L
+
+# Override the Browser section keymap in the `~/.config/xremap/config.toml` file
+keymap:
+  - name: Browser
+    exact_match: true
+    application:
+      only: [Google-chrome, google-chrome, firefox]
+    remap:
+      Ctrl-Super-i: Shift-Ctrl-i  # Developer tools
+      Ctrl-Super-b: Shift-Ctrl-o  # Bookmark Manager
+      Ctrl-Super-u: Ctrl-u        # Page Source
+      Ctrl-Super-j: Shift-Ctrl-j  # JavaScript Console

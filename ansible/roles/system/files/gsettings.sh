@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 #
-# Fedora Sway Spin removes gnome's
-#   - org.gnome.shell (screenshot, toggle-overview, etc.)
-#   - org.gnome.mutter (switch-monitor, toggle-tiled, etc.)
-#   - org.gnome.settings-daemon (power, lock, logout, screensaver, search, etc.)
-# and includes
-#   - org.gnome.desktop (interface, wm, peripherals, input-sources, etc.)
-#   - org.gnome.nm-applet
-#
-# 1. View configuration items and values:
-# gsettings list-recursively | grep org.gnome.desktop.peripherals
-# gsettings list-recursively org.gnome.desktop.peripherals
-#
-# 2. View configuration item definitions through gschema.xml, example of peripherals:
-# https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/blob/master/schemas/org.gnome.desktop.peripherals.gschema.xml.in
-#
-# or use dconf-editor
-#
-# <Super> <Control> <Alt> <Shift>
+# Table of Contents:
+# - RELEASE Keys
+# - Emacs Input: gtk-key-theme
+# - Power
+# - UI Appearance
+# - Logout & Lock screen
+# - Screenshot
+# - Peripherals Touchpad
+# - Keyboard & Input
+# - Application & Window
+# - Workspace
+# - Monitor
+# - GNOME Shell Extensions
+#    - Clipboard Indicator
+#    - System Monitor
+#    - Gesture Improvements
+
+# Alt/Option Shift Control Command Character
 
 #----------------------------------------------------------------
-# RELEASE
+# RELEASE Keys
 #----------------------------------------------------------------
 
 # [RELEASE] `<Super>n` for `New window`
@@ -31,7 +31,7 @@ gsettings set org.gnome.mutter.wayland.keybindings restore-shortcuts "[]" # ['<S
 
 # [RELEASE] `<Super>Space` for fcitx5, `<Ctrl>Space` to switch input source, `Shift` to switch Chinese and English
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source "[]"          # ['<Super>space', 'XF86Keyboard']
-gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Super><Shift>space', '<Shift>XF86Keyboard']
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Shift><Super>space', '<Shift>XF86Keyboard']
 
 # [RELEASE] `Left Super`, avoid `<Super>tab` cannot switch the application in time
 # Search Applications (<Super>Space) / Toggle Overview (F3) is the same effect.
@@ -39,6 +39,9 @@ gsettings set org.gnome.mutter overlay-key '' # 'Super_L'
 
 # [RELEASE] `<Super>v` and `<Super>m`
 gsettings set org.gnome.shell.keybindings toggle-message-tray "[]" # ['<Super>v', '<Super>m']
+
+# [RELEASE] `<Super>s`
+gsettings set org.gnome.shell.keybindings toggle-quick-settings "[]" # ['<Super>s']
 
 # [RELEASE] `<Super>1-9` for switch workspaces
 gsettings set org.gnome.shell.keybindings switch-to-application-1 "[]"
@@ -59,6 +62,73 @@ gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '
 # NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
 #----------------------------------------------------------------
 gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
+
+#----------------------------------------------------------------
+# Power
+#----------------------------------------------------------------
+
+# Power Mode: performance, balanced, power-saver
+gsettings set org.gnome.shell last-selected-power-profile 'power-saver' # 'power-saver'
+
+# Disable the ALS sensor (Ambient Light Sensor)
+gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # true
+
+# Dim the screen after a period of inactivity
+# > gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
+# Whether to hibernate, suspend or do nothing when inactive
+# > gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
+#----------------------------------------------------------------
+# UI Appearance
+#----------------------------------------------------------------
+
+# Color scheme
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' # 'default'
+
+# Show date/weekday in clock
+gsettings set org.gnome.desktop.interface clock-format '24h'      # '12h'
+gsettings set org.gnome.desktop.interface clock-show-date true    # false
+gsettings set org.gnome.desktop.interface clock-show-weekday true # false
+
+# Show battery percentage
+gsettings set org.gnome.desktop.interface show-battery-percentage true # false
+
+# Press `Left Ctrl` to highlights the current location of the pointer.
+gsettings set org.gnome.desktop.interface locate-pointer true # false
+gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
+
+# Drag windows against the top, left, and right screen edges to resize them
+gsettings set org.gnome.mutter edge-tiling true # true
+
+gsettings set org.gnome.desktop.interface enable-hot-corners true # true
+
+# Background & Night light
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
+gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700        # 2700
+gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"
+gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
+
+#----------------------------------------------------------------
+# Logout & Lock screen
+#----------------------------------------------------------------
+
+gsettings set org.gnome.settings-daemon.plugins.media-keys logout "['<Shift><Super>q']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Control><Super>q']"
+
+#----------------------------------------------------------------
+# Screenshot
+#----------------------------------------------------------------
+
+# Take a screenshot
+gsettings set org.gnome.shell.keybindings screenshot "['<Shift><Super>3']"
+# Take a screenshot interactively
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Shift><Super>4']"
+# Record a screencast interactively
+gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Shift><Super>5']"
+# Take a screenshot of a window
+gsettings set org.gnome.shell.keybindings screenshot-window "['<Control><Super>a']"
 
 #----------------------------------------------------------------
 # Peripherals Touchpad
@@ -83,7 +153,7 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true #
 # > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 
 #----------------------------------------------------------------
-# Keyboard
+# Keyboard & Input
 #----------------------------------------------------------------
 # Settings -> Keyboard -> Input Sources -> [+] -> Chinese (China) -> Chinese (Intelligent Pinyin)
 gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'libpinyin'), ('xkb', 'us')]" # []
@@ -113,142 +183,109 @@ gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin english-input-mode f
 gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin table-input-mode false   # true
 
 #----------------------------------------------------------------
-# Power
+# Application & Window
 #----------------------------------------------------------------
 
-# Power Mode: performance, balanced, power-saver
-gsettings set org.gnome.shell last-selected-power-profile 'power-saver' # 'power-saver'
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
+# Settings -> Multitasking -> App Switching
+gsettings set org.gnome.shell.app-switcher current-workspace-only false # false
 
-# Disable the ALS sensor (Ambient Light Sensor)
-gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # true
-
-# Dim the screen after a period of inactivity
-# > gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
-# Whether to hibernate, suspend or do nothing when inactive
-# > gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-
-#----------------------------------------------------------------
-# UI Appearance
-#----------------------------------------------------------------
-
-# Color scheme
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-
-# Show date/weekday in clock
-gsettings set org.gnome.desktop.interface clock-format '24h'      # '12h'
-gsettings set org.gnome.desktop.interface clock-show-date true    # false
-gsettings set org.gnome.desktop.interface clock-show-weekday true # false
-
-# Show battery percentage
-gsettings set org.gnome.desktop.interface show-battery-percentage true # false
-
-# Press `Left Ctrl` to highlights the current location of the pointer.
-gsettings set org.gnome.desktop.interface locate-pointer true # false
-gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
-
-# Background & Night light
-gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
-gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
-gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700        # 2700
-gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
-gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"
-gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
-
-#----------------------------------------------------------------
-# Logout & Lock screen
-#----------------------------------------------------------------
-
-gsettings set org.gnome.settings-daemon.plugins.media-keys logout "['<Super><Shift>q']"
-gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super><Control>q']"
-
-#----------------------------------------------------------------
-# Screenshot
-#----------------------------------------------------------------
-
-# Take a screenshot
-gsettings set org.gnome.shell.keybindings screenshot "['<Super><Shift>3']"
-# Take a screenshot interactively
-gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Super><Shift>4']"
-# Record a screencast interactively
-gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Super><Shift>5']"
-# Take a screenshot of a window
-gsettings set org.gnome.shell.keybindings screenshot-window "['<Super><Control>a']"
-
-#----------------------------------------------------------------
-# Applications & Windows
-#----------------------------------------------------------------
+# Modifiers for window click actions
+gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>' # '<Super>'
+# Activate the window menu: Take Screenshot, Hide, Move to Workspace Left/Right, etc.
+gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>space']"
 
 # Show all applications: F4 Open Launchpad
 gsettings set org.gnome.shell.keybindings toggle-application-view "['LaunchB']" # ['<Super>a']
 # Active applications: F3 Open Mission Control
 gsettings set org.gnome.shell.keybindings toggle-overview "['LaunchA']" # ['<Super>s']
-# Search applications
+gsettings set org.gnome.shell.keybindings shift-overview-up "['<Alt><Super>Up']"
+gsettings set org.gnome.shell.keybindings shift-overview-down "['<Alt><Super>Down']"
+# Search for anything
 gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>space']" # ['']
+# Switch applications
+gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab']" # ['<Super>Tab', '<Alt>Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Super>Tab']"
+# Switch windows of an application (Above Tab is Grave accent)
+gsettings set org.gnome.desktop.wm.keybindings switch-group "['<Super>grave']" # ['<Super>Above_Tab', '<Alt>Above_Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-group-backward "['<Shift><Super>grave']"
 
-# Modifiers for window click actions
-gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>'
-
-# Activate the window menu: Take Screenshot, Hide, Move to Workspace Right, etc.
-gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>space']"     # ['<Alt>space']
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q', '<Control>q']"        # ['<Alt>F4']
-gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super><Control>f']" # []
-# Default under GNOME Shell, NOTE: focus around for Sway
+gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Control><Super>f']" # []
+# NOTE: Sway: set $left h
+gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>m']" # ['<Super>h']
+# NOTE: Sway: focus around
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>Left']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>Right']"
 gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Super>Down']"
 gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
-gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>h']"
-gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super><Alt>h']" # []
 
-# Default
-gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab', '<Alt>Tab']"
-gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Super><Shift>Tab', '<Alt><Shift>Tab']"
+#----------------------------------------------------------------
+# Workspace
+#----------------------------------------------------------------
 
-# Switch workspaces with alt+arrow keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control><Alt>Right']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control><Alt>Left']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "['<Control><Alt>Down']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['<Control><Alt>Up']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Control><Alt>End']"
-# Move workspaces with shift+arrow keys
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Control><Shift>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Control><Shift>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "['<Control><Shift>Down']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "['<Control><Shift>Up']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Control><Shift>End']"
+# Settings -> Multitasking -> Workspaces
+gsettings set org.gnome.mutter dynamic-workspaces true # true
+# Settings -> Multitasking -> Multi-Monitor
+gsettings set org.gnome.mutter workspaces-only-on-primary true # true
 
-# Switch workspaces with number keys
-# gsettings set org.gnome.desktop.wm.preferences num-workspaces 10 # 4
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 "['<Super>2']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 "['<Super>3']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-4 "['<Super>4']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 "['<Super>5']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 "['<Super>6']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 "['<Super>7']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 "['<Super>8']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-9 "['<Super>9']"
-# <Super>0: reset font size
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-10 "[]"
+# Prioritize gestures to switch workspaces
+# NOTE:
+#  - <Super>0 is used to reset the font size
+#  - <Super>9 in Chrome means jump to the rightmost tab
+
+# gsettings set org.gnome.desktop.wm.preferences num-workspaces 8 # 4
+
+# Switch to workspace: with alt+arrow keys
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Alt><Control>Right']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Alt><Control>Left']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "['<Alt><Control>Down']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['<Alt><Control>Up']"
+# Switch to workspace: with number keys
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Alt><Control>9']"          # ['<Super>End']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1', '<Alt><Control>1']" # ['<Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 "['<Super>2']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 "['<Super>3']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-4 "['<Super>4']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 "['<Super>5']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 "['<Super>6']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 "['<Super>7']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 "['<Super>8']"                    # []
+
+# Move focused window to workspace: with shift+arrow keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Control>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Control>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "['<Shift><Control>Down']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "['<Shift><Control>Up']"
+# Move focused window to workspace: with number keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Control>9']" # ['<Shift><Super>End']
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Control>1']"    # ['<Shift><Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-2 "['<Shift><Control>2']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-3 "['<Shift><Control>3']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-4 "['<Shift><Control>4']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-5 "['<Shift><Control>5']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-6 "['<Shift><Control>6']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-7 "['<Shift><Control>7']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-8 "['<Shift><Control>8']"
 
 #----------------------------------------------------------------
 # Monitor
 #----------------------------------------------------------------
 
 # [RELEASE] `<Super>p` for Print
-# Switch monitor shortcut key changed from `<Super>p` to `<Super><Shift>m`
-# NOTE: Sway: floating window
-gsettings set org.gnome.mutter.keybindings switch-monitor "['<Super><Shift>m']" # ['<Super>p', 'XF86Display']
+gsettings set org.gnome.mutter.keybindings switch-monitor "['<Alt>Tab']" # ['<Super>p', 'XF86Display']
 
-# Default
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Super><Shift>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Super><Shift>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Super><Shift>Down']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Super><Shift>Up']"
+# Move monitors with shift+arrow keys
+# NOTE: Sway: move focus window
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Shift><Super>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Shift><Super>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Shift><Super>Down']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Shift><Super>Up']"
 
-
+#----------------------------------------------------------------
 # GNOME Shell Extensions
-#
+#----------------------------------------------------------------
+
 # 1. Lists keys and values in SCHEMA:
 # gsettings --schemadir ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/ list-recursively org.gnome.shell.extensions.gestureImprovements
 # Default values in ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/org.gnome.shell.extensions.gestureImprovements.gschema.xml
