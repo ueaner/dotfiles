@@ -7,7 +7,7 @@ keymap:
   - name: Ptyxis for GNOME
     exact_match: true
     application:
-      only: Ptyxis
+      only: org.gnome.Ptyxis
     remap:
       # Super-n: Shift-Ctrl-n                          # new window
       # Super-t: Shift-Ctrl-t                          # new tab
@@ -21,10 +21,15 @@ keymap:
       Super-c: Shift-Ctrl-c                          # Copy
       Super-v: Shift-Ctrl-v                          # Paste
 
+  - name: Tmux
+    exact_match: true
+    application:
+      only: [org.gnome.Ptyxis, foot, footclient]
+    remap:
       # tmux shortcuts: prefix Alt-s \u001Bs
       Super-r: [Alt-s, r]                                        # Tmux: Reload Config
       Shift-Super-r: [Alt-s, Shift-r]                            # Client: Refresh
-      Super-d: [Alt-s, d]                                        # Client: Detach
+      Shift-Super-d: [Alt-s, d]                                  # Client: Detach
       Super-n: [Alt-s, n]                                        # Session: New
       Shift-Super-n: [Alt-s, Shift-n]                            # Session: reName
       Super-KEY_COMMA: [Alt-s, KEY_COMMA]                        # Session: Explorer, eg: numbers, hljk, search
@@ -33,6 +38,10 @@ keymap:
       Super-w: [Alt-s, w]                                        # Window: Close
       Ctrl-KEY_TAB: [Alt-s, KEY_RIGHTBRACE]                      # Window: Next
       Shift-Ctrl-KEY_TAB: [Alt-s, KEY_LEFTBRACE]                 # Window: Previous
+      Alt-Super-Right: [Alt-s, KEY_RIGHTBRACE]                   # Window: -> Next
+      Alt-Super-Left: [Alt-s, KEY_LEFTBRACE]                     # Window: <- Previous
+      Shift-Super-KEY_RIGHTBRACE: [Alt-s, KEY_RIGHTBRACE]        # Window: } Next
+      Shift-Super-KEY_LEFTBRACE: [Alt-s, KEY_LEFTBRACE]          # Window: { Previous
       Shift-Super-KEY_DOT: [Alt-s, KEY_RIGHTBRACE]               # Window: > Next
       Shift-Super-KEY_COMMA: [Alt-s, KEY_LEFTBRACE]              # Window: < Previous
       Super-KEY_DOT: [Alt-s, Alt-s]                              # Window: . Last active
@@ -49,16 +58,38 @@ keymap:
       Super-KEY_SLASH: [Alt-s, KEY_SLASH]                        # Search: / in copy mode
       Super-f: [Alt-s, KEY_SLASH]                                # Search: / in copy mode
       Shift-Super-KEY_SLASH: [Alt-s, Shift-KEY_SLASH]            # Help: ? List key bindings
+      Super-h: [Alt-s, h]                                        # Pane: Force Left
+      Super-j: [Alt-s, j]                                        # Pane: Force Down
+      Super-k: [Alt-s, k]                                        # Pane: Force Up
+      Super-l: [Alt-s, l]                                        # Pane: Force Right
+      Super-KEY_1: [Alt-s, KEY_1]                                # Window: 1
+      Super-KEY_2: [Alt-s, KEY_2]                                # Window: 2
+      Super-KEY_3: [Alt-s, KEY_3]                                # Window: 3
+      Super-KEY_4: [Alt-s, KEY_4]                                # Window: 4
+      Super-KEY_5: [Alt-s, KEY_5]                                # Window: 5
+      Super-KEY_6: [Alt-s, KEY_6]                                # Window: 6
+      Super-KEY_7: [Alt-s, KEY_7]                                # Window: 7
+      Super-KEY_8: [Alt-s, KEY_8]                                # Window: 8
+      Super-KEY_9: [Alt-s, KEY_9]                                # Window: Rightmost
 
   - name: Firefox
     exact_match: true
     application:
-      only: firefox
+      only: org.mozilla.firefox
     remap:
-      Shift-Super-j: Shift-Ctrl-y        # Downloads page
-      Alt-Super-u: [Tab, Ctrl-u]         # Page Source, Need to lose focus on the input box first
-      Shift-Super-n: Shift-Ctrl-p        # New Private Window
-      Shift-Super-p: Esc                 # Dummy
+      Shift-Super-j: Shift-Ctrl-y  # [Overrides Browser] Downloads page
+      Alt-Super-u: [Tab, Ctrl-u]   # [Overrides Browser] Page Source, Need to lose focus on the input box first
+      Shift-Super-n: Shift-Ctrl-p  # [Overrides macOS-ish basic] New Private Window
+      Shift-Super-p: Esc           # [Overrides macOS-ish basic] Dummy
+      Super-1: Alt-1               # Go to specific tab
+      Super-2: Alt-2               # Go to specific tab
+      Super-3: Alt-3               # Go to specific tab
+      Super-4: Alt-4               # Go to specific tab
+      Super-5: Alt-5               # Go to specific tab
+      Super-6: Alt-6               # Go to specific tab
+      Super-7: Alt-7               # Go to specific tab
+      Super-8: Alt-8               # Go to specific tab
+      Super-9: Alt-9               # Go to the rightmost tab
       # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
       # Super-l: [Esc, Ctrl-l]           # Location bar / Select line, Sway needs Super-l
 
@@ -68,25 +99,33 @@ keymap:
     application:
       only: [Google-chrome, google-chrome]
     remap:
-      Super-9: Ctrl-9              # jump to the last page
-      Ctrl-Up: Home                # Go to Top of Page
-      Ctrl-Down: End               # Go to Bottom of Page
+      Super-1: Ctrl-1              # Go to specific tab
+      Super-2: Ctrl-2              # Go to specific tab
+      Super-3: Ctrl-3              # Go to specific tab
+      Super-4: Ctrl-4              # Go to specific tab
+      Super-5: Ctrl-5              # Go to specific tab
+      Super-6: Ctrl-6              # Go to specific tab
+      Super-7: Ctrl-7              # Go to specific tab
+      Super-8: Ctrl-8              # Go to specific tab
+      Super-9: Ctrl-9              # Go to the rightmost tab
+      Ctrl-Up: Home                # Go to Top of Page, like Firefox
+      Ctrl-Down: End               # Go to Bottom of Page, like Firefox
       # Super-w: [Esc, Ctrl-w]       # Overrides the Super-w key for close tab
       # Super-KEY_COMMA: [Ctrl-l, "chrome://settings/", KEY_ENTER]  # Settings
 
   - name: Browser
     exact_match: true
     application:
-      only: [Google-chrome, google-chrome, firefox]
+      only: [Google-chrome, google-chrome, org.mozilla.firefox]
     remap:
-      Super-w: Ctrl-F4              # Overrides the Super-w key for close tab
-      Super-i: Ctrl-i               # Page info, Override in Chrome section
+      Super-Esc: Shift-Esc          # Task Manager, on macOS: Title bar (Right-click) -> Task Manager (click)
+      Super-w: Ctrl-F4              # [Overrides macOS-ish basic] Tab: Close
+      Super-i: Ctrl-i               # [Overrides macOS-ish basic] Page info
       Super-r: Ctrl-r               # Reload page
       Super-Shift-r: Shift-Ctrl-r   # Reload page, ignoring cached content
       Shift-Super-h: Alt-Home       # Home page
       Super-y: Ctrl-h               # History page
-      Shift-Super-j: Ctrl-j         # Downloads page, Override in Firefox section
-      Super-Esc: Shift-Esc          # Task Manager
+      Shift-Super-j: Ctrl-j         # Downloads page
       Alt-Super-i: Shift-Ctrl-i     # Developer tools
       Alt-Super-j: Shift-Ctrl-j     # JavaScript Console
       Alt-Super-b: Shift-Ctrl-o     # Bookmark Manager

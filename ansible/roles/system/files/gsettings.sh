@@ -59,8 +59,8 @@ gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '
 
 #----------------------------------------------------------------
 # Emacs Input: browser location bar, input box, etc.
-# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
 #----------------------------------------------------------------
+# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
 gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
 
 #----------------------------------------------------------------
@@ -199,8 +199,8 @@ gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>spac
 gsettings set org.gnome.shell.keybindings toggle-application-view "['LaunchB']" # ['<Super>a']
 # Active applications: F3 Open Mission Control
 gsettings set org.gnome.shell.keybindings toggle-overview "['LaunchA']" # ['<Super>s']
-gsettings set org.gnome.shell.keybindings shift-overview-up "['<Alt><Super>Up']"
-gsettings set org.gnome.shell.keybindings shift-overview-down "['<Alt><Super>Down']"
+gsettings set org.gnome.shell.keybindings shift-overview-up "['<Control>Up']"
+gsettings set org.gnome.shell.keybindings shift-overview-down "['<Control>Down']"
 # Search for anything
 gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>space']" # ['']
 # Switch applications
@@ -224,49 +224,33 @@ gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
 # Workspace
 #----------------------------------------------------------------
 
+# NOTE: Prioritize gestures to switch workspaces
+
 # Settings -> Multitasking -> Workspaces
 gsettings set org.gnome.mutter dynamic-workspaces true # true
 # Settings -> Multitasking -> Multi-Monitor
 gsettings set org.gnome.mutter workspaces-only-on-primary true # true
 
-# Prioritize gestures to switch workspaces
-# NOTE:
-#  - <Super>0 is used to reset the font size
-#  - <Super>9 in Chrome means jump to the rightmost tab
-
 # gsettings set org.gnome.desktop.wm.preferences num-workspaces 8 # 4
+# gsettings reset org.gnome.desktop.wm.preferences num-workspaces
 
 # Switch to workspace: with alt+arrow keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Alt><Control>Right']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Alt><Control>Left']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "['<Alt><Control>Down']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['<Alt><Control>Up']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control>Right']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control>Left']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "[]"
 # Switch to workspace: with number keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Alt><Control>9']"          # ['<Super>End']
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1', '<Alt><Control>1']" # ['<Super>Home']
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 "['<Super>2']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 "['<Super>3']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-4 "['<Super>4']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 "['<Super>5']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 "['<Super>6']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 "['<Super>7']"                    # []
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 "['<Super>8']"                    # []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Alt><Control>9']" # ['<Super>End']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Alt><Control>1']"    # ['<Super>Home']
 
 # Move focused window to workspace: with shift+arrow keys
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Control>Left']"
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Control>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "['<Shift><Control>Down']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "['<Shift><Control>Up']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "[]"
 # Move focused window to workspace: with number keys
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Control>9']" # ['<Shift><Super>End']
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Control>1']"    # ['<Shift><Super>Home']
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-2 "['<Shift><Control>2']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-3 "['<Shift><Control>3']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-4 "['<Shift><Control>4']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-5 "['<Shift><Control>5']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-6 "['<Shift><Control>6']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-7 "['<Shift><Control>7']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-8 "['<Shift><Control>8']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Control>9']" # ['<Shift><Super>End']
 
 #----------------------------------------------------------------
 # Monitor

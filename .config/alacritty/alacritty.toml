@@ -91,7 +91,7 @@ bindings = [
     # Use tmux as a normal application, `tmux session` as `window`, and `tmux window` as `tab`
     { key = "R",           mods = "Super",         chars = "\u001Bsr"          }, # Tmux: Reload Config
     { key = "R",           mods = "Super|Shift",   chars = "\u001BsR"          }, # Client: Refresh
-    { key = "D",           mods = "Super",         chars = "\u001Bsd"          }, # Client: Detach
+    { key = "D",           mods = "Super|Shift",   chars = "\u001Bsd"          }, # Client: Detach
     { key = "N",           mods = "Super",         chars = "\u001Bsn"          }, # Session: New
     { key = "N",           mods = "Super|Shift",   chars = "\u001BsN"          }, # Session: reName
     { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # Session: Explorer, eg: numbers, hljk, search
@@ -100,9 +100,11 @@ bindings = [
     { key = "W",           mods = "Super",         chars = "\u001Bsw"          }, # Window: Close
     { key = "Tab",         mods = "Control",       chars = "\u001Bs]"          }, # Window: Next
     { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs["          }, # Window: Previous
+    { key = "Right",       mods = "Super|Alt",     chars = "\u001Bs]"          }, # Window: Next
+    { key = "Left",        mods = "Super|Alt",     chars = "\u001Bs["          }, # Window: Previous
     # https://github.com/alacritty/alacritty/issues/7604#issuecomment-1886539740
-    { key = "{",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
-    { key = "}",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
+    { key = "}",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
+    { key = "{",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
     { key = ">",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
     { key = "<",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
     { key = ".",           mods = "Super",         chars = "\u001Bs."          }, # Window: Last active
@@ -119,6 +121,19 @@ bindings = [
     { key = "/",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "F",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "?",           mods = "Super|Shift",   chars = "\u001Bs?"          }, # Help: List key bindings
+    { key = "H",           mods = "Super",         chars = "\u001Bsh"          }, # Pane: Force Left
+    { key = "J",           mods = "Super",         chars = "\u001Bsj"          }, # Pane: Force Down
+    { key = "K",           mods = "Super",         chars = "\u001Bsk"          }, # Pane: Force Up
+    { key = "L",           mods = "Super",         chars = "\u001Bsl"          }, # Pane: Force Right
+    { key = "1",           mods = "Super",         chars = "\u001Bs1"          }, # Window: 1
+    { key = "2",           mods = "Super",         chars = "\u001Bs2"          }, # Window: 2
+    { key = "3",           mods = "Super",         chars = "\u001Bs3"          }, # Window: 3
+    { key = "4",           mods = "Super",         chars = "\u001Bs4"          }, # Window: 4
+    { key = "5",           mods = "Super",         chars = "\u001Bs5"          }, # Window: 5
+    { key = "6",           mods = "Super",         chars = "\u001Bs6"          }, # Window: 6
+    { key = "7",           mods = "Super",         chars = "\u001Bs7"          }, # Window: 7
+    { key = "8",           mods = "Super",         chars = "\u001Bs8"          }, # Window: 8
+    { key = "9",           mods = "Super",         chars = "\u001Bs9"          }, # Window: Rightmost
     # <<< tmux shortcuts: prefix Alt-s \u001Bs
 
     # fixed: CTRL-Q needs to be pressed twice to register in macOS
