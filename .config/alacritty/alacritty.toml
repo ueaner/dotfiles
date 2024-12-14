@@ -7,6 +7,10 @@ live_config_reload = true
 [env]
 TERM = "xterm-256color"
 
+[terminal.shell]
+program = "tmux"
+args = ["new-session", "-A", "-D", "-s", "SACK"]
+
 [selection]
 save_to_clipboard = true
 
@@ -121,10 +125,6 @@ bindings = [
     { key = "/",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "F",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "?",           mods = "Super|Shift",   chars = "\u001Bs?"          }, # Help: List key bindings
-    { key = "H",           mods = "Super",         chars = "\u001Bsh"          }, # Pane: Force Left
-    { key = "J",           mods = "Super",         chars = "\u001Bsj"          }, # Pane: Force Down
-    { key = "K",           mods = "Super",         chars = "\u001Bsk"          }, # Pane: Force Up
-    { key = "L",           mods = "Super",         chars = "\u001Bsl"          }, # Pane: Force Right
     { key = "1",           mods = "Super",         chars = "\u001Bs1"          }, # Window: 1
     { key = "2",           mods = "Super",         chars = "\u001Bs2"          }, # Window: 2
     { key = "3",           mods = "Super",         chars = "\u001Bs3"          }, # Window: 3

@@ -58,10 +58,6 @@ keymap:
       Super-KEY_SLASH: [Alt-s, KEY_SLASH]                        # Search: / in copy mode
       Super-f: [Alt-s, KEY_SLASH]                                # Search: / in copy mode
       Shift-Super-KEY_SLASH: [Alt-s, Shift-KEY_SLASH]            # Help: ? List key bindings
-      Super-h: [Alt-s, h]                                        # Pane: Force Left
-      Super-j: [Alt-s, j]                                        # Pane: Force Down
-      Super-k: [Alt-s, k]                                        # Pane: Force Up
-      Super-l: [Alt-s, l]                                        # Pane: Force Right
       Super-KEY_1: [Alt-s, KEY_1]                                # Window: 1
       Super-KEY_2: [Alt-s, KEY_2]                                # Window: 2
       Super-KEY_3: [Alt-s, KEY_3]                                # Window: 3
@@ -91,7 +87,6 @@ keymap:
       Super-8: Alt-8               # Go to specific tab
       Super-9: Alt-9               # Go to the rightmost tab
       # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
-      # Super-l: [Esc, Ctrl-l]           # Location bar / Select line, Sway needs Super-l
 
   # More shortcuts: Alt-E-...
   - name: Chrome
@@ -99,6 +94,7 @@ keymap:
     application:
       only: [Google-chrome, google-chrome]
     remap:
+      Super-a: Ctrl-a              # [Overrides macOS-ish basic] Select all
       Super-1: Ctrl-1              # Go to specific tab
       Super-2: Ctrl-2              # Go to specific tab
       Super-3: Ctrl-3              # Go to specific tab

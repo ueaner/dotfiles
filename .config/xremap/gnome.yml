@@ -1,0 +1,26 @@
+# Copy this to ~/.config/xremap/gnome.yml
+# Override the keymap in the `~/.config/xremap/config.toml` file under gnome.
+
+---
+
+keymap:
+
+  # TODO: Tmux with Sway
+  # Sway = Managing workspaces and windows in general
+  # Tmux = Manages terminal sessions, splitting of terminal windows and nvim/shell workflows
+  - name: Tmux
+    exact_match: true
+    application:
+      only: [Alacritty, org.gnome.Ptyxis, foot, footclient]
+    remap:
+      Super-h: [Alt-s, h]     # Pane: Force Left
+      Super-j: [Alt-s, j]     # Pane: Force Down
+      Super-k: [Alt-s, k]     # Pane: Force Up
+      Super-l: [Alt-s, l]     # Pane: Force Right
+
+  - name: Browser
+    exact_match: true
+    application:
+      only: [Google-chrome, google-chrome, firefox]
+    remap:
+      Super-l: [Esc, Ctrl-l]  # Location bar / Select line

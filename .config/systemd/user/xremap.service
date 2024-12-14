@@ -30,7 +30,7 @@ ExecStart=/usr/bin/bash -c \
   if [[ "$(cat /sys/devices/virtual/dmi/id/product_name)" == "Link" ]]; then\
     %h/.local/bin/xremap %h/.config/xremap/chromebook.yml %h/.config/xremap/config.yml --watch=device;\
   else\
-    %h/.local/bin/xremap %h/.config/xremap/config.yml --watch=device;\
+    %h/.local/bin/xremap %h/.config/xremap/gnome.yml %h/.config/xremap/config.yml --watch=device;\
   fi\
 '
 ExecStop=/usr/bin/killall xremap

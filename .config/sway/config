@@ -137,7 +137,7 @@ input type:keyboard {
     # Despite the name, also works for non-floating windows.
     # Change normal to inverse to use left mouse button for resizing and right
     # mouse button for dragging.
-    floating_modifier Alt normal
+    floating_modifier $mod normal
 
     # Reload the configuration file
     bindsym $mod+Ctrl+r reload
@@ -155,15 +155,23 @@ input type:keyboard {
 # Moving around:
 #
     # Move your focus around
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
+    # bindsym $mod+$left focus left
+    # bindsym $mod+$down focus down
+    # bindsym $mod+$up focus up
+    # bindsym $mod+$right focus right
+    # use `Super-h/j/k/l` to Switch freely between tmux panes and sway containers
+    bindsym $mod+$left exec ~/.config/sway/sway-tmux left
+    bindsym $mod+$down exec ~/.config/sway/sway-tmux down
+    bindsym $mod+$up exec ~/.config/sway/sway-tmux up
+    bindsym $mod+$right exec ~/.config/sway/sway-tmux right
+
     # Move the focused window with the same
     bindsym $mod+Left move left
     bindsym $mod+Down move down
     bindsym $mod+Up move up
     bindsym $mod+Right move right
+
+    bindsym $mod+Tab focus next
 #
 # Workspaces:
 #
@@ -233,15 +241,15 @@ bindsym $mod+r mode "resize"
 ### Gestures
 
 # Allow switching between workspaces with left and right swipes
-bindgesture swipe:right workspace prev
-bindgesture swipe:left workspace next
+# bindgesture swipe:right workspace prev
+# bindgesture swipe:left workspace next
 
-# bindgesture {
-#     swipe:right workspace prev
-#     swipe:left exec ~/.config/sway/scripts/advance_workspace.sh
-#     swipe:up move scratchpad
-#     swipe:down scratchpad show
-# }
+bindgesture {
+    swipe:right workspace prev
+    swipe:left workspace next
+    swipe:up move scratchpad
+    swipe:down scratchpad show
+}
 
 
 # Include configs from 3 locations:
