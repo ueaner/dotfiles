@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# ~/.config/sway/sway-new-workspace.sh
+# open new workspace or move container to new workspace
+# @depends: dunst, jq
+
+echo "$$ sway-new-workspace: ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+subcmd="$1"
+nums=$(swaymsg -t get_workspaces -r | jq length)
+next_id=$((nums + 1))
+
+case "$subcmd" in
+open)
+    swaymsg workspace $next_id
+    ;;
+move)
+    swaymsg move container to workspace $next_id
+    swaymsg workspace $next_id
+    ;;
+*)
+    notify-send "sway-new-workspace: argument must be one of \"open | move\""
+    exit 1
+    ;;
+esac

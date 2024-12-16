@@ -76,12 +76,12 @@ output * bg $XDG_DATA_HOME/backgrounds/f37-01-night.png fill
 input type:touchpad {
     dwt enabled
     tap enabled
-    drag disabled
-    drag_lock disabled
+    drag enabled
+    drag_lock enabled
     click_method clickfinger
     natural_scroll enabled
     accel_profile adaptive
-    #pointer_accel 0.5
+    pointer_accel 0.1
 }
 
 # https://github.com/swaywm/sway/wiki#input-configuration
@@ -171,7 +171,7 @@ input type:keyboard {
     bindsym $mod+Up move up
     bindsym $mod+Right move right
 
-    bindsym $mod+Tab focus next
+    # bindsym $mod+Tab focus next
 #
 # Workspaces:
 #
@@ -182,14 +182,19 @@ input type:keyboard {
     bindsym Ctrl+Left workspace prev
     # Switch to workspace: with number keys
     bindsym $mod+Ctrl+1 workspace number 1
-    bindsym $mod+Ctrl+9 workspace number 9
 
     # Move focused container to workspace: with shift+arrow keys
     bindsym $mod+Shift+Right move container to workspace next
     bindsym $mod+Shift+Left move container to workspace prev
     # Move focused container to workspace: with number keys
     bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+9 move container to workspace number 9
+
+    bindsym $mod+Ctrl+9  exec ~/.config/sway/sway-new-workspace open
+    bindsym $mod+Shift+9 exec ~/.config/sway/sway-new-workspace move
+
+    # alt-tab like behaviour
+    bindsym $mod+tab workspace next_on_output
+    bindsym $mod+Shift+tab workspace prev_on_output
 #
 # Layout stuff:
 #
@@ -245,10 +250,17 @@ bindsym $mod+r mode "resize"
 # bindgesture swipe:left workspace next
 
 bindgesture {
-    swipe:right workspace prev
-    swipe:left workspace next
-    swipe:up move scratchpad
-    swipe:down scratchpad show
+    swipe:4:right workspace prev
+    swipe:4:left workspace next
+    swipe:4:up move scratchpad
+    swipe:4:down scratchpad show
+
+    # XXX: When it is moved, the focus is taken away
+    # Apps on the cursor side automatically get focus
+    swipe:3:right move right; focus left
+    swipe:3:left move left; focus right
+    swipe:3:up move up; focus down; exec notify-send "move to up"
+    swipe:3:down move down; focus up; exec notify-send "move to down"
 }
 
 
