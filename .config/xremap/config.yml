@@ -89,7 +89,7 @@ keymap:
       # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
 
   # More shortcuts: Alt-E-...
-  - name: Chrome
+  - name: Chrome with native Wayland
     exact_match: true
     application:
       only: [Google-chrome, google-chrome]

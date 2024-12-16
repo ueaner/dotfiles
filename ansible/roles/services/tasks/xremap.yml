@@ -14,8 +14,11 @@
     set -o pipefail
     # getent group input >/dev/null || sudo groupadd -r input
     sudo gpasswd -a $USER input
+    # cat /etc/group | grep input
     # echo 'KERNEL=="uinput", MODE="0660", GROUP="input", TAG+="uaccess"' | sudo tee /etc/udev/rules.d/input.rules
     echo 'KERNEL=="uinput", GROUP="input", TAG+="uaccess"' | sudo tee /usr/lib/udev/rules.d/00-xremap-input.rules
+    # sudo modprobe uinput
+    sudo udevadm control --reload && sudo udevadm trigger
   changed_when: false
 
 # Install and start xremap service
