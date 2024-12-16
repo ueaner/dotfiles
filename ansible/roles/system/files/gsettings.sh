@@ -2,7 +2,6 @@
 #
 # Table of Contents:
 # - RELEASE Keys
-# - Emacs Input: gtk-key-theme
 # - Power
 # - UI Appearance
 # - Logout & Lock screen
@@ -57,11 +56,10 @@ gsettings set org.gnome.shell.keybindings switch-to-application-9 "[]"
 # [RELEASE] `<Super>period` for alacritty/tmux, `<Super>semicolon` for clipboard menu
 gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '<Super>semicolon']
 
-#----------------------------------------------------------------
-# Emacs Input: browser location bar, input box, etc.
-#----------------------------------------------------------------
-# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
-gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
+# [RELEASE] `<Alt><Super>s` for disable screenreader
+gsettings set org.gnome.desktop.interface toolkit-accessibility false         # false
+gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false # false
+gsettings set org.gnome.settings-daemon.plugins.media-keys screenreader "[]"  # ['<Alt><Super>s']
 
 #----------------------------------------------------------------
 # Power
@@ -82,12 +80,18 @@ gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # tr
 # UI Appearance
 #----------------------------------------------------------------
 
+# Emacs Input: browser location bar, input box, etc.
+# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
+gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
+
 # Color scheme
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' # 'default'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'        # 'Adwaita'
+gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'       # 'Adwaita'
 
 # Show date/weekday in clock
 gsettings set org.gnome.desktop.interface clock-format '24h'      # '12h'
-gsettings set org.gnome.desktop.interface clock-show-date true    # false
+gsettings set org.gnome.desktop.interface clock-show-date true    # true
 gsettings set org.gnome.desktop.interface clock-show-weekday true # false
 
 # Show battery percentage
@@ -140,8 +144,10 @@ gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true           
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true               # true
 gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true # false
 
-gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true      # false
-gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag true      # true
+# click-and-drag -> tap-and-drag instead of 3-finger-drag
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true # false
+gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag true # true
+# select text with drag lock
 gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag-lock true # false
 
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true # true
@@ -267,18 +273,32 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Shift><S
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Shift><Super>Up']"
 
 #----------------------------------------------------------------
+# Terminal
+#----------------------------------------------------------------
+
+gsettings set org.gnome.desktop.applications.terminal.exec "alacritty"
+gsettings set org.gnome.desktop.applications.terminal.exec-arg ""
+
+# Pin your favorite apps to the dash, the first being Alacritty.desktop
+# with gsettings configured as: org.gnome.shell favorite-apps ['Alacritty.desktop', ...]
+# Alacritty can then be opened using the shortcut configured in `org.gnome.shell.keybindings open-new-window-application-1`
+
+#----------------------------------------------------------------
 # GNOME Shell Extensions
 #----------------------------------------------------------------
 
+# 0. schema name:
+# rg settings-schema ~/.local/share/gnome-shell/extensions
+
 # 1. Lists keys and values in SCHEMA:
-# gsettings --schemadir ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/ list-recursively org.gnome.shell.extensions.gestureImprovements
-# Default values in ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/org.gnome.shell.extensions.gestureImprovements.gschema.xml
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/ list-recursively org.gnome.shell.extensions.kimpanel
+# Default values in ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/org.gnome.shell.extensions.kimpanel.gschema.xml
 #
 # 2. Open the UUID Preferences dialog:
-# gnome-extensions prefs gestureImprovements@gestures
+# gnome-extensions prefs kimpanel@kde.org
 #
 # 3. Monitors KEY for changes and prints the changed values
-# gsettings --schemadir ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/ monitor org.gnome.shell.extensions.gestureImprovements
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/ monitor org.gnome.shell.extensions.kimpanel
 
 # Clipboard Indicator
 schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas/
@@ -298,6 +318,6 @@ fi
 # Gesture Improvements
 schemadir=~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/
 if [[ -d $schemadir ]]; then
-    # forward-back-gesture for Firefox/Chrome
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-forward-back-gesture true
+    # 3-finger swipe to switch applications
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-alttab-gesture true # true
 fi
