@@ -3,8 +3,8 @@
 # Download `kernel-headers` and `kernel` packages.
 #
 
-kernel_ver="6.8.3-300.fc40.x86_64"
-kernel_slash_ver="6.8.3/300.fc40/x86_64"
+kernel_ver="6.11.3-300.fc41.x86_64"
+kernel_slash_ver="6.11.3/300.fc41/x86_64"
 
 packages=(
     "kernel"

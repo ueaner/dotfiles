@@ -25,11 +25,22 @@ function check-update-kernel-headers() {
     current_version=$(rpm -q --queryformat '%{name}-%{version}-%{release}' kernel-headers)
 
     if [[ "$latest_version" == "null" ]] || verlte "$latest_version" "$current_version"; then
-        printf "Fedora kernel-headers no updates available\n" >>/tmp/mytask.log
+        printf "Fedora kernel-headers: no updates available\n" >>/tmp/mytask.log
         return
     fi
 
-    printf "Fedora kernel-headers updates available\n%s\n" "$latest_version" >>/tmp/mytask.log
+    ignore_versions=(
+        "kernel-headers-6.12.4-200.fc41"
+    )
+
+    for item in "${ignore_versions[@]}"; do
+        if [[ "$item" == "$latest_version" ]]; then
+            echo "Fedora kernel-headers: ignore $item" >>/tmp/mytask.log
+            return
+        fi
+    done
+
+    printf "Fedora kernel-headers: updates available\n%s\n" "$latest_version" >>/tmp/mytask.log
     # shellcheck source=/dev/null
     source "$HOME/.local/etc/token.sh"
     "$HOME/bin/sendmail.go" "Fedora kernel-headers updates available" <<EOF
