@@ -286,3 +286,5 @@ bindgesture {
 # the trick, it's all in the `wordexp(3)`.
 #
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
+# Include host-specific configs
+include "config.d/host-specific/`hostnamectl hostname`.conf"
