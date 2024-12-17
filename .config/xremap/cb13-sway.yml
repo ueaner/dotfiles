@@ -1,4 +1,5 @@
-# Copy this to ~/.config/xremap/chromebook.yml
+# Copy this to ~/.config/xremap/[host]-sway.yml
+# Override the keymap in the `~/.config/xremap/config.toml` file under sway.
 # Keymap for Chromebook only
 
 ---
@@ -11,9 +12,10 @@ modmap:
       ALT_L: SUPER_L
       SUPER_L: ALT_L
 
-# Override the Browser section keymap in the `~/.config/xremap/config.toml` file
 keymap:
-  - name: Browser
+
+  # Override the Browser section keymap in the `~/.config/xremap/config.toml` file
+  - name: Browser for Chromebook
     exact_match: true
     application:
       only: [Google-chrome, google-chrome, firefox]

@@ -1,11 +1,10 @@
-# Copy this to ~/.config/xremap/gnome.yml
+# Copy this to ~/.config/xremap/[host]-gnome.yml
 # Override the keymap in the `~/.config/xremap/config.toml` file under gnome.
 
 ---
 
 keymap:
 
-  # TODO: Tmux with Sway
   # Sway = Managing workspaces and windows in general
   # Tmux = Manages terminal sessions, splitting of terminal windows and nvim/shell workflows
   - name: Tmux
@@ -13,6 +12,7 @@ keymap:
     application:
       only: [Alacritty, org.gnome.Ptyxis, foot, footclient]
     remap:
+      # Switching panes is like switching containers under Sway
       Super-h: [Alt-s, h]     # Pane: Force Left
       Super-j: [Alt-s, j]     # Pane: Force Down
       Super-k: [Alt-s, k]     # Pane: Force Up

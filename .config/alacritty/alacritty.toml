@@ -84,7 +84,7 @@ y = 6
 bindings = [
     { key = "C",           mods = "Super",         action = "Copy"             },
     { key = "V",           mods = "Super",         action = "Paste"            },
-    { key = "H",           mods = "Super",         action = "Hide"             },
+    { key = "M",           mods = "Super",         action = "Hide"             },
     { key = "Q",           mods = "Super",         action = "Quit"             },
     { key = "F",           mods = "Super|Control", action = "ToggleFullscreen" },
     { key = "Key0",        mods = "Super",         action = "ResetFontSize"    },

@@ -4,11 +4,12 @@
 
 keymap:
 
-  - name: Ptyxis for GNOME
+  - name: Terminal
     exact_match: true
     application:
-      only: org.gnome.Ptyxis
+      only: [Alacritty, org.gnome.Ptyxis, foot, footclient]
     remap:
+      # Ptyxis:
       # Super-n: Shift-Ctrl-n                          # new window
       # Super-t: Shift-Ctrl-t                          # new tab
       # Super-w: Shift-Ctrl-w                          # close tab
@@ -17,7 +18,7 @@ keymap:
       # Shift-Super-KEY_LEFTBRACE: Ctrl-KEY_PAGEUP     # [ prev tab
       # Super-KEY_EQUAL: Shift-Ctrl-KEY_EQUAL          # increase font size
       # Super-f: Shift-Ctrl-f                          # find
-      Super-a: Shift-Ctrl-a                          # select all
+      # Super-a: Shift-Ctrl-a                          # select all
       Super-c: Shift-Ctrl-c                          # Copy
       Super-v: Shift-Ctrl-v                          # Paste
 
