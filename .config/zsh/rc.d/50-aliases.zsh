@@ -65,9 +65,10 @@ alias tsv="column -t -s $'\t'"
 hash -d www=/usr/local/www/
 
 alias mux='tmuxinator'
+alias f='fastfetch'
 
 alias grep='grep --color=auto --exclude-dir={.git}'
-alias ssh="TERM=xterm-256color ssh"
+# alias ssh="TERM=xterm-256color ssh"
 
 # 拷贝最后一条命令
 alias lcp="fc -ln -1 | tr -d '\n' | clipcopy"
