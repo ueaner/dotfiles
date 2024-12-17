@@ -180,6 +180,8 @@ input type:keyboard {
     # - Chromebook keyboard only, Regular keyboard still use alt
     bindsym Ctrl+Right workspace next
     bindsym Ctrl+Left workspace prev
+    bindsym Ctrl+Up move scratchpad
+    bindsym Ctrl+Down scratchpad show
     # Switch to workspace: with number keys
     bindsym $mod+Ctrl+1 workspace number 1
 
