@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# dnf-repos <ustc|tsinghua>
+# dnf-repos [--mirror=<ustc|tsinghua>] [--repo=<fedora|rpmfusion>] [--clean]
+
+mirror_name=$1
+
+if [[ -n "$mirror_name" ]] && grep -q "$mirror_name" /etc/yum.repos.d/fedora.repo; then
+    echo "The mirror has been changed to \"$mirror_name\""
+    exit 0
+fi
+
+if ! rpm -qi rpmfusion-free-release &>/dev/null; then
+    # https://rpmfusion.org/Configuration#Command_Line_Setup_using_rpm
+    # https://rpmfusion.org/keys#Verify_GPG_signatures_on_install
+    sudo dnf install -y distribution-gpg-keys
+    sudo rpmkeys --import "/usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-$(rpm -E %fedora)"
+    sudo dnf install -y --setopt=localpkg_gpgcheck=1 \
+        "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
+        "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+    # Fedora 41+
+    sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
+fi
+
+# Clean up unused repositories
+chrome_repo=/etc/yum.repos.d/google-chrome.repo
+pycharm_repo=/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo
+nvidia_repo=/etc/yum.repos.d/rpmfusion-nonfree-nvidia-driver.repo
+[[ -f "${chrome_repo}" ]] && sudo mv "${chrome_repo}" "${chrome_repo}.bak"
+[[ -f "${pycharm_repo}" ]] && sudo mv "${pycharm_repo}" "${pycharm_repo}.bak"
+if ! lspci | grep -i nvidia &>/dev/null; then
+    [[ -f "${nvidia_repo}" ]] && sudo mv "${nvidia_repo}" "${nvidia_repo}.bak"
+fi
+
+case "$mirror_name" in
+ustc)
+    # https://mirrors.ustc.edu.cn/help/fedora.html
+    sudo sed -e 's|^metalink=|#metalink=|g' \
+        -e 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.ustc.edu.cn/fedora|g' \
+        -i.bak \
+        /etc/yum.repos.d/fedora.repo \
+        /etc/yum.repos.d/fedora-updates.repo
+
+    # https://mirrors.ustc.edu.cn/help/rpmfusion.html
+    sudo sed -e 's|^metalink=|#metalink=|g' \
+        -e 's|^#baseurl=http://download1.rpmfusion.org|baseurl=https://mirrors.ustc.edu.cn/rpmfusion|g' \
+        -i.bak \
+        /etc/yum.repos.d/rpmfusion*.repo
+    ;;
+tsinghua)
+    # https://mirrors.tuna.tsinghua.edu.cn/help/fedora/
+    sudo sed -e 's|^metalink=|#metalink=|g' \
+        -e 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.tuna.tsinghua.edu.cn/fedora|g' \
+        -i.bak \
+        /etc/yum.repos.d/fedora.repo \
+        /etc/yum.repos.d/fedora-updates.repo
+
+    # https://mirrors.tuna.tsinghua.edu.cn/help/rpmfusion/
+    sed -e 's!^metalink=!#metalink=!g' \
+        -e 's!^mirrorlist=!#mirrorlist=!g' \
+        -e 's!^#baseurl=!baseurl=!g' \
+        -e 's!https\?://download1\.rpmfusion\.org/!https://mirrors.tuna.tsinghua.edu.cn/rpmfusion/!g' \
+        -i.bak /etc/yum.repos.d/rpmfusion*.repo
+    ;;
+*)
+    echo 'dnf-repos: argument must be one of "ustc | tsinghua"'
+    exit 1
+    ;;
+esac

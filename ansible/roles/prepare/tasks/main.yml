@@ -52,10 +52,11 @@
     mode: '0755'
 
 # ----------------------------------------------------------------
-# rpmfusion and tsinghua repositories
+# dnf mirrors and rpmfusion repositories
 # ----------------------------------------------------------------
-- name: Repositories (by include_tasks)
-  ansible.builtin.include_tasks: repos.yml
+- name: Using Tsinghua/USTC repositories
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.script: ~/bin/dnf-repos ustc
 
 # ----------------------------------------------------------------
 # os-release
