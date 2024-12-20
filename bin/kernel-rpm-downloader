@@ -2,9 +2,25 @@
 #
 # Download `kernel-headers` and `kernel` packages.
 #
+# Usage: kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64
+#
 
-kernel_ver="6.11.3-300.fc41.x86_64"
-kernel_slash_ver="6.11.3/300.fc41/x86_64"
+# The kernel format is similar to the output of `rpm -q kernel`
+# eg: kernel-6.11.3-300.fc41.x86_64
+kernel="$1"
+if [[ -z "$1" ]]; then
+    # kernel=$(rpm -q kernel)
+    echo "The argument format is similar to the output of \`rpm -q kernel\`"
+    echo "Usage: kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64"
+    exit 1
+fi
+
+# The kernel_ver format is similar to the output of `uname -r`
+# eg: 6.11.3-300.fc41.x86_64
+kernel_ver=$(echo "$kernel" | sed -r 's/kernel-//')
+# Replace the first "-" and the last "." to "/"
+# eg: 6.11.3/300.fc41/x86_64
+kernel_slash_ver=$(echo "$kernel_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
 
 packages=(
     "kernel"
@@ -24,7 +40,7 @@ for pkg in "${packages[@]}"; do
     rpms+=($(printf "https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver"))
 done
 
-download_dir="$HOME/kernel-$kernel_ver/"
+download_dir="$HOME/$kernel/"
 mkdir -p "$download_dir"
 cd "$download_dir" || return
 
