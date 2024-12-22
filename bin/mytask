@@ -1,6 +1,7 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+# @depends: go, yq
 
-date '+%Y-%m-%d %H:%M:%S' >>/tmp/mytask.log
+echo "$$ mytask: ---------- $(date "+%Y-%m-%d %T.%6N") ----------" >>/tmp/mytask.log
 
 # less than or equal: $1 <= $2
 function verlte() {
@@ -62,7 +63,7 @@ ${latest_version}
 3. Upgrading Kernel:
 
     sudo dnf upgrade --refresh
-    sudo dnf update
+    sudo dnf update # OR ~/bin/kernel-rpm-downloader ${latest_version} && sudo dnf install ~/${latest_version}/*.rpm
     sudo akmods
     reboot
 
@@ -84,15 +85,28 @@ function check-update-fedora-release() {
     check=false
     release_date=
 
+    # 0-based indexing
+    index_offset=0
+    if [[ -n "$ZSH_VERSION" && ! -o KSH_ARRAYS ]]; then
+        # 1-based indexing
+        index_offset=1
+    fi
+
+    # Set Zsh arrays to be zero indexed
+    # This is how KSH and Bash behave
+    # [[ -n "$ZSH_VERSION" ]] && setopt KSH_ARRAYS
     for ((i = 0; i < ${#releases[@]} / 2; i++)); do
-        fversion=${releases[i * 2 + 1]}
-        fdate=${releases[i * 2 + 2]}
-        if [[ "${fversion}" == "f${ver}" ]] && verlte "${fdate}" "$(date '+%Y-%m-%d')"; then
+        fversion=${releases[i * 2 + $index_offset]}
+        fdate=${releases[i * 2 + 1 + $index_offset]}
+        if [[ "${fversion}" == "f${ver}" ]]; then
             release_date=$fdate
-            check=true
-            break
+            if verlte "${fdate}" "$(date '+%Y-%m-%d')"; then
+                check=true
+                break
+            fi
         fi
     done
+    # [[ -n "$ZSH_VERSION" ]] && unsetopt KSH_ARRAYS
 
     if ! $check; then
         echo "Fedora $ver Non-stable, $release_date" >>/tmp/mytask.log
