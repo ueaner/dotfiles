@@ -2,8 +2,8 @@
 ---
 
 # Usage examples:
-# ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "go"  --list-tasks
-# ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "deno" -vvv
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "go" --list-tasks
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=tools" --tags "neovim" -vvv
 
 - name: Setup Linux Workstation
   hosts: local
@@ -14,6 +14,20 @@
     ansible_python_interpreter: /usr/bin/python3
     # By default, "role=all" is overridden by the `--extra-vars "role=xxx"` passed on the command line.
     role: all
+    # In specific task: environment: "{{ proxy_env }}"
+    proxy_env:
+      http_proxy: socks5://127.0.0.1:1080
+      https_proxy: socks5://127.0.0.1:1080
+      # all_proxy: http://192.168.56.101:1080
+    local_bin: "{{ ansible_env.XDG_BIN_HOME | default(ansible_env.HOME ~ '/.local/bin') }}"
+  environment:
+    XDG_CONFIG_HOME: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME ~ '/.config') }}"
+    XDG_CACHE_HOME: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME ~ '/.cache') }}"
+    XDG_DATA_HOME: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME ~ '/.local/share') }}"
+    XDG_STATE_HOME: "{{ ansible_env.XDG_STATE_HOME | default(ansible_env.HOME ~ '/.local/state') }}"
+    XDG_BIN_HOME: "{{ ansible_env.XDG_BIN_HOME | default(ansible_env.HOME ~ '/.local/bin') }}"
+    # Use the defined local_bin instead of the undefined XDG_BIN_HOME
+    PATH: "{{ ansible_env.PATH if local_bin in ansible_env.PATH.split(':') else local_bin ~ ':' ~ ansible_env.PATH }}"
   roles:
     - role: prepare
       when: (role == "all") or (role == "prepare")

@@ -4,36 +4,40 @@
 
 版本定义在 [versions.yml] 文件中。
 
-使用前将目录切换到 `~/ansible/` 目录下。
+使用前先设置 `ANSIBLE_CONFIG` 环境变量:
+
+```bash
+export ANSIBLE_CONFIG=~/ansible/ansible.cfg
+```
 
 - 安装/更新[所有给定语言]的指定版本
 
 ```bash
-ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" -vvv
+ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" -vvv
 ```
 
 - 安装/更新 [Go] 语言的版本
 
 ```bash
-ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "go" -vvv
+ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "go" -vvv
 ```
 
 - 安装/更新 [Rust] 语言的版本
 
 ```bash
-ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "rust" -vvv
+ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "rust" -vvv
 ```
 
 - 安装/更新 [Node.js] 语言的版本
 
 ```bash
-ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "node" -vvv
+ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "node" -vvv
 ```
 
 - 安装/更新 [Deno] 语言的版本
 
 ```bash
-ansible-playbook -i ./hosts ./linux.yml --extra-vars "role=lang" --tags "deno" -vvv
+ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "deno" -vvv
 ```
 
 [versions.yml]: https://github.com/ueaner/dotfiles/blob/main/ansible/variables/versions.yml

@@ -9,9 +9,8 @@
     - upgrade
     - node
   environment:
-    FNM_DIR: "{{ lookup('ansible.builtin.env', 'FNM_DIR', default='$HOME/.local/share/fnm') }}"
-    CARGO_INSTALL_ROOT: "{{ lookup('ansible.builtin.env', 'CARGO_INSTALL_ROOT', default='$HOME/.local/bin') }}"
-    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+    FNM_DIR: "{{ ansible_env.FNM_DIR | default(ansible_env.HOME ~ '/.local/share/fnm') }}"
+    CARGO_INSTALL_ROOT: "{{ ansible_env.CARGO_INSTALL_ROOT | default(ansible_env.HOME ~ '/.local/bin') }}"
   block:
 
     # Install node.js, check file stat

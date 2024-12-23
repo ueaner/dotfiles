@@ -1,0 +1,24 @@
+# ansible-inventory --list
+# ansible svr -m ping
+[local]
+localhost
+
+[local:vars]
+ansible_connection=local
+
+[lan]
+cb13
+mac14
+mac15
+
+[lan:vars]
+ansible_connection=ssh
+remote_user=ueaner
+
+[srv]
+ss
+sp
+
+[srv:vars]
+ansible_connection=ssh
+ansible_user=root
