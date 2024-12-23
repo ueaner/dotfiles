@@ -12,7 +12,7 @@
       ansible.builtin.shell: |
         set -o pipefail
         URL=$(curl -s https://api.github.com/repos/plantuml/plantuml/releases/latest | grep browser_download_url | grep 'plantuml.jar"' | cut -d '"' -f 4)
-        echo -n "https://ghp.ci/$URL"
+        echo -n "$URL"
       changed_when: false
       register: tools_plantuml_jar_url
 

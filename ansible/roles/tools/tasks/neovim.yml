@@ -6,11 +6,17 @@
     - neovim
   block:
 
+    - name: Create nvim-nightly directory
+      ansible.builtin.file:
+        path: $XDG_DATA_HOME/nvim-nightly
+        state: directory
+        mode: '0755'
+
     - name: Install/Upgrade neovim nightly under Fedora
       when: ansible_distribution == "Fedora"
       ansible.builtin.unarchive:
-        # src: https://ghp.ci/https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-        src: https://ghp.ci/https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+        # src: https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+        src: https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
         dest: $XDG_DATA_HOME/nvim-nightly
         remote_src: true
         extra_opts:
@@ -21,7 +27,7 @@
     - name: Install/Upgrade neovim nightly under macOS x86_64/arm64
       when: ansible_distribution == "MacOSX"
       ansible.builtin.unarchive:
-        src: https://ghp.ci/https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-{{ ansible_architecture }}.tar.gz
+        src: https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-{{ ansible_architecture }}.tar.gz
         dest: $XDG_DATA_HOME/nvim-nightly
         remote_src: true
         extra_opts:
@@ -46,7 +52,7 @@
 
     - name: Install/Upgrade neovide
       ansible.builtin.unarchive:
-        src: https://ghp.ci/https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz
+        src: https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz
         dest: "~/.local/bin/"
         remote_src: true
       changed_when: false
@@ -62,7 +68,7 @@
         - { url: '{{ neovide_url_prefix }}/neovide.desktop', dest: '~/.local/share/applications/neovide.desktop' }
       vars:
         # noqa var-naming[no-role-prefix]
-        neovide_url_prefix: https://ghp.ci/https://github.com/neovide/neovide/raw/refs/heads/main/assets
+        neovide_url_prefix: https://github.com/neovide/neovide/raw/refs/heads/main/assets
       changed_when: false
 
     - name: Update desktop database

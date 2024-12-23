@@ -56,7 +56,7 @@
     - name: Install zsh completion for go
       when: ansible_user_shell.endswith('zsh')
       ansible.builtin.get_url:
-        url: https://ghp.ci/https://github.com/zsh-users/zsh-completions/raw/refs/heads/master/src/_golang
+        url: https://github.com/zsh-users/zsh-completions/raw/refs/heads/master/src/_golang
         dest: "~/.local/share/zsh/site-functions/"
         mode: "0644"
         force: true
