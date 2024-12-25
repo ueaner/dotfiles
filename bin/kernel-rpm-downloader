@@ -34,10 +34,10 @@ packages=(
     "kernel-uki-virt"
 )
 
-rpms=($(printf "https://kojipkgs.fedoraproject.org/packages/kernel-headers/%s/%s-%s.rpm" "$kernel_slash_ver" "kernel-headers" "$kernel_ver"))
+rpms=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel-headers/%s/%s-%s.rpm" "$kernel_slash_ver" "kernel-headers" "$kernel_ver")")
 
 for pkg in "${packages[@]}"; do
-    rpms+=($(printf "https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver"))
+    rpms+=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver")")
 done
 
 download_dir="$HOME/$kernel/"

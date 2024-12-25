@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+#
+# This script handles Broadcom wireless connectivity issues on a Macbook with Fedora.
+#
+# Network:
+# 1. Wired network
+# 2. USB tethering (Settings -> Portable hotspot -> USB tethering)
+# 3. Bluetooth tethering (Settings -> Portable hotspot -> Bluetooth tethering)
+#
+# @depends
+# - https://github.com/ueaner/dotfiles/blob/main/bin/base.sh
+# - https://github.com/ueaner/dotfiles/blob/main/bin/kernel-rpm-downloader
+#
+#   ~/bin/
+#   ├── base.sh
+#   ├── kernel-broadcom-wl
+#   └── kernel-rpm-downloader
+
+force=false
+case "$1" in
+-f | --force-to-latest)
+    force=true
+    ;;
+-h | --help)
+    echo "This script handles Broadcom wireless connectivity issues on a Macbook with Fedora."
+    echo
+    echo "Usage: kernel-broadcom-wl [options]"
+    echo
+    echo "  -f, --force-to-latest    Wireless works fine, but want to upgrade to the latest kernel[-headers]"
+    echo
+    echo "  -h, --help               Show this message"
+    echo
+    exit 0
+    ;;
+esac
+
+# shellcheck source=base.sh
+. ~/bin/base.sh
+
+kernel_version=$(uname -r)
+
+# force to latest kernel-headers
+if $force; then
+    kernel_headers_latest_version=$(kernel-headers-latest-version)
+    # Failed to get the [latest version] of kernel-headers
+    if [[ "$kernel_headers_latest_version" == "null" ]]; then
+        echo "Failed to get the latest version of kernel-headers"
+        echo "See https://src.fedoraproject.org/rpms/kernel-headers"
+        exit 1
+    fi
+    kernel_version="${kernel_headers_latest_version}.x86_64"
+fi
+
+kernel_slash_version=$(echo "$kernel_version" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
+
+akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
+kmod_wl="kmod-wl-${kernel_version}-${akmod_wl_version}"
+
+# NOTE: 0. kmod-wl already installed
+if rpm --quiet -q "$kmod_wl" >/dev/null; then
+    echo "$kmod_wl already installed"
+    exit 0
+fi
+
+# NOTE: 1. Determine the kernel-headers version
+target_version=$kernel_version
+download_version=
+# The kernel-headers package [not installed] for the same kernel version
+if ! rpm --quiet -q "kernel-headers-$kernel_version"; then
+    # The kernel-headers package [not found] for the same kernel version
+    if ! url_exists "https://kojipkgs.fedoraproject.org/packages/kernel-headers/${kernel_slash_version}/kernel-headers-${kernel_version}.rpm"; then
+        kernel_headers_latest_version=$(kernel-headers-latest-version)
+        # Failed to get the [latest version] of kernel-headers
+        if [[ "$kernel_headers_latest_version" == "null" ]]; then
+            echo "Failed to get the latest version of kernel-headers"
+            echo "See https://src.fedoraproject.org/rpms/kernel-headers"
+            exit 1
+        fi
+        download_version="${kernel_headers_latest_version}.x86_64"
+    else
+        download_version=$kernel_version
+    fi
+fi
+
+# NOTE: 2. Download and install kernel* packages
+if [[ -n "$download_version" ]]; then
+    target_version=$download_version
+
+    echo "Download kernel-headers-$download_version.rpm related packages"
+    ~/bin/kernel-rpm-downloader "kernel-$download_version"
+    if $?; then
+        echo "Failed to download kernel-headers-$download_version.rpm packages"
+        exit 1
+    fi
+
+    # Allow install/update/downgrade of kernel* packages
+    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
+
+    # downgrade
+    if version-lt "$download_version" "$(uname -r)"; then
+        # downgrade_kernel=true
+        echo "Downgrade kernel version to $download_version"
+        # shellcheck disable=SC2086
+        sudo dnf downgrade ~/kernel-${download_version}/*.rpm --allowerasing --skip-broken
+    fi
+
+    echo "Install kernel and kernel-headers $download_version"
+    # shellcheck disable=SC2086
+    sudo dnf install -y ~/kernel-${download_version}/*.rpm
+    # Ignore install/update/downgrade of kernel* packages
+    echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
+fi
+
+# NOTE: 3. Install `broadcom-wl` related packages
+sudo dnf install akmods akmod-wl broadcom-wl
+
+# Run akmods
+sudo akmods
+
+# NOTE: 4. Check if the new kmod-wl build was successful
+akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
+kmod_wl="kmod-wl-${target_version}-${akmod_wl_version}"
+if rpm --quiet -q "$kmod_wl"; then
+    echo "$kmod_wl installed"
+
+    echo "Set next boot to use kernel-$target_version by default"
+    sudo grubby --set-default "/boot/vmlinuz-$target_version"
+    sudo grubby --default-kernel
+    echo "Congratulations, now just reboot your computer and enjoy the Wi-Fi network."
+    exit 0
+fi
+
+#
+# NOTE: 5. Installation failed
+
+. /etc/os-release
+VERSION_ID_PREV=$((VERSION_ID - 1))
+
+cat <<EOF
+$kmod_wl installation failed.
+See links below (Waiting for RPM Fusion to patch akmod-wl):
+- [Fedora Discussion]: https://discussion.fedoraproject.org/ tags: #broadcom #wifi #macbook #f${VERSION_ID}
+- [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${VERSION_ID}&version=f${VERSION_ID_PREV}
+- [RPM Fusion wl-kmod]: https://github.com/rpmfusion/wl-kmod
+EOF
+
+if [[ -z "$download_version" || "$download_version" == "$(uname -r)" ]]; then
+    exit 1
+fi
+
+downgrade=
+if ! version-lte "$download_version" "$(uname -r)"; then
+    downgrade=$(
+        cat <<EOF
+
+    # Download current kernel* rpm packages
+    ~/bin/kernel-rpm-downloader kernel-$(uname -r)
+    # Downgrade to current kernel* $(uname -r)
+    sudo dnf downgrade ~/kernel-$(uname -r)/*.rpm --allowerasing --skip-broken
+EOF
+    )
+fi
+cat <<EOF
+
+You may want to remove the newly installed kernel* $download_version packages.
+Ways to remove the kernel:
+
+    # Allow install/update/downgrade of kernel* packages
+    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
+$downgrade
+    # Remove the newly installed kernel* packages
+    rpm -qa | grep kernel | grep $download_version | xargs sudo dnf remove -y
+    # Checking
+    rpm -qa | grep kernel | sort
+
+    # Ignore install/update/downgrade of kernel* packages
+    echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
+
+EOF
+
+exit 1
