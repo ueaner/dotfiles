@@ -3,29 +3,16 @@
 
 echo "$$ mytask: ---------- $(date "+%Y-%m-%d %T.%6N") ----------" >>/tmp/mytask.log
 
-# less than or equal: $1 <= $2
-function verlte() {
-    printf '%s\n%s' "$1" "$2" | sort -C -V
-}
-
-# less than: $1 < $2
-function verlt() {
-    ! verlte "$2" "$1"
-}
-
-# install yq
-if ! rpm -qi yq &>/dev/null; then
-    sudo dnf install -y yq
-fi
+# shellcheck source=base.sh
+source ~/bin/base.sh
 
 ### check-update kernel-headers
 
 function check-update-kernel-headers() {
-    source /etc/os-release
-    latest_version=$(curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | yq -p json ".updates.F$VERSION_ID.stable")
+    latest_version=$(kernel-headers-latest-version)
     current_version=$(rpm -q --queryformat '%{name}-%{version}-%{release}' kernel-headers)
 
-    if [[ "$latest_version" == "null" ]] || verlte "$latest_version" "$current_version"; then
+    if [[ "$latest_version" == "null" ]] || version-lte "$latest_version" "$current_version"; then
         printf "Fedora kernel-headers: no updates available\n" >>/tmp/mytask.log
         return
     fi
@@ -100,7 +87,7 @@ function check-update-fedora-release() {
         fdate=${releases[i * 2 + 1 + $index_offset]}
         if [[ "${fversion}" == "f${ver}" ]]; then
             release_date=$fdate
-            if verlte "${fdate}" "$(date '+%Y-%m-%d')"; then
+            if version-lte "${fdate}" "$(date '+%Y-%m-%d')"; then
                 check=true
                 break
             fi

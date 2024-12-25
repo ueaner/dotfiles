@@ -1,78 +1,12 @@
-# functions.sh 常用自定义 shell 函数
-
-# Check if `alias/function/command` exists
-# if ! function_exists some_func; then
-#     do something ...
-# fi
-function_exists() {
-    type -a "$1" >/dev/null
-    return $?
-}
-
-# if command_exists some_command; then echo yes; else echo no; fi
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-# if url_exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz'; then
-#     do something ...
-# fi
-url_exists() {
-    # 下载第一个字节，检测 URL 是否存在
-    curl -L --output /dev/null --silent --fail -r 0-0 "$URL"
-    # 支持 HEAD 请求的可以使用 HEAD 请求检测
-    # curl --output /dev/null --silent --head --fail "$URL"
-    return $?
-}
-
-# Filter out non-existent directories
-# dirs_exists /path/foo /path/bar ...
-dirs_exists() {
-    # read array
-    # shellcheck disable=SC2206,SC2207
-    [ -z "$1" ] && in=($(</dev/stdin)) || in=($@)
-    # if [ -z "$in" ]; then
-    if ((${#in[@]} == 0)); then
-        echo "Please enter a list of paths"
-        return
-    fi
-
-    dirs=()
-
-    for p in "${in[@]}"; do
-        if [[ -d "${p}" ]]; then
-            dirs+=("${p}")
-        fi
-    done
-
-    echo "${dirs[@]}"
-}
-
-# Require the file if it exists
-# Usage: require filename
-require() {
-    [[ -r $1 ]] && . $1
-}
-
-# Check if we can read given files and source those we can.
-xsource() {
-    if ((${#argv} < 1)); then
-        printf 'usage: xsource FILE(s)...\n' >&2
-        return 1
-    fi
-
-    while ((${#argv} > 0)); do
-        [[ -r "$1" ]] && source "$1"
-        shift
-    done
-    return 0
-}
+# Common custom shell function
 
 # Duration of loading specified code under zsh
-# loadtime "$(zoxide init zsh)"
-loadtime() {
+# Usage: zsh-loadtime "$(zoxide init zsh)"
+zsh-loadtime() {
     # read string
+    # shellcheck disable=SC2178
     [ -z "$1" ] && in=$(</dev/stdin) || in=$*
+    # shellcheck disable=SC2128
     if [ -z "$in" ]; then
         echo "Please enter source code"
         return
@@ -87,7 +21,7 @@ loadtime() {
     echo "Duration: $t, see /tmp/loadtime.log for details"
 }
 
-history_stats() {
+history-stats() {
     fc -l 1 |
         awk '{ CMD[$2]++; count++; } END { for (a in CMD) print CMD[a] " " CMD[a]*100/count "% " a }' |
         grep -v "./" | sort -nr | head -n "${1:-20}" | column -c3 -s " " -t | nl
@@ -107,10 +41,13 @@ pwdx() {
     lsof -a -d cwd -p "${1:-$$}" -n -Fn | awk '/^n/ {print substr($0,2)}'
 }
 
-# straceall <process-name>
-# eg: straceall nvim
-straceall() {
-    strace $(pidof "${1:-$$}" | sed 's/\([0-9]*\)/-p \1/g')
+# eg: strace-all nvim
+strace-all() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: straceall <program-name>"
+        return 1
+    fi
+    strace "$(pidof "$1" | sed 's/\([0-9]*\)/-p \1/g')"
 }
 
 open() {
@@ -126,10 +63,27 @@ open() {
     fi
 }
 
+# fg JOBNUMBER => fg %JOBNUMBER
+fg() {
+    if [[ -z "$1" ]]; then
+        builtin fg
+    elif [[ "$1" =~ ^%[0-9]+$ ]]; then
+        # [[ $1 == %* ]]
+        builtin fg "$1"
+    else
+        builtin fg "%$1"
+    fi
+}
+
+jobs() {
+    # Display process ID
+    builtin jobs -l
+}
+
 # tmux session attach/detach/select
 tt() {
-    if [[ "$TMUX" ]]; then
-        # echo "Already attached session."
+    if [[ -n "$TMUX" ]]; then
+        # echo "The session is attached, performing detach session"
         tmux list-sessions
         tmux detach
         return
@@ -161,37 +115,20 @@ tk() {
     tmux kill-session -t "$SESS_NAME"
 }
 
-# translate-shell 中英互译
-# 输出语言默认应该是翻译成 $LANG 环境变量设定的语言
+# translate-shell: Chinese and English two-way translation
 trans() {
-    if [[ ! -n $1 ]]; then
+    if [[ -z "$1" ]]; then
         command trans -shell
-    elif [[ $1 = *[:-]* ]]; then
-        # 包含参数 trans [OPTIONS] [SOURCES]:[TARGETS] [TEXT]... 使用原始命令执行
+    elif [[ "$1" = *[:-]* ]]; then
+        # trans [OPTIONS] [SOURCES]:[TARGETS] [TEXT]...
+        # Execute the original command with parameters
         command trans "$@"
-    elif [[ $1 = *[![:ascii:]]* ]]; then
-        # 包含非 ascii 字符，翻译为英文
+    elif [[ "$1" = *[![:ascii:]]* ]]; then
+        # Contains non-ascii characters, translated to English
         command trans :en "$@"
     else
         command trans :zh "$@"
     fi
-}
-
-# fg JOBNUMBER => fg %JOBNUMBER
-fg() {
-    if [[ ! -n $1 ]]; then
-        builtin fg
-    elif [[ $1 =~ ^%[0-9]+$ ]]; then
-        # [[ $1 == %* ]]
-        builtin fg "$1"
-    else
-        builtin fg "%$1"
-    fi
-}
-
-jobs() {
-    # 显示进程号
-    builtin jobs -l
 }
 
 # Select neovim configuration
@@ -208,25 +145,11 @@ vv() {
     NVIM_APPNAME=$(basename "$config") nvim "$@"
 }
 
-# less than or equal: $1 <= $2
-version_lte() {
-    printf '%s\n%s' "$1" "$2" | sort -C -V
-}
-
-# if verlt "v2.5.5" "v2.5.6"; then
-#     echo "yes" # yes
-# else
-#     echo "no"
-# fi
-# less than: $1 < $2
-version_lt() {
-    ! verlte "$2" "$1"
-}
-
 # Only for macOS
-# 查看 plist xml
-plistview() {
-    plutil -convert xml1 -o /tmp/tmp_plist.xml "$1"
-    more /tmp/tmp_plist.xml
-    rm -f /tmp/tmp_plist.xml
+# View plist xml
+plist-view() {
+    f=$(mktemp /tmp/plist-XXX)
+    plutil -convert xml1 -o "$f" "$1"
+    more "$f"
+    rm -f "$f"
 }

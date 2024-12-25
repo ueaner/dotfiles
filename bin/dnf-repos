@@ -10,7 +10,7 @@ if [[ -n "$mirror_name" ]] && grep -q "$mirror_name" /etc/yum.repos.d/fedora.rep
     exit 0
 fi
 
-if ! rpm -qi rpmfusion-free-release &>/dev/null; then
+if ! rpm --quiet -q rpmfusion-free-release; then
     # https://rpmfusion.org/Configuration#Command_Line_Setup_using_rpm
     # https://rpmfusion.org/keys#Verify_GPG_signatures_on_install
     sudo dnf install -y distribution-gpg-keys
@@ -29,7 +29,7 @@ pycharm_repo=/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.re
 nvidia_repo=/etc/yum.repos.d/rpmfusion-nonfree-nvidia-driver.repo
 [[ -f "${chrome_repo}" ]] && sudo mv "${chrome_repo}" "${chrome_repo}.bak"
 [[ -f "${pycharm_repo}" ]] && sudo mv "${pycharm_repo}" "${pycharm_repo}.bak"
-if ! lspci | grep -i nvidia &>/dev/null; then
+if ! lspci | grep -q -i nvidia; then
     [[ -f "${nvidia_repo}" ]] && sudo mv "${nvidia_repo}" "${nvidia_repo}.bak"
 fi
 
