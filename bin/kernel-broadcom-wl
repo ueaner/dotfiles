@@ -82,6 +82,8 @@ if ! rpm --quiet -q "kernel-headers-$kernel_version"; then
     fi
 fi
 
+sudo dnf upgrade --refresh
+
 # NOTE: 2. Download and install kernel* packages
 if [[ -n "$download_version" ]]; then
     target_version=$download_version
@@ -113,6 +115,9 @@ fi
 
 # NOTE: 3. Install `broadcom-wl` related packages
 sudo dnf install akmods akmod-wl broadcom-wl
+
+echo "Current installation status of the kmod-wl packages:"
+rpm -qa | grep kmod-wl
 
 # Run akmods
 sudo akmods

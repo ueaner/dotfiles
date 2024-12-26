@@ -31,6 +31,9 @@ function check-update-kernel-headers() {
         fi
     done
 
+    . /etc/os-release
+    VERSION_ID_PREV=$((VERSION_ID - 1))
+
     printf "Fedora kernel-headers: updates available\n%s\n" "$latest_version" >>/tmp/mytask.log
     # shellcheck source=/dev/null
     source "$HOME/.local/etc/token.sh"
@@ -41,18 +44,24 @@ ${latest_version}
 1. See:
 
     - https://src.fedoraproject.org/rpms/kernel-headers
-    - [Fedora Discussion]: https://discussion.fedoraproject.org/ #broadcom #wifi #f${VERSION_ID} #macbook
-    - [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f41&version=f40
+    - [Fedora Discussion]: https://discussion.fedoraproject.org/ tags: #broadcom #wifi #macbook #f${VERSION_ID}
+    - [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${VERSION_ID}&version=f${VERSION_ID_PREV}
     - [RPM Fusion wl-kmod]: https://github.com/rpmfusion/wl-kmod
 
-2. Comment out the "exclude=kernel* kernel-*" line in the "/etc/dnf/dnf.conf" file.
+2. Upgrading the Kernel:
 
-3. Upgrading Kernel:
+    ~/bin/kernel-broadcom-wl --force-to-latest
 
+    # OR
+
+    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
     sudo dnf upgrade --refresh
-    sudo dnf update # OR ~/bin/kernel-rpm-downloader ${latest_version} && sudo dnf install ~/${latest_version}/*.rpm
+    sudo dnf update
+    echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
+
+    # Check if the new kmod-wl build was successful
+    rpm -qa | grep kmod-wl
     sudo akmods
-    reboot
 
 EOF
 }
