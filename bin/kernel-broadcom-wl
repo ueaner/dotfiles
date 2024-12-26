@@ -48,7 +48,7 @@ if $force; then
         echo "See https://src.fedoraproject.org/rpms/kernel-headers"
         exit 1
     fi
-    kernel_version="${kernel_headers_latest_version}.x86_64"
+    kernel_version=$(echo "${kernel_headers_latest_version}.x86_64" | sed 's/^kernel-headers-//')
 fi
 
 kernel_slash_version=$(echo "$kernel_version" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
@@ -76,7 +76,7 @@ if ! rpm --quiet -q "kernel-headers-$kernel_version"; then
             echo "See https://src.fedoraproject.org/rpms/kernel-headers"
             exit 1
         fi
-        download_version="${kernel_headers_latest_version}.x86_64"
+        download_version=$(echo "${kernel_headers_latest_version}.x86_64" | sed 's/^kernel-headers-//')
     else
         download_version=$kernel_version
     fi
@@ -90,7 +90,8 @@ if [[ -n "$download_version" ]]; then
 
     echo "Download kernel-headers-$download_version.rpm related packages"
     ~/bin/kernel-rpm-downloader "kernel-$download_version"
-    if $?; then
+    # shellcheck disable=SC2181
+    if [[ $? -ne 0 ]]; then
         echo "Failed to download kernel-headers-$download_version.rpm packages"
         exit 1
     fi

@@ -42,9 +42,12 @@ done
 
 download_dir="$HOME/$kernel/"
 mkdir -p "$download_dir"
-cd "$download_dir" || return
+cd "$download_dir" || return 1
 
 printf '%s\n' "${rpms[@]}"
 wget -c "${rpms[@]}"
+ret=$?
 
 echo "Download to $download_dir directory"
+
+return $ret
