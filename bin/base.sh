@@ -1,33 +1,33 @@
 #!/usr/bin/env bash
 
 # Check if `alias/function/command` exists
-# if ! function_exists some_func; then
+# if ! function-exists some_func; then
 #     do something ...
 # fi
-function_exists() {
+function-exists() {
     type -a "$1" >/dev/null
     return $?
 }
 
-# if command_exists some_command; then echo yes; else echo no; fi
-command_exists() {
+# if command-exists some_command; then echo yes; else echo no; fi
+command-exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# if url_exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz'; then
+# if url-exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-x86_64.tar.gz'; then
 #     do something ...
 # fi
-url_exists() {
+url-exists() {
     # Determine if a URL exists by downloading the first byte
-    curl -L --output /dev/null --silent --fail -r 0-0 "$URL"
+    curl -L --output /dev/null --silent --fail -r 0-0 "$1"
     # or send an HEAD request (if the server supports HEAD requests)
-    # curl --output /dev/null --silent --head --fail "$URL"
+    # curl --output /dev/null --silent --head --fail "$1"
     return $?
 }
 
 # Filter out non-existent directories
-# dirs_exists /path/foo /path/bar ...
-dirs_exists() {
+# dirs-exists /path/foo /path/bar ...
+dirs-exists() {
     # read array
     # shellcheck disable=SC2206,SC2207
     [ -z "$1" ] && in=($(</dev/stdin)) || in=($@)
@@ -89,7 +89,6 @@ version-lt() {
 # Returns:
 #   null | kernel-headers-<version>, eg: kernel-headers-6.11.3-300.fc41
 kernel-headers-latest-version() {
-    # install yq
     if ! rpm --quiet -q yq; then
         sudo dnf install -y yq
     fi

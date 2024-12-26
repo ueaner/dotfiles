@@ -68,7 +68,7 @@ download_version=
 # The kernel-headers package [not installed] for the same kernel version
 if ! rpm --quiet -q "kernel-headers-$kernel_version"; then
     # The kernel-headers package [not found] for the same kernel version
-    if ! url_exists "https://kojipkgs.fedoraproject.org/packages/kernel-headers/${kernel_slash_version}/kernel-headers-${kernel_version}.rpm"; then
+    if ! url-exists "https://kojipkgs.fedoraproject.org/packages/kernel-headers/${kernel_slash_version}/kernel-headers-${kernel_version}.rpm"; then
         kernel_headers_latest_version=$(kernel-headers-latest-version)
         # Failed to get the [latest version] of kernel-headers
         if [[ "$kernel_headers_latest_version" == "null" ]]; then
