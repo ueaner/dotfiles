@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# macOS-like keyboard shortcuts
 #
 # Table of Contents:
 # - RELEASE Keys
@@ -16,7 +17,7 @@
 #    - System Monitor
 #    - Gesture Improvements
 
-# Alt/Option Shift Control Command Character
+# Alt/Option Shift Control Super Character
 
 #----------------------------------------------------------------
 # RELEASE Keys

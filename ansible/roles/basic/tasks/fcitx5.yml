@@ -1,0 +1,9 @@
+---
+
+- name: Install fcitx5
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - fcitx5
+      - fcitx5-chinese-addons
+      - fcitx5-autostart

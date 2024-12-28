@@ -5,7 +5,3 @@
   tags:
     - upgrade
     - sslocal
-
-- name: Install xremap
-  ansible.builtin.include_tasks: xremap.yml
-  when: ansible_distribution == "Fedora"

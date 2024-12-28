@@ -30,7 +30,7 @@ python3 -m pip install -i http://mirrors.aliyun.com/pypi/simple --user ansible
 - 目标机器开启 sshd 服务 `sudo systemctl enable sshd`
 - 免密码登陆 `ssh-copy-id <host>`
 
-远程部署的好处是，如果目标主机执行某个 task 执行后需要重启，等待重启后可继续执行剩下的 task.
+远程部署的好处是，如果目标主机执行某个 task 后需要重启，等待重启后可继续执行剩下的 task.
 
 本地 MacBook 部署，可能需要重启之后再次执行 ansible-playbook 多次（1-3 次），直到看到 `Welcode to Fedora` 表示部署完成。
 
@@ -77,37 +77,41 @@ export ANSIBLE_CONFIG=~/ansible/ansible.cfg
 ansible task 中使用到的一些判断标识：
 
 - Device: MacBook(aqua, gnome), ChromeBook(sway)
-- Distribution: macOS(brew), Fedora(dnf)
+- System: macOS Darwin, Fedora Linux 41+
 - Desktop: aqua, gnome, sway
 
-| #   | Feature       | Role      | Distribution | Desktop     | Reboot | Remark            |
-| --- | ------------- | --------- | ------------ | ----------- | ------ | ----------------- |
-| [ ] | sudo          | prepare   | all          | all         | -      | without password  |
-| [ ] | prepare tools | prepare   | all          | all         | -      | git, zsh          |
-| [ ] | prepare facts | prepare   | all          | all         | -      | desktop name, etc |
-| [ ] | rpmfusion     | prepare   | Fedora       | all         | -      | -                 |
-| [ ] | kernel        | system    | Fedora       | gnome       | Y      | -                 |
-| [ ] | broadcom-wl   | system    | Fedora       | gnome       | Y      | MacBook           |
-| [ ] | gsettings     | system    | Fedora       | gnome       | Y      | -                 |
-| [ ] | dotfiles      | dotshell  | all          | all         | -      | -                 |
-| [ ] | nvimrc        | dotshell  | all          | all         | -      | -                 |
-| [ ] | zsh           | dotshell  | all          | all         | -      | -                 |
-| [ ] | go            | lang      | all          | all         | -      | -                 |
-| [ ] | rust          | lang      | all          | all         | -      | -                 |
-| [ ] | node          | lang      | all          | all         | -      | -                 |
-| [ ] | deno          | lang      | all          | all         | -      | -                 |
-| [ ] | dnf tools     | tools     | Fedora       | gnome, sway | -      | -                 |
-| [ ] | flatpak tools | tools     | Fedora       | gnome, sway | -      | -                 |
-| [ ] | go tools      | tools     | all          | all         | -      | -                 |
-| [ ] | rust tools    | tools     | all          | all         | -      | -                 |
-| [ ] | python tools  | tools     | all          | all         | -      | -                 |
-| [ ] | neovim        | tools     | all          | all         | -      | neovide           |
-| [ ] | alacritty     | alacritty | all          | all         | -      | -                 |
-| [ ] | shadowsocks   | services  | all          | all         | -      | -                 |
-| [ ] | xremap        | services  | Fedora       | gnome, sway | -      | -                 |
-| [ ] | fonts         | fonts     | all          | all         | -      | -                 |
-| [ ] | fcitx5        | fcitx5    | Fedora       | gnome, sway | Y      | -                 |
-| [ ] | web apps      | web       | Fedora       | gnome, sway | Y      | -                 |
+Such as the [Github task lists]:
+
+- [x] To mark a task as completed
+- [ ] To mark a task as incomplete
+
+| Feature       | Role     | System                | Desktop     | Remark                    |
+| ------------- | -------- | --------------------- | ----------- | ------------------------- |
+| sudo          | basic    | [x] Fedora, [x] macOS | all         | NOPASSWD                  |
+| dnf           | basic    | [x] Fedora            | gnome, sway | rpmfusion, mirrors        |
+| flatpak       | basic    | [x] Fedora            | gnome, sway | mirrors                   |
+| dotfiles      | basic    | [x] Fedora, [x] macOS | all         | -                         |
+| nvimrc        | basic    | [x] Fedora, [x] macOS | all         | -                         |
+| zsh           | basic    | [x] Fedora, [x] macOS | all         | default login shell       |
+| alacritty     | basic    | [x] Fedora, [ ] macOS | all         | -                         |
+| fonts         | basic    | [x] Fedora, [x] macOS | all         | Nerd Fonts                |
+| fcitx5        | basic    | [x] Fedora            | gnome, sway | input method              |
+| GNOME DE      | basic    | [x] Fedora            | gnome       | shortcuts, gestures, etc  |
+| Sway DE       | basic    | [x] Fedora            | sway        | in dotfiles               |
+| xremap        | basic    | [x] Fedora            | gnome, sway | macOS-like keyboard remap |
+| basic tools   | basic    | [x] Fedora, [ ] macOS | all         | alacritty, tmux, fzf, etc |
+| broadcom-wl  | basic    | [x] Fedora            | gnome, sway | on MacBook                |
+| go            | lang     | all                   | all         | -                         |
+| rust          | lang     | all                   | all         | -                         |
+| node          | lang     | all                   | all         | -                         |
+| deno          | lang     | all                   | all         | -                         |
+| flatpak tools | tools    | [x] Fedora            | gnome, sway | -                         |
+| go tools      | tools    | all                   | all         | -                         |
+| rust tools    | tools    | all                   | all         | -                         |
+| python tools  | tools    | all                   | all         | -                         |
+| neovim        | tools    | all                   | all         | neovim-nightly, neovide   |
+| shadowsocks   | services | all                   | all         | -                         |
+| web apps      | web      | [x] Fedora            | gnome, sway | -                         |
 
 ## 注意事项
 
@@ -135,3 +139,4 @@ ansible task 中使用到的一些判断标识：
 [常用包]: ./variables/tools.yml
 [语言版本]: ./variables/versions.yml
 [ANSIBLE_CONFIG]: https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
+[Github task lists]: https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/about-task-lists#creating-task-lists

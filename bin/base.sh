@@ -89,15 +89,11 @@ version-lt() {
 # Returns:
 #   null | kernel-headers-<version>, eg: kernel-headers-6.11.3-300.fc41
 kernel-headers-latest-version() {
-    if ! rpm --quiet -q yq; then
-        sudo dnf install -y yq
-    fi
-
     # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
     . /etc/os-release
 
     # https://fedoramagazine.org/fedora-moves-towards-forgejo-a-unified-decision/
     # https://codeberg.org/forgejo/forgejo
     # NOTE: API may change
-    curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | yq -p json ".updates.F$VERSION_ID.stable"
+    curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | jq -r ".updates.F$VERSION_ID.stable"
 }

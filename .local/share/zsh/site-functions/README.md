@@ -11,6 +11,7 @@ rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
 fnm completions --shell zsh > ~/.local/share/zsh/site-functions/_fnm
 pnpm completion zsh > ~/.local/share/zsh/site-functions/_pnpm
 deno completions zsh > ~/.local/share/zsh/site-functions/_deno
+tldr --print-completion zsh > ~/.local/share/zsh/site-functions/_tldr
 
 compinit
 ```

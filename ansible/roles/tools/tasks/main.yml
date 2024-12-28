@@ -1,14 +1,13 @@
 ---
 
-# `dnf update` in `system role`
+# ----------------------------------------------------------------
+# basic tools
+# ----------------------------------------------------------------
 - name: Install basic tools (dnf)
   when: ansible_distribution == "Fedora"
   become: true
   ansible.builtin.dnf:
     name: "{{ tools.dnf }}"
-  notify:
-    - Change flathub remote repository to sjtu
-    - Alacritty desktop entry add font.size option
 
 - name: Install gui tools (flatpak)
   community.general.flatpak:
@@ -86,6 +85,12 @@
   tags:
     - upgrade
     - zk
+
+- name: Install tldr python client (include_tasks)
+  ansible.builtin.include_tasks: tldr.yml
+  tags:
+    - upgrade
+    - tldr
 
 - name: Install plantuml.jar (include_tasks)
   ansible.builtin.include_tasks: plantuml.yml

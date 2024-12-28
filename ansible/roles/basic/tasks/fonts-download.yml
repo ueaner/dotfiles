@@ -1,0 +1,49 @@
+---
+
+- name: Download Nerd Fonts for Linux
+  when: ansible_system == "Linux"
+  block:
+
+    - name: Create directory -> {{ item }}
+      ansible.builtin.file:
+        path: ~/.local/share/fonts/{{ item }}
+        state: directory
+        mode: "0755"
+
+    - name: Installing {{ item }}
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ item }}.zip
+        dest: ~/.local/share/fonts/{{ item }}
+        creates: ~/.local/share/fonts/{{ item }}/done
+        remote_src: true
+      notify: Update font cache
+
+    - name: Installed {{ item }}
+      ansible.builtin.copy:
+        dest: ~/.local/share/fonts/{{ item }}/done
+        content: ""
+        mode: "0644"
+
+- name: Download Nerd Fonts for macOS
+  when: ansible_system == "Darwin"
+  block:
+
+    - name: Create directory -> {{ item }}
+      ansible.builtin.file:
+        path: ~/Library/Fonts/{{ item }}
+        state: directory
+        mode: "0755"
+
+    - name: Installing {{ item }}
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ item }}.zip
+        dest: ~/Library/Fonts/{{ item }}
+        creates: ~/Library/Fonts/{{ item }}/done
+        remote_src: true
+      notify: Update font cache
+
+    - name: Installed {{ item }}
+      ansible.builtin.copy:
+        dest: ~/Library/Fonts/{{ item }}/done
+        content: ""
+        mode: "0644"

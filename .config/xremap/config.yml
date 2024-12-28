@@ -1,4 +1,5 @@
 # Copy this to ~/.config/xremap/config.yml
+# macOS-like keyboard remap
 
 ---
 
@@ -76,8 +77,8 @@ keymap:
     remap:
       Shift-Super-j: Shift-Ctrl-y  # [Overrides Browser] Downloads page
       Alt-Super-u: [Tab, Ctrl-u]   # [Overrides Browser] Page Source, Need to lose focus on the input box first
-      Shift-Super-n: Shift-Ctrl-p  # [Overrides macOS-ish basic] New Private Window
-      Shift-Super-p: Esc           # [Overrides macOS-ish basic] Dummy
+      Shift-Super-n: Shift-Ctrl-p  # [Overrides Basic] New Private Window
+      Shift-Super-p: Esc           # [Overrides Basic] Dummy
       Super-1: Alt-1               # Go to specific tab
       Super-2: Alt-2               # Go to specific tab
       Super-3: Alt-3               # Go to specific tab
@@ -95,7 +96,7 @@ keymap:
     application:
       only: [Google-chrome, google-chrome]
     remap:
-      Super-a: Ctrl-a              # [Overrides macOS-ish basic] Select all
+      Super-a: Ctrl-a              # [Overrides Basic] Select all
       Super-1: Ctrl-1              # Go to specific tab
       Super-2: Ctrl-2              # Go to specific tab
       Super-3: Ctrl-3              # Go to specific tab
@@ -116,8 +117,8 @@ keymap:
       only: [Google-chrome, google-chrome, org.mozilla.firefox]
     remap:
       Super-Esc: Shift-Esc          # Task Manager, on macOS: Title bar (Right-click) -> Task Manager (click)
-      Super-w: Ctrl-F4              # [Overrides macOS-ish basic] Tab: Close
-      Super-i: Ctrl-i               # [Overrides macOS-ish basic] Page info
+      Super-w: Ctrl-F4              # [Overrides Basic] Tab: Close
+      Super-i: Ctrl-i               # [Overrides Basic] Page info
       Super-r: Ctrl-r               # Reload page
       Super-Shift-r: Shift-Ctrl-r   # Reload page, ignoring cached content
       Shift-Super-h: Alt-Home       # Home page
@@ -128,7 +129,7 @@ keymap:
       Alt-Super-b: Shift-Ctrl-o     # Bookmark Manager
       Alt-Super-u: Ctrl-u           # Page Source
 
-  - name: macOS-ish basic
+  - name: Basic
     exact_match: true
     application:
       # tmux shortcuts are defined with Alacritty
@@ -175,7 +176,7 @@ keymap:
       Super-i: Alt-KEY_ENTER       # Properties of the selected item
 
   # No zoom settings in gsettings
-  - name: macOS-ish zoom in/out
+  - name: Zoom in/out
     exact_match: true
     remap:
       Super-KEY_0: Ctrl-KEY_0                # zoom reset

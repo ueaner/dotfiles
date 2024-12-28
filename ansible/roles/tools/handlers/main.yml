@@ -1,27 +1,5 @@
 ---
 
-- name: Change flathub remote repository to sjtu
-  # ~/.local/share/flatpak/repo/config
-  ansible.builtin.shell: |
-    flatpak --user remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub
-    curl -L https://mirror.sjtu.edu.cn/flathub/flathub.gpg -o /tmp/flathub.gpg
-    flatpak --user remote-modify --gpg-import=/tmp/flathub.gpg flathub
-  changed_when: false
-
-# desktop-file-install \
-#   --dir=${HOME}/.local/share/applications \
-#   --set-key=Exec \
-#   --set-value="alacritty --option font.size=10.50" \
-#   /usr/share/applications/Alacritty.desktop
-- name: Alacritty desktop entry add font.size option
-  ansible.builtin.shell: |
-    set -o pipefail
-    cp /usr/share/applications/Alacritty.desktop ~/.local/share/applications/Alacritty.desktop
-    sed -i 's/^Exec=alacritty/Exec=alacritty --option font.size=10.50/' ~/.local/share/applications/Alacritty.desktop
-    update-desktop-database ~/.local/share/applications --verbose
-    # sudo update-desktop-applications -v
-  changed_when: false
-
 # See: chrome://version -> Command Line
 - name: Native Wayland for Chrome
   block:

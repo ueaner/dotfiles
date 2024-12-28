@@ -4,6 +4,7 @@
 #
 #   1. Use flatpak instead of gnome-software
 #   2. Disable & mask unused user services
+#   3. Remove unused packages
 #
 # https://forum.zorin.com/t/about-tips-to-make-gnome-lightweight/21146
 # https://www.reddit.com/r/gnome/comments/gn8rs4/how_to_disable_gnome_software_autostart/
@@ -51,8 +52,10 @@ gsettings set org.freedesktop.Tracker3.Miner.Files index-on-battery true # true
 tracker3 reset --filesystem
 
 # remove unused packages
+# Fedora 41+: Ptyxis as the new Terminal App
 sudo dnf remove gnome-maps gnome-photos gnome-contacts gnome-calculator gnome-calendar gnome-clocks gnome-weather cheese gnome-terminal-nautilus gnome-terminal
-sudo dnf remove libreoffice\*
+# sudo dnf remove libreoffice\*
+sudo dnf group remove libreoffice
 sudo dnf remove gnome-shell-extension\*
 
 sudo dnf list --autoremove

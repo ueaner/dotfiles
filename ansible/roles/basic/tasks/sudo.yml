@@ -1,0 +1,16 @@
+---
+
+- name: Check if user has sudo NOPASSWD
+  # ansible.builtin.shell: if sudo -n true 2>/dev/null; then echo "yes" else echo "no" fi
+  ansible.builtin.command: sudo -n true
+  changed_when: false
+  ignore_errors: true
+  register: basic_sudoers_check
+
+- name: Allow user to use sudo without password
+  # when: basic_sudoers_check.stdout == "no"
+  when: basic_sudoers_check.rc != 0
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
+  changed_when: false

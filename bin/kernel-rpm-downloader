@@ -22,6 +22,7 @@ kernel_ver=$(echo "$kernel" | sed -r 's/kernel-//')
 # eg: 6.11.3/300.fc41/x86_64
 kernel_slash_ver=$(echo "$kernel_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
 
+# https://packages.fedoraproject.org/pkgs/kernel/
 packages=(
     "kernel"
     "kernel-core"
@@ -30,10 +31,11 @@ packages=(
     "kernel-modules"
     "kernel-modules-core"
     "kernel-modules-extra"
-    "kernel-modules-internal"
-    "kernel-uki-virt"
+    "kernel-tools"
+    "kernel-tools-libs"
 )
 
+# https://packages.fedoraproject.org/pkgs/kernel-headers/
 rpms=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel-headers/%s/%s-%s.rpm" "$kernel_slash_ver" "kernel-headers" "$kernel_ver")")
 
 for pkg in "${packages[@]}"; do
@@ -42,7 +44,7 @@ done
 
 download_dir="$HOME/$kernel/"
 mkdir -p "$download_dir"
-cd "$download_dir" || return 1
+cd "$download_dir" || exit 1
 
 printf '%s\n' "${rpms[@]}"
 wget -c "${rpms[@]}"
@@ -50,4 +52,4 @@ ret=$?
 
 echo "Download to $download_dir directory"
 
-return $ret
+exit $ret

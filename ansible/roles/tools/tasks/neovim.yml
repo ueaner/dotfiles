@@ -25,7 +25,7 @@
 
     # ansible -m setup HOST -a 'filter=ansible_architecture'
     - name: Install/Upgrade neovim nightly under macOS x86_64/arm64
-      when: ansible_distribution == "MacOSX"
+      when: ansible_system == "Darwin"
       ansible.builtin.unarchive:
         src: https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-{{ ansible_architecture }}.tar.gz
         dest: $XDG_DATA_HOME/nvim-nightly

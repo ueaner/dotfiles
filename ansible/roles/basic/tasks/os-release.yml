@@ -11,18 +11,16 @@
       elif [[ "${VARIANT_ID}" == "sway" ]]; then
         echo "sway"
       fi
-    else
-      echo "undefined"
     fi
   changed_when: false
   # noqa var-naming[no-role-prefix]
   register: desktop_name
 
-- name: DEBUG desktop_name
-  ansible.builtin.debug:
-    msg: "desktop_name is '{{ desktop_name.stdout }}'."
-
-- name: Setting prepare facts
+- name: Setting the facts
   ansible.builtin.set_fact:
     # noqa var-naming[no-role-prefix]
     desktop_name: "{{ desktop_name.stdout }}"
+
+- name: DEBUG desktop_name
+  ansible.builtin.debug:
+    msg: "desktop_name is '{{ desktop_name }}'."

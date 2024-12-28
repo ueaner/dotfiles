@@ -29,12 +29,12 @@
     # Use the defined local_bin instead of the undefined XDG_BIN_HOME
     PATH: "{{ ansible_env.PATH if local_bin in ansible_env.PATH.split(':') else local_bin ~ ':' ~ ansible_env.PATH }}"
   roles:
-    - role: prepare
-      when: (role == "all") or (role == "prepare")
-    - role: system    # Need to reboot after installing wireless driver under MacBook
-      when: (role == "all") or (role == "system")
-    - role: dotshell  # Provides sources for later `lang` and `tools` installactions
-      when: (role == "all") or (role == "dotshell")
+    - role: basic
+      when: (role == "all") or (role == "basic")
+    # - role: system    # Need to reboot after installing wireless driver under MacBook
+    #   when: (role == "all") or (role == "system")
+    # - role: dotshell  # Provides sources for later `lang` and `tools` installactions
+    #   when: (role == "all") or (role == "dotshell")
     - role: lang      # Languages environment
       when: (role == "all") or (role == "lang")
     - role: tools
@@ -43,9 +43,9 @@
     #   when: (role == "all") or (role == "alacritty")
     - role: services
       when: (role == "all") or (role == "services")
-    - role: fonts
-      when: (role == "all") or (role == "fonts")
-    - role: fcitx5
-      when: (role == "all") or (role == "fcitx5")
+    # - role: fonts
+    #   when: (role == "all") or (role == "fonts")
+    # - role: fcitx5
+    #   when: (role == "all") or (role == "fcitx5")
     - role: done
       when: (role == "all") or (role == "done")
