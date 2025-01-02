@@ -33,7 +33,7 @@
 
 ```bash
 cargo install xremap --features gnome   # GNOME Wayland
-cargo install xremap --features wlroots # Sway, Hyprland, etc.
+cargo install xremap --features wlroots # Sway, Wayfire, etc.
 ```
 
 ## 使用

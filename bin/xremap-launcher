@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Xremap launcher on Fedora
+
+# cat /sys/devices/virtual/dmi/id/product_name
+
+. /etc/os-release
+if [[ "${VARIANT_ID}" == "workstation" ]]; then
+    VARIANT_ID="gnome"
+fi
+
+host_specific_config="$HOME/.config/xremap/$(hostnamectl hostname)-${VARIANT_ID}.yml"
+
+# Running xremap without sudo
+if [ -f "$host_specific_config" ]; then
+    # sleep workaround from https://github.com/xremap/xremap/issues/105#issuecomment-1190994137
+    /usr/bin/sleep 1
+    ~/.local/bin/xremap --watch=device "$host_specific_config" ~/.config/xremap/config.yml
+else
+    /usr/bin/sleep 1
+    ~/.local/bin/xremap --watch=device ~/.config/xremap/config.yml
+fi
