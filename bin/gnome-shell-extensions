@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
+#
 # https://gnome.pages.gitlab.gnome.org/gnome-browser-integration/pages/installation-guide.html
-# - https://gitlab.gnome.org/GNOME/gnome-browser-connector
+# - https://gitlab.gnome.org/GNOME/gnome-browser-connector (pre-installed in fedora workstation)
 # - https://gitlab.gnome.org/GNOME/gnome-browser-extension
 #
 # General Installation Steps:
@@ -7,7 +9,6 @@
 #   0. Visit https://extensions.gnome.org/
 #   1. Search extension
 #   2. Click "Install" to confirm extension installation
-#  *3. Re-login to enable extensions [unavoidable]
 #
 # https://medium.com/@ankurloriya/install-gnome-extension-using-command-line-736199be1cda
 # https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936/4
@@ -16,7 +17,10 @@
 #
 #   1. Configure the extension uuid
 #   2. Download the extension package and unzip it to the extension directory
+#  *3. Re-login to enable extensions [unavoidable]
 #
+
+mkdir -p ~/.local/share/gnome-shell/extensions
 
 DOWNLOAD_TMPDIR="/tmp"
 EXTENSIONS_SITE="https://extensions.gnome.org"
@@ -113,7 +117,14 @@ for uuid in "${uuids[@]}"; do
         # GNOME 46
         # curl -L "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
         # GNOME 47
-        curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+        # curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "$DOWNLOAD_TMPDIR/$uuid.zip"
+        curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "/tmp/g47.zip"
+        unzip -q "/tmp/g47.zip" -d "/tmp/"
+        # shellcheck disable=SC2164
+        cd /tmp/gestureImprovements47@gestures/ && zip -q -r $DOWNLOAD_TMPDIR/gestureImprovements@gestures.zip ./*
+
+        # mv /tmp/gestureImprovements47@gestures/ "$HOME/.local/share/gnome-shell/extensions/gestureImprovements@gestures"
+
         # Unzip the extension package
         # gnome-extensions install -f "/tmp/$uuid.zip"
     else
