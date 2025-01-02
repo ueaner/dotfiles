@@ -7,15 +7,18 @@
 # - UI Appearance
 # - Logout & Lock screen
 # - Screenshot
-# - Peripherals Touchpad
-# - Keyboard & Input
-# - Application & Window
-# - Workspace
-# - Monitor
+# - Touchpad - Gesture
+# - Keyboard - Input Method
+# - Window Manager - Application & Window
+# - Window Manager - Workspace
+# - Window Manager - Monitor
 # - GNOME Shell Extensions
 #    - Clipboard Indicator
 #    - System Monitor
-#    - Gesture Improvements
+#    - Touchpad gesture improvements
+# - Applications
+
+set -xe
 
 # Alt/Option Shift Control Super Character
 
@@ -136,7 +139,7 @@ gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Shift><Su
 gsettings set org.gnome.shell.keybindings screenshot-window "['<Control><Super>a']"
 
 #----------------------------------------------------------------
-# Peripherals Touchpad
+# Touchpad - Gesture
 #----------------------------------------------------------------
 
 # Touchpad enabled: org.gnome.desktop.peripherals.touchpad send-events 'enabled'
@@ -160,7 +163,7 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true #
 # > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 
 #----------------------------------------------------------------
-# Keyboard & Input
+# Keyboard - Input Method
 #----------------------------------------------------------------
 # Settings -> Keyboard -> Input Sources -> [+] -> Chinese (China) -> Chinese (Intelligent Pinyin)
 gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'libpinyin'), ('xkb', 'us')]" # []
@@ -190,7 +193,7 @@ gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin english-input-mode f
 gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin table-input-mode false   # true
 
 #----------------------------------------------------------------
-# Application & Window
+# Window Manager - Application & Window
 #----------------------------------------------------------------
 
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
@@ -228,7 +231,7 @@ gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Super>Down']"
 gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
 
 #----------------------------------------------------------------
-# Workspace
+# Window Manager - Workspace
 #----------------------------------------------------------------
 
 # NOTE: Prioritize gestures to switch workspaces
@@ -260,7 +263,7 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Co
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Control>9']" # ['<Shift><Super>End']
 
 #----------------------------------------------------------------
-# Monitor
+# Window Manager - Monitor
 #----------------------------------------------------------------
 
 # [RELEASE] `<Super>p` for Print
@@ -277,8 +280,10 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Shift><Sup
 # Terminal
 #----------------------------------------------------------------
 
-gsettings set org.gnome.desktop.applications.terminal.exec "alacritty"
-gsettings set org.gnome.desktop.applications.terminal.exec-arg ""
+if type alacritty &>/dev/null; then
+    gsettings set org.gnome.desktop.applications.terminal.exec "alacritty"
+    gsettings set org.gnome.desktop.applications.terminal.exec-arg ""
+fi
 
 # Pin your favorite apps to the dash, the first being Alacritty.desktop
 # with gsettings configured as: org.gnome.shell favorite-apps ['Alacritty.desktop', ...]
@@ -287,6 +292,7 @@ gsettings set org.gnome.desktop.applications.terminal.exec-arg ""
 #----------------------------------------------------------------
 # GNOME Shell Extensions
 #----------------------------------------------------------------
+# NOTE: Execute this block only after installing the extension
 
 # 0. schema name:
 # rg settings-schema ~/.local/share/gnome-shell/extensions
@@ -322,3 +328,22 @@ if [[ -d $schemadir ]]; then
     # 3-finger swipe to switch applications
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-alttab-gesture true # true
 fi
+
+#----------------------------------------------------------------
+# Applications
+#----------------------------------------------------------------
+gsettings set org.gnome.TextEditor keybindings vim
+gsettings set org.gnome.Ptyxis audible-bell false
+
+#----------------------------------------------------------------
+# If needed, set the following manually
+#----------------------------------------------------------------
+
+# Settings -> Network -> Proxy -> Network Proxy (ON) -> Configuration (Manual)
+# gsettings get org.gnome.system.proxy mode       # 'manual'
+# gsettings get org.gnome.system.proxy.socks host # '127.0.0.1'
+# gsettings get org.gnome.system.proxy.socks port # 1080
+
+# for MacBook
+# Settings -> Displays -> Scale -> 175 %
+# gsettings set org.gnome.SimpleScan text-dpi 175 # 150
