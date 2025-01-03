@@ -56,9 +56,13 @@ cyan    = "#81cabf"
 white   = "#eaeaea"
 
 [font]
-# Alacritty.desktop: Exec=alacritty --option font.size=9.0
-# alacritty msg config font.size=9.0
-size = 12.0  # Linux: 9.0, macOS: 12.0
+# macOS: 12.25
+# GNOME:
+#   - Displays Scale 150 % -> 12.25
+#       -  Chrome: Appearance Page zoom -> 125 %
+#       - Firefox: General Default zoom -> 120 %
+#   - Displays Scale 175 % -> 10.50
+size = 12.25
 
 [font.bold]
 family = "SauceCodePro Nerd Font"
@@ -102,6 +106,7 @@ bindings = [
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
     { key = "W",           mods = "Super",         chars = "\u001Bsw"          }, # Window: Close
+    { key = "W",           mods = "Super|Shift",   chars = "\u001BsW"          }, # Window: Close other windows
     { key = "Tab",         mods = "Control",       chars = "\u001Bs]"          }, # Window: Next
     { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs["          }, # Window: Previous
     { key = "Right",       mods = "Super|Alt",     chars = "\u001Bs]"          }, # Window: Next
