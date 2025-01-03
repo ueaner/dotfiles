@@ -6,6 +6,8 @@
 #   - ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
 #   - ln -sf $ANDROID_HOME/platform-tools/adb /usr/local/bin/
 #   - ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/
+#   - ln -sf $XDG_DATA_HOME/nvim-nightly/bin/nvim /usr/local/bin/nvim
+#   - ln -sf /usr/local/bin/nvim /usr/local/bin/vim
 # - ~/.local/bin/ - $XDG_BIN_HOME
 #   - cargo install
 #   - go install
@@ -17,11 +19,11 @@
 #
 # See what filetypes are in the ~/.local/bin/ directory:
 #
-# > file -F" " --mime-type * | awk '{print $2 $3, $1}' | column -t | sort
+# > file -F" " --mime-type * | awk '{print $2, $1}' | column -t | sort
 #
 #   application/octet-stream      composer
-#   application/x-executable      caddy
-#   application/x-pie-executable  alacritty
+#   application/x-executable      lazygit
+#   application/x-pie-executable  xremap
 #   application/zip               plantuml.jar
 #   text/x-script.python          ansible
 #   text/x-shellscript            tsx
@@ -39,8 +41,8 @@ export GOBIN=$XDG_BIN_HOME
 export GOCACHE=$XDG_CACHE_HOME/go-build
 export GOMODCACHE=$XDG_CACHE_HOME/go-mod # $GOPATH/pkg/mod
 if type go &>/dev/null; then
+    # go version go1.23.3 linux/amd64
     GOVERSION=$(go version | {
-        # go version go1.23.3 linux/amd64
         read -r _ _ v _
         echo "${v#go}"
     })

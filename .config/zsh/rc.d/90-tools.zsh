@@ -9,5 +9,5 @@ fi
 
 # define FNM_DIR in env.d/lang.zsh
 if type fnm &>/dev/null; then
-    source <(fnm env --use-on-cd)
+    source <(fnm env --use-on-cd --shell zsh)
 fi

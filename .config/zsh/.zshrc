@@ -103,7 +103,7 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-if type launchctl &>/dev/null; then
+if [[ "$(uname -s)" == "Darwin" ]]; then
     sudo launchctl limit maxfiles 10240 unlimited
 else
     ulimit -n 64000
