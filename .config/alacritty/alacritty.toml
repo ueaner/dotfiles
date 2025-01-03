@@ -105,15 +105,16 @@ bindings = [
     { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # Session: Explorer, eg: numbers, hljk, search
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
+    # { key = "T",           mods = "Super|Shift",   chars = "\u001BsT"          }, # Window: Reopen closed windows
     { key = "W",           mods = "Super",         chars = "\u001Bsw"          }, # Window: Close
     { key = "W",           mods = "Super|Shift",   chars = "\u001BsW"          }, # Window: Close other windows
     { key = "Tab",         mods = "Control",       chars = "\u001Bs]"          }, # Window: Next
     { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs["          }, # Window: Previous
-    { key = "Right",       mods = "Super|Alt",     chars = "\u001Bs]"          }, # Window: Next
-    { key = "Left",        mods = "Super|Alt",     chars = "\u001Bs["          }, # Window: Previous
+    { key = "Right",       mods = "Super|Alt",     chars = "\u001Bs}"          }, # Window: Move Window Right
+    { key = "Left",        mods = "Super|Alt",     chars = "\u001Bs{"          }, # Window: Move Window Left
     # https://github.com/alacritty/alacritty/issues/7604#issuecomment-1886539740
-    { key = "}",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
-    { key = "{",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
+    { key = "}",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next (macOS)
+    { key = "{",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous (macOS)
     { key = ">",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
     { key = "<",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
     { key = ".",           mods = "Super",         chars = "\u001Bs."          }, # Window: Last active

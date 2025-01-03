@@ -5,28 +5,40 @@
 
 keymap:
 
+  - name: Ptyxis
+    exact_match: true
+    application:
+      only: org.gnome.Ptyxis
+    remap:
+      Super-n: Shift-Ctrl-n                          # Window: New
+      Super-t: Shift-Ctrl-t                          # Tab: new
+      Super-w: Shift-Ctrl-w                          # Tab: close
+      Shift-Super-t: Alt-Shift-Ctrl-t                # Tab: Reopen closed tab
+      Shift-Super-KEY_RIGHTBRACE: Ctrl-KEY_PAGEDOWN  # Tab: ] Next
+      Shift-Super-KEY_LEFTBRACE: Ctrl-KEY_PAGEUP     # Tab: [ Previous
+      Alt-Super-Right: Shift-Ctrl-KEY_PAGEDOWN       # Tab: -> Move Tab Right
+      Alt-Super-Left: Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
+      Shift-Super-KEY_DOT: Ctrl-KEY_PAGEDOWN         # Tab: > Next
+      Shift-Super-KEY_COMMA: Ctrl-KEY_PAGEUP         # Tab: < Previous
+      Alt-Super-o: Shift-Ctrl-o                      # Tab: Overview
+      Super-f: Shift-Ctrl-f                          # Search
+      Super-a: Shift-Ctrl-a                          # Select All
+      Super-c: Shift-Ctrl-c                          # Copy
+      Super-v: Shift-Ctrl-v                          # Paste
+
   - name: Terminal
     exact_match: true
     application:
-      only: [Alacritty, org.gnome.Ptyxis, foot, footclient]
+      only: [foot, footclient]
     remap:
-      # Ptyxis:
-      # Super-n: Shift-Ctrl-n                          # new window
-      # Super-t: Shift-Ctrl-t                          # new tab
-      # Super-w: Shift-Ctrl-w                          # close tab
-      # Shift-Super-t: Alt-Shift-Ctrl-t                # reopen the last closed tab
-      # Shift-Super-KEY_RIGHTBRACE: Ctrl-KEY_PAGEDOWN  # ] next tab
-      # Shift-Super-KEY_LEFTBRACE: Ctrl-KEY_PAGEUP     # [ prev tab
-      # Super-KEY_EQUAL: Shift-Ctrl-KEY_EQUAL          # increase font size
-      # Super-f: Shift-Ctrl-f                          # find
-      # Super-a: Shift-Ctrl-a                          # select all
+      Super-n: Shift-Ctrl-n                          # Window: New
       Super-c: Shift-Ctrl-c                          # Copy
       Super-v: Shift-Ctrl-v                          # Paste
 
   - name: Tmux
     exact_match: true
     application:
-      only: [org.gnome.Ptyxis, foot, footclient]
+      only: [foot, footclient]
     remap:
       # tmux shortcuts: prefix Alt-s \u001Bs
       Super-r: [Alt-s, r]                                        # Tmux: Reload Config
@@ -38,10 +50,11 @@ keymap:
       Super-i: [Alt-s, i]                                        # Window: Info
       Super-t: [Alt-s, t]                                        # Window: New
       Super-w: [Alt-s, w]                                        # Window: Close
+      Shift-Super-w: [Alt-s, W]                                  # Window: Close other windows
       Ctrl-KEY_TAB: [Alt-s, KEY_RIGHTBRACE]                      # Window: Next
       Shift-Ctrl-KEY_TAB: [Alt-s, KEY_LEFTBRACE]                 # Window: Previous
-      Alt-Super-Right: [Alt-s, KEY_RIGHTBRACE]                   # Window: -> Next
-      Alt-Super-Left: [Alt-s, KEY_LEFTBRACE]                     # Window: <- Previous
+      Alt-Super-Right: [Alt-s, Shift-KEY_RIGHTBRACE]             # Window: -> Move Window Right
+      Alt-Super-Left: [Alt-s, Shift-KEY_LEFTBRACE]               # Window: <- Move Window Left
       Shift-Super-KEY_RIGHTBRACE: [Alt-s, KEY_RIGHTBRACE]        # Window: } Next
       Shift-Super-KEY_LEFTBRACE: [Alt-s, KEY_LEFTBRACE]          # Window: { Previous
       Shift-Super-KEY_DOT: [Alt-s, KEY_RIGHTBRACE]               # Window: > Next
@@ -174,6 +187,8 @@ keymap:
       Super-s: Ctrl-s              # Save
       Shift-Super-s: Shift-Ctrl-s  # Save as dialog
       Super-i: Alt-KEY_ENTER       # Properties of the selected item
+      # Ctrl-KEY_ENTER: Shift-F10    # right-click popup-menu / context menu / two-finger tap
+      # Alt or F10: Menu Bar (primary-menu)
 
   # No zoom settings in gsettings
   - name: Zoom in/out

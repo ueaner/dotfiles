@@ -10,7 +10,7 @@ keymap:
   - name: Tmux
     exact_match: true
     application:
-      only: [Alacritty, org.gnome.Ptyxis, foot, footclient]
+      only: [Alacritty, foot, footclient]
     remap:
       # Switching panes is like switching containers under Sway
       Super-h: [Alt-s, h]     # Pane: Force Left
