@@ -7,7 +7,7 @@
 # 丢弃重复项
 typeset -U path
 
-PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
+PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 # GNU utils
 if type brew &>/dev/null; then
