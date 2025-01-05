@@ -10,30 +10,30 @@ keymap:
     application:
       only: org.gnome.Ptyxis
     remap:
-      Super-n: Shift-Ctrl-n                          # Window: New
-      Super-t: Shift-Ctrl-t                          # Tab: new
-      Super-w: Shift-Ctrl-w                          # Tab: close
-      Shift-Super-t: Alt-Shift-Ctrl-t                # Tab: Reopen closed tab
-      Shift-Super-KEY_RIGHTBRACE: Ctrl-KEY_PAGEDOWN  # Tab: ] Next
-      Shift-Super-KEY_LEFTBRACE: Ctrl-KEY_PAGEUP     # Tab: [ Previous
-      Alt-Super-Right: Shift-Ctrl-KEY_PAGEDOWN       # Tab: -> Move Tab Right
-      Alt-Super-Left: Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
-      Shift-Super-KEY_DOT: Ctrl-KEY_PAGEDOWN         # Tab: > Next
-      Shift-Super-KEY_COMMA: Ctrl-KEY_PAGEUP         # Tab: < Previous
-      Shift-Super-KEY_BACKSLASH: Shift-Ctrl-o        # Tab: Overview
-      Super-f: Shift-Ctrl-f                          # Search
-      Super-a: Shift-Ctrl-a                          # Select All
-      Super-c: Shift-Ctrl-c                          # Copy
-      Super-v: Shift-Ctrl-v                          # Paste
+      Super-n:                     Shift-Ctrl-n                   # Window: New
+      Super-t:                     Shift-Ctrl-t                   # Tab: new
+      Super-w:                     Shift-Ctrl-w                   # Tab: close
+      Shift-Super-t:               Alt-Shift-Ctrl-t               # Tab: Reopen closed tab
+      Shift-Super-KEY_RIGHTBRACE:  Ctrl-KEY_PAGEDOWN              # Tab: ] Next
+      Shift-Super-KEY_LEFTBRACE:   Ctrl-KEY_PAGEUP                # Tab: [ Previous
+      Alt-Super-Right:             Shift-Ctrl-KEY_PAGEDOWN        # Tab: -> Move Tab Right
+      Alt-Super-Left:              Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
+      Shift-Super-KEY_DOT:         Ctrl-KEY_PAGEDOWN              # Tab: > Next
+      Shift-Super-KEY_COMMA:       Ctrl-KEY_PAGEUP                # Tab: < Previous
+      Shift-Super-KEY_BACKSLASH:   Shift-Ctrl-o                   # Tab: Overview
+      Super-f:                     Shift-Ctrl-f                   # Search
+      Super-a:                     Shift-Ctrl-a                   # Select All
+      Super-c:                     Shift-Ctrl-c                   # Copy
+      Super-v:                     Shift-Ctrl-v                   # Paste
 
   - name: Terminal
     exact_match: true
     application:
       only: [foot, footclient]
     remap:
-      Super-n: Shift-Ctrl-n                          # Window: New
-      Super-c: Shift-Ctrl-c                          # Copy
-      Super-v: Shift-Ctrl-v                          # Paste
+      Super-n:                     Shift-Ctrl-n                   # Window: New
+      Super-c:                     Shift-Ctrl-c                   # Copy
+      Super-v:                     Shift-Ctrl-v                   # Paste
 
   - name: Tmux
     exact_match: true
@@ -41,69 +41,69 @@ keymap:
       only: [foot, footclient]
     remap:
       # tmux shortcuts: prefix Alt-s \u001Bs
-      Super-r: [Alt-s, r]                                        # Tmux: Reload Config
-      Shift-Super-r: [Alt-s, Shift-r]                            # Client: Refresh
-      Shift-Super-d: [Alt-s, d]                                  # Client: Detach
-      Super-n: [Alt-s, n]                                        # Session: New
-      Shift-Super-n: [Alt-s, Shift-n]                            # Session: reName
-      Shift-Super-KEY_BACKSLASH: [Alt-s, Shift-KEY_BACKSLASH]    # Session: Overview
-      Super-KEY_COMMA: [Alt-s, KEY_COMMA]                        # alias Shift-Super-\
-      Super-i: [Alt-s, i]                                        # Window: Info
-      Super-t: [Alt-s, t]                                        # Window: New
-      Super-w: [Alt-s, w]                                        # Window: Close
-      Shift-Super-w: [Alt-s, W]                                  # Window: Close other windows
-      Ctrl-KEY_TAB: [Alt-s, KEY_RIGHTBRACE]                      # Window: Next
-      Shift-Ctrl-KEY_TAB: [Alt-s, KEY_LEFTBRACE]                 # Window: Previous
-      Alt-Super-Right: [Alt-s, Shift-KEY_RIGHTBRACE]             # Window: -> Move Window Right
-      Alt-Super-Left: [Alt-s, Shift-KEY_LEFTBRACE]               # Window: <- Move Window Left
-      Shift-Super-KEY_RIGHTBRACE: [Alt-s, KEY_RIGHTBRACE]        # Window: } Next
-      Shift-Super-KEY_LEFTBRACE: [Alt-s, KEY_LEFTBRACE]          # Window: { Previous
-      Shift-Super-KEY_DOT: [Alt-s, KEY_RIGHTBRACE]               # Window: > Next
-      Shift-Super-KEY_COMMA: [Alt-s, KEY_LEFTBRACE]              # Window: < Previous
-      Super-KEY_DOT: [Alt-s, Alt-s]                              # Window: . Last active
-      Shift-Super-KEY_MINUS: [Alt-s, Shift-KEY_MINUS]            # Window: _ Vertical Split
-      Shift-Super-KEY_EQUAL: [Alt-s, Shift-KEY_EQUAL]            # Window: + Horizontal Split
-      Super-KEY_APOSTROPHE: [Alt-s, KEY_APOSTROPHE]              # Pane: ' Last active
-      Shift-Super-KEY_APOSTROPHE: [Alt-s, Shift-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
-      Super-z: [Alt-s, z]                                        # Pane: Zoom
-      Super-x: [Alt-s, x]                                        # Pane: Close
-      Shift-Super-x: [Alt-s, X]                                  # Pane: Close other panes
-      Shift-Super-e: [Alt-s, Shift-e]                            # Pane: Evenly Layout
-      Super-KEY_BACKSLASH: [Alt-s, Space]                        # Pane: \ Next Layout
-      Super-Esc: [Alt-s, Esc]                                    # Mode: Copy Mode vi
-      Shift-Super-KEY_SEMICOLON: [Alt-s, Shift-KEY_SEMICOLON]    # Mode: : Command mode
-      Super-KEY_SLASH: [Alt-s, KEY_SLASH]                        # Search: / in copy mode
-      Super-f: [Alt-s, KEY_SLASH]                                # Search: / in copy mode
-      Shift-Super-KEY_SLASH: [Alt-s, Shift-KEY_SLASH]            # Help: ? List key bindings
-      Super-p: [Alt-s, p]                                        # Paste Buffer
-      Super-KEY_1: [Alt-s, KEY_1]                                # Window: 1
-      Super-KEY_2: [Alt-s, KEY_2]                                # Window: 2
-      Super-KEY_3: [Alt-s, KEY_3]                                # Window: 3
-      Super-KEY_4: [Alt-s, KEY_4]                                # Window: 4
-      Super-KEY_5: [Alt-s, KEY_5]                                # Window: 5
-      Super-KEY_6: [Alt-s, KEY_6]                                # Window: 6
-      Super-KEY_7: [Alt-s, KEY_7]                                # Window: 7
-      Super-KEY_8: [Alt-s, KEY_8]                                # Window: 8
-      Super-KEY_9: [Alt-s, KEY_9]                                # Window: Rightmost
+      Super-r:                     [Alt-s, r]                     # Tmux: Reload Config
+      Shift-Super-r:               [Alt-s, Shift-r]               # Client: Refresh
+      Shift-Super-d:               [Alt-s, d]                     # Client: Detach
+      Super-n:                     [Alt-s, n]                     # Session: New
+      Shift-Super-n:               [Alt-s, Shift-n]               # Session: reName
+      Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Session: Overview
+      Super-KEY_COMMA:             [Alt-s, KEY_COMMA]             # alias Shift-Super-\
+      Super-i:                     [Alt-s, i]                     # Window: Info
+      Super-t:                     [Alt-s, t]                     # Window: New
+      Super-w:                     [Alt-s, w]                     # Window: Close
+      Shift-Super-w:               [Alt-s, W]                     # Window: Close other windows
+      Ctrl-KEY_TAB:                [Alt-s, KEY_RIGHTBRACE]        # Window: Next
+      Shift-Ctrl-KEY_TAB:          [Alt-s, KEY_LEFTBRACE]         # Window: Previous
+      Alt-Super-Right:             [Alt-s, Shift-KEY_RIGHTBRACE]  # Window: -> Move Window Right
+      Alt-Super-Left:              [Alt-s, Shift-KEY_LEFTBRACE]   # Window: <- Move Window Left
+      Shift-Super-KEY_RIGHTBRACE:  [Alt-s, KEY_RIGHTBRACE]        # Window: } Next
+      Shift-Super-KEY_LEFTBRACE:   [Alt-s, KEY_LEFTBRACE]         # Window: { Previous
+      Shift-Super-KEY_DOT:         [Alt-s, KEY_RIGHTBRACE]        # Window: > Next
+      Shift-Super-KEY_COMMA:       [Alt-s, KEY_LEFTBRACE]         # Window: < Previous
+      Super-KEY_DOT:               [Alt-s, Alt-s]                 # Window: . Last active
+      Shift-Super-KEY_MINUS:       [Alt-s, Shift-KEY_MINUS]       # Window: _ Vertical Split
+      Shift-Super-KEY_EQUAL:       [Alt-s, Shift-KEY_EQUAL]       # Window: + Horizontal Split
+      Super-KEY_APOSTROPHE:        [Alt-s, KEY_APOSTROPHE]        # Pane: ' Last active
+      Shift-Super-KEY_APOSTROPHE:  [Alt-s, Shift-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
+      Super-z:                     [Alt-s, z]                     # Pane: Zoom
+      Super-x:                     [Alt-s, x]                     # Pane: Close
+      Shift-Super-x:               [Alt-s, X]                     # Pane: Close other panes
+      Shift-Super-e:               [Alt-s, Shift-e]               # Pane: Evenly Layout
+      Super-KEY_BACKSLASH:         [Alt-s, Space]                 # Pane: \ Next Layout
+      Super-Esc:                   [Alt-s, Esc]                   # Mode: Copy Mode vi
+      Shift-Super-KEY_SEMICOLON:   [Alt-s, Shift-KEY_SEMICOLON]   # Mode: : Command mode
+      Super-KEY_SLASH:             [Alt-s, KEY_SLASH]             # Search: / in copy mode
+      Super-f:                     [Alt-s, KEY_SLASH]             # Search: / in copy mode
+      Shift-Super-KEY_SLASH:       [Alt-s, Shift-KEY_SLASH]       # Help: ? List key bindings
+      Super-p:                     [Alt-s, p]                     # Paste Buffer
+      Super-KEY_1:                 [Alt-s, KEY_1]                 # Window: 1
+      Super-KEY_2:                 [Alt-s, KEY_2]                 # Window: 2
+      Super-KEY_3:                 [Alt-s, KEY_3]                 # Window: 3
+      Super-KEY_4:                 [Alt-s, KEY_4]                 # Window: 4
+      Super-KEY_5:                 [Alt-s, KEY_5]                 # Window: 5
+      Super-KEY_6:                 [Alt-s, KEY_6]                 # Window: 6
+      Super-KEY_7:                 [Alt-s, KEY_7]                 # Window: 7
+      Super-KEY_8:                 [Alt-s, KEY_8]                 # Window: 8
+      Super-KEY_9:                 [Alt-s, KEY_9]                 # Window: Rightmost
 
   - name: Firefox
     exact_match: true
     application:
       only: org.mozilla.firefox
     remap:
-      Shift-Super-j: Shift-Ctrl-y  # [Overrides Browser] Downloads page
-      Alt-Super-u: [Tab, Ctrl-u]   # [Overrides Browser] Page Source, Need to lose focus on the input box first
-      Shift-Super-n: Shift-Ctrl-p  # [Overrides Basic] New Private Window
-      Shift-Super-p: Esc           # [Overrides Basic] Dummy
-      Super-1: Alt-1               # Go to specific tab
-      Super-2: Alt-2               # Go to specific tab
-      Super-3: Alt-3               # Go to specific tab
-      Super-4: Alt-4               # Go to specific tab
-      Super-5: Alt-5               # Go to specific tab
-      Super-6: Alt-6               # Go to specific tab
-      Super-7: Alt-7               # Go to specific tab
-      Super-8: Alt-8               # Go to specific tab
-      Super-9: Alt-9               # Go to the rightmost tab
+      Shift-Super-j:  Shift-Ctrl-y   # [Overrides Browser] Downloads page
+      Alt-Super-u:    [Tab, Ctrl-u]  # [Overrides Browser] Page Source, Need to lose focus on the input box first
+      Shift-Super-n:  Shift-Ctrl-p   # [Overrides Basic] New Private Window
+      Shift-Super-p:  Esc            # [Overrides Basic] Dummy
+      Super-1:        Alt-1          # Go to specific tab
+      Super-2:        Alt-2          # Go to specific tab
+      Super-3:        Alt-3          # Go to specific tab
+      Super-4:        Alt-4          # Go to specific tab
+      Super-5:        Alt-5          # Go to specific tab
+      Super-6:        Alt-6          # Go to specific tab
+      Super-7:        Alt-7          # Go to specific tab
+      Super-8:        Alt-8          # Go to specific tab
+      Super-9:        Alt-9          # Go to the rightmost tab
       # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
 
   # More shortcuts: Alt-E-...
@@ -112,19 +112,19 @@ keymap:
     application:
       only: [Google-chrome, google-chrome]
     remap:
-      Super-a: Ctrl-a              # [Overrides Basic] Select all
-      Super-1: Ctrl-1              # Go to specific tab
-      Super-2: Ctrl-2              # Go to specific tab
-      Super-3: Ctrl-3              # Go to specific tab
-      Super-4: Ctrl-4              # Go to specific tab
-      Super-5: Ctrl-5              # Go to specific tab
-      Super-6: Ctrl-6              # Go to specific tab
-      Super-7: Ctrl-7              # Go to specific tab
-      Super-8: Ctrl-8              # Go to specific tab
-      Super-9: Ctrl-9              # Go to the rightmost tab
-      Ctrl-Up: Home                # Go to Top of Page, like Firefox
-      Ctrl-Down: End               # Go to Bottom of Page, like Firefox
-      # Super-w: [Esc, Ctrl-w]       # Overrides the Super-w key for close tab
+      Super-a:        Ctrl-a         # [Overrides Basic] Select all
+      Super-1:        Ctrl-1         # Go to specific tab
+      Super-2:        Ctrl-2         # Go to specific tab
+      Super-3:        Ctrl-3         # Go to specific tab
+      Super-4:        Ctrl-4         # Go to specific tab
+      Super-5:        Ctrl-5         # Go to specific tab
+      Super-6:        Ctrl-6         # Go to specific tab
+      Super-7:        Ctrl-7         # Go to specific tab
+      Super-8:        Ctrl-8         # Go to specific tab
+      Super-9:        Ctrl-9         # Go to the rightmost tab
+      Ctrl-Up:        Home           # Go to Top of Page, like Firefox
+      Ctrl-Down:      End            # Go to Bottom of Page, like Firefox
+      # Super-w: [Esc, Ctrl-w]     # Overrides the Super-w key for close tab
       # Super-KEY_COMMA: [Ctrl-l, "chrome://settings/", KEY_ENTER]  # Settings
 
   - name: Browser
@@ -132,18 +132,18 @@ keymap:
     application:
       only: [Google-chrome, google-chrome, org.mozilla.firefox]
     remap:
-      Super-Esc: Shift-Esc          # Task Manager, on macOS: Title bar (Right-click) -> Task Manager (click)
-      Super-w: Ctrl-F4              # [Overrides Basic] Tab: Close
-      Super-i: Ctrl-i               # [Overrides Basic] Page info
-      Super-r: Ctrl-r               # Reload page
-      Super-Shift-r: Shift-Ctrl-r   # Reload page, ignoring cached content
-      Shift-Super-h: Alt-Home       # Home page
-      Super-y: Ctrl-h               # History page
-      Shift-Super-j: Ctrl-j         # Downloads page
-      Alt-Super-i: Shift-Ctrl-i     # Developer tools
-      Alt-Super-j: Shift-Ctrl-j     # JavaScript Console
-      Alt-Super-b: Shift-Ctrl-o     # Bookmark Manager
-      Alt-Super-u: Ctrl-u           # Page Source
+      Super-Esc:      Shift-Esc      # Task Manager, on macOS: Title bar (Right-click) -> Task Manager (click)
+      Super-w:        Ctrl-F4        # [Overrides Basic] Tab: Close
+      Super-i:        Ctrl-i         # [Overrides Basic] Page info
+      Super-r:        Ctrl-r         # Reload page
+      Super-Shift-r:  Shift-Ctrl-r   # Reload page, ignoring cached content
+      Shift-Super-h:  Alt-Home       # Home page
+      Super-y:        Ctrl-h         # History page
+      Shift-Super-j:  Ctrl-j         # Downloads page
+      Alt-Super-i:    Shift-Ctrl-i   # Developer tools
+      Alt-Super-j:    Shift-Ctrl-j   # JavaScript Console
+      Alt-Super-b:    Shift-Ctrl-o   # Bookmark Manager
+      Alt-Super-u:    Ctrl-u         # Page Source
 
   - name: Basic
     exact_match: true
@@ -165,34 +165,34 @@ keymap:
       #   Alt-Escape  Switch Windows directly
       #     Ctrl-Tab  Switch Tabs
 
-      Super-n: Ctrl-n                                # Window: New
-      Shift-Super-n: Shift-Ctrl-n                    # New folder / Incognito mode
-      Super-t: Ctrl-t                                # Tab: New
-      Shift-Super-t: Shift-Ctrl-t                    # Tab: Reopen the last closed tab
-      Super-w: Ctrl-w                                # Tab: Close
-      Shift-Super-KEY_RIGHTBRACE: Ctrl-KEY_TAB       # Tab: ] next
-      Shift-Super-KEY_LEFTBRACE: Shift-Ctrl-KEY_TAB  # Tab: [ previous
-      Super-KEY_COMMA: Ctrl-KEY_COMMA                # Preferences / Settings: Super-,
-      Shift-Super-KEY_SLASH: Shift-Ctrl-KEY_SLASH    # Keyboard shortcuts (Help): Shift-Super-?
+      Super-n:                     Ctrl-n                # Window: New
+      Shift-Super-n:               Shift-Ctrl-n          # New folder / Incognito mode
+      Super-t:                     Ctrl-t                # Tab: New
+      Shift-Super-t:               Shift-Ctrl-t          # Tab: Reopen the last closed tab
+      Super-w:                     Ctrl-w                # Tab: Close
+      Shift-Super-KEY_RIGHTBRACE:  Ctrl-KEY_TAB          # Tab: ] next
+      Shift-Super-KEY_LEFTBRACE:   Shift-Ctrl-KEY_TAB    # Tab: [ previous
+      Super-KEY_COMMA:             Ctrl-KEY_COMMA        # Preferences / Settings: Super-,
+      Shift-Super-KEY_SLASH:       Shift-Ctrl-KEY_SLASH  # Keyboard shortcuts (Help): Shift-Super-?
 
-      Super-KEY_0: Ctrl-KEY_0                # zoom reset
-      Super-KEY_EQUAL: Shift-Ctrl-KEY_EQUAL  # zoom in +
-      Super-KEY_MINUS: Ctrl-KEY_MINUS        # zoom in -
+      Super-KEY_0:      Ctrl-KEY_0            # zoom reset
+      Super-KEY_EQUAL:  Shift-Ctrl-KEY_EQUAL  # zoom in +
+      Super-KEY_MINUS:  Ctrl-KEY_MINUS        # zoom in -
 
-      Super-x: Ctrl-x              # Cut
-      Super-c: Ctrl-c              # Copy
-      Super-v: Ctrl-v              # Paste
-      Super-z: Ctrl-z              # Undo
-      Shift-Super-z: Shift-Ctrl-z  # Redo
-      Super-a: Ctrl-KEY_SLASH      # Select all, use `Ctrl-/` instead of `Ctrl-a`
-      Super-f: Ctrl-f              # Find
-      Super-g: Ctrl-g              # Find next
-      Shift-Super-g: Shift-Ctrl-g  # Find previous
-      Super-o: Ctrl-o              # Open options / Open choose file dialog
-      Super-p: Ctrl-p              # Print
-      Shift-Super-p: Shift-Ctrl-p  # Print preview
-      Super-s: Ctrl-s              # Save
-      Shift-Super-s: Shift-Ctrl-s  # Save as dialog
-      Super-i: Alt-KEY_ENTER       # Properties of the selected item
+      Super-x:          Ctrl-x                # Cut
+      Super-c:          Ctrl-c                # Copy
+      Super-v:          Ctrl-v                # Paste
+      Super-z:          Ctrl-z                # Undo
+      Shift-Super-z:    Shift-Ctrl-z          # Redo
+      Super-a:          Ctrl-KEY_SLASH        # Select all, use `Ctrl-/` instead of `Ctrl-a`
+      Super-f:          Ctrl-f                # Find
+      Super-g:          Ctrl-g                # Find next
+      Shift-Super-g:    Shift-Ctrl-g          # Find previous
+      Super-o:          Ctrl-o                # Open options / Open choose file dialog
+      Super-p:          Ctrl-p                # Print
+      Shift-Super-p:    Shift-Ctrl-p          # Print preview
+      Super-s:          Ctrl-s                # Save
+      Shift-Super-s:    Shift-Ctrl-s          # Save as dialog
+      Super-i:          Alt-KEY_ENTER         # Properties of the selected item
       # Ctrl-KEY_ENTER: Shift-F10    # right-click popup-menu / context menu / two-finger tap
       # Alt or F10: Menu Bar (primary-menu)
