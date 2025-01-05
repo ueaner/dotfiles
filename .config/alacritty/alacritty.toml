@@ -102,7 +102,9 @@ bindings = [
     { key = "D",           mods = "Super|Shift",   chars = "\u001Bsd"          }, # Client: Detach
     { key = "N",           mods = "Super",         chars = "\u001Bsn"          }, # Session: New
     { key = "N",           mods = "Super|Shift",   chars = "\u001BsN"          }, # Session: reName
-    { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # Session: Explorer, eg: numbers, hljk, search
+    # Session Explorer: choose number, hljk move or search
+    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Session: Overview
+    { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # alias Shift-Super-\
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
     # { key = "T",           mods = "Super|Shift",   chars = "\u001BsT"          }, # Window: Reopen closed windows
@@ -119,11 +121,12 @@ bindings = [
     { key = "<",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
     { key = ".",           mods = "Super",         chars = "\u001Bs."          }, # Window: Last active
     { key = "_",           mods = "Super|Shift",   chars = "\u001Bs_"          }, # Window: Vertical Split
-    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Window: Horizontal Split
+    { key = "+",           mods = "Super|Shift",   chars = "\u001Bs+"          }, # Window: Horizontal Split
     { key = "'",           mods = "Super",         chars = "\u001Bs'"          }, # Pane: Last active
     { key = "\"",          mods = "Super|Shift",   chars = "\u001Bs\""         }, # Pane: Synchronize Toggle
     { key = "Z",           mods = "Super",         chars = "\u001Bsz"          }, # Pane: Zoom
-    { key = "X",           mods = "Super",         chars = "\u001Bsx"          }, # Pane: Kill
+    { key = "X",           mods = "Super",         chars = "\u001Bsx"          }, # Pane: Close
+    { key = "X",           mods = "Super|Shift",   chars = "\u001BsX"          }, # Pane: Close other panes
     { key = "E",           mods = "Super|Shift",   chars = "\u001BsE"          }, # Pane: Evenly Layout
     { key = "\\",          mods = "Super",         chars = "\u001Bs "          }, # Pane: Next Layout
     { key = "Escape",      mods = "Super",         chars = "\u001Bs\u001B"     }, # Mode: Copy Mode vi
@@ -131,6 +134,7 @@ bindings = [
     { key = "/",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "F",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "?",           mods = "Super|Shift",   chars = "\u001Bs?"          }, # Help: List key bindings
+    { key = "p",           mods = "Super",         chars = "\u001Bsp"          }, # Paste Buffer
     { key = "1",           mods = "Super",         chars = "\u001Bs1"          }, # Window: 1
     { key = "2",           mods = "Super",         chars = "\u001Bs2"          }, # Window: 2
     { key = "3",           mods = "Super",         chars = "\u001Bs3"          }, # Window: 3
