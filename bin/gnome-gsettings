@@ -9,8 +9,7 @@
 # - Screenshot
 # - Touchpad - Gesture
 # - Keyboard - Input Method
-# - Window Manager - Application & Window
-# - Window Manager - Workspace
+# - Window Manager
 # - Window Manager - Monitor
 # - GNOME Shell Extensions
 #    - Clipboard Indicator
@@ -32,7 +31,8 @@ gsettings set org.gnome.shell.keybindings focus-active-notification "[]" # ['<Su
 # [RELEASE] `<Super>Escape` for Tmux, and must manually execute `restore-shortcuts`
 gsettings set org.gnome.mutter.wayland.keybindings restore-shortcuts "[]" # ['<Super>Escape']
 
-# [RELEASE] `<Super>Space` for fcitx5, `<Ctrl>Space` to switch input source, `Shift` to switch Chinese and English
+# [RELEASE] `<Super>Space` for Search for anything
+# fcitx5 use `<Ctrl>Space` to switch input source, `Shift` to switch Chinese and English
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source "[]"          # ['<Super>space', 'XF86Keyboard']
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Shift><Super>space', '<Shift>XF86Keyboard']
 
@@ -64,6 +64,11 @@ gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '
 gsettings set org.gnome.desktop.interface toolkit-accessibility false         # false
 gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false # false
 gsettings set org.gnome.settings-daemon.plugins.media-keys screenreader "[]"  # ['<Alt><Super>s']
+
+# [RELEASE] `<Super>Up` for toggle-maximized or toggle-above
+gsettings set org.gnome.desktop.wm.keybindings maximize "[]" # ['<Super>Up']
+# [RELEASE] `<Super>Down` for move-to-center
+gsettings set org.gnome.desktop.wm.keybindings unmaximize "[]" # ['<Super>Down', '<Alt>F5']
 
 #----------------------------------------------------------------
 # Power
@@ -193,24 +198,44 @@ gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin english-input-mode f
 gsettings set com.github.libpinyin.ibus-libpinyin.libpinyin table-input-mode false   # true
 
 #----------------------------------------------------------------
-# Window Manager - Application & Window
+# Window Manager
 #----------------------------------------------------------------
 
-gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
+# NOTE: Prioritize gestures to switch workspaces
+
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "[]"
+
+# Settings -> Multitasking -> Workspaces
+gsettings set org.gnome.mutter dynamic-workspaces true # true
+# Settings -> Multitasking -> Multi-Monitor
+gsettings set org.gnome.mutter workspaces-only-on-primary true # true
 # Settings -> Multitasking -> App Switching
 gsettings set org.gnome.shell.app-switcher current-workspace-only false # false
+
+# gsettings set org.gnome.desktop.wm.preferences num-workspaces 8 # 4
+# gsettings reset org.gnome.desktop.wm.preferences num-workspaces
 
 # Modifiers for window click actions
 gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>' # '<Super>'
 # Activate the window menu: Take Screenshot, Hide, Move to Workspace Left/Right, etc.
 gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>space']"
 
-# Show all applications: F4 Open Launchpad
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
+
+# All applications: F4 Open Launchpad
 gsettings set org.gnome.shell.keybindings toggle-application-view "['LaunchB']" # ['<Super>a']
 # Active applications: F3 Open Mission Control
 gsettings set org.gnome.shell.keybindings toggle-overview "['LaunchA']" # ['<Super>s']
 gsettings set org.gnome.shell.keybindings shift-overview-up "['<Control>Up']"
 gsettings set org.gnome.shell.keybindings shift-overview-down "['<Control>Down']"
+# Switch to workspace
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control>Left']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control>Right']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Control>1']"    # ['<Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Control>9']" # ['<Super>End']
 # Search for anything
 gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>space']" # ['']
 # Switch applications
@@ -219,48 +244,24 @@ gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<
 # Switch windows of an application (Above Tab is Grave accent)
 gsettings set org.gnome.desktop.wm.keybindings switch-group "['<Super>grave']" # ['<Super>Above_Tab', '<Alt>Above_Tab']
 gsettings set org.gnome.desktop.wm.keybindings switch-group-backward "['<Shift><Super>grave']"
-
-gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q', '<Control>q']"        # ['<Alt>F4']
+# Switch windows directly
+gsettings set org.gnome.desktop.wm.keybindings cycle-windows "['<Control>Escape']"                 # ['<Alt>Escape']
+gsettings set org.gnome.desktop.wm.keybindings cycle-windows-backward "['<Shift><Control>Escape']" # ['<Shift><Alt>Escape']
+# For Application
+gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"                      # ['<Alt>F4']
 gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Control><Super>f']" # []
 # NOTE: Sway: set $left h
-gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>m']" # ['<Super>h']
+gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>m']"          # ['<Super>h']
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>Up']" # ['<Alt>F10']
+gsettings set org.gnome.desktop.wm.keybindings move-to-center "['<Super>Down']" # []
 # NOTE: Sway: focus around
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>Left']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>Right']"
-gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Super>Down']"
-gsettings set org.gnome.desktop.wm.keybindings maximize "['<Super>Up']"
-
-#----------------------------------------------------------------
-# Window Manager - Workspace
-#----------------------------------------------------------------
-
-# NOTE: Prioritize gestures to switch workspaces
-
-# Settings -> Multitasking -> Workspaces
-gsettings set org.gnome.mutter dynamic-workspaces true # true
-# Settings -> Multitasking -> Multi-Monitor
-gsettings set org.gnome.mutter workspaces-only-on-primary true # true
-
-# gsettings set org.gnome.desktop.wm.preferences num-workspaces 8 # 4
-# gsettings reset org.gnome.desktop.wm.preferences num-workspaces
-
-# Switch to workspace: with alt+arrow keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control>Right']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control>Left']"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "[]"
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "[]"
-# Switch to workspace: with number keys
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Alt><Control>9']" # ['<Super>End']
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Alt><Control>1']"    # ['<Super>Home']
-
-# Move focused window to workspace: with shift+arrow keys
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Control>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Control>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "[]"
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "[]"
-# Move focused window to workspace: with number keys
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Control>1']"    # ['<Shift><Super>Home']
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Control>9']" # ['<Shift><Super>End']
+# Move focused window to workspace: with shift+arrow/number keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Super>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Super>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Super>1']"    # ['<Shift><Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Super>9']" # ['<Shift><Super>End']
 
 #----------------------------------------------------------------
 # Window Manager - Monitor
@@ -270,20 +271,17 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift>
 gsettings set org.gnome.mutter.keybindings switch-monitor "['<Alt>Tab']" # ['<Super>p', 'XF86Display']
 
 # Move monitors with shift+arrow keys
+# Move window to the next monitor on the left
+# Move focused window to monitor
 # NOTE: Sway: move focus window
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Shift><Super>Left']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Shift><Super>Right']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Shift><Super>Down']"
-gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Shift><Super>Up']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Control><Super>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Control><Super>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Control><Super>Up']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Control><Super>Down']"
 
 #----------------------------------------------------------------
 # Terminal
 #----------------------------------------------------------------
-
-if type alacritty &>/dev/null; then
-    gsettings set org.gnome.desktop.applications.terminal.exec "alacritty"
-    gsettings set org.gnome.desktop.applications.terminal.exec-arg ""
-fi
 
 # Pin your favorite apps to the dash, the first being Alacritty.desktop
 # with gsettings configured as: org.gnome.shell favorite-apps ['Alacritty.desktop', ...]
@@ -332,8 +330,14 @@ fi
 #----------------------------------------------------------------
 # Applications
 #----------------------------------------------------------------
-gsettings set org.gnome.TextEditor keybindings vim
-gsettings set org.gnome.Ptyxis audible-bell false
+gsettings set org.gnome.TextEditor keybindings vim       # 'default'
+gsettings set org.gnome.TextEditor use-system-font false # true
+
+gsettings set org.gnome.Ptyxis audible-bell false    # true
+gsettings set org.gnome.Ptyxis use-system-font false # true
+
+gsettings set org.gnome.TextEditor custom-font 'SauceCodePro Nerd Font 12' # 'Monospace 11'
+gsettings set org.gnome.Ptyxis font-name 'SauceCodePro Nerd Font 12'       # 'Monospace 10'
 
 #----------------------------------------------------------------
 # If needed, set the following manually
