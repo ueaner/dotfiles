@@ -1,0 +1,22 @@
+[
+    {
+        "key": "Alt+1",
+        "label": "Jump to the first tab",
+        "action": "firsttab",
+        "id": "7dd9422f-155e-4986-a23b-3d350bf0a06d",
+        "sites": "",
+        "sitesArray": [
+            ""
+        ]
+    },
+    {
+        "key": "Alt+9",
+        "label": "Jump to the rightmost tab",
+        "action": "lasttab",
+        "id": "4b53d271-8b5b-4a55-9142-d491ec6b5c64",
+        "sites": "",
+        "sitesArray": [
+            ""
+        ]
+    }
+]

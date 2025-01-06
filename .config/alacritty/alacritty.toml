@@ -16,12 +16,10 @@ save_to_clipboard = true
 
 [window]
 decorations = "none"
+padding = { x = 2, y = 1 }
 dynamic_padding = true
 opacity = 1.0
-
-[window.padding]
-x = 2
-y = 1
+startup_mode = "Maximized"
 
 [cursor.style]
 shape = "Beam"
@@ -112,13 +110,11 @@ bindings = [
     { key = "W",           mods = "Super|Shift",   chars = "\u001BsW"          }, # Window: Close other windows
     { key = "Tab",         mods = "Control",       chars = "\u001Bs]"          }, # Window: Next
     { key = "Tab",         mods = "Control|Shift", chars = "\u001Bs["          }, # Window: Previous
-    { key = "Right",       mods = "Super|Alt",     chars = "\u001Bs}"          }, # Window: Move Window Right
-    { key = "Left",        mods = "Super|Alt",     chars = "\u001Bs{"          }, # Window: Move Window Left
     # https://github.com/alacritty/alacritty/issues/7604#issuecomment-1886539740
     { key = "}",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next (macOS)
     { key = "{",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous (macOS)
-    { key = ">",           mods = "Super|Shift",   chars = "\u001Bs]"          }, # Window: Next
-    { key = "<",           mods = "Super|Shift",   chars = "\u001Bs["          }, # Window: Previous
+    { key = ">",           mods = "Super|Shift",   chars = "\u001Bs>"          }, # Window: Move Window Right
+    { key = "<",           mods = "Super|Shift",   chars = "\u001Bs<"          }, # Window: Move Window Left
     { key = ".",           mods = "Super",         chars = "\u001Bs."          }, # Window: Last active
     { key = "_",           mods = "Super|Shift",   chars = "\u001Bs_"          }, # Window: Vertical Split
     { key = "+",           mods = "Super|Shift",   chars = "\u001Bs+"          }, # Window: Horizontal Split

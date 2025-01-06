@@ -16,10 +16,8 @@ keymap:
       Shift-Super-t:               Alt-Shift-Ctrl-t               # Tab: Reopen closed tab
       Shift-Super-KEY_RIGHTBRACE:  Ctrl-KEY_PAGEDOWN              # Tab: ] Next
       Shift-Super-KEY_LEFTBRACE:   Ctrl-KEY_PAGEUP                # Tab: [ Previous
-      Alt-Super-Right:             Shift-Ctrl-KEY_PAGEDOWN        # Tab: -> Move Tab Right
-      Alt-Super-Left:              Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
-      Shift-Super-KEY_DOT:         Ctrl-KEY_PAGEDOWN              # Tab: > Next
-      Shift-Super-KEY_COMMA:       Ctrl-KEY_PAGEUP                # Tab: < Previous
+      Shift-Super-KEY_DOT:         Shift-Ctrl-KEY_PAGEDOWN        # Tab: -> Move Tab Right
+      Shift-Super-KEY_COMMA:       Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
       Shift-Super-KEY_BACKSLASH:   Shift-Ctrl-o                   # Tab: Overview
       Super-f:                     Shift-Ctrl-f                   # Search
       Super-a:                     Shift-Ctrl-a                   # Select All
@@ -54,12 +52,10 @@ keymap:
       Shift-Super-w:               [Alt-s, W]                     # Window: Close other windows
       Ctrl-KEY_TAB:                [Alt-s, KEY_RIGHTBRACE]        # Window: Next
       Shift-Ctrl-KEY_TAB:          [Alt-s, KEY_LEFTBRACE]         # Window: Previous
-      Alt-Super-Right:             [Alt-s, Shift-KEY_RIGHTBRACE]  # Window: -> Move Window Right
-      Alt-Super-Left:              [Alt-s, Shift-KEY_LEFTBRACE]   # Window: <- Move Window Left
       Shift-Super-KEY_RIGHTBRACE:  [Alt-s, KEY_RIGHTBRACE]        # Window: } Next
       Shift-Super-KEY_LEFTBRACE:   [Alt-s, KEY_LEFTBRACE]         # Window: { Previous
-      Shift-Super-KEY_DOT:         [Alt-s, KEY_RIGHTBRACE]        # Window: > Next
-      Shift-Super-KEY_COMMA:       [Alt-s, KEY_LEFTBRACE]         # Window: < Previous
+      Shift-Super-KEY_DOT:         [Alt-s, Shift-KEY_DOT]         # Window: > Move Window Right
+      Shift-Super-KEY_COMMA:       [Alt-s, Shift-KEY_COMMA]       # Window: < Move Window Left
       Super-KEY_DOT:               [Alt-s, Alt-s]                 # Window: . Last active
       Shift-Super-KEY_MINUS:       [Alt-s, Shift-KEY_MINUS]       # Window: _ Vertical Split
       Shift-Super-KEY_EQUAL:       [Alt-s, Shift-KEY_EQUAL]       # Window: + Horizontal Split
@@ -95,6 +91,14 @@ keymap:
       Alt-Super-u:    [Tab, Ctrl-u]  # [Overrides Browser] Page Source, Need to lose focus on the input box first
       Shift-Super-n:  Shift-Ctrl-p   # [Overrides Basic] New Private Window
       Shift-Super-p:  Esc            # [Overrides Basic] Dummy
+      # Super-KEY_COMMA: [Ctrl-l, "about:preferences", KEY_ENTER]  # Settings
+      # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
+
+  - name: Go to specific tab via Alt-number
+    exact_match: true
+    application:
+      only: [org.mozilla.firefox, org.gnome.Ptyxis]
+    remap:
       Super-1:        Alt-1          # Go to specific tab
       Super-2:        Alt-2          # Go to specific tab
       Super-3:        Alt-3          # Go to specific tab
@@ -104,7 +108,6 @@ keymap:
       Super-7:        Alt-7          # Go to specific tab
       Super-8:        Alt-8          # Go to specific tab
       Super-9:        Alt-9          # Go to the rightmost tab
-      # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
 
   # More shortcuts: Alt-E-...
   - name: Chrome with native Wayland
@@ -113,7 +116,6 @@ keymap:
       only: [Google-chrome, google-chrome]
     remap:
       Super-a:        Ctrl-a         # [Overrides Basic] Select all
-      Super-1:        Ctrl-1         # Go to specific tab
       Super-2:        Ctrl-2         # Go to specific tab
       Super-3:        Ctrl-3         # Go to specific tab
       Super-4:        Ctrl-4         # Go to specific tab
@@ -121,10 +123,10 @@ keymap:
       Super-6:        Ctrl-6         # Go to specific tab
       Super-7:        Ctrl-7         # Go to specific tab
       Super-8:        Ctrl-8         # Go to specific tab
-      Super-9:        Ctrl-9         # Go to the rightmost tab
-      Ctrl-Up:        Home           # Go to Top of Page, like Firefox
-      Ctrl-Down:      End            # Go to Bottom of Page, like Firefox
-      # Super-w: [Esc, Ctrl-w]     # Overrides the Super-w key for close tab
+      # See Ctrl-1/9 in ~/bin/gnome-gsettings: Switch to Workspace First/Last
+      # See Alt-1/9 in ~/.config/xremap/chrome-shortcuts.json: https://github.com/crittermike/shortkeys
+      Super-1:        Alt-1          # Go to the first tab
+      Super-9:        Alt-9          # Go to the rightmost tab
       # Super-KEY_COMMA: [Ctrl-l, "chrome://settings/", KEY_ENTER]  # Settings
 
   - name: Browser
@@ -152,7 +154,7 @@ keymap:
       not: [Alacritty]
     remap:
 
-      # Settings Application & Window in gsettings or sway/config:
+      # Set window manager shortcuts in ~/bin/gnome-gsettings or ~/.config/sway/config
       # - https://github.com/ueaner/dotfiles/blob/main/bin/gnome-gsettings
       # - https://github.com/ueaner/dotfiles/blob/main/.config/sway/config
       #
