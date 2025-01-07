@@ -44,7 +44,7 @@ uuids=(
     "xremap@k0kubun.com"                                       # https://extensions.gnome.org/extension/5060/xremap/
     "color-picker@tuberry"                                     # https://extensions.gnome.org/extension/3396/color-picker/
     "gsconnect@andyholmes.github.io"                           # https://extensions.gnome.org/extension/1319/gsconnect/
-    "system-monitor@gnome-shell-extensions.gcampax.github.com" # https://extensions.gnome.org/extension/3724/net-speed-simplified/
+    "system-monitor@gnome-shell-extensions.gcampax.github.com" # https://extensions.gnome.org/extension/6807/system-monitor/
     "clipboard-indicator@tudmotu.com"                          # https://extensions.gnome.org/extension/779/clipboard-indicator/ <Super>[bracketleft/bracketright]
 )
 

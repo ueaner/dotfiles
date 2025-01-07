@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # macOS-like keyboard shortcuts
 #
+# The default settings for gsettings are located in /usr/share/glib-2.0/schemas.
+#
 # Table of Contents:
 # - RELEASE Keys
 # - Power

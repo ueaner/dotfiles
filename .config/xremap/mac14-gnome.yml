@@ -5,14 +5,14 @@
 
 keymap:
 
-  # Sway = Managing workspaces and windows in general
-  # Tmux = Manages terminal sessions, splitting of terminal windows and nvim/shell workflows
+  # Sway = manages general workspaces and windows
+  # Tmux = manages terminal sessions, terminal window splitting, and nvim/shell workflows
   - name: Tmux
     exact_match: true
     application:
       only: [Alacritty, foot, footclient]
     remap:
-      # Switching panes is like switching containers under Sway
+      # Switching panes in Tmux is like switching containers in Sway
       Super-h: [Alt-s, h]     # Pane: Force Left
       Super-j: [Alt-s, j]     # Pane: Force Down
       Super-k: [Alt-s, k]     # Pane: Force Up
