@@ -9,8 +9,11 @@ modmap:
   - name: Chromebook modmaps
     remap:
       # Swap `left alt` and `left super` keys
+      # SUPER_L: ALT_L
+      # ALT_L: SUPER_L
+
+      SUPER_L: Esc
       ALT_L: SUPER_L
-      SUPER_L: ALT_L
 
 keymap:
 

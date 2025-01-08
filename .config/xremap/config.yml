@@ -164,7 +164,7 @@ keymap:
       # Ctrl-Super-f  Toggle full-screen mode of the application
       #    Super-Tab  Switch Applications
       #      Super-`  Switch Windows of an application
-      #   Alt-Escape  Switch Windows directly
+      #  Ctrl-Escape  Switch Windows directly
       #     Ctrl-Tab  Switch Tabs
 
       Super-n:                     Ctrl-n                # Window: New
