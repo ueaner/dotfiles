@@ -298,17 +298,17 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Control>
 # rg settings-schema ~/.local/share/gnome-shell/extensions
 
 # 1. Lists keys and values in SCHEMA:
-# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/ list-recursively org.gnome.shell.extensions.kimpanel
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas list-recursively org.gnome.shell.extensions.kimpanel
 # Default values in ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/org.gnome.shell.extensions.kimpanel.gschema.xml
 #
 # 2. Open the UUID Preferences dialog:
 # gnome-extensions prefs kimpanel@kde.org
 #
 # 3. Monitors KEY for changes and prints the changed values
-# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/ monitor org.gnome.shell.extensions.kimpanel
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas monitor org.gnome.shell.extensions.kimpanel
 
 # Clipboard Indicator
-schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas/
+schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
 if [[ -d $schemadir ]]; then
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>semicolon']"   # <Super>;
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']" # <Super>]
@@ -316,17 +316,23 @@ if [[ -d $schemadir ]]; then
 fi
 
 # System Monitor
-schemadir=~/.local/share/gnome-shell/extensions/system-monitor@gnome-shell-extensions.gcampax.github.com/schemas/
+schemadir=~/.local/share/gnome-shell/extensions/system-monitor@gnome-shell-extensions.gcampax.github.com/schemas
 if [[ -d $schemadir ]]; then
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.system-monitor show-download true
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.system-monitor show-upload true
 fi
 
 # Gesture Improvements
-schemadir=~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas/
+schemadir=~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas
 if [[ -d $schemadir ]]; then
     # 3-finger swipe to switch applications
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-alttab-gesture true # true
+fi
+
+schemadir=~/.local/share/gnome-shell/extensions/gnome-shell-go-to-last-workspace@github.com/schemas
+if [[ -d $schemadir ]]; then
+    # Switches to the previously focused workspace
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.go-to-last-workspace shortcut-key "['<Control>period']" # ['<Super>Escape']
 fi
 
 #----------------------------------------------------------------

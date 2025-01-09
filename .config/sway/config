@@ -177,19 +177,18 @@ input type:keyboard {
     bindsym $mod+Shift+1 move container to workspace number 1
     bindsym $mod+Shift+9 exec ~/.config/sway/sway-new-workspace move
 
+    # Switch to workspace
     # alt-tab like behaviour
     # - Left Alt is swapped with Left Win
     # - Chromebook keyboard only, Regular keyboard still use alt
-    bindsym $mod+Tab focus next
-    bindsym $mod+Shift+tab focus prev
-    # bindsym $mod+tab workspace next_on_output
-    # bindsym $mod+Shift+tab workspace prev_on_output
-
-    # Switch to workspace
+    bindsym $mod+tab workspace next_on_output
+    bindsym $mod+Shift+tab workspace prev_on_output
+    # Switches to the previously focused workspace with Ctrl+.
+    bindsym Ctrl+period workspace back_and_forth
     bindsym Ctrl+Left workspace prev
     bindsym Ctrl+Right workspace next
     bindsym Ctrl+1 workspace number 1
-    bindsym Ctrl+9  exec ~/.config/sway/sway-new-workspace open
+    bindsym Ctrl+9 exec ~/.config/sway/sway-new-workspace open
 
     # TODO: Workspace overview
 

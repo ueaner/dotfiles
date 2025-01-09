@@ -46,6 +46,7 @@ uuids=(
     "gsconnect@andyholmes.github.io"                           # https://extensions.gnome.org/extension/1319/gsconnect/
     "system-monitor@gnome-shell-extensions.gcampax.github.com" # https://extensions.gnome.org/extension/6807/system-monitor/
     "clipboard-indicator@tudmotu.com"                          # https://extensions.gnome.org/extension/779/clipboard-indicator/ <Super>[bracketleft/bracketright]
+    "gnome-shell-go-to-last-workspace@github.com"              # https://extensions.gnome.org/extension/1089/go-to-last-workspace/
 )
 
 force=false
