@@ -38,7 +38,8 @@
     # Switch to a branch, creating it if necessary.
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
-    ci = commit -a
+    ca = commit -a
+    ci = commit
     co = checkout
     cp = cherry-pick
 
