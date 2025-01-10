@@ -18,7 +18,7 @@ keymap:
       Shift-Super-KEY_LEFTBRACE:   Ctrl-KEY_PAGEUP                # Tab: [ Previous
       Shift-Super-KEY_DOT:         Shift-Ctrl-KEY_PAGEDOWN        # Tab: -> Move Tab Right
       Shift-Super-KEY_COMMA:       Shift-Ctrl-KEY_PAGEUP          # Tab: <- Move Tab Left
-      Shift-Super-KEY_BACKSLASH:   Shift-Ctrl-o                   # Tab: Overview
+      Shift-Super-KEY_BACKSLASH:   Shift-Ctrl-o                   # Tab: | Overview
       Super-f:                     Shift-Ctrl-f                   # Search
       Super-a:                     Shift-Ctrl-a                   # Select All
       Super-c:                     Shift-Ctrl-c                   # Copy

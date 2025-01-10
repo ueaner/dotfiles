@@ -18,12 +18,21 @@ modmap:
 keymap:
 
   # Override the Browser section keymap in the `~/.config/xremap/config.toml` file
-  - name: Browser for Chromebook
+  - name: Browser
     exact_match: true
     application:
-      only: [Google-chrome, google-chrome, firefox]
+      only: [Google-chrome, google-chrome, org.mozilla.firefox]
     remap:
       Ctrl-Super-i: Shift-Ctrl-i   # Developer tools
       Ctrl-Super-j: Shift-Ctrl-j   # JavaScript Console
       Ctrl-Super-b: Shift-Ctrl-o   # Bookmark Manager
       Ctrl-Super-u: [Tab, Ctrl-u]  # Page Source
+      Super-w:      [Tab, Ctrl-w]  # [Overrides Basic] Tab: Close
+
+  - name: Execute a command
+    exact_match: true
+    remap:
+      Super-e:
+        # launch: ["flatpak", "run", "org.fedoraproject.MediaWriter"]
+        # launch: ["bash", "-c", "echo hello > /tmp/test"]
+        launch: ["bash", "-c", "systemctl --user restart xremap"]

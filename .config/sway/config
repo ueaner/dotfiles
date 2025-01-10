@@ -119,6 +119,8 @@ input type:keyboard {
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
+# Use wev to get the key symbol name.
+
 ### Key bindings
 #
 # Basics:
@@ -149,8 +151,8 @@ input type:keyboard {
     # bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
     bindsym $mod+Shift+q exec swaymsg exit
 
-     # Screenshots
-    bindsym $mod+Ctrl+a exec grim  -g "$(slurp)" ~/Pictures/Screenshots/Screenshot-$(date +'%H:%M:%S.png')
+    # Screenshots
+    # ~/.config/sway/config.d/60-bindings-screenshot.conf
 #
 # Moving around:
 #
@@ -172,7 +174,7 @@ input type:keyboard {
     bindsym $mod+Right move right
 
     # Move focused container to workspace: with shift+arrow/number keys
-    bindsym $mod+Shift+Left move container to worksway switch to rightmost workspacespace prev
+    bindsym $mod+Shift+Left move container to workspace prev
     bindsym $mod+Shift+Right move container to workspace next
     bindsym $mod+Shift+1 move container to workspace number 1
     bindsym $mod+Shift+9 exec ~/.config/sway/sway-new-workspace move
@@ -180,33 +182,44 @@ input type:keyboard {
     # Switch to workspace
     # alt-tab like behaviour
     # - Left Alt is swapped with Left Win
-    # - Chromebook keyboard only, Regular keyboard still use alt
-    bindsym $mod+tab workspace next_on_output
-    bindsym $mod+Shift+tab workspace prev_on_output
+    bindsym $mod+Tab workspace next_on_output
+    bindsym $mod+Shift+Tab workspace prev_on_output
     # Switches to the previously focused workspace with Ctrl+.
-    bindsym Ctrl+period workspace back_and_forth
+    bindsym Ctrl+Period workspace back_and_forth
     bindsym Ctrl+Left workspace prev
     bindsym Ctrl+Right workspace next
     bindsym Ctrl+1 workspace number 1
+    # switch to rightmost workspace
     bindsym Ctrl+9 exec ~/.config/sway/sway-new-workspace open
 
     # TODO: Workspace overview
+    # web mail term code
 
     bindsym Ctrl+Up move scratchpad
     bindsym Ctrl+Down scratchpad show
+
+    # adjust window gaps
+    # bindsym $mod+Shift+minus exec swaymsg gaps inner current minus 2
+    # bindsym $mod+Shift+equal exec swaymsg gaps inner current plus 2
 #
 # Layout stuff:
 #
-    # bindsym $mod+u splitv
-
     # Make the current focus fullscreen
     bindsym $mod+Ctrl+f fullscreen
 
     # Toggle the current focus between `tiling` and `floating` mode
     bindsym $mod+Shift+f floating toggle
-
     # Swap focus between the `tiling area` and the `floating area`
-    bindsym $mod+Shift+space focus mode_toggle
+    bindsym $mod+Shift+Space focus mode_toggle
+
+    # NOTE: Sway layout switching shortcuts to avoid conflicts with Tmux layout switching shortcuts
+    # Use only Sway's tiling and floating layouts
+
+    # bindsym $mod+Shift+minus focus child
+    # bindsym $mod+Shift+equal focus parent
+    # Swap focus between the `layout splitv` and the `layout splith`
+    # bindsym $mod+Shift+space layout toggle split
+    bindsym Ctrl+Backslash layout toggle split
 #
 # Resizing containers:
 #
@@ -231,9 +244,6 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
-
-
-# Use wev to get the key symbol name.
 
 
 # mode "command" {
@@ -286,4 +296,4 @@ bindgesture {
 #
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
 # Include host-specific configs
-include "config.d/host-specific/`hostnamectl hostname`.conf"
+include "config.d/host-specific/$(hostnamectl hostname).conf"

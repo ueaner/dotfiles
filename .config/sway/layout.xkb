@@ -1,4 +1,8 @@
 # used by sway to swap keys
+#
+# The xkb setting affects keys mapped in sway, but not keys mapped in xremap,
+# so use xremap to handle physical key swapping instead of xkb.
+#
 
 xkb_keymap {
     xkb_keycodes { include "evdev+aliases(qwerty)" };
@@ -10,8 +14,10 @@ xkb_keymap {
         include "inet(evdev)"
 
         # swap left alt and left super
+        # replace key <LWIN> { [ Alt_L] };
+        # replace key <LALT> { [ Super_L ] };
+
+        replace key <LWIN> { [ Escape ] };
         replace key <LALT> { [ Super_L ] };
-        replace key <LWIN> { [ Alt_L] };
     };
 };
-
