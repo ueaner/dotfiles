@@ -12,10 +12,7 @@ host_specific_config="$HOME/.config/xremap/$(hostnamectl hostname)-${VARIANT_ID}
 
 # Running xremap without sudo
 if [ -f "$host_specific_config" ]; then
-    # sleep workaround from https://github.com/xremap/xremap/issues/105#issuecomment-1190994137
-    /usr/bin/sleep 1
     ~/.local/bin/xremap --watch=device "$host_specific_config" ~/.config/xremap/config.yml
 else
-    /usr/bin/sleep 1
     ~/.local/bin/xremap --watch=device ~/.config/xremap/config.yml
 fi
