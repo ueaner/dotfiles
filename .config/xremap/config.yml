@@ -18,7 +18,7 @@ keymap:
       Shift-Super-KEY_COMMA:       Ctrl-KEY_PAGEUP                # Tab: < Previous
       Shift-Super-KEY_RIGHTBRACE:  Shift-Ctrl-KEY_PAGEDOWN        # Tab: } Move Tab Right
       Shift-Super-KEY_LEFTBRACE:   Shift-Ctrl-KEY_PAGEUP          # Tab: { Move Tab Left
-      Shift-Super-KEY_BACKSLASH:   Shift-Ctrl-o                   # Tab: | Overview
+      Super-KEY_BACKSLASH:         Shift-Ctrl-o                   # Tab: \ Overview
       Super-f:                     Shift-Ctrl-f                   # Search
       Super-a:                     Shift-Ctrl-a                   # Select All
       Super-c:                     Shift-Ctrl-c                   # Copy
@@ -44,8 +44,8 @@ keymap:
       Shift-Super-d:               [Alt-s, d]                     # Client: Detach
       Super-n:                     [Alt-s, n]                     # Session: New
       Shift-Super-n:               [Alt-s, Shift-n]               # Session: reName
-      Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Session: Overview
-      Super-KEY_COMMA:             [Alt-s, KEY_COMMA]             # alias Shift-Super-\
+      Super-KEY_BACKSLASH:         [Alt-s, KEY_BACKSLASH]         # Session: \ Overview
+      Super-KEY_COMMA:             [Alt-s, KEY_COMMA]             # alias Super-\
       Super-i:                     [Alt-s, i]                     # Window: Info
       Super-t:                     [Alt-s, t]                     # Window: New
       Super-w:                     [Alt-s, w]                     # Window: Close
@@ -65,7 +65,7 @@ keymap:
       Super-x:                     [Alt-s, x]                     # Pane: Close
       Shift-Super-x:               [Alt-s, X]                     # Pane: Close other panes
       Shift-Super-e:               [Alt-s, Shift-e]               # Pane: Evenly Layout
-      Super-KEY_BACKSLASH:         [Alt-s, Space]                 # Pane: \ Next Layout
+      Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Pane: | Next Layout
       Super-Esc:                   [Alt-s, Esc]                   # Mode: Copy Mode vi
       Shift-Super-KEY_SEMICOLON:   [Alt-s, Shift-KEY_SEMICOLON]   # Mode: : Command mode
       Super-KEY_SLASH:             [Alt-s, KEY_SLASH]             # Search: / in copy mode
@@ -168,18 +168,26 @@ keymap:
       #     Ctrl-Tab  Switch Tabs
 
       Super-n:                     Ctrl-n                # Window: New
-      Shift-Super-n:               Shift-Ctrl-n          # New folder / Incognito mode
+      Shift-Super-n:               Shift-Ctrl-n          # New folder / New Private Window
+      Super-KEY_COMMA:             Ctrl-KEY_COMMA        # Preferences / Settings: Super-,
+      Shift-Super-KEY_SLASH:       Shift-Ctrl-KEY_SLASH  # Keyboard shortcuts (Help): Shift-Super-?
+      Super-i:                     Alt-KEY_ENTER         # Properties of the selected item
+      Super-o:                     Ctrl-o                # Open or choose a file
+      Super-p:                     Ctrl-p                # Print
+      Shift-Super-p:               Shift-Ctrl-p          # Print preview
+      # Ctrl-KEY_ENTER: Shift-F10    # right-click popup-menu / context menu / two-finger tap
+      # Alt or F10: Menu Bar (primary-menu)
+
+      Super-KEY_0:                 Ctrl-KEY_0            # zoom reset
+      Super-KEY_EQUAL:             Shift-Ctrl-KEY_EQUAL  # zoom in +
+      Super-KEY_MINUS:             Ctrl-KEY_MINUS        # zoom in -
+
       Super-t:                     Ctrl-t                # Tab: New
       Shift-Super-t:               Shift-Ctrl-t          # Tab: Reopen the last closed tab
       Super-w:                     Ctrl-w                # Tab: Close
-      Shift-Super-KEY_RIGHTBRACE:  Ctrl-KEY_TAB          # Tab: ] next
-      Shift-Super-KEY_LEFTBRACE:   Shift-Ctrl-KEY_TAB    # Tab: [ previous
-      Super-KEY_COMMA:             Ctrl-KEY_COMMA        # Preferences / Settings: Super-,
-      Shift-Super-KEY_SLASH:       Shift-Ctrl-KEY_SLASH  # Keyboard shortcuts (Help): Shift-Super-?
-
-      Super-KEY_0:      Ctrl-KEY_0            # zoom reset
-      Super-KEY_EQUAL:  Shift-Ctrl-KEY_EQUAL  # zoom in +
-      Super-KEY_MINUS:  Ctrl-KEY_MINUS        # zoom in -
+      Shift-Super-w:               Shift-Ctrl-w          # Tab: Close other tabs
+      Shift-Super-KEY_DOT:         Ctrl-KEY_TAB          # Tab: > Next
+      Shift-Super-KEY_COMMA:       Shift-Ctrl-KEY_TAB    # Tab: < Previous
 
       Super-x:          Ctrl-x                # Cut
       Super-c:          Ctrl-c                # Copy
@@ -190,11 +198,5 @@ keymap:
       Super-f:          Ctrl-f                # Find
       Super-g:          Ctrl-g                # Find next
       Shift-Super-g:    Shift-Ctrl-g          # Find previous
-      Super-o:          Ctrl-o                # Open options / Open choose file dialog
-      Super-p:          Ctrl-p                # Print
-      Shift-Super-p:    Shift-Ctrl-p          # Print preview
       Super-s:          Ctrl-s                # Save
       Shift-Super-s:    Shift-Ctrl-s          # Save as dialog
-      Super-i:          Alt-KEY_ENTER         # Properties of the selected item
-      # Ctrl-KEY_ENTER: Shift-F10    # right-click popup-menu / context menu / two-finger tap
-      # Alt or F10: Menu Bar (primary-menu)

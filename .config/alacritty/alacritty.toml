@@ -101,8 +101,8 @@ bindings = [
     { key = "N",           mods = "Super",         chars = "\u001Bsn"          }, # Session: New
     { key = "N",           mods = "Super|Shift",   chars = "\u001BsN"          }, # Session: reName
     # Session Explorer: choose number, hljk move or search
-    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Session: Overview
-    { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # alias Shift-Super-\
+    { key = "\\",          mods = "Super",         chars = "\u001Bs\\"         }, # Session: Overview
+    { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # alias Super-\
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
     # { key = "T",           mods = "Super|Shift",   chars = "\u001BsT"          }, # Window: Reopen closed windows
@@ -124,7 +124,7 @@ bindings = [
     { key = "X",           mods = "Super",         chars = "\u001Bsx"          }, # Pane: Close
     { key = "X",           mods = "Super|Shift",   chars = "\u001BsX"          }, # Pane: Close other panes
     { key = "E",           mods = "Super|Shift",   chars = "\u001BsE"          }, # Pane: Evenly Layout
-    { key = "\\",          mods = "Super",         chars = "\u001Bs "          }, # Pane: Next Layout
+    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Pane: Next Layout
     # Switching panes in Tmux is like switching containers in Sway
     # Defined in ~/.config/xremap/mac14-gnome.yml
     # { key = "H",           mods = "Super",         chars = "\u001Bsh"          }, # Pane: Force Left
