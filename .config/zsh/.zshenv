@@ -22,6 +22,7 @@ if [[ -f "$USER_DIRS_FILE" ]]; then
         value=$(echo "$value" | sed 's/^"//;s/"$//')
         # Replace $HOME with actual path
         value=$(eval echo "$value")
+        mkdir -p "$value"
         export "$name=$value"
     done < <(grep -E '^XDG_\w+_DIR=' "$USER_DIRS_FILE")
 fi
