@@ -11,7 +11,6 @@ set $up k
 set $right l
 
 set $term alacritty
-
 set $lock swaylock -f
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
@@ -180,7 +179,7 @@ input type:keyboard {
     bindsym $mod+Shift+9 exec ~/.config/sway/sway-new-workspace move
 
     # Switch to workspace
-    # alt-tab like behaviour
+    # Alt-tab like behavior
     # - Left Alt is swapped with Left Win
     bindsym $mod+Tab workspace next_on_output
     bindsym $mod+Shift+Tab workspace prev_on_output
@@ -194,16 +193,23 @@ input type:keyboard {
 
     # TODO: Workspace overview
     # web mail term code
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
 
-    bindsym Ctrl+Up move scratchpad
-    bindsym Ctrl+Down scratchpad show
-
-    # adjust window gaps
-    # bindsym $mod+Shift+minus exec swaymsg gaps inner current minus 2
-    # bindsym $mod+Shift+equal exec swaymsg gaps inner current plus 2
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+m move scratchpad
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+Shift+m scratchpad show
 #
 # Layout stuff:
 #
+    # Sway layout switching shortcuts to avoid conflicts with Tmux layout switching shortcuts
+    # Use only Sway's tiling and floating layouts
+
     # Make the current focus fullscreen
     bindsym $mod+Ctrl+f fullscreen
 
@@ -212,14 +218,12 @@ input type:keyboard {
     # Swap focus between the `tiling area` and the `floating area`
     bindsym $mod+Shift+Space focus mode_toggle
 
-    # NOTE: Sway layout switching shortcuts to avoid conflicts with Tmux layout switching shortcuts
-    # Use only Sway's tiling and floating layouts
+    bindsym Ctrl+Up focus parent
+    bindsym Ctrl+Down focus child
 
-    # bindsym $mod+Shift+minus focus child
-    # bindsym $mod+Shift+equal focus parent
-    # Swap focus between the `layout splitv` and the `layout splith`
-    # bindsym $mod+Shift+space layout toggle split
-    bindsym Ctrl+Backslash layout toggle split
+    # adjust window gaps
+    # bindsym $mod+Shift+minus exec swaymsg gaps inner current minus 2
+    # bindsym $mod+Shift+equal exec swaymsg gaps inner current plus 2
 #
 # Resizing containers:
 #
