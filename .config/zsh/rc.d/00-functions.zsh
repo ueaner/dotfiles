@@ -80,6 +80,14 @@ jobs() {
     builtin jobs -l
 }
 
+telnet() {
+    if ! command -v telnet >/dev/null; then
+        command nc -v -z -w 1 "$@"
+    else
+        command telnet "$@"
+    fi
+}
+
 # tmux session attach/detach/select
 tt() {
     if [[ -n "$TMUX" ]]; then

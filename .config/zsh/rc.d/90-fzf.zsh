@@ -79,22 +79,18 @@ export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow --ex
 
 # vim **<tab>
 _fzf_compgen_path() {
-    # 去除前缀 ./
-    fd --type=file --type=symlink --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" \
-        2>/dev/null | sed 's@^\./@@'
+    # Remove the prefix ./ append: | sed 's@^\./@@'
+    fd --type=file --type=symlink --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" 2>/dev/null
 }
 # cd **<tab>
 _fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" \
-        2>/dev/null | sed 's@^\./@@'
+    fd --type d --hidden --follow --exclude ".git" --exclude "node_modules" . "$1" 2>/dev/null
 }
 
+# pip3 install --user tldr
 _fzf_complete_tldr() {
     _fzf_complete '-m' "$@" < <(
-        # 官方 nodejs 版本输出的是以逗号分隔的列表
-        # command tldr --list | tr -d "[:space:]" | tr ", " "\n"
-        # tealdeer rust 版本，--list 直接输出的是一个换行列表
-        command tldr --list
+        command tldr --list | sed 's/ .*//'
     )
 }
 
