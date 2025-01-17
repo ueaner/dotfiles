@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+show-help() {
+    cat <<EOF
+git sparse checkout
+
+Usage: git-sparse-checkout [options] /path/to/foo /path/to/bar ..."
+
+    -r (required)            git remote url
+    -l (required)            local directory
+
+    -h                       Show this message
+
+Example:
+
+    git-sparse-checkout -r https://github.com/ohmyzsh/ohmyzsh -l /tmp/omz \
+        /plugins/extract/extract.plugin.zsh \
+        /plugins/extract/_extract \
+        /lib/clipboard.zsh
+
+    git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
+EOF
+}
+
+# If a character is followed by a colon, it indicates that this specific option requires an argument.
+OPTSTRING=":r:l:h"
+
+rurl=
+ldir=
+
+while getopts ${OPTSTRING} opt; do
+    case ${opt} in
+    r)
+        rurl=$OPTARG
+        ;;
+    l)
+        ldir=$OPTARG
+        ;;
+    h)
+        show-help
+        exit 0
+        ;;
+    :)
+        echo "Option -${OPTARG} requires an argument."
+        show-help
+        exit 1
+        ;;
+    ?)
+        echo "Invalid option: -${OPTARG}."
+        show-help
+        exit 1
+        ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [[ -z "$rurl" ]]; then
+    echo "The -r and -l arguments are required."
+    show-help
+    exit 1
+fi
+
+if [[ -z "$ldir" ]]; then
+    echo "The -r and -l arguments are required."
+    show-help
+    exit 1
+fi
+
+mkdir -p "$ldir"
+cd "$ldir" || (
+    echo "No permission to create $ldir directory"
+    exit 1
+)
+
+# https://gist.github.com/guitarrapc/d56a096d3283cb43da5a0a0017f6eed2#file-git-sparse-checkout-only-yaml
+git clone --filter=blob:none --no-checkout --depth 1 --sparse "$rurl" "$ldir"
+echo "git sparse-checkout set only directory"
+# shellcheck disable=SC2068,SC2086
+# $@ without quotes as arguments is compatible with zsh and bash.
+git sparse-checkout set --no-cone $@
+echo "git sparse-checkout without cone"
+git sparse-checkout init
+echo "git sparse-checkout list"
+git sparse-checkout list
+echo "git checkout"
+git checkout
