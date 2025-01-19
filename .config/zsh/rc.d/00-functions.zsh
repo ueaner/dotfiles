@@ -81,10 +81,10 @@ jobs() {
 }
 
 telnet() {
-    if ! command -v telnet >/dev/null; then
-        command nc -v -z -w 1 "$@"
+    if type -p telnet >/dev/null; then
+        command telnet $@
     else
-        command telnet "$@"
+        command nc -v -z -w 3 $@
     fi
 }
 

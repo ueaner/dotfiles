@@ -11,7 +11,10 @@ function-exists() {
 
 # if command-exists some_command; then echo yes; else echo no; fi
 command-exists() {
-    command -v "$1" >/dev/null 2>&1
+    # command -v "$1" >/dev/null 2>&1
+    type -p "$1" >/dev/null 2>&1
+    # OR
+    # which "$1" >/dev/null 2>&1
 }
 
 # if url-exists 'https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-x86_64.tar.gz'; then
