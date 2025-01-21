@@ -7,6 +7,15 @@ command -v md5sum >/dev/null || alias md5sum="md5"
 # macOS has no `sha1sum`, so use `shasum` as a fallback
 command -v sha1sum >/dev/null || alias sha1sum="shasum"
 
+# Linux and macOS compatible reboot and poweroff aliases
+if command -v systemctl >/dev/null; then
+    alias reboot='systemctl reboot'
+    alias poweroff='systemctl poweroff'
+elif command -v shutdown >/dev/null; then
+    alias reboot='sudo shutdown -r now'
+    alias poweroff='sudo shutdown -h now'
+fi
+
 # Reload the shell (i.e. invoke as a login shell)
 alias reload='for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done'
 
