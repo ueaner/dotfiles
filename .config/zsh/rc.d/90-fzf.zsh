@@ -1,32 +1,30 @@
-# 依赖:
-# brew install fzf ripgrep bat fd
-# dnf install fzf ripgrep bat fd-find
+# fuzzy finder
 #
-# https://github.com/junegunn/fzf#key-bindings-for-command-line
-# https://github.com/junegunn/fzf#2-switch-between-sources-by-pressing-ctrl-d-or-ctrl-f
-#  **<TAB> 使用 ; 文件/目录补全 trigger 触发更好用，当没有对应的 _fzf_complete_* 可用时 trigger 触发试下
-#  CTRL-R for shell history
-#  CTRL-T for file / directory search
-
+# @depends: fzf ripgrep bat fd
+#
 # source   -->  preview
 # find          cat
 # fd/ripgrep    bat
 
-# Auto-completion
+# Fuzzy completion
+# https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
 if [[ $- == *i* ]]; then
     # macOS by brew
     [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
-    # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f37/f/fzf.spec#_70
-    [[ -f "/usr/share/zsh/site-functions/fzf" ]] && . "/usr/share/zsh/site-functions/fzf"
+    # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f41/f/fzf.spec#_83
+    [[ -f "/usr/share/zsh/site-functions/_fzf" ]] && . "/usr/share/zsh/site-functions/_fzf"
 fi
 
 # Key bindings
+# - CTRL-R for shell history
+# - CTRL-T for file / directory search
 # macOS by brew
 [[ -f "/usr/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/usr/local/opt/fzf/shell/key-bindings.zsh"
 # Fedora by dnf
 [[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
 
-# 生成 fzf 在 zsh 下的命令自动补全
+# zsh completion
+# https://github.com/junegunn/fzf/blob/master/shell/completion.bash#L98
 # https://github.com/junegunn/fzf/issues/3349#issuecomment-1619425209
 [[ -f "/etc/bash_completion.d/fzf" ]] && compdef _gnu_generic fzf
 
@@ -62,7 +60,7 @@ fi
 #     dim
 #     italic
 
-# 默认触发文件/目录补全，Vim 中使用 terminal 进行渲染颜色有点暗
+# Fuzzy completion for files and directories
 export FZF_COMPLETION_TRIGGER=';'
 export FZF_DEFAULT_OPTS=$(
     printf '%s' \
