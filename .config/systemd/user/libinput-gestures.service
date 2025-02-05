@@ -1,0 +1,14 @@
+# curl -L https://raw.githubusercontent.com/bulletmark/libinput-gestures/refs/heads/master/libinput-gestures \
+#   -o /usr/local/bin/libinput-gestures
+[Unit]
+Description=Actions gestures on your touchpad using libinput
+Documentation=https://github.com/bulletmark/libinput-gestures
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/libinput-gestures
+
+[Install]
+WantedBy=graphical-session.target
