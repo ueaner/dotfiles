@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Find executables in a git repository
+
+wt_root=$(git rev-parse --show-toplevel)
+
+git ls-files -z | while IFS= read -r -d $'\0' file; do
+    abs_file="$wt_root/$file"
+    if [[ -x "$abs_file" ]]; then
+        echo "$abs_file"
+    fi
+done
