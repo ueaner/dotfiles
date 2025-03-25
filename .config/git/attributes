@@ -1,4 +1,4 @@
-# 始终使用 Unix-style line endings (LF), Windows 批处理文件除外
+# Always use Unix-style line endings (LF), except for Windows bat files.
 * text=auto eol=lf
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
@@ -15,3 +15,6 @@
 *.jpg binary
 *.png binary
 *.gif binary
+
+.ssh/config*    diff=sshconfig
+.ssh/config.d/* diff=sshconfig

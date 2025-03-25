@@ -20,6 +20,8 @@
     # View the current working tree status using the short format.
     s = status -sb
 
+    a = add
+
     # Show the diff between the latest commit and the current state.
     # d = difftool
     d = diff
