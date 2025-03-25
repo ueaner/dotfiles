@@ -2,6 +2,7 @@
 # Override the keymap in the `~/.config/xremap/config.toml` file under sway.
 # Keymap for Chromebook only
 
+# yamllint disable rule:colons
 ---
 
 # Swap keys under Chromebook

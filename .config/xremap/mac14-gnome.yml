@@ -1,6 +1,7 @@
 # Copy this to ~/.config/xremap/[host]-gnome.yml
 # Override the keymap in the `~/.config/xremap/config.toml` file under gnome.
 
+# yamllint disable rule:colons
 ---
 
 keymap:

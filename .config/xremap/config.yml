@@ -1,6 +1,7 @@
 # Copy this to ~/.config/xremap/config.yml
-# macOS-like keyboard remap
+# macOS-ish keyboard remap
 
+# yamllint disable rule:colons
 ---
 
 keymap:
@@ -27,7 +28,7 @@ keymap:
   - name: Terminal
     exact_match: true
     application:
-      only: [foot, footclient]
+      only: [foot, footclient, com.mitchellh.ghostty]
     remap:
       Super-n:                     Shift-Ctrl-n                   # Window: New
       Super-c:                     Shift-Ctrl-c                   # Copy
@@ -36,7 +37,7 @@ keymap:
   - name: Tmux
     exact_match: true
     application:
-      only: [foot, footclient]
+      only: [foot, footclient, com.mitchellh.ghostty]
     remap:
       # tmux shortcuts: prefix Alt-s \u001Bs
       Super-r:                     [Alt-s, r]                     # Tmux: Reload Config
