@@ -7,49 +7,43 @@
 # black, red, green, yellow, blue, magenta, cyan, white, default.
 # cyan is green+blue, magenta is blue+red, and yellow is red+green
 
-# selection 是选中背景色, select bg
-# line 是默认一行一行的默认背景色 Popup: line bg, white fg  ->  blue bg, black fg
-# gray 注释信息/非活动信息的前景色 fg
-# black 背景色
-# white 前景色
+# selection (bg): Background color for selected content
+# line (bg): Popup's default background color. eg: line bg, white fg -> blue bg, black fg
+# gray (fg): Foreground color for comments or inactive content
+# black: background color
+# white: Foreground color
 
-# 0. 前提是支持 24 bit colors
-# 1. 不支持 Named ANSI Colors 的应用程序可以读取环境变量，统一色彩
-# 2. 支持 Named ANSI Colors 但应用程序内容写死了 rgb 值
+# The closure function will automatically execute and then discard.
 
-#
-# () 是在当前shell下创建了子进程来执行命令
-# {} 是匿名函数，创建了子 shell 来执行命令
-# zsh 匿名函数将自动执行，然后丢弃
-# function () { # closure
-#   # whatever
-#}
-# 通过定义有名函数的方式调用
-#source <(_define_colors_fn)
-
-# 匿名函数调用
 source <({
-    # 颜色值和 alacritty 终端一致
-    local colors=(\
-        black     "#1e222a" \
-        red       "#df6566" \
-        green     "#c5d15c" \
-        yellow    "#ecce58" \
-        blue      "#8cb6e1" \
-        magenta   "#cfabe0" \
-        cyan      "#81cabf" \
-        white     "#eaeaea" \
-        selection "#282c34" \
-        line      "#21252d" \
-        gray      "#778899" \
+    # Color values are consistent with alacritty terminal.
+    arr=(
+        black     "#0d1117"
+        red       "#df6566"
+        green     "#c5d15c"
+        yellow    "#ecce58"
+        blue      "#8cb6e1"
+        magenta   "#cfabe0"
+        cyan      "#81cabf"
+        white     "#eaeaea"
+        selection "#282c34"
+        line      "#21252d"
+        gray      "#778899"
+        dark      "#07090c"
     )
 
+    # 0-based indexing
+    index_offset=0
+    if [[ -n "$ZSH_VERSION" && ! -o KSH_ARRAYS ]]; then
+        # 1-based indexing
+        index_offset=1
+    fi
+
     # Arrays in bash are 0-indexed;
-    # arrays in  zsh are 1-indexed.
-    for (( i = 0; i < ${#colors[@]}/2; i++ )); do
-        n=$(echo ${colors[i*2+1]} | tr '[:lower:]' '[:upper:]')
-        v=${colors[i*2+2]}
-        printf "export COLOR_%s=%s\n" ${n} ${v}
+    # Arrays in  zsh are 1-indexed.
+    for ((i = 0; i < ${#arr[@]} / 2; i++)); do
+        k=$(echo ${arr[i * 2 + $index_offset]} | tr '[:lower:]' '[:upper:]')
+        v=${arr[i * 2 + 1 + $index_offset]}
+        printf "export COLOR_%s=%s\n" ${k} ${v}
     done;
 })
-

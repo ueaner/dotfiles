@@ -28,12 +28,12 @@ shape = "Beam"
 draw_bold_text_with_bright_colors = true
 
 [colors.primary]
-background = "#1e2030"
+background = "#07090c" # dark
 foreground = "#eaeaea"
 
 # Named ANSI colors [0-7]
 [colors.normal]
-black   = "#1e2030"
+black   = "#0d1117"
 red     = "#df6566"
 green   = "#c5d15c"
 yellow  = "#ecce58"
