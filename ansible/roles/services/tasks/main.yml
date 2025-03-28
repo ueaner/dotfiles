@@ -1,6 +1,6 @@
 ---
 
-- name: Install shadowsocks
+- name: Install/Upgrade shadowsocks (local)
   ansible.builtin.include_tasks: shadowsocks.yml
   tags:
     - upgrade

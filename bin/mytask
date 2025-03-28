@@ -21,7 +21,8 @@ function check-update-kernel-headers() {
         # https://discussion.fedoraproject.org/t/broadcom-wl-not-working-after-upgrading-kernel-to-6-12-4/139948
         # https://bugzilla.rpmfusion.org/show_bug.cgi?id=7130
         # https://github.com/rpmfusion/wl-kmod/commit/16a67f7
-        "kernel-headers-6.12.4-200.fc41"
+        # "kernel-headers-6.12.4-200.fc41"
+        "kernel-headers-6.13.3-200.fc41"
     )
 
     for item in "${ignore_versions[@]}"; do
@@ -47,16 +48,19 @@ ${latest_version}
     - [Fedora Discussion]: https://discussion.fedoraproject.org/ tags: #broadcom #wifi #macbook #f${VERSION_ID}
     - [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${VERSION_ID}&version=f${VERSION_ID_PREV}
     - [RPM Fusion wl-kmod]: https://github.com/rpmfusion/wl-kmod
+          http://mirror.bjtu.edu.cn/rpmfusion/nonfree/fedora/updates/41/x86_64/repoview/index.html
 
 2. Upgrading the Kernel:
 
-    ~/bin/kernel-broadcom-wl --force-to-latest
+    ~/bin/kernel-broadcom-wl
 
     # OR
 
-    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
     sudo dnf upgrade --refresh
-    sudo dnf update
+    sudo dnf changelog akmod-wl
+    sudo dnf update akmods akmod-wl broadcom-wl
+    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
+    sudo dnf update kernel\*
     echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
 
     # Check if the new kmod-wl build was successful
@@ -88,9 +92,15 @@ function check-update-fedora-release() {
         index_offset=1
     fi
 
-    # Set Zsh arrays to be zero indexed
+    # Set Zsh arrays to be 0-indexed
     # This is how KSH and Bash behave
-    # [[ -n "$ZSH_VERSION" ]] && setopt KSH_ARRAYS
+    # [[ $index_offset -eq 1 ]] && setopt KSH_ARRAYS
+    #
+    # do something ...
+    #
+    # Revert Zsh arrays to be 1-indexed
+    # [[ $index_offset -eq 1 ]] && unsetopt KSH_ARRAYS
+
     for ((i = 0; i < ${#releases[@]} / 2; i++)); do
         fversion=${releases[i * 2 + $index_offset]}
         fdate=${releases[i * 2 + 1 + $index_offset]}
@@ -102,7 +112,6 @@ function check-update-fedora-release() {
             fi
         fi
     done
-    # [[ -n "$ZSH_VERSION" ]] && unsetopt KSH_ARRAYS
 
     if ! $check; then
         echo "Fedora $ver Non-stable, $release_date" >>/tmp/mytask.log

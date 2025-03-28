@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 #
-# This script handles Broadcom wireless connectivity issues on a Macbook with Fedora.
+# This script handles Broadcom wireless connectivity issues on a Macbook with Fedora 41+.
+#
+# NOTE: Go to https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable
+# and select the system version from the Releases field,
+# or go to https://koji.fedoraproject.org/koji/packageinfo?packageID=27325,
+# and configure the kernel-headers versions into packages.yml.
 #
 # Network:
 # 1. Wired network
@@ -15,18 +20,19 @@
 #   ├── base.sh
 #   ├── kernel-broadcom-wl
 #   └── kernel-rpm-downloader
+#
+# Cases:
+#                    Fedora    kernel    kernel-headers
+#    system init       41      6.11.4      6.11.3
+#  packages upgrade    41      6.12.1      6.12.4
+#  packages upgrade    41      6.12.13     6.12.4
+#    system upgrade    42      6.13.1      6.12.4
 
-force=false
 case "$1" in
--f | --force-to-latest)
-    force=true
-    ;;
 -h | --help)
     echo "This script handles Broadcom wireless connectivity issues on a Macbook with Fedora."
     echo
     echo "Usage: kernel-broadcom-wl [options]"
-    echo
-    echo "  -f, --force-to-latest    Wireless works fine, but want to upgrade to the latest kernel[-headers]"
     echo
     echo "  -h, --help               Show this message"
     echo
@@ -34,96 +40,100 @@ case "$1" in
     ;;
 esac
 
-# shellcheck source=base.sh
-. ~/bin/base.sh
-
-kernel_version=$(uname -r)
-
-# force to latest kernel-headers
-if $force; then
-    kernel_headers_latest_version=$(kernel-headers-latest-version)
-    # Failed to get the [latest version] of kernel-headers
-    if [[ "$kernel_headers_latest_version" == "null" ]]; then
-        echo "Failed to get the latest version of kernel-headers"
-        echo "See https://src.fedoraproject.org/rpms/kernel-headers"
-        exit 1
-    fi
-    kernel_version=$(echo "${kernel_headers_latest_version}.x86_64" | sed 's/^kernel-headers-//')
+if ! lspci | grep -i broadcom | grep -q -i wireless; then
+    echo "Non-Broadcom wireless network adapter, no need to continue."
+    exit 0
 fi
-
-kernel_slash_version=$(echo "$kernel_version" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
-
-akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
-kmod_wl="kmod-wl-${kernel_version}-${akmod_wl_version}"
-
-# NOTE: 0. kmod-wl already installed
-if rpm --quiet -q "$kmod_wl" >/dev/null; then
-    echo "$kmod_wl already installed"
+if nmcli conn show --active | grep -q -i wifi; then
+    echo "Already connected to the wireless network, no need to continue."
     exit 0
 fi
 
-# NOTE: 1. Determine the kernel-headers version
-target_version=$kernel_version
-download_version=
-# The kernel-headers package [not installed] for the same kernel version
-if ! rpm --quiet -q "kernel-headers-$kernel_version"; then
-    # The kernel-headers package [not found] for the same kernel version
-    if ! url-exists "https://kojipkgs.fedoraproject.org/packages/kernel-headers/${kernel_slash_version}/kernel-headers-${kernel_version}.rpm"; then
-        kernel_headers_latest_version=$(kernel-headers-latest-version)
-        # Failed to get the [latest version] of kernel-headers
-        if [[ "$kernel_headers_latest_version" == "null" ]]; then
-            echo "Failed to get the latest version of kernel-headers"
-            echo "See https://src.fedoraproject.org/rpms/kernel-headers"
-            exit 1
-        fi
-        download_version=$(echo "${kernel_headers_latest_version}.x86_64" | sed 's/^kernel-headers-//')
-    else
-        download_version=$kernel_version
-    fi
+# shellcheck source=base.sh
+. ~/bin/base.sh
+
+VERSION_ID=$(grep "VERSION_ID=" /etc/os-release | cut -f2 -d'=')
+VERSION_ID_PREV=$((VERSION_ID - 1))
+kernel_version=$(uname -r)
+
+[[ -n "$XDG_BACKUP_DIR" ]] && download_dir="$XDG_BACKUP_DIR/archives" || download_dir="$HOME/.cache/archives"
+
+# NOTE: 0. Determine the kernel-headers version
+
+target_version=$(kernel-rpm-closest-version | cut -d' ' -f2)
+
+if [[ -z "$target_version" ]]; then
+    echo "Cannot determine kernel version"
+    echo "Please check the kernel-headers versions in the ~/ansible/roles/packages/vars/main.yml"
+    echo "See https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&release=F${VERSION_ID}"
+    exit 1
 fi
 
-sudo dnf upgrade --refresh
+target_version="${target_version}.$(uname -m)"
+target_headers_version="$(kernel-rpm-closest-version | cut -d' ' -f1).$(uname -m)"
+
+# NOTE: 1. Check if kmod-wl is installed
+
+akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
+k_versions=(
+    "${kernel_version}"
+    "${target_version}"
+)
+
+for k_version in "${k_versions[@]}"; do
+    kmod_wl="kmod-wl-${k_version}-${akmod_wl_version}"
+    if rpm --quiet -q "$kmod_wl" >/dev/null; then
+        echo "$kmod_wl already installed"
+        # exit 0
+    fi
+done
 
 # NOTE: 2. Download and install kernel* packages
-if [[ -n "$download_version" ]]; then
-    target_version=$download_version
+download_dir="$download_dir/kernel-$kernel_version"
 
-    echo "Download kernel-headers-$download_version.rpm related packages"
-    ~/bin/kernel-rpm-downloader "kernel-$download_version"
-    # shellcheck disable=SC2181
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to download kernel-headers-$download_version.rpm packages"
+if [[ ! -d "$download_dir" ]]; then
+    echo "Download kernel-headers-$target_version.rpm related packages"
+    ~/bin/kernel-rpm-downloader "kernel-$target_version" "kernel-headers-$target_headers_version"
+    ret=$?
+    if [[ $ret -ne 0 ]]; then
+        echo "Failed to download kernel-headers-$target_version.rpm packages"
         exit 1
     fi
+fi
+cd "$download_dir" || exit 1
 
-    # Allow install/update/downgrade of kernel* packages
-    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
+# Ignore upgrade of kernel* packages
+sudo dnf upgrade -y --refresh --exclude=kernel\*
 
-    # downgrade
-    if version-lt "$download_version" "$(uname -r)"; then
-        # downgrade_kernel=true
-        echo "Downgrade kernel version to $download_version"
-        # shellcheck disable=SC2086
-        sudo dnf downgrade ~/kernel-${download_version}/*.rpm --allowerasing --skip-broken
-    fi
+# Allow install/update/downgrade of kernel* packages
+sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
 
-    echo "Install kernel and kernel-headers $download_version"
-    # shellcheck disable=SC2086
-    sudo dnf install -y ~/kernel-${download_version}/*.rpm
-    # Ignore install/update/downgrade of kernel* packages
-    echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
+# downgrade
+if version-lt "$target_version" "$kernel_version"; then
+    # downgrade_kernel=true
+    echo "Downgrade kernel version to $target_version"
+    # shellcheck disable=SC2086,SC2046
+    sudo dnf downgrade -y kernel*.$(uname -m).rpm --allowerasing --skip-broken
 fi
 
-# NOTE: 3. Install `broadcom-wl` related packages
-sudo dnf install akmods akmod-wl broadcom-wl
+echo "Install kernel-headers and kernel $target_version"
+# shellcheck disable=SC2086,SC2046
+sudo dnf install -y kernel*.$(uname -m).rpm
+# Ignore install/update/downgrade of kernel* packages
+echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
 
-echo "Current installation status of the kmod-wl packages:"
+# NOTE: 3. Install `broadcom-wl` related packages
+
+sudo dnf install -y akmods akmod-wl broadcom-wl
+
+echo "kmod-wl package state:"
 rpm -qa | grep kmod-wl
 
-# Run akmods
+# Automatic build kmods for wl kernel module
 sudo akmods
 
 # NOTE: 4. Check if the new kmod-wl build was successful
+
 akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
 kmod_wl="kmod-wl-${target_version}-${akmod_wl_version}"
 if rpm --quiet -q "$kmod_wl"; then
@@ -136,11 +146,7 @@ if rpm --quiet -q "$kmod_wl"; then
     exit 0
 fi
 
-#
 # NOTE: 5. Installation failed
-
-. /etc/os-release
-VERSION_ID_PREV=$((VERSION_ID - 1))
 
 cat <<EOF
 $kmod_wl installation failed.
@@ -150,32 +156,33 @@ See links below (Waiting for RPM Fusion to patch akmod-wl):
 - [RPM Fusion wl-kmod]: https://github.com/rpmfusion/wl-kmod
 EOF
 
-if [[ -z "$download_version" || "$download_version" == "$(uname -r)" ]]; then
+if [[ "$target_version" == "$kernel_version" ]]; then
     exit 1
 fi
 
 downgrade=
-if ! version-lte "$download_version" "$(uname -r)"; then
+if ! version-lte "$target_version" "$kernel_version"; then
     downgrade=$(
         cat <<EOF
 
     # Download current kernel* rpm packages
-    ~/bin/kernel-rpm-downloader kernel-$(uname -r)
-    # Downgrade to current kernel* $(uname -r)
-    sudo dnf downgrade ~/kernel-$(uname -r)/*.rpm --allowerasing --skip-broken
+    ~/bin/kernel-rpm-downloader kernel-${kernel_version}
+    # Downgrade to current kernel* ${kernel_version}
+    sudo dnf downgrade -y ${download_dir}/kernel-${kernel_version}/kernel*.$(uname -m).rpm --allowerasing --skip-broken
+    sudo dnf install -y ${download_dir}/kernel-${kernel_version}/kernel*.$(uname -m).rpm
 EOF
     )
 fi
 cat <<EOF
 
-You may want to remove the newly installed kernel* $download_version packages.
+You may want to remove the newly installed kernel* $target_version packages.
 Ways to remove the kernel:
 
     # Allow install/update/downgrade of kernel* packages
     sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
 $downgrade
     # Remove the newly installed kernel* packages
-    rpm -qa | grep kernel | grep $download_version | xargs sudo dnf remove -y
+    rpm -qa | grep kernel | grep $target_version | xargs sudo dnf remove -y
     # Checking
     rpm -qa | grep kernel | sort
 

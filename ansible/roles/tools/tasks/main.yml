@@ -7,11 +7,11 @@
   when: ansible_distribution == "Fedora"
   become: true
   ansible.builtin.dnf:
-    name: "{{ tools.dnf }}"
+    name: "{{ dnf }}"
 
 - name: Install gui tools (flatpak)
   community.general.flatpak:
-    name: "{{ tools.flatpak }}"
+    name: "{{ flatpak }}"
     method: user
   notify:
     - Native Wayland for Chrome
@@ -47,7 +47,7 @@
   changed_when: false
   loop: "{{ tools.python }}"
   environment:
-    PYTHONUSERBASE: "{{ lookup('ansible.builtin.env', 'HOME') }}/.local"
+    PYTHONUSERBASE: "{{ ansible_env.HOME ~ '/.local' }}"
   tags:
     - upgrade
     - python
@@ -86,19 +86,16 @@
     - upgrade
     - zk
 
-- name: Install tldr python client (include_tasks)
-  ansible.builtin.include_tasks: tldr.yml
-  tags:
-    - upgrade
-    - tldr
-
-- name: Install plantuml.jar (include_tasks)
-  ansible.builtin.include_tasks: plantuml.yml
-  tags:
-    - upgrade
-    - plantuml
-
 - name: Install wasm (include_tasks)
   ansible.builtin.include_tasks: wasm.yml
   tags:
     - wasm
+
+# ----------------------------------------------------------------
+# TODO: plantuml, depends java
+# ----------------------------------------------------------------
+- name: Install plantuml.jar
+  ansible.builtin.include_tasks: plantuml.yml
+  tags:
+    - upgrade
+    - plantuml

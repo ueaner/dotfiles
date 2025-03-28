@@ -2,7 +2,10 @@
 #
 # Download `kernel-headers` and `kernel` packages.
 #
-# Usage: kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64
+# Usage:
+#   kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64
+#   kernel-rpm-downloader 6.11.3-300.fc41.x86_64
+#   kernel-rpm-downloader kernel-6.13.3-201.fc41.x86_64 kernel-headers-6.13.3-200.fc41.x86_64
 #
 
 # The kernel format is similar to the output of `rpm -q kernel`
@@ -22,27 +25,37 @@ kernel_ver=$(echo "$kernel" | sed -r 's/kernel-//')
 # eg: 6.11.3/300.fc41/x86_64
 kernel_slash_ver=$(echo "$kernel_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
 
+kernel_headers_ver="$kernel_ver"
+kernel_headers_slash_ver="$kernel_slash_ver"
+if [[ -n "$2" ]]; then
+    kernel_headers_ver=$(echo "$2" | sed -r 's/kernel-headers-//')
+    kernel_headers_slash_ver=$(echo "$kernel_headers_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
+fi
+
 # https://packages.fedoraproject.org/pkgs/kernel/
+# packages_yaml=$(yq -r ".template.kernel.packages" <~/ansible/roles/packages/vars/main.yml)
+# while IFS='' read -r line; do packages+=("$line"); done < <(echo "$packages_yaml" | yq '.[]')
+
 packages=(
-    "kernel"
-    "kernel-core"
-    "kernel-devel"
-    "kernel-devel-matched"
-    "kernel-modules"
-    "kernel-modules-core"
-    "kernel-modules-extra"
-    "kernel-tools"
-    "kernel-tools-libs"
+    kernel
+    kernel-core
+    kernel-devel
+    kernel-devel-matched
+    kernel-modules
+    kernel-modules-core
+    kernel-modules-extra
+    kernel-tools
+    kernel-tools-libs
 )
 
 # https://packages.fedoraproject.org/pkgs/kernel-headers/
-rpms=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel-headers/%s/%s-%s.rpm" "$kernel_slash_ver" "kernel-headers" "$kernel_ver")")
+rpms=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel-headers/%s/%s-%s.rpm" "$kernel_headers_slash_ver" "kernel-headers" "$kernel_headers_ver")")
 
 for pkg in "${packages[@]}"; do
     rpms+=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver")")
 done
 
-download_dir="$HOME/$kernel/"
+[[ -n "$XDG_BACKUP_DIR" ]] && download_dir="$XDG_BACKUP_DIR/archives/kernel-$kernel_ver" || download_dir="$HOME/.cache/archives/kernel-$kernel_ver"
 mkdir -p "$download_dir"
 cd "$download_dir" || exit 1
 

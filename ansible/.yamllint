@@ -55,7 +55,7 @@ rules:
     # Defaults
     # level: warning
     # require-starting-space: true
-    # min-spaces-from-content: 2
+    min-spaces-from-content: 1
 
     # Disabling to allow for code comment blocks and #!/usr/bin/ansible-playbook
     require-starting-space: false

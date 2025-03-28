@@ -23,7 +23,7 @@
     - name: Installing Node.js (Skip this task if already installed)
       when: not lang_node_check.stat.exists
       ansible.builtin.shell: |
-        cargo install fnm
+        # cargo install fnm
         fnm install {{ versions.node }}
         fnm default {{ versions.node }}
         $FNM_DIR/aliases/default/bin/corepack use pnpm@latest
@@ -44,7 +44,7 @@
     - name: Upgrading Node.js (Skip this task if version is already {{ versions.node }})
       when: "versions.node not in lang_node_version.stdout"
       ansible.builtin.shell: |
-        cargo install fnm
+        # cargo install fnm
         fnm install {{ versions.node }}
         fnm default {{ versions.node }}
         $FNM_DIR/aliases/default/bin/corepack use pnpm@latest

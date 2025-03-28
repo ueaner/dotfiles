@@ -3,10 +3,19 @@
 
 - name: Setup Linux Workstation
   hosts: local
-  vars_files:
-    - variables/versions.yml
-    - variables/tools.yml
   tasks:
+
+    - name: End play
+      ansible.builtin.meta: end_play
+
+    # Will only target groups webservers and host dbserver-01
+    # ansible-playbook test.yml -l 'webservers,dbserver-01'
+    # - name: Targeting multiple groups called dbservers and webservers
+    #   hosts: dbservers,webservers
+
+    # - name: Targeting all except webservers
+    #   hosts: 'all,!webservers'
+
     - name: Dump vars
       ansible.builtin.copy:
         content: "{{ hostvars[inventory_hostname] | to_nice_yaml }}"
@@ -52,6 +61,10 @@
         - echo first cmd
         - echo second cmd
         - echo third cmd
+      changed_when: false
+
+    - name: Execute a command on a node without Python
+      ansible.builtin.raw: which zsh
       changed_when: false
 
 
@@ -195,3 +208,15 @@
       when: wl_check is failed
       ansible.builtin.debug:
         msg: "broadcom wireless driver installation failed"
+
+    # sudo dnf update --exclude="kernel*"
+    # [main] exclude=kernel* in /etc/dnf/dnf.conf
+    - name: Upgrade all packages, excluding kernel (dnf)
+      become: true
+      when: ansible_distribution == "Fedora"
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest  # noqa package-latest
+        exclude: 'kernel*'
+      tags:
+        - upgrade

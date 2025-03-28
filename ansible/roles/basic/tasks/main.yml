@@ -1,59 +1,31 @@
+# Desktop Environment
 ---
-
-# ----------------------------------------------------------------
-# done
-# ----------------------------------------------------------------
-- name: Check if all done
-  ansible.builtin.stat:
-    path: "~/doneplay"
-  register: basic_done_check
-
-- name: Welcome when all done
-  when: basic_done_check.stat.exists
-  ansible.builtin.debug:
-    msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"
-
-- name: All done end play
-  when: basic_done_check.stat.exists
-  ansible.builtin.meta: end_play
-
-# ----------------------------------------------------------------
-# /usr/local/bin permissions
-# ----------------------------------------------------------------
-# sudo: xxx: command not found
-# ln -sf $CARGO_HOME/bin/* /usr/local/bin/
-- name: Change the owner of the /usr/local/bin directory to {{ ansible_env.USER }}
-  become: true
-  when: ansible_system == "Linux"
-  ansible.builtin.file:
-    path: /usr/local/bin
-    state: directory
-    owner: "{{ ansible_env.USER }}"
-    group: "wheel"
-    mode: '0755'
-
-# ----------------------------------------------------------------
-# too many open files
-# ----------------------------------------------------------------
-- name: Fix too many open files - fs.inotify
-  when: ansible_system == "Linux"
-  ansible.builtin.shell: |
-    set -o pipefail
-    echo 'fs.inotify.max_user_instances=1024' | sudo tee /etc/sysctl.d/local.conf
-    sudo sysctl -p /etc/sysctl.d/local.conf
-  changed_when: false
-
-# ----------------------------------------------------------------
-# os-release
-# ----------------------------------------------------------------
-- name: Setting prepare facts (include os-release)
-  ansible.builtin.include_tasks: os-release.yml
 
 # ----------------------------------------------------------------
 # sudo without password
 # ----------------------------------------------------------------
 - name: Sudo without password (include sudo)
   ansible.builtin.include_tasks: sudo.yml
+
+# ----------------------------------------------------------------
+# fs.inotify: too many open files
+# ----------------------------------------------------------------
+- name: Fix too many open files (include inotify)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: inotify.yml
+
+# ----------------------------------------------------------------
+# /usr/local/bin permissions
+# ----------------------------------------------------------------
+- name: Change the owner of the /usr/local/bin directory to {{ ansible_env.USER }}
+  ansible.builtin.include_tasks: bin.yml
+
+# ----------------------------------------------------------------
+# Lets normal users use evdev and uinput without sudo
+# ----------------------------------------------------------------
+- name: Lets normal users use evdev and uinput without sudo (include uinput)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: uinput.yml
 
 # ----------------------------------------------------------------
 # Package Manager (dnf & flatpak)
@@ -63,85 +35,33 @@
   ansible.builtin.include_tasks: packager.yml
 
 # ----------------------------------------------------------------
-# Upgrade all packages, excluding kernel
-# ----------------------------------------------------------------
-# sudo dnf update --exclude="kernel*"
-# [main] exclude=kernel* in /etc/dnf/dnf.conf
-- name: Upgrade all packages, excluding kernel (dnf)
-  become: true
-  when: ansible_distribution == "Fedora"
-  ansible.builtin.dnf:
-    name: "*"
-    state: latest  # noqa package-latest
-    exclude: 'kernel*'
-  tags:
-    - upgrade
-
-# ----------------------------------------------------------------
-# dotfiles
-# ----------------------------------------------------------------
-- name: Configure dotfiles (include dotfiles)
-  ansible.builtin.include_tasks: dotfiles.yml
-
-# ----------------------------------------------------------------
-# zsh
-# ----------------------------------------------------------------
-- name: Set zsh as the default login shell (include zsh)
-  when: ansible_distribution == "Fedora"
-  ansible.builtin.include_tasks: zsh.yml
-
-# ----------------------------------------------------------------
-# alacritty & neovim
-# ----------------------------------------------------------------
-- name: Install Alacritty and Neovim
-  when: ansible_distribution == "Fedora"
-  become: true
-  ansible.builtin.dnf:
-    name:
-      - alacritty
-      - neovim
-      - tmux
-      - zsh
-  notify:
-    - Alacritty desktop entry add font.size option
-
-# ----------------------------------------------------------------
-# fonts
-# ----------------------------------------------------------------
-- name: Configure Fonts (include fonts)
-  ansible.builtin.include_tasks: fonts.yml
-
-# ----------------------------------------------------------------
-# fcitx5
-# ----------------------------------------------------------------
-- name: Configure Input Method (include fcitx5)
-  when: ansible_distribution == "Fedora"
-  ansible.builtin.include_tasks: fcitx5.yml
-
-# ----------------------------------------------------------------
-# GNOME Desktop Environment
-# ----------------------------------------------------------------
-- name: Configure GNOME Desktop Environment (include gnome)
-  when:
-    - ansible_distribution == "Fedora"
-    - desktop_name == "gnome"
-  ansible.builtin.include_tasks: gnome.yml
-
-# ----------------------------------------------------------------
-# xremap
+# macOS-ish desktop environment
 # ----------------------------------------------------------------
 - name: Install and start xremap service (include xremap)
   when: ansible_distribution == "Fedora"
   ansible.builtin.include_tasks: xremap.yml
 
+- name: Configure Desktop Environment (include desktop-environment)
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: desktop-environment.yml
+
+# ----------------------------------------------------------------
+# fcitx5
+# ----------------------------------------------------------------
+- name: Configure Input Method (include fcitx5)
+  when:
+    - chinese
+    - ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: fcitx5.yml
+
 # ----------------------------------------------------------------
 # broadcom wireless
 # ----------------------------------------------------------------
-- name: Install the broadcom wireless driver under MacBook
+- name: Install the broadcom wireless driver under MacBook (kernel-{{ kernel_version }})
   when:
     - ansible_distribution == "Fedora"
     - ansible_product_name.startswith('MacBook')
-  ansible.builtin.command: ~/bin/kernel-broadcom-wl
+  ansible.builtin.script: ~/bin/kernel-broadcom-wl
   changed_when: false
   # failed_when: basic_broadcom_wl.rc != 0
-  # register: basic_broadcom_wl
+  notify: Need to reboot after installing wireless driver under MacBook

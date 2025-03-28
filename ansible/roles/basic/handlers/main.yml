@@ -1,21 +1,12 @@
 ---
 
-# desktop-file-install \
-#   --dir=${HOME}/.local/share/applications \
-#   --set-key=Exec \
-#   --set-value="alacritty --option font.size=10.50" \
-#   /usr/share/applications/Alacritty.desktop
-- name: Alacritty desktop entry add font.size option
-  ansible.builtin.shell: |
-    set -o pipefail
-    cp /usr/share/applications/Alacritty.desktop ~/.local/share/applications/Alacritty.desktop
-    sed -i 's/^Exec=alacritty/Exec=alacritty --option font.size=10.50/' ~/.local/share/applications/Alacritty.desktop
-    update-desktop-database ~/.local/share/applications --verbose
-    # sudo update-desktop-applications -v
-  changed_when: false
-
 # Use ~/.config/autostart/xremap.desktop on desktop environment startup
 - name: Start xremap service
   # noqa command-instead-of-module
   ansible.builtin.command: systemctl --user start xremap
   changed_when: false
+
+- name: Need to reboot after installing wireless driver under MacBook
+  # noqa command-instead-of-module
+  ansible.builtin.debug:
+    msg: Need to reboot after installing wireless driver under MacBook

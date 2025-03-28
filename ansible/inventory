@@ -1,5 +1,9 @@
+# vim: set ft=cfg:
+
 # ansible-inventory --list
 # ansible svr -m ping
+
+# The `desktop` variable for the `local` group is predefined in ~/ansible/group_vars/local.
 [local]
 localhost
 
@@ -7,18 +11,15 @@ localhost
 ansible_connection=local
 
 [lan]
-cb13
-mac14
-mac15
+cb13     desktop=Sway
+mac14    desktop=GNOME
+mac15    desktop=Aqua
+mac14hot desktop=GNOME
 
-[lan:vars]
-ansible_connection=ssh
-remote_user=ueaner
+[termux]
+mi11
+mi11hot
 
 [srv]
 ss
 sp
-
-[srv:vars]
-ansible_connection=ssh
-ansible_user=root

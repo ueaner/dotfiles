@@ -5,18 +5,22 @@ set -e
 export ANSIBLE_CONFIG=~/ansible/ansible.cfg
 export PYTHONUSERBASE=~/.local
 
+# ----------------------------------------------------------------
+# install ansible
+# ----------------------------------------------------------------
 if [[ ! -x ~/.local/bin/ansible ]]; then
     # install & upgrade pip
     python3 -m ensurepip --upgrade --user
-    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --upgrade --user pip
+    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --upgrade --user pip
     # install ansible
-    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --user ansible
+    python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --user ansible
 fi
 
 ~/.local/bin/ansible --version
 ~/.local/bin/ansible-config dump --only-changed -t all
 
-~/.local/bin/ansible-galaxy collection install community.general
-
+# ----------------------------------------------------------------
 # Let's gooooo
+# ----------------------------------------------------------------
+~/.local/bin/ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags all-packages
 ~/.local/bin/ansible-playbook ~/ansible/linux.yml --ask-become-pass

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# Get the kernel-headers and kernel rpm package version closest to the currently running kernel version
+#
+# Usage:
+#   kernel-rpm-closest-version
+# Returns: kernel-headers-version kernel-version
+#   6.13.3-200.fc41 6.13.3-201.fc41
+#
+set -o pipefail
+
+minor_version=$(uname -r | cut -f1,2 -d'.') # eg: 6.11
+# Associative arrays
+declare -A versions
+
+# https://mikefarah.gitbook.io/yq/operators/comment-operators#remove-strip-all-comments
+
+. /etc/os-release
+versions_yaml=$(yq -r ".fedora.f${VERSION_ID}.kernel-headers" <~/ansible/roles/packages/vars/main.yml |
+    yq '... comments="" | .[] | [select(kind == "scalar") | {..: ..}, select(kind == "map") | .] | .[]')
+
+while IFS=":" read -r key value; do
+    # versions["$key"]="$value"
+    versions[$key]=$(echo "$value" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+done < <(echo "$versions_yaml")
+
+closest_version=
+for key in "${!versions[@]}"; do
+    if [[ $(echo "$key" | cut -f1,2 -d'.') == "$minor_version" ]]; then
+        closest_version=$key
+        break
+    fi
+done
+
+if [[ -n $closest_version ]]; then
+    echo -n "$closest_version ${versions[$closest_version]}"
+else
+    # NOTE: The kernel-headers rpm package version closest to the currently running kernel version was not found
+    exit 1
+fi

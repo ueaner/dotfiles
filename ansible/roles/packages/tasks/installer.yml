@@ -1,0 +1,16 @@
+---
+- name: Install/upgrade released packages - {{ item.key }}
+  tags: "{{ (packages.keys() | list) + tags_extend }}"
+  block:
+
+    # Template a file out to a target host
+    - name: Generate installer-{{ item.key }}
+      ansible.builtin.template:
+        src: installer.j2
+        dest: /tmp/installer-{{ item.key }}
+        mode: '0755'
+
+    # Execute commands on targets
+    - name: Execute installer-{{ item.key }}
+      ansible.builtin.command: /tmp/installer-{{ item.key }}
+      changed_when: false

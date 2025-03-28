@@ -1,0 +1,32 @@
+---
+
+- name: Install tldr python client
+  tags:
+    - upgrade
+    - tldr
+  block:
+
+    - name: Create tldr pages directory
+      ansible.builtin.file:
+        path: "~/.cache/tldr/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - pages
+        - pages.zh
+
+    - name: Install tldr
+      ansible.builtin.shell: |
+        set -o pipefail
+        pip3 install --user tldr
+        ~/.local/bin/tldr --print-completion zsh > ~/.local/share/zsh/site-functions/_tldr
+      changed_when: false
+
+    - name: Install tldr.zip
+      ansible.builtin.unarchive:
+        src: "{{ archives_server }}/{{ item.src }}.zip"
+        dest: ~/.cache/tldr/{{ item.dst }}
+      changed_when: false
+      loop:
+        - { src: "tldr-pages.en", dst: "pages" }
+        - { src: "tldr-pages.zh", dst: "pages.zh" }

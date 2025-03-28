@@ -1,0 +1,15 @@
+---
+
+- name: Install/Upgrade gitmux for Linux
+  when: ansible_system == "Linux"
+  ansible.builtin.unarchive:
+    src: "{{ archives_server }}/gitmux-linux-x86_64.tar.gz"
+    dest: "~/.local/bin/"
+    include: gitmux
+
+- name: Install/Upgrade gitmux for macOS
+  when: ansible_system == "Darwin"
+  ansible.builtin.unarchive:
+    src: "{{ archives_server }}/gitmux-macos-x86_64.tar.gz"
+    dest: "~/.local/bin/"
+    include: gitmux

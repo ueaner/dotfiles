@@ -1,0 +1,271 @@
+#!/usr/bin/env bash
+# vim: set ft=bash:
+set -o pipefail
+# set -xe
+# archives_dir="{{ archives_dir if item.value.archives_dir is not defined or not item.value.archives_dir else item.value.archives_dir }}"
+archives_dir="{{ item.value.archives_dir if item.value.archives_dir is defined else archives_dir }}"
+[[ ! -d "$archives_dir" ]] && mkdir -p "$archives_dir"
+[[ ! -d "$HOME/.cache/archives" ]] && mkdir -p "$HOME/.cache/archives"
+# shellcheck disable=SC2164
+cd "$archives_dir"
+
+# Package download URL is variable
+variable=false
+use_remote_name="{{ item.value.use_remote_name if item.value.use_remote_name is defined else '0' }}"
+
+name="{{ item.key }}"
+# Avoid double quotes in shell scripts
+# replace " to \", $ to \$
+vars_yaml=$(
+    cat <<EOF
+{{ item.value.vars | replace('$','\$') if item.value.vars is defined }}
+EOF
+)
+
+template_yaml="{{ item.value.template if item.value.template is defined }}"
+archives_yaml="{{ item.value.archives if item.value.archives is defined }}"
+
+declare -A vars
+
+is_shell_script() {
+    which "$(echo "$1" | cut -d' ' -f1)" >/dev/null 2>&1
+}
+
+download() {
+    local remote_url=$1
+    local local_file=$2
+    local output_file
+
+    # Get the filename from the URL without parameters.
+    # output_file=$(basename "$remote_url")
+    output_file=$(basename "${remote_url%%[?#]*}")
+    if [[ -v vars['version'] ]] && ! echo "$output_file" | grep --quiet "${vars[version]}"; then
+        # sed -r 's/[a-zA-Z]+//g'
+        local ver=${vars['version']//[a-zA-Z]/}
+        if ! echo "$output_file" | grep --quiet "$ver"; then
+            # output_file with version
+            local placeholder="${vars[archive]}"
+            local replacement="${vars[archive]}-${vars[version]}"
+            output_file="${output_file//$placeholder/$replacement}"
+        fi
+    fi
+
+    output_file="$HOME/.cache/archives/$output_file"
+
+    echo "Download $remote_url to $local_file, cache file: $output_file"
+
+    # 1. Existing output file with the same name as the remote
+    #    For packages with version number
+    if [[ -f "${output_file}" ]] && $variable; then
+        [[ ! -f "${local_file}" ]] && cp "${output_file}" "${local_file}"
+        echo "Local and remote file name ($output_file) match. Skipping download"
+        return
+    fi
+
+    # 2. Check if the local file is latest
+    if [[ -f "${local_file}" ]]; then
+        # Get the size of the existing local file
+        local_size=$(stat -c%s "$local_file")
+        info=$(curl -s -L -I "$remote_url")
+        http_status=$(echo "$info" | grep -i "^HTTP" | tail -n1 | cut -d' ' -f2 | sed 's/\r//g')
+        if [[ "$http_status" != "200" ]]; then
+            echo "Unable to access $remote_url. Skipping download"
+            return 1
+        fi
+
+        # Get the size of the remote file
+        remote_size=$(echo "$info" | grep -i "^Content-Length" | tail -n1 | cut -d' ' -f2 | sed 's/\r//g')
+        if [[ "$remote_size" -eq "$local_size" ]]; then
+            echo "Local and remote file sizes ($remote_size) match. Skipping download"
+            return
+        fi
+
+        # Backup local file
+        mv "${local_file}" "${local_file}.bak"
+    fi
+
+    [[ -f "${output_file}" ]] && mv "${output_file}" "${output_file}.bak"
+
+    # 3. Download remote file
+    # curl -C - -L -O "$remote_url"
+    curl -C - -L "$remote_url" -o "$output_file"
+    ret=$?
+
+    if [[ $ret -eq 0 ]]; then
+        [[ -f "${local_file}.bak" ]] && rm -f "${local_file}.bak"
+        [[ -f "${output_file}.bak" ]] && rm -f "${output_file}.bak"
+        # Copy $output_file to $local_file when download succeeds
+        # [[ "$(basename "${output_file}")" != "${local_file}" ]]
+        if [[ "${output_file}" != "${local_file}" ]]; then
+            cp "${output_file}" "${local_file}"
+            echo "Copy $output_file to $local_file"
+        fi
+        # Make sure the last expression returns 0
+        echo "Download $name completed"
+    else
+        # Restore backup local file when download fails
+        [[ -f "${local_file}.bak" ]] && mv "${local_file}.bak" "${local_file}"
+        [[ -f "${output_file}.bak" ]] && mv "${output_file}.bak" "${output_file}"
+        # Make sure the last expression returns 0
+        echo "Failed to download $name"
+    fi
+}
+
+# 1. vars
+if [[ -z "$(echo -n "$vars_yaml" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')" ]]; then
+    echo "vars_yaml is blank"
+else
+    echo "[vars] Converting yaml map to bash map:"
+    # vars_formatted=$(echo "$vars_yaml" | yq 'to_entries | map("\(.key)=\"\(.value|tostring)\"") | join(" ")')
+    vars_formatted=$(echo "$vars_yaml" | yq 'to_entries | map("\(.key)=\(.value|tostring)") | join("\n")')
+    echo "vars_formatted:"
+    echo "$vars_formatted"
+
+    while IFS="=" read -r key value; do
+        vars["$key"]="$value"
+    done < <(echo "$vars_formatted")
+fi
+
+# GNOME Shell Extensions eval version depends on <archive>.
+# The next <archive> needs to be executed again, not directly overwritten.
+declare -A eval_vars=()
+vars_depends_on_archive=false
+for key in "${!vars[@]}"; do
+    if echo "${vars[$key]}" | grep --quiet '<archive>'; then
+        vars_depends_on_archive=true
+        break
+    fi
+done
+
+if ! $vars_depends_on_archive; then
+    echo "[vars] Replace placeholders:"
+    for key in "${!vars[@]}"; do
+        echo "vars[$key]=${vars[$key]}"
+        # Check for placeholders
+        if ! echo "${vars[$key]}" | grep --quiet -P '<.+>'; then
+            echo "vars[$key] no placeholders"
+            continue
+        fi
+        for k in "${!vars[@]}"; do
+            if [[ "$key" == "$k" ]]; then
+                continue
+            fi
+            placeholder="<$k>"
+            vars["$key"]="${vars[$key]//$placeholder/${vars[$k]}}" # use // instead of /
+        done
+        echo "vars[$key]=${vars[$key]}"
+    done
+
+    echo "[vars] Execute Shell Script"
+    for key in "${!vars[@]}"; do
+        value="${vars[$key]}"
+        if is_shell_script "$value"; then
+            # shellcheck disable=SC2090
+            vars["$key"]=$(eval "${value}")
+            echo "vars[$key]=${vars[$key]} <- ($value)"
+        fi
+    done
+else
+    echo "[vars] Staging Executable Shell Script"
+    for key in "${!vars[@]}"; do
+        value="${vars[$key]}"
+        if is_shell_script "$value"; then
+            # The next <archive> needs to be executed again, not directly overwritten.
+            eval_vars["$key"]="$value"
+        fi
+    done
+fi
+
+# 2. Archives
+
+while IFS='' read -r line; do archives+=("$line"); done < <(echo "$archives_yaml" | yq '.[]')
+for archive in "${archives[@]}"; do
+    # 2.1. Archive
+    echo "[archive] Replace <version> placeholders:"
+    echo "archive=$archive"
+    if echo "${archive}" | grep --quiet -P '<.+>'; then
+        for key in "${!vars[@]}"; do
+            placeholder="<$key>"
+            archive="${archive//$placeholder/${vars[$key]}}"
+        done
+    fi
+    echo "archive=$archive"
+
+    # Converting scalar kind to map kind
+    # [[ "$(echo "$archive" | yq kind)" == "scalar" ]] && archive="{'$archive': {'src': '$archive'}}"
+    # src=$(echo "$archive" | yq 'to_entries[0] | .value.src')
+    [[ "$(echo "$archive" | yq kind)" == "scalar" ]] && archive="{'$archive': '$archive'}"
+    local_file=$(echo "$archive" | yq 'to_entries[0] | .key')
+    archive_value=$(echo "$archive" | yq 'to_entries[0] | .value')
+    vars["archive"]=$archive_value
+
+    echo "vars[archive]=${vars[archive]}, local_file=$local_file"
+
+    # gnome shell extensions eval version depends on <archive>
+    if $vars_depends_on_archive; then
+
+        echo "[vars] Replace placeholders:"
+        for key in "${!vars[@]}"; do
+            echo "vars[$key]=${vars[$key]}"
+            # Check for placeholders
+            if ! echo "${vars[$key]}" | grep --quiet -P '<.+>'; then
+                echo "vars[$key] no placeholders"
+                continue
+            fi
+            for k in "${!vars[@]}"; do
+                if [[ "$key" == "$k" ]]; then
+                    continue
+                fi
+                placeholder="<$k>"
+                vars["$key"]="${vars[$key]//$placeholder/${vars[$k]}}" # use // instead of /
+            done
+            echo "vars[$key]=${vars[$key]}"
+        done
+
+        echo "[eval_vars] Replace placeholders and Execute Shell Script:"
+        for key in "${!eval_vars[@]}"; do
+            echo "eval_vars[$key]=${eval_vars[$key]}"
+            __script__=${eval_vars[$key]}
+            for k in "${!vars[@]}"; do
+                if [[ "$key" == "$k" ]]; then
+                    continue
+                fi
+                placeholder="<$k>"
+                __script__="${__script__//$placeholder/${vars[$k]}}"
+            done
+            echo "__script__=$__script__"
+            vars["$key"]=$(eval "$__script__")
+            echo "vars[$key]=${vars[$key]}"
+        done
+    fi
+
+    # 2.2. Remote URL
+    remote_url="${template_yaml}"
+    # Archive starts with https/http
+    if [[ "${vars["archive"]}" =~ ^https?:// ]]; then
+        remote_url=${vars["archive"]}
+    fi
+    echo "[remote_url] Replace placeholders:"
+    echo "remote_url=$remote_url"
+    for key in "${!vars[@]}"; do
+        placeholder="<$key>"
+        remote_url="${remote_url//$placeholder/${vars[$key]}}"
+    done
+    echo "remote_url=$remote_url"
+
+    if [[ -z "$remote_url" ]]; then
+        echo "Unable to get remote url"
+        continue
+    fi
+
+    # has vars['version'] || echo vars['archive'] | grep -F '.+'
+    if [[ -v vars['version'] ]] || echo "${vars['archive']}" | grep --quiet -F '.+'; then
+        variable=true
+    fi
+
+    # 3. Download
+    (("$use_remote_name" >= "1")) && local_file=$(basename "${remote_url%%[?#]*}")
+    echo "download $remote_url $local_file, variable: $variable"
+    download "$remote_url" "$local_file"
+
+done

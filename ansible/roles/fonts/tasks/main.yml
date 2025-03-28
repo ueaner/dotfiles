@@ -1,19 +1,12 @@
 ---
 
-- name: Download Nerd Fonts
-  ansible.builtin.include_tasks: download.yml
+# ----------------------------------------------------------------
+# Fonts
+# ----------------------------------------------------------------
+- name: Install Nerd Fonts
+  ansible.builtin.include_tasks: nerd-fonts.yml
   loop:
     - SourceCodePro  # SauceCodePro Nerd Font
 
-
-- name: Install Noto CJK Fonts
-  when: ansible_distribution == "Fedora"
-  become: true
-  ansible.builtin.dnf:
-    name:
-      - google-noto-sans-cjk-vf-fonts
-      - google-noto-sans-mono-cjk-vf-fonts
-      - google-noto-serif-cjk-vf-fonts
-      # Fixed com.baidu.NetDisk font display issue
-      - google-noto-sans-cjk-fonts
-      - google-noto-serif-cjk-fonts
+- name: Install Noto Fonts
+  ansible.builtin.include_tasks: noto-fonts.yml
