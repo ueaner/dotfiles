@@ -2,12 +2,36 @@
 #
 # Make gnome more lightweight
 #
+#   0. power saver
 #   1. Use flatpak instead of gnome-software
 #   2. Disable & mask unused user services
 #   3. Remove unused packages
 #
 # https://forum.zorin.com/t/about-tips-to-make-gnome-lightweight/21146
 # https://www.reddit.com/r/gnome/comments/gn8rs4/how_to_disable_gnome_software_autostart/
+
+if ! pgrep gnome-session &>/dev/null; then
+    exit 0
+fi
+
+#----------------------------------------------------------------
+# Power
+#----------------------------------------------------------------
+
+# Power Mode: performance, balanced, power-saver
+gsettings set org.gnome.shell last-selected-power-profile 'power-saver' # 'power-saver'
+
+# Disable the ALS sensor (Ambient Light Sensor)
+gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # true
+
+# Dim the screen after a period of inactivity
+# > gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
+# Whether to hibernate, suspend or do nothing when inactive
+# > gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
+#----------------------------------------------------------------
+# org.gnome.Software
+#----------------------------------------------------------------
 
 echo "# Disable gnome-software provider"
 gsettings set org.gnome.desktop.search-providers disabled "['org.gnome.Software.desktop']"
@@ -40,12 +64,21 @@ echo "# Disable & mask packagekit-offline-update backend service"
 sudo systemctl disable packagekit-offline-update.service
 sudo systemctl mask packagekit-offline-update.service
 
+#----------------------------------------------------------------
+# org.gnome.Evolution
+#----------------------------------------------------------------
+
 # systemctl --user list-units --type=service
 echo "# Disable evolution* service"
 systemctl --user mask evolution-addressbook-factory.service
 systemctl --user mask evolution-calendar-factory.service
 systemctl --user mask evolution-source-registry.service
 systemctl --user mask evolution-user-prompter.service
+# sudo dnf remove evolution\*
+
+#----------------------------------------------------------------
+# Tracker fs
+#----------------------------------------------------------------
 
 echo "# Disable Tracker fs"
 cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
@@ -58,13 +91,17 @@ gsettings set org.freedesktop.Tracker3.Miner.Files index-on-battery true # true
 # Cleanup the Tracker database: tracker3 reset --filesystem --rss
 tracker3 reset --filesystem
 
+#----------------------------------------------------------------
+# Unused packages
+#----------------------------------------------------------------
+
 echo "# Remove unused packages"
 # Fedora 41+: Ptyxis as the new Terminal App
 # gnome-calculator gnome-calendar
-sudo dnf remove gnome-maps gnome-photos gnome-contacts gnome-weather cheese gnome-terminal-nautilus gnome-terminal
-sudo dnf group remove libreoffice
-sudo dnf remove libreoffice\*
-sudo dnf remove gnome-shell-extension\*
+sudo dnf remove -y gnome-maps gnome-photos gnome-contacts gnome-weather gnome-terminal-nautilus gnome-terminal cheese rhythmbox
+sudo dnf group -y remove libreoffice
+sudo dnf remove -y libreoffice\*
+sudo dnf remove -y gnome-shell-extension\*
 
 sudo dnf list --autoremove
-sudo dnf autoremove
+sudo dnf autoremove -y

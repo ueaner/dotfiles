@@ -1,5 +1,0 @@
----
-
-dependencies:
-  - { role: prepare }
-  - { role: lang }

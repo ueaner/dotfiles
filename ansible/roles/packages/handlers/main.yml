@@ -1,0 +1,27 @@
+---
+
+# See: chrome://version -> Command Line
+- name: Native Wayland for Chrome
+  block:
+
+    # - name: Copy com.google.Chrome.desktop
+    #   ansible.builtin.copy:
+    #     src: ~/.local/share/flatpak/exports/share/applications/com.google.Chrome.desktop
+    #     dest: ~/.local/share/applications/com.google.Chrome.desktop
+    #     mode: "0644"
+
+    # - name: Replace com.google.Chrome.desktop
+    #   ansible.builtin.replace:
+    #     path: ~/.local/share/applications/com.google.Chrome.desktop
+    #     regexp: 'Exec=/usr/bin/flatpak run'
+    #     replace: 'Exec=/usr/bin/flatpak run --socket=wayland'
+
+    - name: Copy chrome-flags.conf
+      ansible.builtin.copy:
+        src: files/chrome-flags.conf
+        dest: ~/.var/app/com.google.Chrome/config/chrome-flags.conf
+        mode: "0644"
+
+- name: Link nvim to vim
+  ansible.builtin.command: ln -sf $(which nvim) /usr/local/bin/vim
+  changed_when: false

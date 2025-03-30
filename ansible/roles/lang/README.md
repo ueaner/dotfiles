@@ -2,7 +2,7 @@
 
 安装和更新 `go` `rust` `node` 等编程语言版本及安装路径。
 
-版本定义在 [versions.yml] 文件中。
+版本定义在 [./vars/main.yml] 文件中。
 
 使用前先设置 `ANSIBLE_CONFIG` 环境变量:
 
@@ -40,7 +40,7 @@ ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "node" -vvv
 ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "deno" -vvv
 ```
 
-[versions.yml]: https://github.com/ueaner/dotfiles/blob/main/ansible/variables/versions.yml
+[./vars/main.yml]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/lang/vars/main.yml
 [所有给定语言]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/lang/tasks/main.yml
 [Go]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/lang/tasks/go.yml
 [Rust]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/lang/tasks/rust.yml

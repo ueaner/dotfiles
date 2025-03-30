@@ -4,6 +4,7 @@
 
 ---
 
+# sudo dnf install go --setopt=install_weak_deps=False
 - name: Install/Upgrade Golang
   tags:
     - upgrade
@@ -17,7 +18,7 @@
         path: "$XDG_DATA_HOME/go/bin/go"
       register: lang_go_check
 
-    - name: Installing Golang (Skip this task if already installed)
+    - name: Install Golang
       when: not lang_go_check.stat.exists
       ansible.builtin.unarchive:
         src: https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz

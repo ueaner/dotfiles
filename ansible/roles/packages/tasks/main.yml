@@ -1,0 +1,157 @@
+---
+
+# ----------------------------------------------------------------
+# kernel-headers/kernel: ~/bin/kernel-broadcom-wl
+# ----------------------------------------------------------------
+# Download & Install:
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags kernel-latest
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags kernel-closest
+# - name: Download / Install Kernel packages
+#   ansible.builtin.include_tasks: kernel.yml
+#   tags:
+#     - kernel-latest
+#     - kernel-closest
+#   delegate_to: localhost
+
+# ----------------------------------------------------------------
+# Programming Languages
+# ----------------------------------------------------------------
+# Download & Install:
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags lang
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags lang
+- name: Download Programming Languages packages
+  ansible.builtin.include_tasks: downloader.yml
+  loop:
+    - { key: "go", value: "{{ packages['go'] }}" }
+    - { key: "deno", value: "{{ packages['deno'] }}" }
+    - { key: "node", value: "{{ packages['node'] }}" }
+    - { key: "rust", value: "{{ packages['rust'] }}" }
+    - { key: "zig", value: "{{ packages['zig'] }}" }
+  vars:
+    tags_extend: ['lang']
+  when:
+    - task != 'install'
+    - ('lang' in ansible_run_tags)
+  tags:
+    - lang
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=install" --tags lang
+- name: Install/Upgrade Programming Languages
+  ansible.builtin.include_tasks: installer.yml
+  loop:
+    - { key: "go", value: "{{ packages['go'] }}" }
+    - { key: "deno", value: "{{ packages['deno'] }}" }
+    - { key: "node", value: "{{ packages['node'] }}" }
+    - { key: "rust", value: "{{ packages['rust'] }}" }
+    - { key: "zig", value: "{{ packages['zig'] }}" }
+  vars:
+    tags_extend: ['lang']
+  when:
+    - task != 'download'
+    - ('lang' in ansible_run_tags)
+  tags:
+    - lang
+
+# ----------------------------------------------------------------
+# All packages
+# ----------------------------------------------------------------
+# Download & Install:
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags all-packages
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags all-packages
+- name: Download all released packages
+  ansible.builtin.include_tasks: downloader.yml
+  loop: "{{ packages | dict2items }}"
+  vars:
+    tags_extend: ['download', 'all-packages']
+  when:
+    - task != 'install'
+    # Exclude the default `all` tag
+    - ('all' != ansible_run_tags | join(''))
+    # Must contains specified tag
+    # - ('all-packages' in ansible_run_tags) or ('download' in ansible_run_tags)
+  tags:
+    - download
+    - all-packages
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=install" --tags all-packages
+- name: Install/Upgrade all released packages
+  ansible.builtin.include_tasks: installer.yml
+  loop: "{{ packages | dict2items }}"
+  vars:
+    tags_extend: ['install', 'all-packages']
+  when:
+    - task != 'download'
+    - ('all' != ansible_run_tags | join(''))
+    # - ('all-packages' in ansible_run_tags) or ('install' in ansible_run_tags) or ('upgrade' in ansible_run_tags)
+  tags:
+    - install
+    - all-packages
+
+# ----------------------------------------------------------------
+# Specific packages
+# ----------------------------------------------------------------
+# Download & Install:
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags go
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags go
+- name: Download specific packages
+  ansible.builtin.include_tasks: downloader.yml
+  loop:
+    - { key: "{{ package }}", value: "{{ packages[package] }}" }
+  vars:
+    package: "{{ ansible_run_tags | intersect(packages.keys() | list) | first if ansible_run_tags | intersect(packages.keys() | list) | length > 0 }}"
+    # tags_prefix: 'download-'
+  when:
+    - task != 'install'
+    - package in packages
+  tags: "{{ (packages.keys() | list) }}"
+  # tags: "{{ (packages.keys() | list) + (['download-'] | product(packages.keys()) | map('join') | list) }}"
+
+
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=install" --tags go
+- name: Install/Upgrade specific packages
+  ansible.builtin.include_tasks: installer.yml
+  loop:
+    - { key: "{{ package }}", value: "{{ packages[package] }}" }
+  vars:
+    package: "{{ ansible_run_tags | intersect(packages.keys() | list) | first | replace('install-', '') if ansible_run_tags | intersect(packages.keys() | list) | length > 0 }}"
+    # tags_prefix: 'install-'
+  when:
+    - task != 'download'
+    - package in packages
+  tags: "{{ (packages.keys() | list) }}"
+
+# ----------------------------------------------------------------
+# GUI tools
+# ----------------------------------------------------------------
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags flatpak
+- name: Install GUI tools (flatpak)
+  when:
+    - ansible_distribution == "Fedora"
+    - ('flatpak' in ansible_run_tags)
+  community.general.flatpak:
+    name: "{{ flatpak }}"
+    method: user
+  tags:
+    - flatpak
+  notify:
+    - Native Wayland for Chrome
+
+# ----------------------------------------------------------------
+# Terminal tools
+# ----------------------------------------------------------------
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags dnf
+- name: Install Terminal tools (dnf)
+  when:
+    - ansible_distribution == "Fedora"
+    - ('dnf' in ansible_run_tags)
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ dnf }}"
+    install_weak_deps: false
+  tags:
+    - dnf
+  notify:
+    - Link nvim to vim

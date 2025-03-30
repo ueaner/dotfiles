@@ -1,0 +1,224 @@
+#!/usr/bin/env bash
+#
+# https://gnome.pages.gitlab.gnome.org/gnome-browser-integration/pages/installation-guide.html
+# - https://gitlab.gnome.org/GNOME/gnome-browser-connector (pre-installed in fedora workstation)
+# - https://gitlab.gnome.org/GNOME/gnome-browser-extension (Does not work with flatpak)
+#
+# General Installation Steps:
+#
+#   0. Visit https://extensions.gnome.org/
+#   1. Search extension
+#   2. Click "Install" to confirm extension installation
+#
+# https://medium.com/@ankurloriya/install-gnome-extension-using-command-line-736199be1cda
+# https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936/4
+#
+# Automatically install extensions to avoid pop-ups:
+#
+#   1. Configure the extension uuid
+#   2. Download the extension package and unzip it to the extension directory
+#  *3. Re-login to enable extensions [unavoidable]
+#
+
+# - find by uuid:
+#   $ curl -s --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=47" --data-urlencode "uuid=kimpanel@kde.org"
+#
+# - find by pk: ".uuid, .download_url, .version, .version_tag"
+#   $ curl -s --get "https://extensions.gnome.org/extension-info/" --data-urlencode "shell_version=47" --data-urlencode "pk=261" | jq -r .download_url
+#   /download-extension/kimpanel@kde.org.shell-extension.zip?version_tag=61715
+#   $ curl -L -I "https://extensions.gnome.org/download-extension/kimpanel@kde.org.shell-extension.zip?version_tag=61715"
+#   http 302:
+#     - /api/v1/extensions/kimpanel@kde.org/versions/87/?format=zip
+#     - /extension-data/kimpanelkde.org.v87.shell-extension.zip
+#   $ curl -L -O "https://extensions.gnome.org/download-extension/kimpanel@kde.org.shell-extension.zip?version_tag=61715"
+#   $ unzip -c kimpanel@kde.org.shell-extension.zip metadata.json | grep uuid | cut -d \" -f4
+#   $ unzip -p kimpanel@kde.org.shell-extension.zip metadata.json | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['uuid'])"
+
+if [[ ! -d ~/.local/share/gnome-shell/extensions ]]; then
+    mkdir -p ~/.local/share/gnome-shell/extensions
+fi
+
+EXTENSIONS_SITE="https://extensions.gnome.org"
+# USER_EXTDIR="$HOME/.local/share/gnome-shell/extensions"
+# SYSTEM_EXTDIR="/usr/share/gnome-shell/extensions"
+
+help() {
+    cat <<EOF
+gnome shell extensions downloader
+
+Usage: gnome-shell-extensions-downloader <uuid|pk> [-f|--force] --dir=/path/to/download/dir
+
+    --dir                    Set directory used for downloading packages to. Default location is to the current working directory.
+    -f, --force              Overwrite an existing extension
+
+    -h, --help               Show this message
+
+Example:
+
+    gnome-shell-extensions-downloader kimpanel@kde.org
+    gnome-shell-extensions-downloader 261
+    gnome-shell-extensions-downloader kimpanel@kde.org -f
+    gnome-shell-extensions-downloader kimpanel@kde.org --dir=/tmp
+EOF
+}
+
+force=false
+dir="."
+uuid=
+pk=
+info=
+download_url=
+
+if [[ $# -eq 0 ]]; then
+    help
+    exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+    # shellcheck source=/dev/null
+    case "$1" in
+    -h | --help)
+        help
+        exit 0
+        ;;
+    -f | --force)
+        force=true
+        shift
+        ;;
+    --dir)
+        dir=$2
+        shift 2
+        ;;
+    --dir=*)
+        dir=$(echo "$1" | cut -d= -f2)
+        if [[ "$dir" == "~"* ]]; then
+            # Replace ~ with $HOME
+            dir="${HOME}${dir:1}"
+        fi
+        shift
+        ;;
+    *)
+        [[ $1 =~ ^[0-9]+$ ]] && pk=$1 || uuid=$1
+        shift
+        ;;
+    esac
+done
+
+if [[ ! -d "$dir" ]]; then
+    echo "Directory \"$dir\" does not exist."
+    exit 1
+else
+    dir=$(realpath "$dir")
+fi
+
+echo "uuid=$uuid pk=$pk dir=$dir force=$force"
+
+sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
+# sv_prev=$(("$sv" - 1))
+
+# https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/latest/download/gestureImprovements@gestures.zip
+download-gesture-improvements() {
+    case "$sv" in
+    47) # GNOME 47
+        curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "/tmp/g47.zip"
+        unzip -q "/tmp/g47.zip" -d "/tmp/"
+        cd /tmp/gestureImprovements47@gestures/ && zip -q -r "$dir/gestureImprovements@gestures.shell-extension.zip" ./*
+        ;;
+    46) # GNOME 46
+        curl -L -O "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$dir/gestureImprovements@gestures.shell-extension.zip"
+        ;;
+    *) ;;
+    esac
+}
+
+if [[ "$uuid" == "gestureImprovements@gestures" || $pk -eq 4245 ]]; then
+    if [[ ! -f "$dir/gestureImprovements@gestures.shell-extension.zip" ]] || $force; then
+        download-gesture-improvements
+        if [[ $? != 0 || ! -f "$dir/gestureImprovements@gestures.shell-extension.zip" ]]; then
+            echo "Download gestureImprovements@gestures failed"
+            exit 1
+        fi
+    fi
+    echo "Downloaded $(unzip -p "$dir/gestureImprovements@gestures.shell-extension.zip" metadata.json | jq -r .uuid)"
+    exit 0
+fi
+
+# Maintained Packages
+if [[ -n "$uuid" ]]; then
+    info=$(curl -s --get "$EXTENSIONS_SITE/extension-info/" --data-urlencode "shell_version=$sv" --data-urlencode "uuid=$uuid")
+    pk=$(echo -n "$info" | jq -r .pk)
+elif [[ $pk -gt 0 ]]; then
+    info=$(curl -s --get "$EXTENSIONS_SITE/extension-info/" --data-urlencode "shell_version=$sv" --data-urlencode "pk=$pk")
+    uuid=$(echo -n "$info" | jq -r .uuid)
+    # uuid and p are both empty
+    help
+    exit 1
+fi
+
+echo "uuid=$uuid pk=$pk dir=$dir force=$force"
+
+local_file="$dir/$uuid.shell-extension.zip"
+
+if [[ -f "$local_file" ]] && ! $force; then
+    echo "Downloaded $(unzip -p "$local_file" metadata.json | jq -r .uuid)"
+    echo "Use the command \"gnome-extensions install --force '$local_file'\" to install the extension."
+    exit 0
+fi
+
+if [[ -n $info ]]; then
+    # /download-extension/kimpanel@kde.org.shell-extension.zip?version_tag=62176
+    # "version_tag": 62176
+    # version_tag=$(echo -n "$info" | jq -r .version_tag)
+    download_url=$(echo -n "$info" | jq -r .download_url)
+else
+    echo "Download address not available"
+    exit 1
+fi
+
+# Download extension package
+# curl --create-dirs -L "$EXTENSIONS_SITE$download_url" -o "$dir/$uuid.shell-extension.zip"
+cd "$dir" || return
+
+remote_url="$EXTENSIONS_SITE$download_url"
+# local_file=$(basename "$remote_url")
+
+echo "Download $remote_url to $local_file"
+
+# Get the size of the existing local file
+local_size=$(stat -c%s "$local_file")
+# Get the size of the remote file
+remote_size=$(curl -s --head "$remote_url" | grep -i "Content-Length" | cut -d ' ' -f 2 | tail -n1 | sed 's/\r//g')
+
+if [[ "$remote_size" -eq "$local_size" ]]; then
+    echo "Local and remote file sizes match. Skipping download"
+else
+    # Backup local file
+    [[ -f "${local_file}" ]] && mv "${local_file}" "${local_file}.bak"
+    curl -C - -L -O "$remote_url"
+    ret=$?
+    if [[ $ret -eq 0 ]]; then
+        # Remove backup file when download succeeds
+        [[ -f "${local_file}.bak" ]] && rm -f "${local_file}.bak"
+    else
+        # Restore backup file when download fails
+        [[ -f "${local_file}.bak" ]] && mv "${local_file}.bak" "${local_file}"
+        echo "Failed to download $uuid"
+        exit 1
+    fi
+fi
+
+echo "Downloaded $(unzip -p "$local_file" metadata.json | jq -r .uuid)"
+echo "Use the command \"gnome-extensions install --force '$local_file'\" to install the extension."
+# gnome-extensions info "$uuid"
+
+# And then:
+# gnome-extensions install --force "$dir/$uuid.shell-extension.zip"
+# gnome-extensions enable "$uuid" # Extension "$uuid" does not exist
+
+# OR:
+# NOTE: Download and install the extension, click "Install" to confirm the extension installation
+# gdbus call --session \
+#     --dest org.gnome.Shell.Extensions \
+#     --object-path /org/gnome/Shell/Extensions \
+#     --method org.gnome.Shell.Extensions.InstallRemoteExtension \
+#     "$uuid"

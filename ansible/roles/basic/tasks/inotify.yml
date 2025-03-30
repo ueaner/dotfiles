@@ -1,0 +1,10 @@
+---
+
+- name: Fix too many open files - fs.inotify
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [[ ! -f /usr/lib/sysctl.d/00-inotify.conf ]]; then
+        echo "user.max_inotify_instances = 1024\nuser.max_inotify_watches = 65536" | sudo tee /usr/lib/sysctl.d/00-inotify.conf
+        sudo sysctl -p /usr/lib/sysctl.d/00-inotify.conf
+    fi
+  changed_when: false

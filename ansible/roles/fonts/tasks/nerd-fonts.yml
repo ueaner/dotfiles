@@ -1,0 +1,38 @@
+---
+
+- name: Installing Nerd Fonts for Linux
+  when: ansible_system == "Linux"
+  block:
+
+    - name: Create directory -> {{ item }}
+      ansible.builtin.file:
+        path: ~/.local/share/fonts/{{ item }}
+        state: directory
+        mode: "0755"
+
+    - name: Installing {{ item }}
+      ansible.builtin.unarchive:
+        src: "{{ archives_server }}/{{ item }}.tar.xz"
+        dest: ~/.local/share/fonts/{{ item }}
+        creates: ~/.local/share/fonts/{{ item }}/done
+
+    - name: Update font cache
+      ansible.builtin.command:
+        cmd: fc-cache -f
+      changed_when: false
+
+- name: Installing Nerd Fonts for macOS
+  when: ansible_system == "Darwin"
+  block:
+
+    - name: Create directory -> {{ item }}
+      ansible.builtin.file:
+        path: ~/Library/Fonts/{{ item }}
+        state: directory
+        mode: "0755"
+
+    - name: Installing {{ item }}
+      ansible.builtin.unarchive:
+        src: "{{ archives_server }}/{{ item }}.tar.xz"
+        dest: ~/Library/Fonts/{{ item }}
+        creates: ~/Library/Fonts/{{ item }}/done

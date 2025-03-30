@@ -1,0 +1,14 @@
+---
+
+# Required when running xremap / dotool without sudo
+- name: Lets normal users use evdev and uinput without sudo
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [[ ! -f /usr/lib/udev/rules.d/00-uinput.rules ]]; then
+        # Add current user to input group
+        sudo gpasswd -a "$USER" input
+        # Lets normal users use evdev and uinput without sudo
+        echo 'KERNEL=="uinput", GROUP="input", TAG+="uaccess"' | sudo tee /usr/lib/udev/rules.d/00-uinput.rules
+        sudo udevadm control --reload && sudo udevadm trigger
+    fi
+  changed_when: false

@@ -1,0 +1,45 @@
+# vim: set filetype=yaml.ansible:
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#understanding-variable-precedence
+---
+
+# Enable Chinese Input Method
+chinese: on
+
+# variables
+
+# Like all templating, lookups execute and are evaluated on the Ansible control machine.
+ansible_controller_ipv4_command: "hostname -I | cut -d' ' -f1"
+ansible_controller_ipv4: "{{ lookup('pipe', ansible_controller_ipv4_command) }}"
+
+# In specific task: environment: "{{ proxy_env }}"
+proxy_env:
+  http_proxy: "socks5://{{ ansible_controller_ipv4 }}:1080"
+  https_proxy: "socks5://{{ ansible_controller_ipv4 }}:1080"
+  # all_proxy: http://127.0.0.1:1080
+
+desktop_command: |-
+  KERNEL=$(uname -s)         # Darwin | Linux
+  DESKTOP=                   # Aqua | GNOME | Sway
+
+  # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+  [[ -f /etc/os-release ]] && . /etc/os-release
+
+  if [[ "$KERNEL" == "Darwin" ]]; then
+      DESKTOP=Aqua
+  elif [[ "$ID" == "fedora" ]]; then
+      if [[ "${VARIANT_ID}" == "workstation" ]]; then
+          DESKTOP=GNOME
+      elif [[ "${VARIANT_ID}" == "sway" ]]; then
+          DESKTOP=Sway
+      fi
+  fi
+
+  echo -n $DESKTOP
+
+# archives_dir: "{{ ansible_env.XDG_BACKUP_DIR ~ '/archives' if ansible_env.XDG_BACKUP_DIR is defined else ansible_env.HOME ~ '/.cache/archives' }}"
+backup_dir: "{{ lookup('env', 'XDG_BACKUP_DIR', default=lookup('env', 'HOME') ~ '/.cache') }}"
+archives_dir: "{{ backup_dir ~ '/archives' }}"
+
+# ANSIBLE_ARCHIVES_SERVER defined in ~/ansible/plugins/callback/my_callback.py
+# archives_server: "{{ lookup('env', 'ANSIBLE_ARCHIVES_SERVER', default=archives_dir) }}"
+archives_server: "{{ archives_dir if inventory_hostname == 'localhost' else lookup('env', 'ANSIBLE_ARCHIVES_SERVER') }}"

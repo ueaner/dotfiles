@@ -2,25 +2,28 @@
 ---
 
 # Usage examples:
-# ansible-playbook ~/ansible/linux.yml --extra-vars "role=lang" --tags "go" --list-tasks
-# ansible-playbook ~/ansible/linux.yml --extra-vars "role=tools" --tags "neovim" -vvv
+# ansible-playbook ~/ansible/linux.yml --list-tasks
+# ansible-playbook ~/ansible/linux.yml --list-tags
+#
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags all-packages
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags nerd-fonts
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags lang
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags go
+# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=install" --tags go
+#
+# ansible-playbook ~/ansible/linux.yml -e "role=basic"
+# ansible-playbook ~/ansible/linux.yml -e "role=terminal"
+# ansible-playbook ~/ansible/linux.yml -e "role=fonts"
+# ansible-playbook ~/ansible/linux.yml -e "role=services"
 
 - name: Setup Linux Workstation
   hosts: local
-  vars_files:
-    - variables/versions.yml
-    - variables/tools.yml
   vars:
-    ansible_python_interpreter: /usr/bin/python3
     # By default, "role=all" is overridden by the `--extra-vars "role=xxx"` passed on the command line.
     role: all
-    # In specific task: environment: "{{ proxy_env }}"
-    proxy_env:
-      http_proxy: socks5://127.0.0.1:1080
-      https_proxy: socks5://127.0.0.1:1080
-      # all_proxy: http://192.168.56.101:1080
     local_bin: "{{ ansible_env.XDG_BIN_HOME | default(ansible_env.HOME ~ '/.local/bin') }}"
   environment:
+    # Defaults env for target devices
     XDG_CONFIG_HOME: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME ~ '/.config') }}"
     XDG_CACHE_HOME: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME ~ '/.cache') }}"
     XDG_DATA_HOME: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME ~ '/.local/share') }}"
@@ -29,23 +32,21 @@
     # Use the defined local_bin instead of the undefined XDG_BIN_HOME
     PATH: "{{ ansible_env.PATH if local_bin in ansible_env.PATH.split(':') else local_bin ~ ':' ~ ansible_env.PATH }}"
   roles:
-    - role: basic
+    - role: prelude
+    # ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags all-packages
+    - role: packages # Download / Install packages
+      when: (role == "all") or (role == "packages")
+      tags:
+        - packages
+
+    - role: basic  # macOS-ish Desktop Environment
       when: (role == "all") or (role == "basic")
-    # - role: system    # Need to reboot after installing wireless driver under MacBook
-    #   when: (role == "all") or (role == "system")
-    # - role: dotshell  # Provides sources for later `lang` and `tools` installactions
-    #   when: (role == "all") or (role == "dotshell")
-    - role: lang      # Languages environment
-      when: (role == "all") or (role == "lang")
-    - role: tools
-      when: (role == "all") or (role == "tools")
-    # - role: alacritty
-    #   when: (role == "all") or (role == "alacritty")
+    - role: terminal  # Terminal Environment
+      when: (role == "all") or (role == "terminal")
+    # ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags nerd-fonts
+    - role: fonts
+      when: (role == "all") or (role == "fonts")
     - role: services
       when: (role == "all") or (role == "services")
-    # - role: fonts
-    #   when: (role == "all") or (role == "fonts")
-    # - role: fcitx5
-    #   when: (role == "all") or (role == "fcitx5")
     - role: done
       when: (role == "all") or (role == "done")

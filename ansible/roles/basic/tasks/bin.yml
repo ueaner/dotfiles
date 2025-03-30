@@ -1,0 +1,17 @@
+---
+
+# sudo: xxx: command not found
+# ln -sf $CARGO_HOME/bin/* /usr/local/bin/
+- name: Change the owner of the /usr/local/bin directory to {{ ansible_env.USER }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    KERNEL=$(uname -s)         # Darwin | Linux
+
+    if [[ "$KERNEL" == "Darwin" ]]; then
+        # Change the owner of the /usr/local/bin directory to $USER:admin
+        sudo chown -R "${USER}:admin" /usr/local/bin
+    else
+        # Change the owner of the /usr/local/bin directory to $USER:wheel
+        sudo chown -R "${USER}:wheel" /usr/local/bin
+    fi
+  changed_when: false

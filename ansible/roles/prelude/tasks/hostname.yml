@@ -1,0 +1,24 @@
+---
+
+# NOTE: For multiple same as hardware models, the code here needs further refinement.
+# [Identify your MacBook Pro model]: https://support.apple.com/en-us/108052
+- name: Set hostname
+  ansible.builtin.shell: |
+    set -o pipefail
+    # Model Identifier: MacBookPro13,1
+    declare -A products=(
+        ["MacBookPro12,1"]=mac15
+        ["MacBookPro11,1"]=mac14
+        ["Link"]=cb13
+    )
+    if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+        product=$(cat /sys/devices/virtual/dmi/id/product_name)
+        hn=$(hostname)
+
+        # xremap and sway/config include host-specific configs
+        if [[ "$hn" != "${products[$product]}" ]]; then
+          sudo hostnamectl set-hostname --static "${products[$product]}"
+        fi
+        echo "hostname: $(hostname)"
+    fi
+  changed_when: false

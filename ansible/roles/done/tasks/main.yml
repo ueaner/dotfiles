@@ -5,7 +5,7 @@
 # ----------------------------------------------------------------
 - name: ALL DONE
   ansible.builtin.file:
-    path: "~/doneplay"
+    path: "~/.cache/endplay.all"
     state: touch
     mode: "0644"
 

@@ -16,7 +16,7 @@
     - name: Auto-login to ss via ssh
       ansible.builtin.copy:
         src: ~/.ssh/boxkey/id_rsa
-        dest: /root/.ssh/id_rsa
+        dest: ~/.ssh/id_rsa
         mode: "0600"
 
     - name: Install nginx.conf file

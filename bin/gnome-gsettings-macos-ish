@@ -1,0 +1,246 @@
+#!/usr/bin/env bash
+# macOS-ish desktop environment
+# - Keyboard Shortcuts
+# - Touchpad Gestures
+#
+# Table of Contents:
+# - RELEASE Keys
+# - Logout & Lock screen
+# - Screenshot
+# - Window Manager
+# - Window Manager for Monitor
+# - Touchpad Gestures
+# - GNOME Shell Extensions
+#    - Clipboard Indicator
+#    - Touchpad Gesture Improvements
+
+# Alt/Option Shift Control Super Character
+
+#----------------------------------------------------------------
+# RELEASE Keys
+#----------------------------------------------------------------
+
+# [RELEASE] `<Super>n` for `New window`
+gsettings set org.gnome.shell.keybindings focus-active-notification "[]" # ['<Super>n']
+
+# [RELEASE] `<Super>Escape` for Tmux, and must manually execute `restore-shortcuts`
+gsettings set org.gnome.mutter.wayland.keybindings restore-shortcuts "[]" # ['<Super>Escape']
+
+# [RELEASE] `<Super>Space` for Search for anything
+# fcitx5 use `<Ctrl>Space` to switch input source, `Shift` to switch Chinese and English
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source "[]"          # ['<Super>space', 'XF86Keyboard']
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]" # ['<Shift><Super>space', '<Shift>XF86Keyboard']
+
+# [RELEASE] `Left Super`, avoid `<Super>tab` cannot switch the application in time
+# Search Applications (<Super>Space) / Toggle Overview (F3) is the same effect.
+gsettings set org.gnome.mutter overlay-key '' # 'Super_L'
+
+# [RELEASE] `<Super>v` for Paste and `<Super>m` for Minimize
+gsettings set org.gnome.shell.keybindings toggle-message-tray "[]" # ['<Super>v', '<Super>m']
+
+# [RELEASE] `<Super>s` for Save
+gsettings set org.gnome.shell.keybindings toggle-quick-settings "[]" # ['<Super>s']
+
+# [RELEASE] `<Super>1-9` for switch tabs
+gsettings set org.gnome.shell.keybindings switch-to-application-1 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-2 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-3 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-4 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-5 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-6 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-7 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-8 "[]"
+gsettings set org.gnome.shell.keybindings switch-to-application-9 "[]"
+
+# [RELEASE] unused keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "[]"
+
+# [RELEASE] `<Super>period` for alacritty/tmux, `<Super>semicolon` for clipboard menu
+gsettings set org.freedesktop.ibus.panel.emoji hotkey "[]" # ['<Super>period', '<Super>semicolon']
+
+# [RELEASE] `<Alt><Super>s` for disable screenreader
+gsettings set org.gnome.desktop.interface toolkit-accessibility false         # false
+gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false # false
+gsettings set org.gnome.settings-daemon.plugins.media-keys screenreader "[]"  # ['<Alt><Super>s']
+
+# [RELEASE] `<Super>Up` for toggle-maximized or toggle-above
+gsettings set org.gnome.desktop.wm.keybindings maximize "[]" # ['<Super>Up']
+# [RELEASE] `<Super>Down` for move-to-center
+gsettings set org.gnome.desktop.wm.keybindings unmaximize "[]" # ['<Super>Down', '<Alt>F5']
+
+#----------------------------------------------------------------
+# Logout & Lock screen
+#----------------------------------------------------------------
+
+gsettings set org.gnome.settings-daemon.plugins.media-keys logout "['<Shift><Super>q']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Control><Super>q']"
+
+#----------------------------------------------------------------
+# Screenshot
+#----------------------------------------------------------------
+
+# Take a screenshot
+gsettings set org.gnome.shell.keybindings screenshot "['<Shift><Super>3']"
+# Take a screenshot interactively
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "['<Shift><Super>4']"
+# Record a screencast interactively
+gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Shift><Super>5']"
+# Take a screenshot of a window
+gsettings set org.gnome.shell.keybindings screenshot-window "['<Control><Super>a']"
+
+#----------------------------------------------------------------
+# Window Manager
+#----------------------------------------------------------------
+
+# Touch the top-left corner to open the Activities Overview
+# Settings -> Multitasking -> Hot Corner
+gsettings set org.gnome.desktop.interface enable-hot-corners true # true
+# Drag windows against the top, left, and right screen edges to resize them
+# Settings -> Multitasking -> Hot Corner
+gsettings set org.gnome.mutter edge-tiling true # true
+# Settings -> Multitasking -> Workspaces
+gsettings set org.gnome.mutter dynamic-workspaces true # true
+# Settings -> Multitasking -> Multi-Monitor
+gsettings set org.gnome.mutter workspaces-only-on-primary true # true
+# Settings -> Multitasking -> App Switching
+gsettings set org.gnome.shell.app-switcher current-workspace-only false # false
+
+# gsettings set org.gnome.desktop.wm.preferences num-workspaces 8 # 4
+# gsettings reset org.gnome.desktop.wm.preferences num-workspaces
+
+# Modifiers for window click actions
+gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>' # '<Super>'
+# Activate the window menu: Take Screenshot, Hide, Move to Workspace Left/Right, etc.
+gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>space']"
+
+gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
+
+# All applications: F4 Open Launchpad
+gsettings set org.gnome.shell.keybindings toggle-application-view "['LaunchB']" # ['<Super>a']
+# Active applications: F3 Open Mission Control
+gsettings set org.gnome.shell.keybindings toggle-overview "['LaunchA']" # ['<Super>s']
+gsettings set org.gnome.shell.keybindings shift-overview-up "['<Control>Up']"
+gsettings set org.gnome.shell.keybindings shift-overview-down "['<Control>Down']"
+# Switch to workspace
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control>Left']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control>Right']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Control>1']"    # ['<Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Control>9']" # ['<Super>End']
+# Search for anything
+gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>space']" # ['']
+# Switch applications
+gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab']" # ['<Super>Tab', '<Alt>Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Super>Tab']"
+# Switch windows of an application (Above Tab is Grave accent)
+gsettings set org.gnome.desktop.wm.keybindings switch-group "['<Super>grave']" # ['<Super>Above_Tab', '<Alt>Above_Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-group-backward "['<Shift><Super>grave']"
+# Switch windows directly
+gsettings set org.gnome.desktop.wm.keybindings cycle-windows "['<Control>Escape']"                 # ['<Alt>Escape']
+gsettings set org.gnome.desktop.wm.keybindings cycle-windows-backward "['<Shift><Control>Escape']" # ['<Shift><Alt>Escape']
+# For Application
+gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"                      # ['<Alt>F4']
+gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Control><Super>f']" # []
+# On Sway: Use `Super-h/j/k/l` to switch containers
+gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>m']"          # ['<Super>h']
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>Up']" # ['<Alt>F10']
+gsettings set org.gnome.desktop.wm.keybindings move-to-center "['<Super>Down']" # []
+gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>Left']"
+gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>Right']"
+# Move focused window to workspace: with Shift+arrow/number keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Super>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Super>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Super>1']"    # ['<Shift><Super>Home']
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Super>9']" # ['<Shift><Super>End']
+
+#----------------------------------------------------------------
+# Window Manager for Monitor
+#----------------------------------------------------------------
+
+# [RELEASE] `<Super>p` for Print
+gsettings set org.gnome.mutter.keybindings switch-monitor "['<Alt>Tab']" # ['<Super>p', 'XF86Display']
+
+# Move focused window to monitor: with Control+arrow keys
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Control><Super>Left']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Control><Super>Right']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Control><Super>Up']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Control><Super>Down']"
+
+#----------------------------------------------------------------
+# Touchpad Gestures
+#----------------------------------------------------------------
+
+# Touchpad enabled
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true                  # false
+gsettings set org.gnome.desktop.peripherals.touchpad send-events 'enabled'             # 'enabled'
+gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true               # true
+gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true # false
+
+# tap-and-drag in GNOME instead of 3-finger-drag in macOS
+# https://gitlab.freedesktop.org/libinput/libinput/-/issues/298
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true # false
+gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag true # true
+# select text with drag lock
+gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag-lock true # false
+
+gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true # true
+
+# Gesture Improvements: https://extensions.gnome.org/extension/4245/gesture-improvements/
+
+# Defines the mapping between the number of fingers and touchpad buttons.
+# The default is to have a 1, 2 and 3 finger tap to map to the left, right and middle button ("lrm"), respectively.
+# > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
+
+#----------------------------------------------------------------
+# GNOME Shell Extensions
+#----------------------------------------------------------------
+# NOTE: Execute this block only after installing the extension
+
+# 0. schema name:
+# rg settings-schema ~/.local/share/gnome-shell/extensions
+
+# 1. Lists keys and values in SCHEMA:
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas list-recursively org.gnome.shell.extensions.kimpanel
+# Default values in ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas/org.gnome.shell.extensions.kimpanel.gschema.xml
+#
+# 2. Open the UUID Preferences dialog:
+# gnome-extensions prefs kimpanel@kde.org
+#
+# 3. Monitors KEY for changes and prints the changed values
+# gsettings --schemadir ~/.local/share/gnome-shell/extensions/kimpanel@kde.org/schemas monitor org.gnome.shell.extensions.kimpanel
+
+# Gesture Improvements
+schemadir=~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/schemas
+if [[ -d $schemadir ]]; then
+    # 3-finger swipe to switch applications
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.gestureImprovements enable-alttab-gesture true # true
+else
+    schemadir=~/.local/share/gnome-shell/extensions/windowgestures@extension.amarullz.com/schemas
+    if [[ -d $schemadir ]]; then
+        # 3-finger swipe to switch applications
+        gsettings --schemadir $schemadir set org.gnome.shell.extensions.windowgestures three-finger true # false
+    fi
+fi
+
+# Switches to the previously focused workspace
+schemadir=~/.local/share/gnome-shell/extensions/gnome-shell-go-to-last-workspace@github.com/schemas
+if [[ -d $schemadir ]]; then
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.go-to-last-workspace shortcut-key "['<Control>period']" # ['<Super>Escape']
+fi
+
+# Hide Top Bar
+schemadir=~/.local/share/gnome-shell/extensions/hidetopbar@mathieu.bidon.ca/schemas
+if [[ -d $schemadir ]]; then
+    # Show panel when mouse approaches edge of the screen
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.hidetopbar mouse-sensitive true # false
+fi
+
+# Clipboard Indicator
+schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
+if [[ -d $schemadir ]]; then
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>semicolon']"   # <Super>;
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']" # <Super>]
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"  # <Super>[
+fi

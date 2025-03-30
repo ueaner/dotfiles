@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+
+# set -ex
+
+help() {
+    cat <<EOF
+gnome add/delete custom keybindings
+
+Usage: gnome-custom-keybinding <add|delete> <-n NAME|--name=NAME> <-c COMMAND|--command=COMMAND> <-b BINDING|--binding=BINDING>
+
+    -n, --name               Name
+    -c, --command            Command
+    -b, --binding            Binding
+
+    -h, --help               Show this message
+
+Example:
+
+    # Add custom-keybinding
+    gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+    gnome-custom-keybinding add --name="Alacritty Terminal" --command="alacritty" --binding="<Super>Return"
+
+    # Delete custom-keybinding by name
+    gnome-custom-keybinding delete -n "Alacritty Terminal"
+    gnome-custom-keybinding delete --name="Alacritty Terminal"
+
+    # List of custom-keybindings
+    gnome-custom-keybinding list
+EOF
+}
+
+if [[ $# -eq 0 ]]; then
+    printf "Arguments must not be null.\n\n"
+    help
+    exit 1
+fi
+
+action=
+name=
+command=
+binding=
+
+case "$1" in
+-h | --help)
+    help
+    exit 0
+    ;;
+list | add | delete)
+    action=$1
+    shift
+    ;;
+*)
+    help
+    exit 1
+    ;;
+esac
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -n)
+        name=$2
+        shift 2
+        ;;
+    --name=*)
+        name=$(echo "$1" | cut -d= -f2)
+        shift
+        ;;
+    -c)
+        command=$2
+        shift 2
+        ;;
+    --command=*)
+        command=$(echo "$1" | cut -d= -f2)
+        shift
+        ;;
+    -b)
+        binding=$2
+        shift 2
+        ;;
+    --binding=*)
+        binding=$(echo "$1" | cut -d= -f2)
+        shift
+        ;;
+    *)
+        echo "* $1"
+        help
+        exit 1
+        ;;
+    esac
+done
+
+case "$action" in
+list)
+    printf "List of custom-keybindings\n"
+
+    CUSTOM_KEYBINDING="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
+
+    while IFS='' read -r line; do paths+=("$line"); done < <(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | grep -Eo '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom[0-9]{1,4}/' | sort)
+    for p in "${paths[@]}"; do
+        echo "$p"
+        printf "\t   name : %s\n" "$(gsettings get "$CUSTOM_KEYBINDING:$p" name)"
+        printf "\tcommand : %s\n" "$(gsettings get "$CUSTOM_KEYBINDING:$p" command)"
+        printf "\tbinding : %s\n" "$(gsettings get "$CUSTOM_KEYBINDING:$p" binding)"
+    done
+    ;;
+
+add)
+
+    if [[ -z "$name" ]]; then
+        printf "The name parameter must not be null.\n\n"
+        help
+        exit 1
+    elif [[ -z "$command" ]]; then
+        printf "The command parameter must not be null.\n\n"
+        help
+        exit 1
+    elif [[ -z "$binding" ]]; then
+        printf "The binding parameter must not be null.\n\n"
+        help
+        exit 1
+    fi
+
+    echo "Add custom-keybinding (name: $name, command: $command, binding: $binding)"
+
+    CUSTOM_KEYBINDING="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
+
+    # while IFS='' read -r line; do indexes+=("$line"); done < <(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | grep -Eo 'custom[0-9]{1,4}' | grep -Eo '[0-9]{1,4}' | sort)
+    while IFS='' read -r line; do paths+=("$line"); done < <(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | grep -Eo '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom[0-9]{1,4}/' | sort)
+
+    KEYBINDING_PATH=
+    # Overwrite key with same name
+    for p in "${paths[@]}"; do
+        n=$(gsettings get "$CUSTOM_KEYBINDING:$p" name)
+        if [[ "$n" == "'$name'" ]]; then
+            KEYBINDING_PATH="$p"
+            echo "Overwrite the name command binding keys for $KEYBINDING_PATH."
+            # gsettings [--schemadir SCHEMADIR] set SCHEMA[:PATH] KEY VALUE
+            gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" name "'$name'"
+            gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" command "'$command'"
+            gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" binding "'$binding'"
+        fi
+    done
+
+    # Add new key
+    if [[ -z "$KEYBINDING_PATH" ]]; then
+        index=0
+        for p in "${paths[@]}"; do
+            i=$(echo "$p" | grep -Eo '[0-9]{1,4}')
+            if [[ $i -ne $index ]]; then
+                break
+            fi
+            index=$((i + 1))
+        done
+
+        KEYBINDING_PATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom${index}/"
+        echo "Set the name command binding keys for $KEYBINDING_PATH."
+        # gsettings [--schemadir SCHEMADIR] set SCHEMA[:PATH] KEY VALUE
+        gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" name "'$name'"
+        gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" command "'$command'"
+        gsettings set "$CUSTOM_KEYBINDING:$KEYBINDING_PATH" binding "'$binding'"
+
+        # Indexed arrays
+        declare -a CUSTOM_KEYBINDING_ARR
+        for p in "${paths[@]}"; do
+            CUSTOM_KEYBINDING_ARR+=("'$p'")
+        done
+        CUSTOM_KEYBINDING_ARR+=("'$KEYBINDING_PATH'")
+
+        CUSTOM_KEYBINDINGS=$(
+            IFS=,
+            echo "${CUSTOM_KEYBINDING_ARR[*]}"
+        )
+        # Add paths in custom-keybindings
+        gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[$CUSTOM_KEYBINDINGS]"
+    fi
+
+    echo "Set custom-keybindings to $(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings)."
+    ;;
+
+delete)
+
+    if [[ -z "$name" ]]; then
+        printf "The name parameter must not be null.\n\n"
+        help
+        exit 1
+    fi
+
+    CUSTOM_KEYBINDING="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
+    # Indexed arrays
+    declare -a CUSTOM_KEYBINDING_ARR
+
+    while IFS='' read -r line; do paths+=("$line"); done < <(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | grep -Eo '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom[0-9]{1,4}/' | sort)
+    for p in "${paths[@]}"; do
+        n=$(gsettings get "$CUSTOM_KEYBINDING:$p" name)
+        if [[ "$n" == "'$name'" ]]; then
+            echo "Reset the name command binding keys for $p."
+            gsettings reset "$CUSTOM_KEYBINDING:$p" name
+            gsettings reset "$CUSTOM_KEYBINDING:$p" command
+            gsettings reset "$CUSTOM_KEYBINDING:$p" binding
+        else
+            CUSTOM_KEYBINDING_ARR+=("'$p'")
+        fi
+    done
+
+    # printf "'%s'," "${arr[@]}"
+    CUSTOM_KEYBINDINGS=$(
+        IFS=,
+        echo "${CUSTOM_KEYBINDING_ARR[*]}"
+    )
+
+    # Remove paths in custom-keybindings
+    gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[$CUSTOM_KEYBINDINGS]"
+    echo "Set custom-keybindings to $(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings)."
+    ;;
+esac

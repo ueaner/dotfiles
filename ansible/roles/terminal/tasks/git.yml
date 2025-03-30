@@ -1,0 +1,15 @@
+---
+
+- name: Install/Upgrade lazygit for Linux
+  when: ansible_system == "Linux"
+  ansible.builtin.unarchive:
+    src: "{{ archives_server }}/lazygit-linux-x86_64.tar.gz"
+    dest: "~/.local/bin"
+    include: lazygit
+
+- name: Install/Upgrade lazygit for macOS
+  when: ansible_system == "Darwin"
+  ansible.builtin.unarchive:
+    src: "{{ archives_server }}/lazygit-macos-x86_64.tar.gz"
+    dest: "~/.local/bin"
+    include: lazygit

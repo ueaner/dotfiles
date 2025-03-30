@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# UI Appearance
+#
+# The default settings for gsettings are located in /usr/share/glib-2.0/schemas.
+#
+# Table of Contents:
+# - Power
+# - Appearance
+
+set -xe
+
+#----------------------------------------------------------------
+# Appearance
+#----------------------------------------------------------------
+
+# Emacs Input: browser location bar, input box, etc.
+# NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
+gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
+
+# Color scheme
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' # 'default'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'        # 'Adwaita'
+gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'       # 'Adwaita'
+gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'     # 'Adwaita'
+
+# Show date/weekday in clock
+gsettings set org.gnome.desktop.interface clock-format '24h'      # '12h'
+gsettings set org.gnome.desktop.interface clock-show-date true    # true
+gsettings set org.gnome.desktop.interface clock-show-weekday true # false
+
+# Show battery percentage
+gsettings set org.gnome.desktop.interface show-battery-percentage true # false
+
+# Press `Left Ctrl` to highlights the current location of the pointer.
+gsettings set org.gnome.desktop.interface locate-pointer true # false
+gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
+
+# Background & Night light
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
+gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700        # 2700
+if [[ -f $HOME/.local/share/backgrounds/f42-01-day.jxl ]]; then
+    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f42-01-day.jxl"
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f42-01-night.jxl"
+    gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f42-01-day.jxl"
+elif [[ -f $HOME/.local/share/backgrounds/f37-01-day.webp ]]; then
+    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"
+    gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
+fi
+
+#----------------------------------------------------------------
+# AccountsService
+#----------------------------------------------------------------
+
+# for GNOME AccountsService
+# Settings -> System -> Users (Face, Name, etc.)
+[[ -d /var/lib/AccountsService/icons && -f ~/.local/share/icons/faces/flathat.png ]] &&
+    sudo cp ~/.local/share/icons/faces/flathat.png "/var/lib/AccountsService/icons/$USER"
+
+#----------------------------------------------------------------
+# If needed, set the following manually
+#----------------------------------------------------------------
+
+# Settings -> Network -> Proxy -> Network Proxy (ON) -> Configuration (Manual)
+# gsettings get org.gnome.system.proxy mode       # 'manual'
+# gsettings get org.gnome.system.proxy.socks host # '127.0.0.1'
+# gsettings get org.gnome.system.proxy.socks port # 1080
+
+# for MacBook
+# Settings -> Displays -> Scale -> 175 %
+# gsettings set org.gnome.SimpleScan text-dpi 175 # 150

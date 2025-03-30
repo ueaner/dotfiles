@@ -1,0 +1,116 @@
+---
+
+- name: Install neovim nightly
+  tags:
+    - upgrade
+    - neovim
+  environment:
+    # lookup GITHUB_PROXY from Ansible controller
+    GITHUB_PROXY: "{{ lookup('env', 'GITHUB_PROXY', default='') }}"
+  block:
+
+    - name: Create nvim-nightly directory
+      ansible.builtin.file:
+        path: $XDG_DATA_HOME/nvim-nightly
+        state: directory
+        mode: '0755'
+
+    - name: Install/Upgrade neovim nightly under Fedora
+      when: ansible_system == "Linux"
+      ansible.builtin.unarchive:
+        # src: https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+        src: "{{ ansible_env.GITHUB_PROXY }}https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-{{ 'arm64' if ansible_architecture == 'aarch64' else ansible_architecture }}.tar.gz"
+        dest: $XDG_DATA_HOME/nvim-nightly
+        remote_src: true
+        extra_opts:
+          - --strip-component=1
+      changed_when: false
+      # environment: "{{ proxy_env }}"
+
+    # ansible -m setup HOST -a 'filter=ansible_architecture'
+    - name: Install/Upgrade neovim nightly under macOS x86_64/aarch64(arm64)
+      when: ansible_system == "Darwin"
+      ansible.builtin.unarchive:
+        src: "{{ ansible_env.GITHUB_PROXY }}https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-{{ 'arm64' if ansible_architecture == 'aarch64' else ansible_architecture }}.tar.gz"
+        dest: $XDG_DATA_HOME/nvim-nightly
+        remote_src: true
+        extra_opts:
+          - --strip-component=1
+      changed_when: false
+      # environment: "{{ proxy_env }}"
+
+    - name: Symlink nvim/vim bin to /usr/local/bin/
+      ansible.builtin.shell: |
+        set -o pipefail
+        ln -sf $XDG_DATA_HOME/nvim-nightly/bin/nvim /usr/local/bin/nvim
+        ln -sf /usr/local/bin/nvim /usr/local/bin/vim
+      changed_when: false
+
+
+- name: Install neovide
+  tags:
+    - upgrade
+    - neovide
+  when:
+    - ansible_system == "Linux"
+    - ansible_architecture == "x86_64"
+  block:
+
+    - name: Install/Upgrade neovide
+      block:
+        - name: Unzip neovide
+          ansible.builtin.unarchive:
+            src: https://github.com/neovide/neovide/releases/latest/download/neovide-linux-x86_64.tar.gz.zip
+            dest: /tmp # neovide-linux-x86_64.tar
+          environment: "{{ proxy_env }}"
+
+        - name: Untar neovide
+          ansible.builtin.unarchive:
+            src: /tmp/neovide-linux-x86_64.tar
+            dest: ~/.local/bin
+            include: neovide
+
+    - name: Download neovide desktop files
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        mode: "0644"
+        force: true
+      loop:
+        - { url: '{{ neovide_url_prefix }}/neovide.svg', dest: '~/.local/share/icons/neovide.svg' }
+        - { url: '{{ neovide_url_prefix }}/neovide.desktop', dest: '~/.local/share/applications/neovide.desktop' }
+      vars:
+        # noqa var-naming[no-role-prefix]
+        neovide_url_prefix: https://github.com/neovide/neovide/raw/refs/heads/main/assets
+      changed_when: false
+      environment: "{{ proxy_env }}"
+
+    - name: Update desktop database
+      ansible.builtin.command:
+        cmd: update-desktop-database ~/.local/share/applications
+      changed_when: false
+
+# ----------------------------------------------------------------
+# nvim-nightly
+# ----------------------------------------------------------------
+# - name: Install nvim-nightly
+#   ansible.builtin.shell: |
+#     set -o pipefail
+#     mkdir -p $XDG_DATA_HOME/nvim-nightly
+#     curl -s -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz |
+#         tar -xz --strip-component=1 -C $XDG_DATA_HOME/nvim-nightly
+#     ln -sf $XDG_DATA_HOME/nvim-nightly/bin/nvim /usr/local/bin/nvim
+#     ln -sf /usr/local/bin/nvim /usr/local/bin/vim
+#   changed_when: false
+
+- name: Check if nvimrc exists
+  ansible.builtin.stat:
+    path: "$HOME/.config/nvim"
+  register: terminal_nvimrc_check
+
+- name: Install nvimrc
+  # noqa command-instead-of-module
+  ansible.builtin.shell: |
+    git clone https://github.com/ueaner/nvimrc.git $HOME/.config/nvim
+  changed_when: false
+  when: not terminal_nvimrc_check.stat.exists

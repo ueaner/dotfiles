@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Applications keyboard shortcuts
+#
+# Table of Contents:
+# - Terminal
+# - Applications
+
+#----------------------------------------------------------------
+# Terminal
+#----------------------------------------------------------------
+# gsettings list-relocatable-schemas | grep keybind
+
+~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+
+# GNOME 48+ Global Shortcuts in Applications
+# https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/blob/master/data/org.gnome.settings-daemon.global-shortcuts.gschema.xml.in
+
+#----------------------------------------------------------------
+# Applications
+#----------------------------------------------------------------
+gsettings set org.gnome.TextEditor keybindings vim       # 'default'
+gsettings set org.gnome.TextEditor use-system-font false # true
+
+gsettings set org.gnome.Ptyxis audible-bell false    # true
+gsettings set org.gnome.Ptyxis use-system-font false # true
+
+if [[ -n $(fc-list 'SauceCodePro Nerd Font') ]]; then
+    gsettings set org.gnome.TextEditor custom-font 'SauceCodePro Nerd Font 12' # 'Monospace 11'
+    gsettings set org.gnome.Ptyxis font-name 'SauceCodePro Nerd Font 12'       # 'Monospace 10'
+fi
