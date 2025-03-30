@@ -29,11 +29,3 @@ keymap:
       Ctrl-Super-b: Shift-Ctrl-o   # Bookmark Manager
       Ctrl-Super-u: [Tab, Ctrl-u]  # Page Source
       Super-w:      [Tab, Ctrl-w]  # [Overrides Basic] Tab: Close
-
-  - name: Execute a command
-    exact_match: true
-    remap:
-      Super-e:
-        # launch: ["flatpak", "run", "org.fedoraproject.MediaWriter"]
-        # launch: ["bash", "-c", "echo hello > /tmp/test"]
-        launch: ["bash", "-c", "systemctl --user restart xremap"]

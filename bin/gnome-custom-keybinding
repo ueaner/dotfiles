@@ -91,11 +91,12 @@ done
 
 case "$action" in
 list)
-    printf "List of custom-keybindings\n"
 
     CUSTOM_KEYBINDING="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
 
     while IFS='' read -r line; do paths+=("$line"); done < <(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | grep -Eo '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom[0-9]{1,4}/' | sort)
+    printf "List of custom-keybindings (length: %d)\n" ${#paths[@]}
+
     for p in "${paths[@]}"; do
         echo "$p"
         printf "\t   name : %s\n" "$(gsettings get "$CUSTOM_KEYBINDING:$p" name)"

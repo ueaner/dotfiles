@@ -25,3 +25,13 @@ keymap:
       only: [Google-chrome, google-chrome, firefox]
     remap:
       Super-l: [Esc, Ctrl-l]  # Location bar / Select line
+
+  - name: Execute a command
+    exact_match: true
+    remap:
+      # ~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+      Super-KEY_ENTER:
+        launch: ["alacritty"]
+      # Super-e:
+        # launch: ["flatpak", "run", "ca.desrt.dconf-editor"]
+        # launch: ["bash", "-c", "echo hello > /tmp/test"]

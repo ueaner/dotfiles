@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/.config/sway/sway-tmux.sh
 # Switch freely between tmux panes and sway containers
 # @depends: dunst, jq
 
@@ -52,11 +51,11 @@ if [ "$focused_app_id" == "Alacritty" ] && [[ "$(tmux list-panes | wc -l)" -gt "
     echo "$$ sway-tmux: at_arrow: $at_arrow" >>/tmp/xreaker.log
     if [[ "$at_arrow" == "0" ]]; then
         echo "$$ sway-tmux: switch tmux pane" >>/tmp/xreaker.log
-        ret=$(eval "$tmux_cmd")
-        exit "$ret"
+        eval "$tmux_cmd" &>/tmp/xreaker.log
+        exit $?
     fi
 fi
 
 echo "$$ sway-tmux: switch sway container" >>/tmp/xreaker.log
-ret=$(eval "$sway_cmd")
-exit "$ret"
+eval "$sway_cmd" &>/tmp/xreaker.log
+exit $?

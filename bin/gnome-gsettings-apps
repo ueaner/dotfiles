@@ -10,7 +10,8 @@
 #----------------------------------------------------------------
 # gsettings list-relocatable-schemas | grep keybind
 
-~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+# See: ~/.config/xremap/mac14-gnome.yml
+# ~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
 
 # GNOME 48+ Global Shortcuts in Applications
 # https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/blob/master/data/org.gnome.settings-daemon.global-shortcuts.gschema.xml.in

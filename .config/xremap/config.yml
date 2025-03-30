@@ -124,7 +124,7 @@ keymap:
       Super-6:        Ctrl-6         # Go to specific tab
       Super-7:        Ctrl-7         # Go to specific tab
       Super-8:        Ctrl-8         # Go to specific tab
-      # See Ctrl-1/9 in ~/bin/gnome-gsettings: Switch to Workspace First/Last
+      # See Ctrl-1/9 in ~/bin/gnome-gsettings-macos-ish: Switch to Workspace First/Last
       # See Alt-1/9 in ~/.config/xremap/chrome-shortcuts.json: https://github.com/crittermike/shortkeys
       Super-1:        Alt-1          # Go to the first tab
       Super-9:        Alt-9          # Go to the rightmost tab
@@ -155,8 +155,8 @@ keymap:
       not: [Alacritty]
     remap:
 
-      # Set window manager shortcuts in ~/bin/gnome-gsettings or ~/.config/sway/config
-      # - https://github.com/ueaner/dotfiles/blob/main/bin/gnome-gsettings
+      # Set window manager shortcuts in ~/bin/gnome-gsettings-macos-ish or ~/.config/sway/config
+      # - https://github.com/ueaner/dotfiles/blob/main/bin/gnome-gsettings-macos-ish
       # - https://github.com/ueaner/dotfiles/blob/main/.config/sway/config
       #
       #  Super-Space  Search for anything
