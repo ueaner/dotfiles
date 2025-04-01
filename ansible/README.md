@@ -1,5 +1,13 @@
 # Setup Linux Workstation
 
+- Building a [macOS-ish Desktop Environment] (Shortcuts and Gestures) based on GNOME or Sway
+- [Programming Languages Environment]
+- [Terminal Environment]
+- Install common [packages]
+- etc.
+
+## ⚡️ Requirements
+
 Make sure you can access the network. If there is no wireless network, try the following for now:
 
 1. Wired Network (Network cable)
@@ -41,7 +49,7 @@ Download the package to be used.
 ~/.local/bin/ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags all-packages
 ```
 
-Initialize the desktop environment, programming language environment, terminal environment and common [packages].
+Initialize the macOS-ish desktop environment (Shortcuts & Gestures), programming language environment, terminal environment and common [packages].
 
 ```bash
 ~/.local/bin/ansible-playbook ~/ansible/linux.yml --ask-become-pass
@@ -93,7 +101,7 @@ Such as the [Github task lists]:
 | basic    | Too many open files   | [x] Fedora            | gnome, sway | -                             |
 | basic    | Package Manager       | [x] Fedora            | gnome, sway | dnf and flatpak               |
 | basic    | evdev/uinput          | [x] Fedora            | gnome, sway | use evdev/uinput without sudo |
-| basic    | Xremap                | [x] Fedora            | gnome, sway | macOS-like keyboard remap     |
+| basic    | Xremap                | [x] Fedora            | gnome, sway | macOS-ish keyboard remap      |
 | basic    | GNOME DE              | [x] Fedora            | gnome       | shortcuts, gestures, etc      |
 | basic    | Sway DE               | [x] Fedora            | sway        | in dotfiles                   |
 | basic    | Input Method          | [x] Fedora            | gnome, sway | fcitx5, libpinyin             |

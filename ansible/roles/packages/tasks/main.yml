@@ -18,38 +18,8 @@
 # ----------------------------------------------------------------
 # Download & Install:
 # ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages" --tags lang
-
-# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=download" --tags lang
-- name: Download Programming Languages packages
-  ansible.builtin.include_tasks: downloader.yml
-  loop:
-    - { key: "go", value: "{{ packages['go'] }}" }
-    - { key: "deno", value: "{{ packages['deno'] }}" }
-    - { key: "node", value: "{{ packages['node'] }}" }
-    - { key: "rust", value: "{{ packages['rust'] }}" }
-    - { key: "zig", value: "{{ packages['zig'] }}" }
-  vars:
-    tags_extend: ['lang']
-  when:
-    - task != 'install'
-    - ('lang' in ansible_run_tags)
-  tags:
-    - lang
-
-# ansible-playbook ~/ansible/linux.yml --extra-vars "role=packages task=install" --tags lang
-- name: Install/Upgrade Programming Languages
-  ansible.builtin.include_tasks: installer.yml
-  loop:
-    - { key: "go", value: "{{ packages['go'] }}" }
-    - { key: "deno", value: "{{ packages['deno'] }}" }
-    - { key: "node", value: "{{ packages['node'] }}" }
-    - { key: "rust", value: "{{ packages['rust'] }}" }
-    - { key: "zig", value: "{{ packages['zig'] }}" }
-  vars:
-    tags_extend: ['lang']
-  when:
-    - task != 'download'
-    - ('lang' in ansible_run_tags)
+- name: Programming Languages packages (include lang)
+  ansible.builtin.include_tasks: lang.yml
   tags:
     - lang
 

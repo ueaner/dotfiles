@@ -1,70 +1,92 @@
 # Dotfiles
 
-基于 [XDG] 规范，使用 git 管理 Home 目录下的文件。
+- Based on the [XDG] specification, use git to manage configuration files and asset files in the HOME directory.
 
-Home 目录下 dotfiles 文件较多，很多是由安装的工具自动生成的，对于关心的配置/文件，可以通过 git 简单有效的管理。
+## ✨ Features
 
-## dotfiles 命令
+- Support for GNOME and Sway on Fedora
+- [macOS-ish Desktop Environment]: Shortcuts and Gestures
+- [Programming Languages Environment]
+- [Terminal Environment]
+- Common [packages]
+- etc.
 
-把 git 命令参数简单包装为 dotfiles 命令，便于使用。
+## 🚀 Getting Started
 
-dotfiles 的定义，加到 shell 配置中：
+- Clone dotfiles
 
-```sh
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+```bash
+if [[ ! -d "$HOME/.dotfiles" ]]; then
+    echo "# git clone dotfiles"
+    # git config --global http.version HTTP/1.1
+    git clone --bare https://github.com/ueaner/dotfiles.git "$HOME/.dotfiles"
+    git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" checkout
+    git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
+fi
 ```
 
-使用 dotfiles 命令：
+- Make GNOME more lightweight
 
-```sh
-dotfiles status
-dotfiles add .vimrc
-dotfiles commit -m "Add vimrc"
-dotfiles add .bashrc
-dotfiles commit -m "Add bashrc"
-dotfiles push
+0. power saver
+1. Use flatpak instead of gnome-software
+2. Disable & mask unused user services
+3. Remove unused packages
+
+```bash
+~/bin/gnome-lightweight
 ```
 
-只关心需要管理的文件，config add 进来即可，不关心没有 add 进来的文件。
+- Building a macOS-ish Linux Workstation Environment
 
-## 从头开始
-
-从头开始构建 dotfiles 项目。
-
-```sh
-git init --bare $HOME/.dotfiles
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dotfiles config --local status.showUntrackedFiles no
+```bash
+~/ansible/install
 ```
 
-## 安装到新系统
+- See the [ansible] directory for more features
 
-注意备份已有文件。
+## 📂 Directory Structure
 
-```sh
-echo ".dotfiles" >> .gitignore
-git clone --bare https://github.com/ueaner/dotfiles.git $HOME/.dotfiles
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dotfiles checkout
-dotfiles config --local status.showUntrackedFiles no
+- XDG Base Directory
+
+```bash
+export XDG_CONFIG_HOME=~/.config
+export XDG_CACHE_HOME=~/.cache
+export XDG_DATA_HOME=~/.local/share
+export XDG_STATE_HOME=~/.local/state
+export XDG_BIN_HOME=~/.local/bin
 ```
 
-如果碰到以下问题：
+- /usr/local/bin/ - Programming language and package manager binaries are linked to the /usr/local/bin/
 
-```
-Cloning into bare repository '/home/ueaner/.dotfiles'...
-error: RPC failed; curl 16 Error in the HTTP2 framing layer
-fatal: expected flush after ref listing
-```
-
-先执行下：
-
-```sh
-git config --global http.version HTTP/1.1
+```bash
+ln -sf $XDG_DATA_HOME/go/bin/{go,gofmt} /usr/local/bin/
+ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+ln -sf $XDG_DATA_HOME/node/bin/* /usr/local/bin/
+ln -sf $XDG_DATA_HOME/zig/zig /usr/local/bin/
+ln -sf $ANDROID_HOME/platform-tools/adb /usr/local/bin/
+ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/
+ln -sf $(which nvim) /usr/local/bin/vim
 ```
 
-## 参考
+- ~/.local/bin/ - Package Manager installs binaries into $XDG_BIN_HOME
+
+```bash
+cargo install
+go install
+pip install --user
+pnpm install -g
+deno install -g
+composer global install
+plantuml.jar
+```
+
+## Reference
 
 [Dotfiles: Best Way to Store in a Bare Git Repository](https://www.atlassian.com/git/tutorials/dotfiles)
 
 [XDG]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+[ansible]: https://github.com/ueaner/dotfiles/tree/main/ansible#features
+[macOS-ish Desktop Environment]: ./ansible/roles/basic/tasks/desktop-environment.yml
+[Programming Languages Environment]: ./ansible/roles/packages/tasks/lang.yml
+[Terminal Environment]: ./ansible/roles/terminal/tasks/main.yml
+[packages]: ./ansible/roles/packages/vars/main.yml
