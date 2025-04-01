@@ -13,3 +13,13 @@ gradle.projectsLoaded {
         }
     }
 }
+
+// https://github.com/gradle/gradle/issues/8477#issuecomment-817269750
+gradle.afterProject {
+    rootProject {
+        tasks.named('wrapper') {
+            // https://mirrors.cloud.tencent.com/gradle/gradle-8.9-bin.zip
+            distributionUrl = "https://mirrors.cloud.tencent.com/gradle/gradle-" + gradleVersion + "-" + (distributionType.name().toLowerCase(Locale.ENGLISH)).toString() + ".zip"
+        }
+    }
+}
