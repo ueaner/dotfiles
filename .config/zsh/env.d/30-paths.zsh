@@ -5,7 +5,7 @@
 
 # Zsh 将 PATH 变量绑定到 path 数组。它们会自动同步。
 # 丢弃重复项
-typeset -U path
+[[ -n "$ZSH_VERSION" ]] && typeset -U path
 
 PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 

@@ -1,5 +1,4 @@
-#
-# 语言和相关版本管理/包管理工具的环境配置
+# Environment configuration for programming languages and package management tools
 #
 # - /usr/local/bin/
 #   - ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
@@ -81,6 +80,9 @@ export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
 # corepack use pnpm@latest
 # corepack enable pnpm
 # pnpm config set global-bin-dir ~/.local/bin
-export PNPM_HOME=$HOME/.local/share/pnpm
+export PNPM_HOME=$XDG_DATA_HOME/pnpm
 export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 export COREPACK_ENABLE_AUTO_PIN=0
+
+# Electron ozone wayland
+export ELECTRON_OZONE_PLATFORM_HINT=auto

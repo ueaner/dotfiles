@@ -10,6 +10,8 @@ export MOZ_ENABLE_WAYLAND=1
 
 export ZK_NOTEBOOK_DIR=$HOME/projects/notebook/src
 
+export TASK_X_MAP_VARIABLES=1
+
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus
 # export XMODIFIERS=@im=ibus
