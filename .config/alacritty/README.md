@@ -1,132 +1,89 @@
 # Alacritty
 
-[Alacritty] 是一个用 Rust 编写的跨平台简单的 GPU 加速终端仿真器。
-支持中英文混合等宽、24 位颜色、Vi Mode、可点击 URL 和自定义键绑定等。
+[Alacritty] 是 Rust 编写的跨平台 GPU 加速的现代终端模拟器。
+支持中英文混合等宽、24 位颜色、Vi Mode、和自定义键绑定等。
 
 更多特性请查看[Alacritty features]
 
-个人使用的 [alacritty.toml] 配置文件。
+## 安装
 
-## 序言
+Alacritty 可以直接通过包管理工具进行安装, 如:
 
-[Alacritty] 并不维护各个平台源（各平台的包管理工具可谓是百花齐放），
-新版本发布后，通常由社区人员自发在各个平台的包管理源上提交更新。
+- `brew install --cask alacritty`
+- `dnf install alacritty`
+- etc.
 
-题外话：不得不说 macOS 下 brew 社区是真的活跃，基本上一两天就更新了，
-`brew install --cask alacritty` 就可以安装最新版本了，
-大概是由于 brew 提供了一种简单的包定义方式和贡献方式有关。
-
-但 Linux 平台下有清晰的目录结构，制作 desktop launcher 并不复杂。
-
-开始在 Fedora 下安装 Alacritty 的最新版本。
-
-## 安装依赖
-
-Fedora 系统下的依赖，参见 [Alacritty dependencies]
-
-```bash
-dnf install cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++
-```
-
-## 安装 / 升级 Alacritty
-
-[Cargo] 是 Rust 的构建系统和包管理器，可以直接使用 Cargo 安装 Alacritty:
-
-```bash
-cargo install alacritty
-```
-
-如果一切正常的话，执行完毕会得到一个 `alacritty` 命令，执行一下：
-
-```bash
-> alacritty --version
-alacritty 0.14.0
-```
-
-如果有命令未找到之类的提示，查看 `~/.cargo/bin` 是否在 `$PATH` 变量中。
-
-直接在命令行执行 `alacritty` 就可以使用上最新版的 Alacritty 终端了。
-
-接下来制作 desktop launcher, 让 Alacritty 出现在应用列表中。
-
-## Alacritty desktop launcher
-
-现在只需要对 `alacritty 二进制文件` 包装一个 desktop launcher，使其可以出现在应用列表中。
-
-Alacritty 贴心的发布了 Linux 下相关的 desktop launcher 文件，去下载就好了 [Alacritty releases]。
-
-简单说明下，各个文件的作用：
-
-| File               | Description                        |
-| ------------------ | ---------------------------------- |
-| Alacritty.desktop  | [Desktop Entry] 定义了应用启动信息 |
-| Alacritty.svg      | 应用图标                           |
-| alacritty-msg.1.gz | man alacritty-msg                  |
-| alacritty.1.gz     | man alacritty                      |
-| \_alacritty        | zsh 下命令补全                     |
-| alacritty.bash     | bash 下命令补全                    |
-| alacritty.fish     | fish 下命令补全                    |
-
-这些文件中和 launcher 相关的主要是 `Alacritty.desktop` 和 `Alacritty.svg`；
-其他几个文件主要是 alacritty 的 man 文件和补全文件，alacritty 在命令行使用时会有帮助。
-
-开始下载，直接把文件放在相应的位置：
-
-```bash
-curl --create-dirs -L https://github.com/alacritty/alacritty/releases/latest/download/Alacritty.desktop -o ~/.local/share/applications/Alacritty.desktop
-curl --create-dirs -L https://github.com/alacritty/alacritty/releases/latest/download/Alacritty.svg -o ~/.local/share/icons/Alacritty.svg
-curl --create-dirs -L https://github.com/alacritty/alacritty/releases/latest/download/alacritty-msg.1.gz -o ~/.local/share/man/man1/alacritty-msg.1.gz
-curl --create-dirs -L https://github.com/alacritty/alacritty/releases/latest/download/alacritty.1.gz -o ~/.local/share/man/man1/alacritty.1.gz
-curl --create-dirs -L https://github.com/alacritty/alacritty/releases/latest/download/_alacritty -o ~/.local/share/zsh/site-functions/_alacritty
-```
-
-这里把 `Alacritty.desktop` 放在 `~/.local/share/applications` 用户目录下，而非 `/usr/share/applications/` 系统目录下，便于文件同步管理，避免系统升级可能带来的未知问题。
-
-下载完毕后，应用列表中应该已经出现了 Alacritty，如果没有出现可以尝试 [刷新 Desktop Entries 数据库]：
-
-```bash
-update-desktop-database ~/.local/share/applications
-```
-
-现在可以在应用列表中启动 Alacritty 了。
-
-launcher 一般变动很少，这里做完了 launcher，之后的升级也不必每次都下载以上相关文件。
-直接 `cargo install alacritty` 就搞定了。
+如果你所使用的平台不支持包管理工具安装可以查看 [Alacritty INSTALL]，手工[制作 Alacritty launcher].
 
 ## 配置文件 alacritty.toml
 
 配置文件位置 `~/.config/alacritty/alacritty.toml`, 点此 [alacritty.toml] 查看配置文件内容。
 
-### 跨系统共用配置文件
+### 集成 Tmux
 
-Linux 和 macOS 下共用 [alacritty.toml] 配置文件时，两边的 font.size 显示大小不一致，
-而 Linux 下使用 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=10.50`
-指定参数，覆盖配置文件中的 font size, 达到两边系统无缝共用的效果。
+打开 Alacritty 时自动打开 Tmux
 
-最后看下 [Alacritty.desktop] 的完整内容：
-
-```desktop
-[Desktop Entry]
-Type=Application
-TryExec=alacritty
-Exec=alacritty --option font.size=10.50
-Icon=Alacritty
-Terminal=false
-Categories=System;TerminalEmulator;
-
-Name=Alacritty
-GenericName=Terminal
-Comment=A fast, cross-platform, OpenGL terminal emulator
-StartupNotify=true
-StartupWMClass=Alacritty
-Actions=New;
-
-[Desktop Action New]
-Name=New Terminal
-Exec=alacritty --option font.size=10.50
+```toml
+[terminal.shell]
+program = "tmux"
+args = ["new-session", "-A", "-D", "-s", "MAIN"]
 ```
 
-推荐使用自动化部署编排工具进行管理，具体[参见](https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/tasks/main.yml)
+### 跨平台共用配置文件
+
+Linux 和 macOS 下或者 GNOME 和 Sway 下共用 [alacritty.toml] 配置文件时，
+不同的渲染机制可能会导致 font.size 显示大小不一致。
+需要根据不同平台的实际渲染效果, 调整字体大小, 覆盖共用配置文件中的 font.size 。
+
+具体有以下几种方法：
+
+1. 使用 Linux 下的 `Alacritty.desktop`
+
+Linux 下使用 `Alacritty.desktop` 启动，可以通过 `Exec=alacritty --option font.size=11.25`
+指定参数，覆盖配置文件中的 font size。
+
+```bash
+sed -i 's/^Exec=alacritty/Exec=alacritty --option font.size=10.50/' ~/.local/share/applications/Alacritty.desktop
+```
+
+如果使用 dnf install alacritty 安装，可以先将 Alacritty 拷贝到用户目录
+
+```bash
+cp /usr/share/applications/Alacritty.desktop ~/.local/share/applications/Alacritty.desktop
+```
+
+2. 使用 `alacritty msg` 命令
+
+```bash
+alacritty msg config font.size=11.25
+```
+
+3. 使用 alacritty.toml 的 `import` 功能
+
+将各平台的公共部分放在 alacritty.toml 中，平台特定配置放在 `alacritty.local.toml` 文件中
+
+```toml
+[general]
+import = [
+   "~/.config/alacritty/alacritty.local.toml"
+]
+```
+
+4. 通过命令行指定配置文件 `alacritty --config-file`
+
+```bash
+function sshremote() {
+   alacritty --config-file ~/.config/alacritty/alacritty-remote.toml -e ssh $1 & disown
+}
+```
+
+```toml
+import=["~/.config/alacritty/alacritty.toml"]
+
+[colors.primary]
+background = "0x333333"
+foreground = "0xD8DEE9"
+```
 
 ### 键映射
 
@@ -139,7 +96,7 @@ Exec=alacritty --option font.size=10.50
 { key: "C", mods: "Super", action: "Copy" }
 ```
 
-2. `和终端内运行的应用交互`，如和 tmux 交互免去按 prefix：新建窗口、切换窗口、多窗格同步执行等；通常需要发送指定的 `chars`
+2. `和终端内运行的应用交互`，如像操作普通应用一样和 Tmux 交互：新建窗口、切换窗口、多窗格同步执行等；通常需要发送指定的 `chars`
 
 ```toml
 # 假定 tmux 的 prefix 前缀键是 `Alt-s`, 对应的 Unicode 为 `\u001Bs`
@@ -156,25 +113,27 @@ Exec=alacritty --option font.size=10.50
 1. 尽可能使用跨系统通用的快捷键，降低记忆负担，强化肌肉记忆
 
 - 使用 Super 代替 Command 以便绑定的快捷键可跨系统使用
-- 使用 `Super-n` 打开新实例, `Super-t` 打开新窗口, `Ctrl-Tab` 切换标签页等
+- 使用 `Super-n` 打开新实例, `Super-t` 打开新窗口, `Ctrl-Tab` / `Shift-Super-{/}` 切换标签页等
 
 2. 尽可能对常用操作使用便利的快捷键
 
-- 使用 `Super->` 切换到上个标签页, `Super-<` 切换到下一个标签页等
+- 使用 `Shift-Super->` 向右移动标签页, `Shift-Super-<` 向左移动标签页等
 
-3. 注意和系统键冲突，必要时释放系统快捷键，或者对快捷键重新映射，或者直接使用触摸板/鼠标
+3. 避免和系统键冲突，必要时释放系统快捷键，或者对快捷键重新映射，或者直接使用触摸板/鼠标
 
-- Linux 下 Super/Command 键由操作系统捕获（截获）如 `Super-h` 隐藏应用, `Super-l` 锁屏等，应用定义的快捷键不会起作用，tmux 切换窗格使用触摸板拍一拍
-- GNOME 下释放系统 `Super-[number]` 切换应用快捷键，给切换工作区用
-- GNOME 下释放系统 `Super-.` iBus emoji 快捷键，给 tmux 快速切换活动窗口用
+- Linux 下 Super/Command 键由操作系统捕获（截获）如 `Super-h` 隐藏应用, `Super-l` 锁屏等，应用定义的快捷键不会起作用，Tmux 切换窗格使用触摸板拍一拍
+- macOS 下释放系统 `Super-h` 隐藏应用快捷键，给 Tmux 切换窗格用
+- GNOME 下释放系统 `Super-[h/j/k/l]` 隐藏应用、锁屏等快捷键，给 Tmux 切换窗格用
+  - 与之对应的隐藏应用（最小化）、锁屏等使用 `<Super>m` `<Control><Super>q`
+- GNOME 下释放系统 `Super-[number]` 切换应用快捷键，给切换标签页用
+- GNOME 下释放系统 `Super-.` iBus emoji 快捷键，给 Tmux 快速切换活动窗口用
 
 5. 由于不同系统桌面环境间的差异, [winit] 基础库对面向各终端场景的支持有待完善，
    一些特殊组合键需要明确在配置文件中，告知 Alacritty 其按键的行为，以便 Alacritty 可以正确处理，如：
 
 - [Ctrl+q not working]
 
-碰到类似的情况需要使用 `alacritty --print-events | grep "KeyboardInput"` 查看其日志，给官方提交 issues.
-现在把 [tmux prefix] 改成了 `Alt-s` 使用感受还不错。速度又起飞了。
+碰到类似的情况使用 `alacritty --print-events | grep "KeyboardInput"` 查看日志，给官方提交 issues.
 
 ## 参考
 
@@ -196,9 +155,10 @@ https://zh.wikipedia.org/zh-cn/软件流控制
 [Cargo]: https://doc.rust-lang.org/cargo/
 [Desktop Entry]: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
 [刷新 Desktop Entries 数据库]: https://wiki.archlinux.org/title/desktop_entries#Update_database_of_desktop_entries
-[Alacritty.desktop]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/alacritty/files/Alacritty.desktop
 [alacritty.toml]: https://github.com/ueaner/dotfiles/blob/main/.config/alacritty/alacritty.toml
 [tmux.conf]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
 [tmux prefix]: https://github.com/ueaner/dotfiles/blob/main/.config/tmux/tmux.conf
 [winit]: https://github.com/rust-windowing/winit
 [Ctrl+q not working]: https://github.com/alacritty/alacritty/issues/1359
+[Alacritty INSTALL]: https://github.com/alacritty/alacritty/blob/master/INSTALL.md
+[制作 Alacritty launcher]: https://github.com/ueaner/dotfiles/blob/main/.config/alacritty/launcher.md
