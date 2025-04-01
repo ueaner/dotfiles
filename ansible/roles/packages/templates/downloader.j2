@@ -4,6 +4,10 @@ set -o pipefail
 # set -xe
 # archives_dir="{{ archives_dir if item.value.archives_dir is not defined or not item.value.archives_dir else item.value.archives_dir }}"
 archives_dir="{{ item.value.archives_dir if item.value.archives_dir is defined else archives_dir }}"
+archives_subdir="{{ item.value.archives_subdir if item.value.archives_subdir is defined }}"
+if [[ -n "$archives_subdir" ]]; then
+    archives_dir="$archives_dir/$archives_subdir"
+fi
 [[ ! -d "$archives_dir" ]] && mkdir -p "$archives_dir"
 [[ ! -d "$HOME/.cache/archives" ]] && mkdir -p "$HOME/.cache/archives"
 # shellcheck disable=SC2164

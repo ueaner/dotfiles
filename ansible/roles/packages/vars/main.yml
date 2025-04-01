@@ -56,6 +56,7 @@ template:
       - kimpanel@kde.org # https://extensions.gnome.org/extension/261/kimpanel/
       - system-monitor@gnome-shell-extensions.gcampax.github.com # https://extensions.gnome.org/extension/6807/system-monitor/
       - gsconnect@andyholmes.github.io # https://extensions.gnome.org/extension/1319/gsconnect/
+      - color-picker@tuberry # https://extensions.gnome.org/extension/3396/color-picker/
   github:
     # The <archive> key is automatically added to $vars.
     # Replace placeholders in template URL with $vars
@@ -121,7 +122,7 @@ packages:
     template: "{{ template['gnome-shell-extensions'].archive }}"
     # download to $XDG_BACKUP_DIR/archives/gnome-shell-extensions
     # Subdirectory under {{ archives_dir }}
-    archives_subdir: "{{ 'gnome-shell-extensions' }}"
+    archives_subdir: "gnome-shell-extensions"
     # remote name with <version>
     use_remote_name: 2
     archives: "{{ template['gnome-shell-extensions'].extensions }}"
