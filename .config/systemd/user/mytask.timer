@@ -19,5 +19,5 @@ OnUnitActiveSec=6h
 Unit=mytask.service
 
 [Install]
-# WantedBy=multi-user.target
+# systemctl cat default.target (/etc/systemd/system/default.target)
 WantedBy=default.target
