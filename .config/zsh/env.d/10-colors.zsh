@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+# https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
 # https://en.wikipedia.org/wiki/Primary_color
 # https://en.wikipedia.org/wiki/Secondary_color
 # https://en.wikipedia.org/wiki/CMYK_color_model
@@ -7,14 +7,7 @@
 # black, red, green, yellow, blue, magenta, cyan, white, default.
 # cyan is green+blue, magenta is blue+red, and yellow is red+green
 
-# selection (bg): Background color for selected content
-# line (bg): Popup's default background color. eg: line bg, white fg -> blue bg, black fg
-# gray (fg): Foreground color for comments or inactive content
-# black: background color
-# white: Foreground color
-
 # The closure function will automatically execute and then discard.
-
 source <({
     # Color values are consistent with alacritty terminal.
     arr=(
@@ -26,9 +19,8 @@ source <({
         magenta   "#cfabe0"
         cyan      "#81cabf"
         white     "#eaeaea"
-        selection "#282c34"
-        line      "#21252d"
         gray      "#778899"
+        darkgray  "#21252d"
         dark      "#07090c"
     )
 
