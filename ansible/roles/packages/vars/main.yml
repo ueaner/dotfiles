@@ -316,7 +316,7 @@ packages:
       deno --version
 
   # Install to $XDG_DATA_HOME/<lang>
-  # Link <lang>/bin/* to /usr/local/bin
+  # Link <lang>/bin/* to $XDG_BIN_HOME
   go:
     vars:
       version: curl -s 'https://golang.google.cn/VERSION?m=text' | head -n1
@@ -327,7 +327,7 @@ packages:
     strip: 1
     dst: $XDG_DATA_HOME/go # defaults to $XDG_BIN_HOME
     install-post: |
-      ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
+      ln -sf $XDG_DATA_HOME/go/bin/* $XDG_BIN_HOME
       curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_golang \
            ${GITHUB_PROXY}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang
       go version
@@ -342,7 +342,7 @@ packages:
     strip: 1
     dst: $XDG_DATA_HOME/node # defaults to $XDG_BIN_HOME
     install-post: |
-      ln -sf $XDG_DATA_HOME/node/bin/* /usr/local/bin/
+      ln -sf $XDG_DATA_HOME/node/bin/* $XDG_BIN_HOME
       corepack enable pnpm
       pnpm config set global-bin-dir ~/.local/bin
       pnpm completion zsh > ~/.local/share/zsh/site-functions/_pnpm
@@ -368,7 +368,7 @@ packages:
       $CARGO_HOME/bin/rustc --version
 
       # install-post error: no default toolchain is configured
-      ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
+      ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
       ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d ' ' -f1)/share/zsh/site-functions/_cargo \
           ~/.local/share/zsh/site-functions/_cargo
       rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
@@ -385,7 +385,7 @@ packages:
     strip: 1
     dst: $XDG_DATA_HOME/zig # defaults to $XDG_BIN_HOME
     install-post: |
-      ln -sf $XDG_DATA_HOME/zig/zig /usr/local/bin/
+      ln -sf $XDG_DATA_HOME/zig/zig $XDG_BIN_HOME
       curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_zig \
           ${GITHUB_PROXY}https://raw.githubusercontent.com/ziglang/shell-completions/master/_zig
       zig version

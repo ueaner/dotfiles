@@ -56,19 +56,26 @@ export XDG_STATE_HOME=~/.local/state
 export XDG_BIN_HOME=~/.local/bin
 ```
 
-- /usr/local/bin/ - Programming language and package manager binaries are linked to the /usr/local/bin/
+- /usr/local/bin or /usr/bin - System-wide binaries
 
 ```bash
-ln -sf $XDG_DATA_HOME/go/bin/{go,gofmt} /usr/local/bin/
-ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
-ln -sf $XDG_DATA_HOME/node/bin/* /usr/local/bin/
-ln -sf $XDG_DATA_HOME/zig/zig /usr/local/bin/
-ln -sf $ANDROID_HOME/platform-tools/adb /usr/local/bin/
-ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/
 ln -sf $(which nvim) /usr/local/bin/vim
 ```
 
-- ~/.local/bin/ - Package Manager installs binaries into $XDG_BIN_HOME
+- ~/.local/bin ($XDG_BIN_HOME) - User-wide binaries
+
+1. Programming language and package manager binaries are linked to the $XDG_BIN_HOME
+
+```bash
+ln -sf $XDG_DATA_HOME/go/bin/{go,gofmt} $XDG_BIN_HOME
+ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+ln -sf $XDG_DATA_HOME/node/bin/* $XDG_BIN_HOME
+ln -sf $XDG_DATA_HOME/zig/zig $XDG_BIN_HOME
+ln -sf $ANDROID_HOME/platform-tools/adb $XDG_BIN_HOME
+ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $XDG_BIN_HOME
+```
+
+2. Package Manager installs binaries into $XDG_BIN_HOME
 
 ```bash
 cargo install
@@ -80,6 +87,8 @@ composer global install
 plantuml.jar
 ```
 
+- [~/bin] - Personal executable scripts
+
 ## Reference
 
 [Dotfiles: Best Way to Store in a Bare Git Repository](https://www.atlassian.com/git/tutorials/dotfiles)
@@ -90,3 +99,4 @@ plantuml.jar
 [Programming Languages Environment]: ./ansible/roles/packages/tasks/lang.yml
 [Terminal Environment]: ./ansible/roles/terminal/tasks/main.yml
 [packages]: ./ansible/roles/packages/vars/main.yml
+[~/bin]: ./bin

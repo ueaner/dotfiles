@@ -1,13 +1,14 @@
 # Environment configuration for programming languages and package management tools
 #
-# - /usr/local/bin/
-#   - ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
-#   - ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
-#   - ln -sf $ANDROID_HOME/platform-tools/adb /usr/local/bin/
-#   - ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/
-#   - ln -sf $XDG_DATA_HOME/nvim-nightly/bin/nvim /usr/local/bin/nvim
-#   - ln -sf /usr/local/bin/nvim /usr/local/bin/vim
-# - ~/.local/bin/ - $XDG_BIN_HOME
+# - /usr/local/bin
+#   - ln -sf $(which nvim) /usr/local/bin/vim
+#
+# - ~/.local/bin - $XDG_BIN_HOME
+#   - ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+#   - ln -sf $XDG_DATA_HOME/go/bin/{go,gofmt} $XDG_BIN_HOME
+#   - ln -sf $ANDROID_HOME/platform-tools/adb $XDG_BIN_HOME
+#   - ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $XDG_BIN_HOME
+#
 #   - cargo install
 #   - go install
 #   - pip install --user
