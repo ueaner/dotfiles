@@ -21,7 +21,3 @@
         src: files/chrome-flags.conf
         dest: ~/.var/app/com.google.Chrome/config/chrome-flags.conf
         mode: "0644"
-
-- name: Link nvim to vim
-  ansible.builtin.command: ln -sf $(which nvim) /usr/local/bin/vim
-  changed_when: false

@@ -411,10 +411,10 @@ dnf:
   - xlsclients # list x11 client applications running on a display
   - dua-cli # rust: disk
   - duf # go: disk
-  - tree-sitter-cli # rust: tree-sitter
-  - neovim # depends: tree-sitter-cli, nodejs
   - man-pages-zh-CN
   - groff
+  # - tree-sitter-cli # rust: tree-sitter
+  # - neovim # depends: tree-sitter-cli, nodejs
   # - golang
   # - nodejs
   # - nodejs-npm # mason.nvim depends on npm

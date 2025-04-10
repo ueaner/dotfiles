@@ -123,5 +123,3 @@
     install_weak_deps: false
   tags:
     - dnf
-  notify:
-    - Link nvim to vim
