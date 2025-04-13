@@ -84,6 +84,3 @@ export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
 export PNPM_HOME=$XDG_DATA_HOME/pnpm
 export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 export COREPACK_ENABLE_AUTO_PIN=0
-
-# Electron ozone wayland
-export ELECTRON_OZONE_PLATFORM_HINT=auto

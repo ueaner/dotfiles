@@ -5,7 +5,7 @@
 
 # Zsh 将 PATH 变量绑定到 path 数组。它们会自动同步。
 # 丢弃重复项
-[[ -n "$ZSH_VERSION" ]] && typeset -U path
+# [[ -n "$ZSH_VERSION" ]] && typeset -U path
 
 PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 
@@ -13,7 +13,7 @@ PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 if type brew &>/dev/null; then
     HOMEBREW_PREFIX=$(brew --prefix)
     # gnubin
-    for p in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do
+    for p in "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin; do
         PATH="$p:$PATH"
     done
     # keg-only bin: which means it was not symlinked into /usr/local,
@@ -34,11 +34,12 @@ if type brew &>/dev/null; then
     #   adding /usr/local/opt/coreutils/libexec/man to manpath
 fi
 
-path=(
-    $XDG_BIN_HOME # 三方可执行文件
-    ~/bin         # 个人可执行脚本
-    $path
-)
+# Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)
+# Personal executable scripts: ~/bin
+# shellcheck disable=SC2076
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
 
 # 数组反转
 # paths=$(echo ${paths[@]} | rev)

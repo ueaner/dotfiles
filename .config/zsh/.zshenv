@@ -1,7 +1,11 @@
 # ~/.zshenv:
-# export ZDOTDIR=~/.config/zsh
-# [[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv
+# if [[ -z "$ZDOTDIR" ]]; then
+#     export ZDOTDIR=~/.config/zsh
+#     [[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv
+# fi
 
-echo "$$ .zshenv $(date +"%Y-%m-%d %T.%6N")" >>/tmp/zsh.log
+echo "$$ .zshenv $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
-. ~/bin/xdg-env.sh
+# SYSTEMD_LOG_LEVEL=debug /usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator
+# export $(/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+# Set up the envvars file in $HOME/.config/environment.d/envvars.conf

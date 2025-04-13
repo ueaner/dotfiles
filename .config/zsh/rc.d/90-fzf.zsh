@@ -67,6 +67,10 @@ export FZF_DEFAULT_OPTS=$(
         " --layout=reverse --height 50% --inline-info" \
         " --preview-window 'right:60%:hidden' --preview '(bat {} || cat {} || tree -C -L 2 {}) 2> /dev/null | head -500'" \
         " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | clipcopy)+abort'" \
+        " --bind alt-up:half-page-up,alt-down:half-page-down" \
+        " --bind ctrl-b:preview-page-up,ctrl-f:preview-page-down" \
+        " --bind ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down" \
+        " --bind shift-up:preview-top,shift-down:preview-bottom" \
         " --header '[CTRL-Y] copy line, [?] toggle preview, [TAB] and [Shift-TAB] to mark multiple items' --header-lines=0 " \
         " --ansi --color=bg:black,hl:yellow,hl+:red,fg+:blue,bg+:black,info:yellow,border:blue,prompt:magenta,pointer:red,marker:red,spinner:yellow,header:gray"
 )

@@ -1,8 +1,8 @@
 # zsh run configuration
 #
-# interactive shell 引入此文件，定义 aliases, functions, options, key bindings, etc.
+# .zshrc is introduced in interactive shell and includes aliases, functions, options, key bindings, etc.
 #
-# https://wiki.archlinux.org/title/zsh
+# https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #
 # +---------------+-------------+-------------+--------+
 # |               | Interactive | Interactive | Script |
@@ -72,7 +72,7 @@
 # 6. zsh 内置函数，如 zmv 批量修改文件名
 # $ zmv '(*).txt' '$1.html'
 
-echo "$$ .zshrc $(date +"%Y-%m-%d %T.%6N")" >>/tmp/zsh.log
+echo "$$ .zshrc $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
 # 关闭 XON/XOFF flow control
 # Disable Ctrl-S and Ctrl-Q on terminal, stty -a 查看
@@ -86,6 +86,14 @@ stty -ixon
 stty -ixoff
 stty stop undef
 stty start undef
+
+export GPG_TTY=$(tty)
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    sudo launchctl limit maxfiles 10240 unlimited
+else
+    ulimit -n 64000
+fi
 
 printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
     "$([[ ! -o interactive ]] && echo non-)" \
@@ -103,16 +111,9 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-if [[ "$(uname -s)" == "Darwin" ]]; then
-    sudo launchctl limit maxfiles 10240 unlimited
-else
-    ulimit -n 64000
-fi
-# ulimit -u 2048  # launchctl limit maxproc
-
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$COLOR_GRAY"
 for rcfile in ~/.config/zsh/rc.d/[0-9][0-9]*[^~]; do
     if [[ "$rcfile" == *"autosuggestions"* ]]; then
+        ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$COLOR_GRAY"
         # Disable autosuggestions in zprof mode
         [[ $ZSH_PROFILE_STARTUP == true ]] && continue
     fi
@@ -120,8 +121,6 @@ for rcfile in ~/.config/zsh/rc.d/[0-9][0-9]*[^~]; do
     # echo $rcfile
     source $rcfile
 done
-
-export GPG_TTY=$(tty)
 
 [[ -f $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
 

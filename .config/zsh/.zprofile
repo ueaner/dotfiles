@@ -1,11 +1,7 @@
 # zsh profile
 #
-# Login shell 引入此文件，定义环境变量
-# GNOME Session Login shell 引入此文件, env.d 下配置变更需要退出重登陆
-#
-# 环境变量只定义基础必要的
-# 可以通过某种项目的配置文件定义的，就通过配置文件定义
-# yarn, GOENV, ...
+# .zprofile is introduced in login shell and defines basic environment variables.
+# Changing configuration in env.d under GNOME requires a re-login.
 
 # locale
 # 本地化编码名称由三部分组成：语言代码[_国家代码[.编码]]，如 zh_CN.UTF-8
@@ -13,7 +9,7 @@
 # b. 国家代码 (Country Code)
 # c. 编码 (Encoding)
 
-echo "$$ .zprofile $(date +"%Y-%m-%d %T.%6N")" >>/tmp/zsh.log
+echo "$$ .zprofile $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
     export LANG=zh_CN.UTF-8

@@ -27,11 +27,8 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 
 export CAPACITOR_ANDROID_STUDIO_PATH="$HOME/Applications/Android Studio.app"
 
-# macOS 使用 Preview 打开 manpage
-alias manview='f(){ man -t "$@" | open -fa Preview; unset -f f; };f'
-
 # headless chrome
 # 双引号之间的定义不需要加反斜杠转义
-alias google-chrome="$HOME/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+alias google-chrome="~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 export CHROME_EXECUTABLE="$HOME/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
