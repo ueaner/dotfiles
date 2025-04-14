@@ -2,10 +2,12 @@
 ---
 
 # ----------------------------------------------------------------
-# nvim, installing nvim with dnf
+# neovim
 # ----------------------------------------------------------------
-#- name: Install/Upgrade neovim
-#  ansible.builtin.include_tasks: neovim.yml
+- name: Install/Upgrade neovim
+  ansible.builtin.include_tasks: neovim.yml
+  tags:
+    - neovim
 
 # ----------------------------------------------------------------
 # alacritty.desktop for Sway
@@ -34,14 +36,6 @@
   ansible.builtin.include_tasks: git.yml
   tags:
     - git
-
-# ----------------------------------------------------------------
-# neovim
-# ----------------------------------------------------------------
-- name: Install/Upgrade neovim
-  ansible.builtin.include_tasks: neovim.yml
-  tags:
-    - neovim
 
 # ----------------------------------------------------------------
 # tldr
