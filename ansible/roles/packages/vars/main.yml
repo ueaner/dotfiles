@@ -413,6 +413,7 @@ dnf:
   - duf # go: disk
   - man-pages-zh-CN
   - groff
+  - podman-tui # systemctl --user enable --now podman
   # - tree-sitter-cli # rust: tree-sitter
   # - neovim # depends: tree-sitter-cli, nodejs
   # - golang
