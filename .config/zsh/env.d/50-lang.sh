@@ -84,3 +84,5 @@ export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
 export PNPM_HOME=$XDG_DATA_HOME/pnpm
 export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 export COREPACK_ENABLE_AUTO_PIN=0
+
+export PHP_CS_FIXER_IGNORE_ENV=1
