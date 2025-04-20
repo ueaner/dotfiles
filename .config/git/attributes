@@ -16,5 +16,7 @@
 *.png binary
 *.gif binary
 
+*.db  binary    diff=sqlite3    merge=keepTheir
+
 .ssh/config*    diff=sshconfig
 .ssh/config.d/* diff=sshconfig

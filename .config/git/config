@@ -184,6 +184,13 @@
     # Use `hexdump` to diff binary files.
     textconv = hexdump -v -C
 
+[diff "sqlite3"]
+  # To use this:
+  #   echo '*.db binary diff=sqlite3 merge=keepTheir' >> .gitattributes
+  # https://stackoverflow.com/a/38271631
+  textconv = "f() { sqlite3 -noheader -line \"$@\" .dump; }; f"
+  binary = true
+
 [difftool]
 
     prompt = false
