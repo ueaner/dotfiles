@@ -43,7 +43,7 @@ template:
     archive: https://extensions.gnome.org/download-extension/<archive>.shell-extension.zip?version_tag=<version>
     extensions:
       # GNOME 47+ [touchpad: Allow gestures with >3 fingers]: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/3275
-      # Used with libinput-gestures and dotool.
+      # Used with libinput-gestures and dotool. https://github.com/lmr97/linux-3-finger-drag
       # - disable-three-finger@lxp-git.github.com # https://extensions.gnome.org/extension/7403/disable-3-finger-gestures/
       # [Touchpad: support three-finger drag configuration]: https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/3351
       # Edit ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/metadata.json to add the new GNOME version to the shell-version field, e.g. 48
@@ -256,7 +256,7 @@ packages:
       - fnm-linux.zip: fnm-linux.zip
       - fnm-darwin.zip: fnm-macos.zip
     include:
-      - task
+      - fnm
 
   scc:
     vars:
