@@ -217,15 +217,31 @@
     cmd = delta $LOCAL $REMOTE
 
 [merge]
+    # Support mergetool editor
+    # git mergetool --tool-help
 
     # Include summaries of merged commits in newly created merge commit messages
     log = true
-    tool = vscode
+    tool = vimdiff
     conflictstyle = diff3
+
+[mergetool]
+    prompt = false
 
 [mergetool "vscode"]
 
     cmd = code --wait $MERGED
+
+[difftool "vimdiff"]
+
+    # +--------------------------+
+    # | LOCAL  |  BASE  | REMOTE |
+    # +--------------------------+
+    # |          MERGED          |
+    # +--------------------------+
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J'
+
+    # cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w|only|diffoff!'
 
 [help]
 
