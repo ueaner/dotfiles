@@ -118,9 +118,9 @@ gsettings set org.gnome.desktop.wm.keybindings activate-window-menu "['<Alt>spac
 
 gsettings set org.gnome.desktop.wm.keybindings show-desktop "['<Super>d']" # []
 
-# All applications: F4 Open Launchpad
+# All applications: F4 Open Launchpad (Overview)
 gsettings set org.gnome.shell.keybindings toggle-application-view "['LaunchB']" # ['<Super>a']
-# Active applications: F3 Open Mission Control
+# Active applications: F3 Open Mission Control (Application Grid)
 gsettings set org.gnome.shell.keybindings toggle-overview "['LaunchA']" # ['<Super>s']
 gsettings set org.gnome.shell.keybindings shift-overview-up "['<Control>Up']"
 gsettings set org.gnome.shell.keybindings shift-overview-down "['<Control>Down']"
@@ -132,7 +132,7 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Cont
 # Search for anything
 gsettings set org.gnome.settings-daemon.plugins.media-keys search "['<Super>space']" # ['']
 # Switch applications
-gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab']" # ['<Super>Tab', '<Alt>Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab', '<Alt>Tab']" # ['<Super>Tab', '<Alt>Tab']
 gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Super>Tab']"
 # Switch windows of an application (Above Tab is Grave accent)
 gsettings set org.gnome.desktop.wm.keybindings switch-group "['<Super>grave']" # ['<Super>Above_Tab', '<Alt>Above_Tab']
@@ -160,7 +160,7 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift>
 #----------------------------------------------------------------
 
 # [RELEASE] `<Super>p` for Print
-gsettings set org.gnome.mutter.keybindings switch-monitor "['<Alt>Tab']" # ['<Super>p', 'XF86Display']
+gsettings set org.gnome.mutter.keybindings switch-monitor "['<Control><Super>Tab']" # ['<Super>p', 'XF86Display']
 
 # Move focused window to monitor: with Control+arrow keys
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left "['<Control><Super>Left']"
@@ -186,6 +186,25 @@ gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag true # true
 gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag-lock true # false
 
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true # true
+
+# 2-finger
+# - [x] Swipe left or right with two fingers to go back or forward.
+# - [x] Swipe up or down with two fingers to scroll up or down.
+# - [x] Pinch two fingers together to zoom out; move them apart to zoom in.
+# - [x] Tap with two fingers to bring up options for the object you selected (correct spellings, definitions, colors, etc.).
+# - [ ] Double-tap with two fingers for smart zoom. The text block under the pointer is enlarged to fill the screen.
+#
+# 3-finger for applications (by gesture-improvements extension):
+# - [x] Swipe left or right with three fingers to switch to the previous or next application. like <Alt><Tab>
+# - [x] Swipe up or down with three fingers to toggle fullscreen.
+# - [ ] Tap with three fingers to look up a word in the dictionary.
+# - [-] Conflict with three finger drag (In macOS, turn on Accessibility. See https://support.apple.com/en-us/102341)
+#       https://github.com/lmr97/linux-3-finger-drag
+#
+# 4-finger for overview navigation and workspace switching (by gesture-improvements extension):
+# - [x] up: application grid (Fedora built-in effects)
+# - [x] down: overview
+# - [x] Swipe left or right with three fingers to switch to the previous or next workspace.
 
 # Gesture Improvements: https://extensions.gnome.org/extension/4245/gesture-improvements/
 
