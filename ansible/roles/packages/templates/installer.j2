@@ -96,10 +96,18 @@ install-package() {
             echo "unzip -p $tmpfile | tar -x $opts -C $dst $include"
             ;;
         *.zip)
+            # https://unix.stackexchange.com/a/57522
+            # unzip -j myarchive.zip in/archive/file.txt another/file.ext -d /path/to/unzip/to
+            if [[ -n "$strip" && "$strip" -eq 1 ]]; then
+                placeholder="--strip=$strip"
+                replacement="-j"
+                opts="${opts//$placeholder/$replacement}"
+            fi
+
             # shellcheck disable=SC2086
-            unzip -o $tmpfile $opts -d $dst $include
+            unzip -o $opts $tmpfile $include -d $dst
             ret=$?
-            echo "unzip -o $tmpfile $opts -d $dst $include"
+            echo "unzip -o $opts $tmpfile $include -d $dst"
             ;;
         *.tar.gz | *.tgz | *.tar.bz2 | *.tbz | *.tbz2 | *.tar.xz | *.txz | .tar)
             # shellcheck disable=SC2086
@@ -133,10 +141,18 @@ install-package() {
             echo "unzip -p $local_file | tar -x $opts -C $dst $include"
             ;;
         *.zip)
+            # https://unix.stackexchange.com/a/57522
+            # unzip -j myarchive.zip in/archive/file.txt another/file.ext -d /path/to/unzip/to
+            if [[ -n "$strip" && "$strip" -eq 1 ]]; then
+                placeholder="--strip=$strip"
+                replacement="-j"
+                opts="${opts//$placeholder/$replacement}"
+            fi
+
             # shellcheck disable=SC2086
-            unzip -o $local_file $opts -d $dst $include
+            unzip -o $opts $local_file $include -d $dst
             ret=$?
-            echo "unzip -o $local_file $opts -d $dst $include"
+            echo "unzip -o $opts $local_file $include -d $dst"
             ;;
         *.tar.gz | *.tgz | *.tar.bz2 | *.tbz | *.tbz2 | *.tar.xz | *.txz | .tar)
             # shellcheck disable=SC2086

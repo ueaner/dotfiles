@@ -300,6 +300,20 @@ packages:
     archives:
       - plantuml.jar
 
+  bun:
+    vars:
+      repo: oven-sh/bun
+    template: "{{ template.github.latest }}"
+    archives:
+      - bun-linux-x86_64.zip: bun-linux-x64.zip
+      - bun-darwin-x86_64.zip: bun-darwin-x64.zip
+    strip: 1
+    include:
+      - bun
+    install-post: |
+      bun completions > ~/.local/share/zsh/site-functions/_bun
+      bun --version
+
   deno:
     vars:
       repo: denoland/deno
