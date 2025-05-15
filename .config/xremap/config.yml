@@ -89,10 +89,9 @@ keymap:
       only: org.mozilla.firefox
     remap:
       Shift-Super-j:  Shift-Ctrl-y   # [Overrides Browser] Downloads page
-      Alt-Super-u:    [Tab, Ctrl-u]  # [Overrides Browser] Page Source, Need to lose focus on the input box first
       Shift-Super-n:  Shift-Ctrl-p   # [Overrides Basic] New Private Window
       Shift-Super-p:  Esc            # [Overrides Basic] Dummy
-      # Super-KEY_COMMA: [Ctrl-l, "about:preferences", KEY_ENTER]  # Settings
+      Super-KEY_COMMA: [Alt-e, n]    # Settings
       # Ctrl-u: [Shift-Home, Backspace]  # Readline Ctrl-u
 
   - name: Go to specific tab via Alt-number
@@ -128,7 +127,7 @@ keymap:
       # See Alt-1/9 in ~/.config/xremap/chrome-shortcuts.json: https://github.com/crittermike/shortkeys
       Super-1:        Alt-1          # Go to the first tab
       Super-9:        Alt-9          # Go to the rightmost tab
-      # Super-KEY_COMMA: [Ctrl-l, "chrome://settings/", KEY_ENTER]  # Settings
+      Super-KEY_COMMA: [Alt-e, g]    # Settings
 
   - name: Browser
     exact_match: true
@@ -146,7 +145,7 @@ keymap:
       Alt-Super-i:    Shift-Ctrl-i   # Developer tools
       Alt-Super-j:    Shift-Ctrl-j   # JavaScript Console
       Alt-Super-b:    Shift-Ctrl-o   # Bookmark Manager
-      Alt-Super-u:    Ctrl-u         # Page Source
+      Alt-Super-u:    [Tab, Ctrl-u]  # Page Source, Need to lose focus on the input box first
 
   - name: Basic
     exact_match: true
