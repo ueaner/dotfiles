@@ -6,6 +6,13 @@
 
 keymap:
 
+  - name: Files
+    exact_match: true
+    application:
+      only: org.gnome.Nautilus
+    remap:
+      KEY_ENTER:                   KEY_F2                         # Rename
+
   - name: Ptyxis
     exact_match: true
     application:
