@@ -7,8 +7,8 @@ setopt prompt_subst # prompt-expansion arguments
 # And also a beam as the cursor
 echo -ne '\e[6 q'
 
-export PROMPT_DEFAULT_SYMBOL=${PROMPT_DEFAULT_SYMBOL:-❯} # ❯
-export PROMPT_VICMD_SYMBOL=${PROMPT_VICMD_SYMBOL:-❮}     # ❮
+export PROMPT_DEFAULT_SYMBOL=${PROMPT_DEFAULT_SYMBOL:-$} # ❯
+export PROMPT_VICMD_SYMBOL=${PROMPT_VICMD_SYMBOL:->}     # ❮
 
 typeset -gA prompt_symbol
 prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
