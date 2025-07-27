@@ -24,6 +24,9 @@ if type brew &>/dev/null; then
         PATH="$p:$PATH"
     done
 
+    # use /usr/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
+    PATH="${HOMEBREW_PREFIX}/opt/man-db/libexec/bin:$PATH"
+
     # libexec 目录下有个软链 man 指向 gnuman，使用 man 命令查看手册时，
     # 会自动在 $PATH 的同级目录下找 "man" 或者 "share/man" 目录，所以这里不需要处理 $MANPATH
 
