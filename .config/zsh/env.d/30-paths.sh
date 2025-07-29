@@ -13,19 +13,30 @@ PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 if type brew &>/dev/null; then
     HOMEBREW_PREFIX=$(brew --prefix)
     # gnubin
-    for p in "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin; do
-        PATH="$p:$PATH"
-    done
+    if ls "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin &>/dev/null; then
+        for p in "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin; do
+            PATH="$p:$PATH"
+        done
+    fi
     # keg-only bin: which means it was not symlinked into /usr/local,
     # - 系统已经安装了此软件的某个版本
     # - 某个软件在 brew 中有多个版本，非最新版本往往为 keg-only
     # Only non-keg-only formulae are symlinked into the Homebrew prefix.
-    for p in ${HOMEBREW_PREFIX}/opt/{curl,openssl,gnu-getopt}/bin; do
-        PATH="$p:$PATH"
-    done
+    # for p in ${HOMEBREW_PREFIX}/opt/{curl,openssl,gnu-getopt}/bin; do
+    #     PATH="$p:$PATH"
+    # done
+
+    if ls ${HOMEBREW_PREFIX}/opt/curl/bin &>/dev/null; then
+        PATH="${HOMEBREW_PREFIX}/opt/curl/bin:$PATH"
+    fi
+    if ls ${HOMEBREW_PREFIX}/opt/openssl/bin &>/dev/null; then
+        PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
+    fi
 
     # use /usr/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
-    PATH="${HOMEBREW_PREFIX}/opt/man-db/libexec/bin:$PATH"
+    if ls ${HOMEBREW_PREFIX}/opt/man-db/libexec/bin &>/dev/null; then
+        PATH="${HOMEBREW_PREFIX}/opt/man-db/libexec/bin:$PATH"
+    fi
 
     # libexec 目录下有个软链 man 指向 gnuman，使用 man 命令查看手册时，
     # 会自动在 $PATH 的同级目录下找 "man" 或者 "share/man" 目录，所以这里不需要处理 $MANPATH
