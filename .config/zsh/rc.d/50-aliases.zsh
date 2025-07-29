@@ -110,7 +110,11 @@ alias phprofiler="php -d xdebug.profiler_enable=1"
 
 # sudo dnf install man-pages-zh-CN groff
 # alias cman='man -M $HOME/.local/share/man/zh_CN -P "/usr/bin/less -isR"'
-alias cman='man --locale=zh_CN'
+if [[ ! "$LANG" =~ ^zh_CN ]]; then
+    alias cman='man --locale=zh_CN'
+else
+    alias cman='man'
+fi
 
 alias proxy='export all_proxy=socks5://127.0.0.1:1080'
 alias unproxy='unset all_proxy'
