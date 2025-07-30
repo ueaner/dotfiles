@@ -26,8 +26,8 @@
         # cargo install fnm
         fnm install {{ versions.node }}
         fnm default {{ versions.node }}
-        $FNM_DIR/aliases/default/bin/corepack use pnpm@latest
         $FNM_DIR/aliases/default/bin/corepack enable pnpm
+        $FNM_DIR/aliases/default/bin/corepack prepare pnpm@latest --activate
         $FNM_DIR/aliases/default/bin/pnpm config set global-bin-dir ~/.local/bin
       changed_when: false
       environment:
