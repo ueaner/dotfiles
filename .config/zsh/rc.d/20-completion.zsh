@@ -17,7 +17,8 @@ for dir in "${compdirs[@]}"; do
 done
 
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
-ZSH_COMPCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+# ZSH_COMPCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+ZSH_COMPCACHE="$HOME/.local/share/zsh/site-functions"
 
 autoload -Uz compinit
 compinit -i -C -d "$ZSH_COMPDUMP"
@@ -75,6 +76,11 @@ zstyle ':completion:*:manuals.(^1*)' insert-sections true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w"
 
+# https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
+# dircolors -p: view the default color settings
+source <({
+    dircolors -b # export LS_COLORS
+})
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # Use caching to make completion for cammands such as dpkg and apt usable.
