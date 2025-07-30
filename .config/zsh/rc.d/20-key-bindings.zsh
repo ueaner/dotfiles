@@ -49,7 +49,7 @@ bindkey -M viins "^Y" yank
 # Yank to the system clipboard
 function vi-yank-clipcopy {
   zle vi-yank
-  echo "$CUTBUFFER" | clipcopy
+  echo -n "$CUTBUFFER" | clipcopy
 }
 
 zle -N vi-yank-clipcopy
@@ -82,5 +82,14 @@ bindkey -M vicmd '^A' incarg
 # ^[[B: Down
 # ^[[C: Right
 # ^[[D: Left
+
+# "^G" list-expand
+# "^J" accept-line
+# "^M" accept-line
+# "^O" self-insert
+# "^Q" vi-quoted-insert
+# "^S" self-insert
+# "^V" vi-quoted-insert
+# "^Z" self-insert
 
 # ^X^V: vi-cmd-mode
