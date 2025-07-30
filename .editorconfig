@@ -21,9 +21,9 @@ indent_style = space
 indent_size = 4
 indent_style = space
 
-[*.{js,ts,jsx,tsx}]
+[*.{js,ts,jsx,tsx,json}]
 indent_size = 2
-indent_style = tab
+indent_style = space
 quote_type = double
 
 [*.{yml,yaml,css}]
