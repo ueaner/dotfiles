@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Applications keyboard shortcuts
+# Applications and GNOME Shell Extensions
 #
 # Table of Contents:
 # - Terminal
 # - Applications
+# - GNOME Shell Extensions
 
 #----------------------------------------------------------------
 # Terminal
@@ -28,4 +29,20 @@ gsettings set org.gnome.Ptyxis use-system-font false # true
 if [[ -n $(fc-list 'SauceCodePro Nerd Font') ]]; then
     gsettings set org.gnome.TextEditor custom-font 'SauceCodePro Nerd Font 12' # 'Monospace 11'
     gsettings set org.gnome.Ptyxis font-name 'SauceCodePro Nerd Font 12'       # 'Monospace 10'
+fi
+
+#----------------------------------------------------------------
+# GNOME Shell Extensions
+#----------------------------------------------------------------
+# Hide Top Bar
+schemadir=~/.local/share/gnome-shell/extensions/hidetopbar@mathieu.bidon.ca/schemas
+if [[ -d $schemadir ]]; then
+    # Show panel when mouse approaches edge of the screen
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.hidetopbar mouse-sensitive true # false
+fi
+
+# Desktop Lyric
+schemadir=~/.local/share/gnome-shell/extensions/desktop-lyric@tuberry/schemas
+if [[ -d $schemadir ]]; then
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.desktop-lyric minimize true # false
 fi

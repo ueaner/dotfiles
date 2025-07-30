@@ -213,7 +213,7 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true #
 # > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 
 #----------------------------------------------------------------
-# GNOME Shell Extensions
+# GNOME Shell Extensions for Gestures and Shortcuts
 #----------------------------------------------------------------
 # NOTE: Execute this block only after installing the extension
 
@@ -247,13 +247,6 @@ fi
 schemadir=~/.local/share/gnome-shell/extensions/gnome-shell-go-to-last-workspace@github.com/schemas
 if [[ -d $schemadir ]]; then
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.go-to-last-workspace shortcut-key "['<Control>period']" # ['<Super>Escape']
-fi
-
-# Hide Top Bar
-schemadir=~/.local/share/gnome-shell/extensions/hidetopbar@mathieu.bidon.ca/schemas
-if [[ -d $schemadir ]]; then
-    # Show panel when mouse approaches edge of the screen
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.hidetopbar mouse-sensitive true # false
 fi
 
 # Clipboard Indicator
