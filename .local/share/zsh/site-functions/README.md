@@ -37,3 +37,20 @@ _dotlocal() {
     compdef _git dotlocal
 }
 ```
+
+## 补全文件生效
+
+初始化补全文件生效
+
+```bash
+autoload -Uz compinit
+compinit
+```
+
+改动之后的补全文件生效:
+
+```bash
+rm -f ~/.cache/zsh/zcompdump ~/.config/zsh/.zcompdump
+autoload -Uz _gnome_extensions
+compdef _gnome_extensions gnome-extensions
+```
