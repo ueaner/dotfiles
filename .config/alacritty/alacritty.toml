@@ -45,7 +45,7 @@ white   = "#eaeaea"
 
 # Named ANSI colors [8-15]
 [colors.bright]
-black   = "#2d3441"
+black   = "#2e3440"
 red     = "#df6566"
 green   = "#c5d15c"
 yellow  = "#ecce58"

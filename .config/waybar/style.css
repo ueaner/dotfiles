@@ -1,12 +1,12 @@
 * {
-    font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
+    font-family: 'Noto Sans Mono', monospace;
     font-size: 13px;
 }
 
 window#waybar {
-    background-color: #2d3440;
+    background-color: #1a222a;
     border-bottom: none;
-    color: #ffffff;
+    color: #eaeaea;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -19,6 +19,10 @@ window#waybar.Alacritty {
     background-color: #0d1117;
 }
 
+window#waybar.Alacritty #scratchpad {
+    background-color: #0d1117;
+}
+
 button {
     box-shadow: inset 0 -3px transparent;
     border: none;
@@ -27,35 +31,35 @@ button {
 
 button:hover {
     background: inherit;
-    box-shadow: inset 0 -3px #82b2d6;
+    box-shadow: inset 0 -3px #cfabe0;
 }
 
 #pulseaudio:hover {
-    background-color: #a37800;
+    background-color: #21252d;
 }
 
 #workspaces button {
     padding: 0 5px;
     background-color: transparent;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #workspaces button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: #21252d;
 }
 
 #workspaces button.focused {
-    background-color: rgba(100, 114, 125, 0.4);
-    box-shadow: inset 0 -3px #82b2d6;
+    background-color: #2e3440;
+    box-shadow: inset 0 -3px #cfabe0;
 }
 
 #workspaces button.urgent {
-    background-color: #eb4d4b;
+    background-color: #df6566;
 }
 
 #mode {
     background-color: #2e3440;
-    box-shadow: inset 0 -3px #82b2d6;
+    box-shadow: inset 0 -3px #cfabe0;
 }
 
 #clock,
@@ -76,8 +80,8 @@ button:hover {
 #power-profiles-daemon,
 #mpd {
     padding: 0 10px;
-    color: #ffffff;
     background-color: #2e3440;
+    color: #eaeaea;
 }
 
 #window,
@@ -94,30 +98,30 @@ button:hover {
 }
 
 #clock {
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: #21252d;
 }
 
 #battery {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #battery.charging,
 #battery.plugged {
-    color: #ffffff;
-    background-color: #5b9a89;
+    background-color: #5a8d86;
+    color: #21252d;
 }
 
 @keyframes blink {
     to {
-        background-color: #ffffff;
-        color: #000000;
+        background-color: #eaeaea;
+        color: #0d1117;
     }
 }
 
 #battery.critical:not(.charging) {
-    background-color: #f53c3c;
-    color: #ffffff;
+    background-color: #df6566;
+    color: #eaeaea;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: steps(12);
@@ -130,29 +134,27 @@ button:hover {
 }
 
 #power-profiles-daemon.performance {
-    background-color: #f53c3c;
-    color: #ffffff;
+    background-color: #df6566;
+    color: #eaeaea;
 }
 
 #power-profiles-daemon.balanced {
-    /* 调整为更柔和的蓝色 */
-    background-color: #4b6a90;
-    color: #ffffff;
+    background-color: #8cb6e1;
+    color: #eaeaea;
 }
 
 #power-profiles-daemon.power-saver {
-    /* 调整为更柔和的绿色 */
-    background-color: #5b9a89;
-    color: #ffffff;
+    background-color: #5a8d86;
+    color: #21252d;
 }
 
 label:focus {
-    background-color: #000000;
+    background-color: #0d1117;
 }
 
 #cpu {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #memory {
@@ -172,33 +174,31 @@ label:focus {
 }
 
 #network.disconnected {
-    background-color: #f53c3c;
+    background-color: #df6566;
 }
 
 #pulseaudio {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #pulseaudio.muted {
     background-color: #4c566a;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #wireplumber {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #wireplumber.muted {
-    /* 统一为与 pulseaudio.muted 相同的颜色 */
     background-color: #4c566a;
-    color: #ffffff;
 }
 
 #custom-media {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
     min-width: 100px;
 }
 
@@ -215,7 +215,7 @@ label:focus {
 }
 
 #temperature.critical {
-    background-color: #eb4d4b;
+    background-color: #df6566;
 }
 
 #tray {
@@ -228,7 +228,7 @@ label:focus {
 
 #tray>.needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #eb4d4b;
+    background-color: #df6566;
 }
 
 #idle_inhibitor {
@@ -236,43 +236,38 @@ label:focus {
 }
 
 #idle_inhibitor.activated {
-    /* 调整为更柔和的颜色 */
     background-color: #4c566a;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #mpd {
     background-color: #2e3440;
-    color: #ffffff;
+    color: #eaeaea;
 }
 
 #mpd.disconnected {
-    background-color: #f53c3c;
+    background-color: #df6566;
 }
 
 #mpd.stopped {
-    /* 调整为与模块背景色相同的颜色 */
     background-color: #2e3440;
-    color: #ffffff;
 }
 
 #mpd.paused {
-    /* 调整为更柔和的颜色 */
-    background-color: #4b6a90;
-    color: #ffffff;
+    background-color: #8cb6e1;
 }
 
 #language {
-    background: #2e3440;
-    color: #ffffff;
+    background-color: #2e3440;
+    color: #eaeaea;
     padding: 0 5px;
     margin: 0 5px;
     min-width: 16px;
 }
 
 #keyboard-state {
-    background: #2e3440;
-    color: #ffffff;
+    background-color: #2e3440;
+    color: #eaeaea;
     padding: 0 0px;
     margin: 0 5px;
     min-width: 16px;
@@ -283,11 +278,11 @@ label:focus {
 }
 
 #keyboard-state>label.locked {
-    background: rgba(0, 0, 0, 0.2);
+    background-color: #0d1117;
 }
 
 #scratchpad {
-    background: rgba(0, 0, 0, 0.2);
+    background-color: #1a222a;
 }
 
 #scratchpad.empty {
@@ -300,17 +295,17 @@ label:focus {
 
 #privacy-item {
     padding: 0 5px;
-    color: white;
+    color: #eaeaea;
 }
 
 #privacy-item.screenshare {
-    background-color: #cf5700;
+    background-color: #df6566;
 }
 
 #privacy-item.audio-in {
-    background-color: #1ca000;
+    background-color: #c5d15c;
 }
 
 #privacy-item.audio-out {
-    background-color: #0069d4;
+    background-color: #cfabe0;
 }
