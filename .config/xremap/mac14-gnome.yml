@@ -24,6 +24,7 @@ keymap:
     application:
       only: [Google-chrome, google-chrome, firefox]
     remap:
+      # NOTE: Switching containers in Sway
       Super-l: [Esc, Ctrl-l]  # Location bar / Select line
 
   - name: Execute a command
