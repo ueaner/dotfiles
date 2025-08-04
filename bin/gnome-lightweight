@@ -24,6 +24,9 @@ gsettings set org.gnome.shell last-selected-power-profile 'power-saver' # 'power
 # Disable the ALS sensor (Ambient Light Sensor)
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false # true
 
+# Never enter sleep mode when powered on
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
+
 # Dim the screen after a period of inactivity
 # > gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
 # Whether to hibernate, suspend or do nothing when inactive
