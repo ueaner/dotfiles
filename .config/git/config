@@ -29,7 +29,8 @@
     dd = "!d() { GIT_EXTERNAL_DIFF=difft git diff $@; }; d"
 
     # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
-    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+    # eg: git di 1, git di 3
+    di = "!d() { git diff HEAD~$1; }; d"
 
     # Pull in remote changes for the current repository and all its submodules.
     p = pull --recurse-submodules
