@@ -14,7 +14,15 @@ export TASK_X_MAP_VARIABLES=1
 
 export TLRC_CONFIG=${HOME}/.config/tldr/config.toml
 
-[[ -f ~/.local/share/miniconda3/etc/profile.d/conda.sh ]] && source ~/.local/share/miniconda3/etc/profile.d/conda.sh
+# sudo dnf install conda
+# # https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-MacOSX-x86_64.sh --create-dirs -o ~/.local/share/miniconda3/miniconda.sh
+# bash ~/.local/share/miniconda3/miniconda.sh -b -u -p ~/.local/share/miniconda3
+if [[ -f "/usr/etc/profile.d/conda.sh" ]]; then
+    . "/usr/etc/profile.d/conda.sh"
+elif [ -f ~/.local/share/miniconda3/etc/profile.d/conda.sh ]; then
+    . ~/.local/share/miniconda3/etc/profile.d/conda.sh
+fi
 
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus
