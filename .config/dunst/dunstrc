@@ -1,0 +1,39 @@
+# dunstctl reload
+#
+# Examples:
+#   dunstify "Some title" "Some text"
+#   dunstify -h int:value:80  "Doing 80%"
+#   dunstify -h int:value:100 "DONE 100%"
+#
+[global]
+    enable_posix_regex = true
+    gap_size = 10
+    origin = top-center
+    offset = 10x30
+    corner_radius = 8
+    icon_theme = Papirus
+    show_age_threshold = 11
+    font = Monospace 10
+    enable_recursive_icon_lookup = true
+    format = "<span size='large'><b>%s</b></span>\n%b"
+
+[urgency_low]
+    background = "#2e3440"
+    foreground = "#eaeaea"
+    frame_color = "#2e3440"
+    timeout = 10
+    default_icon = dialog-information
+
+[urgency_normal]
+    background = "#2e3440"
+    foreground = "#eaeaea"
+    frame_color= "#2e3440"
+    timeout = 10
+    default_icon = dialog-information
+
+[urgency_critical]
+    background = "#2e3440"
+    foreground = "#eaeaea"
+    frame_color = "#2e3440"
+    timeout = 60
+    efault_icon = dialog-warning
