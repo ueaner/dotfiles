@@ -13,6 +13,8 @@ if [[ $- == *i* ]]; then
     [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
     # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f41/f/fzf.spec#_83
     [[ -f "/usr/share/zsh/site-functions/_fzf" ]] && . "/usr/share/zsh/site-functions/_fzf"
+    # by ansible
+    [[ -f ~/.local/share/fzf/shell/completion.zsh ]] && . ~/.local/share/fzf/shell/completion.zsh
 fi
 
 # Key bindings
@@ -22,6 +24,8 @@ fi
 [[ -f "/usr/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/usr/local/opt/fzf/shell/key-bindings.zsh"
 # Fedora by dnf
 [[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
+# by ansible
+[[ -f ~/.local/share/fzf/shell/key-bindings.zsh ]] && . ~/.local/share/fzf/shell/key-bindings.zsh
 
 # zsh completion
 # https://github.com/junegunn/fzf/blob/master/shell/completion.bash#L98
