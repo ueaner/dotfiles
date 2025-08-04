@@ -1,15 +1,5 @@
 # 源地址
 
-#export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
-# 下载安装包的源
-#export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
-# 如果自定义的 bottles 源没有找到对应的包，会从 brew 官方源下载
-# https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
-export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
-
 # https://mirrors.tuna.tsinghua.edu.cn/help/rustup/
 # rustup self update
 # rustup install stable
