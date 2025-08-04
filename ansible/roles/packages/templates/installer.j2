@@ -28,6 +28,7 @@ archives_yaml="{{ item.value.archives if item.value.archives is defined }}"
 dst="{{ item.value.dst if item.value.dst is defined }}"
 strip="{{ item.value.strip if item.value.strip is defined }}"
 include="{{ item.value.include if item.value.include is defined }}"
+wildcards=
 if [[ -n "$include" ]]; then
     include=$(echo "$include" | yq 'join(" ")')
     if [[ -n "$strip" && "$strip" -gt 0 ]]; then
@@ -35,12 +36,13 @@ if [[ -n "$include" ]]; then
         for item in $include; do
             # include starts with */
             if [[ "$item" =~ ^\*/ ]]; then
-                tmp="$item "
+                tmp="$tmp $item "
             else
-                tmp="*/$item "
+                tmp="$tmp */$item "
             fi
         done
         include=$tmp
+        wildcards="--wildcards"
     fi
     # tar xf wasm-pack-linux-x86_64.tar.gz --strip=1 -C ~/.local/bin '*/wasm-pack'
     # glob * passed as part of a variable without quotes
@@ -111,9 +113,9 @@ install-package() {
             ;;
         *.tar.gz | *.tgz | *.tar.bz2 | *.tbz | *.tbz2 | *.tar.xz | *.txz | .tar)
             # shellcheck disable=SC2086
-            tar xf $tmpfile $opts -C $dst $include
+            tar xf $tmpfile $wildcards $opts -C $dst $include
             ret=$?
-            echo "tar xf $tmpfile $opts -C $dst $include"
+            echo "tar xf $tmpfile $wildcards $opts -C $dst $include"
             ;;
         *.gz)
             if [[ -z "$include" || "$include" = *' '* ]]; then
@@ -156,9 +158,9 @@ install-package() {
             ;;
         *.tar.gz | *.tgz | *.tar.bz2 | *.tbz | *.tbz2 | *.tar.xz | *.txz | .tar)
             # shellcheck disable=SC2086
-            tar xf $local_file $opts -C $dst $include
+            tar xf $local_file $wildcards $opts -C $dst $include
             ret=$?
-            echo "tar xf $local_file $opts -C $dst $include"
+            echo "tar xf $local_file $wildcards $opts -C $dst $include"
             ;;
         *.gz)
             if [[ -z "$include" || "$include" = *' '* ]]; then

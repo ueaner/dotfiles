@@ -43,6 +43,7 @@ download() {
     # Get the filename from the URL without parameters.
     # output_file=$(basename "$remote_url")
     output_file=$(basename "${remote_url%%[?#]*}")
+    # brew install bash (5+) for macOS
     if [[ -v vars['version'] ]] && ! echo "$output_file" | grep --quiet "${vars[version]}"; then
         # sed -r 's/[a-zA-Z]+//g'
         local ver=${vars['version']//[a-zA-Z]/}

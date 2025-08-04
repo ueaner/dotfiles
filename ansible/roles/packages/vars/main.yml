@@ -1,5 +1,6 @@
 ---
 # packages for x86_64, Package Keeper -> pk
+# deps: yq, jq, bash4+, grep3+, gnu-tar
 # NOTE: Avoid double quotes in shell scripts
 
 # Variable Default Values
@@ -67,6 +68,7 @@ template:
     nightly: "{{ github_proxy }}https://github.com/<repo>/releases/download/nightly/<archive>"
     # https://github.com/xremap/xremap/releases/latest/download/xremap-linux-x86_64-gnome.zip
     latest: "{{ github_proxy }}https://github.com/<repo>/releases/latest/download/<archive>"
+    # brew install grep (3+) for macOS
     download-url: curl -s https://api.github.com/repos/<repo>/releases/latest | grep browser_download_url | grep -P '<archive>' | sort | head -n1 | grep -P 'https://.+<archive>' -o
 
 # The rules for naming locally saved files are as follows:
@@ -142,6 +144,9 @@ packages:
           gnome-extensions install --force $f
       done
 
+  # 对包有一个简单的分类:
+  # - 普通包(二进制包): 默认安装路径为 ~/.local/bin/
+  # - 字体包: 默认安装路径 macOS: ~/Library/Fonts/, Linux ~/.local/share/fonts
   nerd-fonts:
     vars:
       repo: ryanoasis/nerd-fonts
@@ -159,6 +164,7 @@ packages:
       - tldr-pages.en.zip
     dst: ~/.cache/tldr/pages
 
+  # ~/Library/Caches/ for macOS
   tldr-pages.zh:
     vars:
       repo: tldr-pages/tldr
@@ -167,15 +173,37 @@ packages:
       - tldr-pages.zh.zip
     dst: ~/.cache/tldr/pages.zh
 
+  man-pages.zh:
+    install: |-
+      ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
+      mv /tmp/zhman/src ~/.local/share/man/zh_CN
+
   tldr:
     install: |-
-      python -m pip install --upgrade --user tldr
+      python3 -m pip install --upgrade --user tldr
+    # Rust 版本待完善, 在 TLRC_CONFIG 配置文件中更改了 cache.dir, 依旧取找 ~/Library/Caches/ 目录
+    # vars:
+    #   repo: tldr-pages/tlrc
+    #   version: "{{ template.github.version }}"
+    # template: "{{ template.github.archive }}"
+    # archives:
+    #   - tldr-linux-x86_64.tar.gz: tlrc-<version>-x86_64-unknown-linux-gnu.tar.gz
+    #   - tldr-darwin-x86_64.tar.gz: tlrc-<version>-x86_64-apple-darwin.tar.gz
+    # include:
+    #   - tldr
+    # install-post: |-
+    #   curl --create-dirs -L -o ~/.local/share/man/tldr.1 \
+    #        ${GITHUB_PROXY}https://raw.githubusercontent.com/tldr-pages/tlrc/refs/heads/main/tldr.1
+    #   curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_tldr \
+    #        ${GITHUB_PROXY}https://raw.githubusercontent.com/tldr-pages/tlrc/refs/heads/main/completions/_tldr
+    #   tldr --version
 
   # rename, remove, and copy files and directories using your editor
   edir:
     install: |-
-      python -m pip install --upgrade --user edir
+      python3 -m pip install --upgrade --user edir
 
+  # Required: Linux
   xremap:
     vars:
       repo: xremap/xremap
@@ -201,6 +229,27 @@ packages:
       - ssserver
       - ssservice
       - ssurl
+
+    # launchctl unload ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    # launchctl load ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    install-post: |
+      if [[ $(uname -s) != 'Darwin' ]]; then
+          exit 0
+      fi
+      if [[ -f ~/.local/etc/shadowsocks-rust-local.json ]]; then
+          ln -sf ~/.local/etc/shadowsocks-rust-local.json /usr/local/etc/shadowsocks-rust-local.json
+          ln -sf ~/.local/etc/shadowsocks-rust-local.acl /usr/local/etc/shadowsocks-rust-local.acl
+      fi
+      if [[ -f ~/.local/bin/sslocal ]]; then
+          ln -sf ~/.local/bin/sslocal /usr/local/bin/sslocal
+          ln -sf ~/.local/bin/ssservice /usr/local/bin/ssservice
+      fi
+
+      # https://github.com/shadowsocks/shadowsocks-rust/blob/master/configs/org.shadowsocks.shadowsocks-rust.plist
+      if [[ -f ~/.local/etc/org.shadowsocks.shadowsocks-rust.plist ]]; then
+          ln -sf ~/.local/etc/org.shadowsocks.shadowsocks-rust.plist ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+      fi
+
 
   gitmux:
     vars:
@@ -238,6 +287,179 @@ packages:
     include:
       - btm
 
+  zoxide:
+    vars:
+      repo: ajeetdsouza/zoxide
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.9.8", but the archive name uses "0.9.8" without the "v".
+      # https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.8/zoxide-0.9.8-x86_64-unknown-linux-musl.tar.gz
+      - zoxide-linux-x86_64.tar.gz: zoxide-.+-x86_64-unknown-linux-musl.tar.gz
+      # https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.8/zoxide-0.9.8-x86_64-apple-darwin.tar.gz
+      - zoxide-darwin-x86_64.tar.gz: zoxide-.+-x86_64-apple-darwin.tar.gz
+    include:
+      - zoxide
+
+  fzf:
+    vars:
+      repo: junegunn/fzf
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.65.0", but the archive name uses "0.65.0" without the "v".
+      # https://github.com/junegunn/fzf/releases/download/v0.65.0/fzf-0.65.0-linux_amd64.tar.gz
+      - fzf-linux-x86_64.tar.gz: fzf-.+-linux_amd64.tar.gz
+      # https://github.com/junegunn/fzf/releases/download/v0.65.0/fzf-0.65.0-darwin_amd64.tar.gz
+      - fzf-darwin-x86_64.tar.gz: fzf-.+-darwin_amd64.tar.gz
+    include:
+      - fzf
+    install-post: |
+      curl --create-dirs -L -o ~/.local/bin/fzf-tmux \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/bin/fzf-tmux
+      curl --create-dirs -L -o ~/.local/share/fzf/shell/completion.zsh \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/completion.zsh
+      curl --create-dirs -L -o ~/.local/share/fzf/shell/key-bindings.zsh \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/key-bindings.zsh
+      chmod +x ~/.local/bin/fzf-tmux
+      fzf --version
+
+  fd:
+    vars:
+      repo: sharkdp/fd
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - fd-linux-x86_64.tar.gz: fd-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - fd-darwin-x86_64.tar.gz: fd-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      # fd-v10.2.0-x86_64-apple-darwin/fd
+      - fd
+    install-post: |
+      curl --create-dirs -L -o ~/.local/share/man/fd.1 \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/doc/fd.1
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_fd \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/contrib/completion/_fd
+      fd --version
+
+  ripgrep:
+    vars:
+      repo: BurntSushi/ripgrep
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - ripgrep-linux-x86_64.tar.gz: ripgrep-<version>-x86_64-unknown-linux-musl.tar.gz
+      - ripgrep-darwin-x86_64.tar.gz: ripgrep-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - rg
+    install-post: |
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_rg \
+           ${GITHUB_PROXY}https://raw.githubusercontent.com/BurntSushi/ripgrep/refs/heads/master/crates/core/flags/complete/rg.zsh
+      rg --version
+
+  yq:
+    vars:
+      repo: mikefarah/yq
+    template: "{{ template.github.latest }}"
+    archives:
+      - yq-linux-x86_64: yq_linux_amd64
+      - yq-darwin-x86_64: yq_darwin_amd64
+    install: |-
+      kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+      architecture=$(uname -m | tr '[:upper:]' '[:lower:]')
+      cp yq-${kernel}-${architecture} ~/.local/bin/yq
+      chmod +x ~/.local/bin/yq
+
+  difft:
+    vars:
+      repo: Wilfred/difftastic
+    template: "{{ template.github.latest }}"
+    archives:
+      - difft-linux-x86_64.tar.gz: difft-x86_64-unknown-linux-gnu.tar.gz
+      - difft-darwin-x86_64.tar.gz: difft-x86_64-apple-darwin.tar.gz
+    include:
+      - difft
+
+  delta:
+    vars:
+      repo: dandavison/delta
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - delta-linux-x86_64.tar.gz: delta-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - delta-darwin-x86_64.tar.gz: delta-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - delta
+
+  bat:
+    vars:
+      repo: sharkdp/bat
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - bat-linux-x86_64.tar.gz: bat-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - bat-darwin-x86_64.tar.gz: bat-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - bat
+
+  dua:
+    vars:
+      repo: Byron/dua-cli
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - dua-linux-x86_64.tar.gz: dua-<version>-x86_64-unknown-linux-musl.tar.gz
+      - dua-darwin-x86_64.tar.gz: dua-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - dua
+
+  duf:
+    vars:
+      repo: muesli/duf
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.8.1", but the archive name uses "0.8.1" without the "v".
+      # https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_x86_64.tar.gz
+      - duf-linux-x86_64.tar.gz: duf_.+_linux_x86_64.tar.gz
+      # https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_Darwin_x86_64.tar.gz
+      - duf-darwin-x86_64.tar.gz: duf_.+_Darwin_x86_64.tar.gz
+    include:
+      - duf
+
+  fastfetch:
+    vars:
+      repo: Wilfred/difftastic
+    template: "{{ template.github.latest }}"
+    archives:
+      - fastfetch-linux-x86_64.tar.gz: fastfetch-linux-amd64.tar.gz
+      - fastfetch-darwin-x86_64.tar.gz: fastfetch-macos-amd64.tar.gz
+    strip: 2
+    include:
+      # fastfetch-macos-amd64/usr/bin/fastfetch
+      - bin/fastfetch
+    dst: ~/.local/ # ~/.local/bin/fastfetch
+
+  tree-sitter:
+    vars:
+      repo: tree-sitter/tree-sitter
+    template: "{{ template.github.latest }}"
+    archives:
+      - tree-sitter-linux-x86_64.gz: tree-sitter-linux-x64.gz
+      - tree-sitter-darwin-x86_64.gz: tree-sitter-macos-x64.gz
+    include:
+      - tree-sitter
+    install-post: |-
+      chmod +x ~/.local/bin/tree-sitter
+
   task:
     vars:
       repo: go-task/task
@@ -248,15 +470,17 @@ packages:
     include:
       - task
 
-  fnm:
+  uv:
     vars:
-      repo: Schniz/fnm
+      repo: astral-sh/uv
     template: "{{ template.github.latest }}"
     archives:
-      - fnm-linux.zip: fnm-linux.zip
-      - fnm-darwin.zip: fnm-macos.zip
+      - uv-linux-x86_64.tar.gz: uv-x86_64-unknown-linux-gnu.tar.gz
+      - uv-darwin-x86_64.tar.gz: uv-x86_64-apple-darwin.tar.gz
+    strip: 1
     include:
-      - fnm
+      - uv
+      - uvx
 
   scc:
     vars:
@@ -337,7 +561,7 @@ packages:
     archives:
       # https://dl.google.com/go/go1.24.0.linux-amd64.tar.gz
       - go-linux-x86_64.tar.gz: https://dl.google.com/go/<version>.linux-amd64.tar.gz
-      - go-darwin-x86_64.tar.gz: https://dl.google.com/go/<version>.linux-amd64.tar.gz
+      - go-darwin-x86_64.tar.gz: https://dl.google.com/go/<version>.darwin-amd64.tar.gz
     strip: 1
     dst: $XDG_DATA_HOME/go # defaults to $XDG_BIN_HOME
     install-post: |
@@ -404,28 +628,60 @@ packages:
           ${GITHUB_PROXY}https://raw.githubusercontent.com/ziglang/shell-completions/master/_zig
       zig version
 
+
+  # brew install python
+  # dnf install python
+  # NOTE: Python installed using `uv python install` cannot be used to install packages that depend on Python using mason.nvim
+  python:
+    install: |-
+      export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
+
+      # curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh -s -- --help
+      if [[ ! -x $XDG_BIN_HOME/uv ]]; then
+          export UV_INSTALLER_GITHUB_BASE_URL=${GITHUB_PROXY}https://github.com
+          export UV_NO_MODIFY_PATH=1
+          export INSTALLER_PRINT_VERBOSE=1
+
+          # curl https://astral.sh/uv/install.sh -sSf | sh
+          curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh
+          uv tool install ansible
+      else
+          uv self update
+          uv python upgrade
+          uv tool upgrade ansible
+      fi
+      uv --version
+      python --version
+
+      ln -sf ~/.local/share/uv/tools/ansible/bin/ansible $XDG_BIN_HOME/ansible
+      ln -sf ~/.local/share/uv/tools/ansible/bin/ansible-config $XDG_BIN_HOME/ansible-config
+      ln -sf ~/.local/share/uv/tools/ansible/bin/ansible-playbook $XDG_BIN_HOME/ansible-playbook
+
+      uv generate-shell-completion zsh > ~/.local/share/zsh/site-functions/_uv
+
+
   # TODO: Android
 
 dnf:
   - wl-clipboard
-  - difftastic
-  - git-delta
-  # - lazygit  # github OR dnf copr enable atim/lazygit
-  # - gitmux  # github
-  - fd-find
-  - ripgrep
-  - bat
-  - fzf
-  - zoxide
-  - yq # go: jq replacement for YAML
+  # - difftastic
+  # - git-delta
+  # # - lazygit  # github OR dnf copr enable atim/lazygit
+  # # - gitmux  # github
+  # - fd-find
+  # - ripgrep
+  # - bat
+  # - fzf
+  # - zoxide  # TODO: move to keeper
+  # - yq # go: jq replacement for YAML
   - zsh
   - tmux
   - alacritty
-  - fastfetch # duf, btm
   - xlsclients # list x11 client applications running on a display
-  - dua-cli # rust: disk
-  - duf # go: disk
-  - man-pages-zh-CN
+  # - fastfetch # duf, btm
+  # - dua-cli # rust: disk
+  # - duf # go: disk
+  # - man-pages-zh-CN
   - groff
   - podman-tui # systemctl --user enable --now podman
   # - tree-sitter-cli # rust: tree-sitter
@@ -435,6 +691,99 @@ dnf:
   # - nodejs-npm # mason.nvim depends on npm
   # - gnome-shell-extension-system-monitor
   # - gnome-shell-extension-gsconnect
+
+# brew uninstall --force $(brew list)
+# brew install ...
+# 只安装基于 C/C++ 源码的基础工具, 对齐 Linux 基础命令
+# deps: yq, jq, bash4+, grep3+, gnu-tar
+brew:
+  - tmux
+  - bash
+  - jq
+  # Compatible with Linux command parameters
+  - grep
+  - gnu-tar
+  # Error: gcal has been disabled because it is not maintained upstream! It was disabled on 2024-08-03.
+  # Warning: pidof has been deprecated because it has a removed upstream repository! It will be disabled on 2026-01-12.
+
+
+  - gnu-sed
+  - gnu-time
+  - gnu-which
+  - binutils
+  - coreutils
+  - diffutils
+  - findutils
+  - inetutils
+  - gawk
+  - pstree
+  - tree
+
+  - sshpass
+  - git
+  - tig
+  - curl
+  - wget # wget2 has too many dependencies
+  - sqlite
+  - bash-completion@2
+  - zsh-completions
+  # - jemalloc
+  # - watch # 需要gitlab token
+  # - man-db, 依赖太多了
+  # - groff
+  # - yq
+
+  # - ffmpeg gd imagemagick youtube-dl
+  - tmuxinator
+  - translate-shell
+  # - tree-sitter # rust
+
+  - neovim
+  - ruby
+  - php
+  - python
+  - lua
+  - luajit
+  - luarocks
+  - openjdk
+
+  # shadowsocks-rust acl
+  # - proxychains-ng
+  # - privoxy
+  # - tcpflow
+  # - tcptrace
+  - scrcpy
+
+# brew install --cask ...
+brew_cask:
+  - font-sauce-code-pro-nerd-font
+  - alacritty --no-quarantine
+  - android-platform-tools
+  - appcleaner
+  - the-unarchiver
+  - baidunetdisk
+  - dingtalk
+  - tencent-meeting
+  - tencent-docs
+  - wpsoffice
+  - drawio
+  - google-chrome
+  - hammerspoon
+  - kap
+  - keycastr
+  - maccy
+  - vlc
+  - omnigraffle
+  - mark-text
+  - pdfexpert
+  - visual-studio-code
+  - wireshark-app
+  - charles
+  - tableplus
+  - multipass
+  - qq
+  - sogouinput
+
 
 flatpak:
   - ca.desrt.dconf-editor
