@@ -30,6 +30,7 @@
 #
 
 # python3 -m site --user-base
+# python3 -m site --user-site
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
 export PYTHONUSERBASE=~/.local # ~/.local/{bin,lib}
 

@@ -12,6 +12,10 @@ export ZK_NOTEBOOK_DIR=$HOME/projects/notebook/src
 
 export TASK_X_MAP_VARIABLES=1
 
+export TLRC_CONFIG=${HOME}/.config/tldr/config.toml
+
+[[ -f ~/.local/share/miniconda3/etc/profile.d/conda.sh ]] && source ~/.local/share/miniconda3/etc/profile.d/conda.sh
+
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus
 # export XMODIFIERS=@im=ibus
@@ -27,3 +31,7 @@ export TASK_X_MAP_VARIABLES=1
 # https://github.com/flathub/io.podman_desktop.PodmanDesktop/pull/52
 # https://github.com/flathub/io.podman_desktop.PodmanDesktop/blob/e613182119203fce46a4d2f803b3c07237288912/io.podman_desktop.PodmanDesktop.yml#L12
 # export ELECTRON_OZONE_PLATFORM_HINT=auto
+#
+# manpages-zh:
+# ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
+# mv /tmp/zhman/src ~/.local/share/man/zh_CN
