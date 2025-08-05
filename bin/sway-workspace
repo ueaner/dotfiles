@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Quick switch or move-to the rightmost / first empty workspace in Sway.
+# @depends: jq, libnotify
+
+echo "[$$ sway-workspace] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+subcmd="$1"
+empty_id=
+
+# IFS=$'\t' read -r max_index max_name total \
+#     <<<"$(swaymsg -t get_workspaces | jq -r '
+#       (max_by(.num) | [.num, .name]) + [length] | @tsv
+#     ')"
+# echo "$max_index $max_name $total"
+
+IFS=$'\t' read -r max_id total holes focused_id \
+    <<<"$(swaymsg -t get_workspaces | jq -r '
+    map(.num) as $nums
+    | ($nums | max) as $max
+    | ($nums | length) as $total
+    | (.[] | select(.focused == true) | .num) as $focused
+    | [$max, $total, $max - $total, $focused] | @tsv
+  ')"
+# max=4 total=3 holes=1
+
+# 存在间断 workspace
+if [ "$holes" -gt 0 ]; then
+    empty_id=$(
+        swaymsg -t get_workspaces |
+            jq -r '
+      (map(.num) | sort) as $nums
+      | range(1; $nums[-1] + 1) as $i          # 连续序列 1..max
+      | select($i != $nums[$i-1])              # 第一次不等
+      | $i
+    ' | head -n1
+    )
+fi
+
+# 无间断, 检查当前 workspace 内是否有窗口
+if [[ -z "$empty_id" ]]; then
+    empty=$(
+        swaymsg -t get_tree |
+            jq --argjson idx "$focused_id" '
+        .. | objects
+        | select(.type=="workspace" and .num==$idx)
+        | ((.nodes + .floating_nodes) | length == 0)
+    '
+    )
+
+    if [[ "$empty" == "true" ]]; then
+        # 当前 workspace 内是无窗口, 使用当前 workspace
+        empty_id=$focused_id
+    else
+        # 开启新的 workspace
+        empty_id=$((max_id + 1))
+    fi
+fi
+
+echo "[$$ sway-workspace] subcmd: $subcmd, max_id: $max_id, total: $total, holes: $holes, focused_id: $focused_id, empty_id: $empty_id" >>/tmp/xreaker.log
+
+case "$subcmd" in
+switch-to-rightmost)
+    swaymsg workspace "$max_id"
+    ;;
+switch-to-empty)
+    swaymsg workspace "$empty_id"
+    ;;
+move-to-rightmost)
+    swaymsg move container to workspace "$max_id"
+    swaymsg workspace "$max_id"
+    ;;
+move-to-empty)
+    swaymsg move container to workspace "$empty_id"
+    swaymsg workspace "$empty_id"
+    ;;
+*)
+    notify-send "[$$ sway-workspace] argument must be one of \"switch-to-rightmost | switch-to-empty | move-to-rightmost | move-to-empty\""
+    exit 1
+    ;;
+esac
