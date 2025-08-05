@@ -6,6 +6,7 @@ echo "[$$ sway-workspace] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/t
 
 subcmd="$1"
 empty_id=
+nodes_count=
 
 # IFS=$'\t' read -r max_index max_name total \
 #     <<<"$(swaymsg -t get_workspaces | jq -r '
@@ -38,16 +39,16 @@ fi
 
 # 无间断, 检查当前 workspace 内是否有窗口
 if [[ -z "$empty_id" ]]; then
-    empty=$(
+    nodes_count=$(
         swaymsg -t get_tree |
             jq --argjson idx "$focused_id" '
         .. | objects
         | select(.type=="workspace" and .num==$idx)
-        | ((.nodes + .floating_nodes) | length == 0)
+        | ((.nodes + .floating_nodes) | length)
     '
     )
 
-    if [[ "$empty" == "true" ]]; then
+    if [[ "$nodes_count" -eq 0 ]]; then
         # 当前 workspace 内是无窗口, 使用当前 workspace
         empty_id=$focused_id
     else
@@ -59,17 +60,30 @@ fi
 echo "[$$ sway-workspace] subcmd: $subcmd, max_id: $max_id, total: $total, holes: $holes, focused_id: $focused_id, empty_id: $empty_id" >>/tmp/xreaker.log
 
 case "$subcmd" in
+# for workspace
 switch-to-rightmost)
     swaymsg workspace "$max_id"
     ;;
 switch-to-empty)
     swaymsg workspace "$empty_id"
     ;;
+
+# for container
 move-to-rightmost)
+    # 当前窗口已经在 rightmost workspace
+    if [[ "$max_id" == "$focused_id" ]]; then
+        exit 0
+    fi
+
     swaymsg move container to workspace "$max_id"
     swaymsg workspace "$max_id"
     ;;
 move-to-empty)
+    # 无间断, 最后一个 workspace 单窗口, 不新建不必要的 workspace
+    if [[ "$holes" -eq 0 && "$max_id" == "$focused_id" && "$nodes_count" -eq 1 ]]; then
+        exit 0
+    fi
+
     swaymsg move container to workspace "$empty_id"
     swaymsg workspace "$empty_id"
     ;;
