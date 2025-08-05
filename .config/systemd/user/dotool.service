@@ -1,12 +1,10 @@
 [Unit]
 Description=Command to simulate input anywhere (X11, Wayland, TTYs)
 Documentation=https://git.sr.ht/~geb/dotool/tree/HEAD/doc/dotool.1.scd
-PartOf=graphical-session.target
-After=graphical-session.target
 
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/dotoold
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=default.target

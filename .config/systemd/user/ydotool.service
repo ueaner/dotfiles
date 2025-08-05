@@ -1,0 +1,18 @@
+# NOTE: Use wtype instead of ydotool on sway
+#       ydotool: uinput → Wayland compositor
+#
+# 0. sudo libinput debug-events --show-keycodes
+# 1. sudo dnf install ydotool
+[Unit]
+Description=Generic command-line automation tool (no X!)
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/ydotoold
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillMode=process
+TimeoutSec=180
+
+[Install]
+WantedBy=default.target

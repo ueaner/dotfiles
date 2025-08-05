@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# Switch freely between tmux panes, browser address bar and sway containers
+# @depends: jq, libnotify, wtype
+
+echo "$$ sway-tmux-browser: ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+# arrows="left | down | up | right"
+# if ! echo "| $arrows |" | grep -F -q "| $1 |"; then
+#     notify-send "sway-tmux-browser: argument must be one of \"$arrows\""
+#     exit 1
+# fi
+
+arrow="$1"
+at_arrow_cmd=
+tmux_cmd=
+sway_cmd=
+
+case "$arrow" in
+left)
+    at_arrow_cmd="tmux display-message -p '#{pane_at_left}'"
+    tmux_cmd="tmux select-pane -L"
+    sway_cmd="swaymsg focus left"
+    ;;
+down)
+    at_arrow_cmd="tmux display-message -p '#{pane_at_bottom}'"
+    tmux_cmd="tmux select-pane -D"
+    sway_cmd="swaymsg focus down"
+    ;;
+up)
+    at_arrow_cmd="tmux display-message -p '#{pane_at_top}'"
+    tmux_cmd="tmux select-pane -U"
+    sway_cmd="swaymsg focus up"
+    ;;
+right)
+    at_arrow_cmd="tmux display-message -p '#{pane_at_right}'"
+    tmux_cmd="tmux select-pane -R"
+    sway_cmd="swaymsg focus right"
+    ;;
+*)
+    notify-send "sway-tmux-browser: argument must be one of \"left | down | up | right\""
+    exit 1
+    ;;
+esac
+
+# swaymsg -t get_tree -r | jq '.. | select(.type?) | select(.focused==true) | {name, app_id, id, pid}'
+focused_app_id=$(swaymsg -t get_tree -r | jq -r '.. | select(.type?) | select(.focused==true) | .app_id')
+echo "$$ sway-tmux-browser: sway focused_app_id: $focused_app_id, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+
+if [[ "$focused_app_id" == "Alacritty" ]] && [[ "$(tmux list-panes | wc -l)" -gt "1" ]]; then
+    at_arrow=$(eval "$at_arrow_cmd")
+    echo "$$ sway-tmux-browser: at_arrow: $at_arrow" >>/tmp/xreaker.log
+    if [[ "$at_arrow" == "0" ]]; then
+        echo "$$ sway-tmux-browser: switch tmux pane" >>/tmp/xreaker.log
+        eval "$tmux_cmd" &>/tmp/xreaker.log
+        exit $?
+    fi
+elif [[ "$arrow" == "right" ]] && [[ "$focused_app_id" == "org.mozilla.firefox" || "$focused_app_id" == "google-chrome" ]]; then
+    # 判断浏览器右侧是否有窗口
+    has_right_container=$(swaymsg -t get_tree | jq -r '
+  . as $tree
+  | ($tree | ..|objects|select(.focused==true)) as $c
+  | ($tree | ..|objects|select(.type=="workspace")|select(any(.nodes[]?;.id==$c.id))) as $ws
+  | if ($ws.layout=="splith" and $ws.nodes[-1].id!=$c.id) then "yes" else "no" end
+  // "no"
+')
+    # 如果浏览器右侧没有其他窗口
+    if [[ "$has_right_container" == "no" ]]; then
+        # 模拟按下 Ctrl+L 来聚焦地址栏
+        echo "$$ sway-tmux-browser: $focused_app_id focuses the address bar" >>/tmp/xreaker.log
+        wtype -M ctrl -P l -m ctrl -p l # Ctrl+L
+        exit $?
+    fi
+fi
+
+echo "$$ sway-tmux-browser: switch sway container" >>/tmp/xreaker.log
+eval "$sway_cmd" &>>/tmp/xreaker.log
+exit $?
