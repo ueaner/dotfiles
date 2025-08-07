@@ -8,16 +8,16 @@ keymap:
 
   # Sway = manages general workspaces and windows
   # Tmux = manages terminal sessions, terminal window splitting, and nvim/shell workflows
-  - name: Tmux
-    exact_match: true
-    application:
-      only: [Alacritty, foot, footclient]
-    remap:
-      # Switching panes in Tmux is like switching containers in Sway
-      Super-h: [Alt-s, h]     # Pane: Force Left
-      Super-j: [Alt-s, j]     # Pane: Force Down
-      Super-k: [Alt-s, k]     # Pane: Force Up
-      Super-l: [Alt-s, l]     # Pane: Force Right
+  # - name: Tmux
+  #   exact_match: true
+  #   application:
+  #     only: [Alacritty, foot, footclient]
+  #   remap:
+  #     # Switching panes in Tmux is like switching containers in Sway
+  #     Super-h: [Alt-s, h]     # Pane: Force Left
+  #     Super-j: [Alt-s, j]     # Pane: Force Down
+  #     Super-k: [Alt-s, k]     # Pane: Force Up
+  #     Super-l: [Alt-s, l]     # Pane: Force Right
 
   - name: Browser
     exact_match: true
