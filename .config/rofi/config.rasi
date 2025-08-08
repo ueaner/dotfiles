@@ -1,24 +1,12 @@
 /******************************************************************************
- * ROFI Color theme based on Waybar ~/.config/waybar/style.css
+ * Rofi config.rasi with CSS variables
  ******************************************************************************/
 
+@import "colors.rasi"
+
 * {
-    /* Rofi 颜色变量, 映射 Waybar 颜色值 */
-    background-color:           #21252d; /* Rofi 主窗口背景 (对应 Waybar 的 #21252d) */
-    foreground-color:           #eaeaea; /* Rofi 主文本颜色 (对应 Waybar 的 #eaeaea) */
-    secondary-background:       #2e3440; /* 次要背景，用于输入栏、边框等 (对应 Waybar 的 #2e3440) */
-
-    selected-background:        #cfabe0; /* 选中项背景 (对应 Waybar 的强调淡紫色) */
-    selected-foreground:        #21252d; /* 选中项文本 (深色, 确保对比度) */
-
-    urgent-background:          #df6566; /* 紧急项背景 (对应 Waybar 的危急红色) */
-    urgent-foreground:          #eaeaea; /* 紧急项文本 */
-
-    active-background:          #2e3440; /* 活跃项背景 (对应 Waybar 的 #2e3440) */
-    active-foreground:          #eaeaea; /* 活跃项文本 */
-
     /* Rofi 内置属性的颜色值定义 */
-    foreground:                 @foreground-color;
+    foreground:                 @main-foreground;
     normal-foreground:          @foreground;
     /* urgent-foreground:          @urgent-foreground; */
     /* active-foreground:          @active-foreground; */
@@ -51,7 +39,7 @@ configuration {
 }
 
 window {
-    background-color: @background-color;
+    background-color: @main-background;
     border:           0;
     border-radius:    8;
     padding:          12;

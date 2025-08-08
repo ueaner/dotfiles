@@ -1,0 +1,16 @@
+/* vim: set filetype=rasi: */
+/******************************************************************************
+ * Defining GTK3 CSS variables
+ ******************************************************************************/
+
+/* 颜色变量定义 */
+@define-color main-background #1a222a;
+@define-color main-foreground #eaeaea;
+@define-color secondary-background #2e3440;
+
+@define-color urgent-background #df6566;
+@define-color selected-background #cfabe0;
+
+@define-color green-color #5a8d86;
+
+@define-color alacritty-background #0d1117;
