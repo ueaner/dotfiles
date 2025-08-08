@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# 移动当前窗口到新位置的同时，将鼠标光标自动移动到该窗口的中心位置
+# @depends: jq, libnotify
+
+# 第一个参数是方向，如 "right" 或 "left"
+DIRECTION=$1
+
+# 1. 移动当前窗口
+swaymsg move "$DIRECTION"
+
+# 2. 等待一小段时间，确保 Sway 更新了窗口位置
+sleep 0.05
+
+# 3. 获取新位置下，当前聚焦窗口的几何信息
+# 使用 jq 来解析 swaymsg get_tree 的输出
+read -r X Y W H < <(swaymsg -t get_tree | jq -r '
+    .. | objects | select(.focused) | .rect | [.x, .y, .width, .height] | join(" ")
+')
+
+# 如果没有获取到信息，则退出
+if [ -z "$X" ]; then
+    notify-send "cannot get window position"
+    exit 1
+fi
+
+# 4. 计算窗口中心点坐标
+CENTER_X=$(echo "scale=0; $X + $W / 2" | bc)
+CENTER_Y=$(echo "scale=0; $Y + $H / 2" | bc)
+
+# 5. 使用 Sway 命令将光标移动到这个中心点
+swaymsg seat - cursor set "$CENTER_X" "$CENTER_Y"
