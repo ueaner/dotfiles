@@ -55,7 +55,11 @@ def get_archives_directory():
     backup_dir = os.environ.get(
         "XDG_BACKUP_DIR", os.path.join(os.path.expanduser("~"), ".cache")
     )
-    return backup_dir + "/archives"
+
+    archives_dir = backup_dir + "/archives"
+    os.mkdir(archives_dir)
+
+    return archives_dir
 
 
 class ThreadedHTTPServer(object):

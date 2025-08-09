@@ -733,7 +733,7 @@ brew:
   # - groff
   # - yq
 
-  # - ffmpeg gd imagemagick youtube-dl
+  # - ffmpeg gd imagemagick yt-dlp spotdl
   - tmuxinator
   - translate-shell
   # - tree-sitter # rust
