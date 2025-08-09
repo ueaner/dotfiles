@@ -41,5 +41,11 @@
 
 - name: Configure Sway Desktop Environment
   when: desktop == "Sway"
-  ansible.builtin.debug:
-    msg: "See ~/.config/sway/config"
+  block:
+    - name: See Sway config
+      ansible.builtin.debug:
+        msg: "See ~/.config/sway/config"
+
+    - name: Set Sway backgrounds
+      ansible.builtin.command: ~/bin/sway-bg
+      changed_when: false
