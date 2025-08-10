@@ -628,10 +628,6 @@ packages:
           ${GITHUB_PROXY}https://raw.githubusercontent.com/ziglang/shell-completions/master/_zig
       zig version
 
-
-  # brew install python
-  # dnf install python
-  # NOTE: Python installed using `uv python install` cannot be used to install packages that depend on Python using mason.nvim
   python:
     install: |-
       export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
@@ -644,6 +640,7 @@ packages:
 
           # curl https://astral.sh/uv/install.sh -sSf | sh
           curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh
+          uv python install
           uv tool install ansible
       else
           uv self update
@@ -651,7 +648,7 @@ packages:
           uv tool upgrade ansible
       fi
       uv --version
-      python --version
+      uv python list --managed-python --only-installed
 
       ln -sf ~/.local/share/uv/tools/ansible/bin/ansible $XDG_BIN_HOME/ansible
       ln -sf ~/.local/share/uv/tools/ansible/bin/ansible-config $XDG_BIN_HOME/ansible-config

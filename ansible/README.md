@@ -43,6 +43,12 @@ Specify the Ansible configuration file by setting the [ANSIBLE_CONFIG] environme
 export ANSIBLE_CONFIG=~/ansible/ansible.cfg
 ```
 
+List all-packages of the packages role:
+
+```bash
+yq '... comments="" | .packages | keys' <~/ansible/roles/packages/vars/main.yml
+```
+
 Download the package to be used.
 
 ```bash
@@ -119,7 +125,6 @@ Such as the [Github task lists]:
 ## 注意事项
 
 1. tags: starting with the main.yml file, add tags to the task
-
    - ansible-playbook ~/ansible/linux.yml -vvv --tags "download" --list-tasks
    - ansible-playbook ~/ansible/linux.yml -vvv --tags "install" --list-tags
    - ansible-playbook ~/ansible/linux.yml -vvv --tags "go"
@@ -127,7 +132,6 @@ Such as the [Github task lists]:
 2. [ansible-lint rules]: Avoid checking by adding comments `# noqa rule-name`, where `rule-name` can be seen in the execution results of `ansible-lint`.
 
 3. [All three possible ways of ignoring rules]
-
    - `noqa` inline -> for individual tasks
    - `skip_list` in config file -> for general deactivation
    - `.ansible-lint-ignore` -> for deactivation on file level

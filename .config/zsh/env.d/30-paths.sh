@@ -55,6 +55,13 @@ if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 
+# Avoid errors when uv is not installed
+python_executable=$(uv python find --managed-python 2>/dev/null)
+if [[ $? -eq 0 && -n "$python_executable" ]]; then
+    python_bindir=$(dirname $python_executable)
+    PATH="$python_bindir:$PATH"
+fi
+
 # 数组反转
 # paths=$(echo ${paths[@]} | rev)
 #for p in ${paths[@]}; do
