@@ -57,7 +57,7 @@ def get_archives_directory():
     )
 
     archives_dir = backup_dir + "/archives"
-    os.mkdir(archives_dir)
+    os.makedirs(archives_dir, exist_ok=True)
 
     return archives_dir
 
