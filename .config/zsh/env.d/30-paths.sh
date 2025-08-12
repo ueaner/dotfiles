@@ -38,6 +38,22 @@ if type brew &>/dev/null; then
         PATH="${HOMEBREW_PREFIX}/opt/man-db/libexec/bin:$PATH"
     fi
 
+    # brew install llvm lld
+    # brew install qemu --build-from-source --cc=llvm_clang -v
+    if ls ${HOMEBREW_PREFIX}/opt/llvm/bin &>/dev/null; then
+        PATH="${HOMEBREW_PREFIX}/opt/llvm/bin:$PATH"
+        # For compilers to find llvm you may need to set: [Just add --cc=llvm_clang option]
+        # LLVM_PREFIX="${HOMEBREW_PREFIX}/opt/llvm"
+        # export CC="${LLVM_PREFIX}/bin/clang"
+        # export CXX="${LLVM_PREFIX}/bin/clang++"
+        # export CPP="${LLVM_PREFIX}/bin/clang-cpp"
+        # export LDFLAGS="-L${LLVM_PREFIX}/lib -fuse-ld=lld -Wl,-rpath,${LLVM_PREFIX}/lib"
+        # export CPPFLAGS="-I${LLVM_PREFIX}/include"
+
+        # ERROR: Problem encountered: You either need GCC v7.4 or Clang v10.0 (or XCode Clang v15.0) to compile QEMU
+        # brew install qemu --build-from-source --cc=llvm_clang -v
+    fi
+
     # libexec 目录下有个软链 man 指向 gnuman，使用 man 命令查看手册时，
     # 会自动在 $PATH 的同级目录下找 "man" 或者 "share/man" 目录，所以这里不需要处理 $MANPATH
 
