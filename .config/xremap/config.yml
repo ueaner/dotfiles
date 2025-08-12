@@ -187,7 +187,7 @@ keymap:
 
       Super-KEY_0:                 Ctrl-KEY_0            # zoom reset
       Super-KEY_EQUAL:             Shift-Ctrl-KEY_EQUAL  # zoom in +
-      Super-KEY_MINUS:             Shift-Ctrl-KEY_MINUS  # zoom in -
+      Super-KEY_MINUS:             Shift-Ctrl-KEY_MINUS  # zoom out -
 
       Super-t:                     Ctrl-t                # Tab: New
       Shift-Super-t:               Shift-Ctrl-t          # Tab: Reopen the last closed tab

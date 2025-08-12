@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# sway-resize-smart —— 智能放大 / 缩小当前焦点窗口
+#
+# 功能概述
+# 1. 自动检测当前焦点窗口的状态：
+#    • 浮动窗口（floating） → 按百分比同步放大 / 缩小，并保持中心对齐
+#    • 平铺窗口（tiling）   → 根据水平 / 垂直拆分方向，按像素级调整兄弟窗口占比
+#    • 全屏窗口             → 直接退出，不做任何操作
+#
+# 2. 输入参数
+#    $1 = grow   放大 5 %（浮动）或 15 px（平铺）
+#    $1 = shrink 缩小 5 %（浮动）或 15 px（平铺）
+#
+# 3. 浮动窗口逻辑
+#    • 以“工作区可用区域”为基准，计算当前窗口的宽高百分比
+#    • 每次增减 5 %，并限制在 30 %–100 % 之间
+#    • 当任一维度达到 100 % 时，自动将窗口居中，防止超出可视区域
+#
+# 4. 平铺窗口逻辑
+#    • 解析当前拆分方向：水平（splith）或垂直（splitv）
+#    • 仅在存在左/右（水平）或上/下（垂直）兄弟节点时执行 resize
+#    • 每次增减 15 px（≈ 5 %×3），保持与 Sway 默认步长一致
+#
+# 5. 依赖
+#    swaymsg、jq（已预装于常规 Sway 环境）
+#
+# 绑定示例（~/.config/sway/config）
+#    bindsym $mod+plus  exec ~/bin/sway-resize-smart grow
+#    bindsym $mod+minus exec ~/bin/sway-resize-smart shrink
+#
+# 注意
+# • 脚本内部已处理 Waybar 等面板占用空间，百分比基于“工作区”而非整个屏幕
+# • 平铺 tabbed / stacking 布局暂未实现，直接退出
+
+# 获取当前焦点窗口信息, 及相关窗口信息
+# swaymsg -rt get_tree | jq -r '
+#   # 当前焦点节点（无论浮动、全屏都能匹配）
+#   def focus: .. | objects | select(.focused == true);
+#
+#   # 尝试找它所在的 split 容器
+#   def split_parent($n):
+#     first(.. | objects
+#           | select(.layout == "splith" or .layout == "splitv")
+#           | select((.nodes? // []) + (.floating_nodes? // [])
+#                    | map(.id) | index($n.id)));
+#
+#   focus as $n
+#   | split_parent($n) as $p
+#
+#   # 兄弟节点列表（只在 split 容器里才有意义）
+#   | (($p.nodes? // []) + ($p.floating_nodes? // [])) as $sibs
+#   | ($sibs | map(.id) | index($n.id)) as $idx
+#
+#   # 统一输出
+#   | "分屏方向:  " +
+#       (if $p == null then "无"
+#        elif $p.layout == "splith" then "水平"
+#        elif $p.layout == "splitv" then "垂直"
+#        else "其他" end)
+#   , "浮动:      " + (if $n.type == "floating_con"       then "是" else "否" end)
+#   , "全屏:      " + (if $n.fullscreen_mode == 1         then "是" else "否" end)
+#   , "左侧/上方: " + (if ($idx // -1) > 0                then "是" else "否" end)
+#   , "右侧/下方: " + (if ($idx //  9) < ($sibs|length)-1 then "是" else "否" end)
+# '
+
+{
+    IFS=$'\n' read -r SPLIT_DIRECTION # h | v | none
+    IFS=$'\n' read -r IS_FLOAT        # true | false
+    IFS=$'\n' read -r IS_FULL         # true | false
+    IFS=$'\n' read -r HAS_PREV        # 左侧/上方, true | false
+    IFS=$'\n' read -r HAS_NEXT        # 右侧/下方, true | false
+} < <(swaymsg -rt get_tree | jq -r '
+  def focus: .. | objects | select(.focused == true);
+  def split_parent($n):
+    first(.. | objects
+          | select(.layout == "splith" or .layout == "splitv")
+          | select(((.nodes? // []) + (.floating_nodes? // []))
+                   | map(.id) | index($n.id)));
+
+  focus as $n
+  | split_parent($n) as $p
+  | ((($p.nodes? // []) + ($p.floating_nodes? // []))) as $sibs
+  | ($sibs | map(.id) | index($n.id)) as $idx
+
+  # 依次输出 5 行
+  | (if $p == null then "none"
+     elif $p.layout == "splith" then "h"
+     elif $p.layout == "splitv" then "v"
+     else "none" end),
+    (if $n.type == "floating_con"          then "true" else "false" end),
+    (if $n.fullscreen_mode == 1            then "true" else "false" end),
+    (if ($idx // -1) > 0                   then "true" else "false" end),
+    (if ($idx // 9) < ($sibs | length) - 1 then "true" else "false" end)
+')
+
+# 每次调整的大小增量
+DELTA=5
+# grow | shrink
+ACTION="$1"
+
+# 全屏状态不做操作
+if [[ "$IS_FULL" == "true" ]]; then
+    exit 0
+fi
+
+# 浮动窗口, 放大和缩小时, 保持窗口中心不变
+if [[ "$IS_FLOAT" == "true" ]]; then
+    # 获取当前输出（屏幕）的像素尺寸
+    # read -r OUT_WIDTH OUT_HEIGHT < <(swaymsg -t get_outputs | jq -r '
+    #     .[] | select(.focused == true) | "\(.rect.width) \(.rect.height)"
+    # ')
+    # 获取当前工作区（扣除 Waybar）的像素尺寸
+    read -r WS_WIDTH WS_HEIGHT < <(swaymsg -t get_workspaces | jq -r '
+    .[] | select(.focused == true) | "\(.rect.width) \(.rect.height)"
+')
+    # 获取当前焦点窗口的像素尺寸
+    read -r X Y WIN_WIDTH WIN_HEIGHT < <(swaymsg -t get_tree | jq -r '
+    .. | objects | select(.focused == true) | .rect | [.x, .y, .width, .height] | join(" ")
+')
+
+    # 计算当前百分比（整数）
+    CUR_PPT_W=$((WIN_WIDTH * 100 / WS_WIDTH))
+    CUR_PPT_H=$((WIN_HEIGHT * 100 / WS_HEIGHT))
+
+    # 计算新百分比
+    if [[ "$ACTION" == "shrink" ]]; then
+        DELTA=$((-DELTA))
+    fi
+    NEW_PPT_W=$((CUR_PPT_W + DELTA))
+    NEW_PPT_H=$((CUR_PPT_H + DELTA))
+
+    # 限制百分比范围（避免溢出）
+    NEW_PPT_W=$((NEW_PPT_W < 30 ? 30 : (NEW_PPT_W > 100 ? 100 : NEW_PPT_W)))
+    NEW_PPT_H=$((NEW_PPT_H < 30 ? 30 : (NEW_PPT_H > 100 ? 100 : NEW_PPT_H)))
+
+    # 应用新大小
+    swaymsg resize set "${NEW_PPT_W}ppt" "${NEW_PPT_H}ppt"
+    if [[ "${NEW_PPT_W}" -eq 100 || "${NEW_PPT_H}" -eq 100 ]]; then
+        swaymsg move position center
+    fi
+
+    exit 0
+fi
+
+# 平铺拆分
+DELTA=$((3 * DELTA))
+
+if [[ "$SPLIT_DIRECTION" == "h" ]]; then
+    # 水平拆分
+    if [[ "$HAS_PREV" == "true" || "$HAS_NEXT" == "true" ]]; then
+        swaymsg resize "$ACTION" width "${DELTA}px" 2>/dev/null
+    fi
+elif [[ "$SPLIT_DIRECTION" == "v" ]]; then
+    # 垂直拆分
+    if [[ "$HAS_PREV" == "true" || "$HAS_NEXT" == "true" ]]; then
+        swaymsg resize "$ACTION" height "${DELTA}px" 2>/dev/null
+    fi
+else
+    # Not implement: tabbed | stacking
+    exit 0
+fi
