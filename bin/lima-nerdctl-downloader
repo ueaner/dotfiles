@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Download nerdctl-full to Lima's cache directory
+
+# https://lima-vm.io/docs/dev/internals/#lima-cache-directory-librarycacheslima
+if [[ $(uname -s) == 'Darwin' ]]; then
+    export LIMA_CACHE_HOME=~/Library/Caches/lima
+else
+    export LIMA_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}/lima
+fi
+
+ARCH="x86_64"
+if [[ $(uname -m) =~ ^(arm64|aarch64)$ ]]; then
+    ARCH="aarch64"
+fi
+
+NERDCTL_URL=$(limactl info | jq -r --arg arch "$ARCH" '.defaultTemplate.containerd.archives | .[] | select(.arch == $arch) | .location')
+NERDCTL_URL_SHA256=$(echo -n "$NERDCTL_URL" | shasum -a 256 | awk '{print $1}')
+LIMA_NERDCTL_CACHE_DIR=$LIMA_CACHE_HOME/download/by-url-sha256/$NERDCTL_URL_SHA256
+mkdir -p "$LIMA_NERDCTL_CACHE_DIR"
+
+NERDCTL_PROXY_URL=${GITHUB_PROXY}${NERDCTL_URL}
+NERDCTL_HEADERS=$(curl -sI "$NERDCTL_PROXY_URL")
+LAST_MODIFIED=$(echo "$NERDCTL_HEADERS" | grep -i "Last-Modified" | cut -d' ' -f2- | tr -d '\r\n')
+CONTENT_TYPE=$(echo "$NERDCTL_HEADERS" | grep -i "Content-Type" | cut -d' ' -f2- | tr -d '\r\n')
+
+curl -C - -L "$NERDCTL_PROXY_URL" -o "$LIMA_NERDCTL_CACHE_DIR/data"
+echo -n "$NERDCTL_URL" >"$LIMA_NERDCTL_CACHE_DIR/url"
+echo -n "$LAST_MODIFIED" >"$LIMA_NERDCTL_CACHE_DIR/time"
+echo -n "$CONTENT_TYPE" >"$LIMA_NERDCTL_CACHE_DIR/type"
+
+echo
+echo "URL: $NERDCTL_URL"
+echo "Last-Modified: $LAST_MODIFIED"
+echo "Content-Type: $CONTENT_TYPE"
+echo "Downloaded $FILE to"
+echo "  -> $LIMA_NERDCTL_CACHE_DIR/data"
+echo
