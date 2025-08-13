@@ -824,6 +824,7 @@ brew:
 
 # brew install --cask ...
 brew_cask:
+  - hammerspoon
   - font-sauce-code-pro-nerd-font
   - alacritty --no-quarantine
   - android-platform-tools
