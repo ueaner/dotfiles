@@ -7,7 +7,7 @@
 # 丢弃重复项
 # [[ -n "$ZSH_VERSION" ]] && typeset -U path
 
-PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+PATH="/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 # GNU utils
 if type brew &>/dev/null; then
