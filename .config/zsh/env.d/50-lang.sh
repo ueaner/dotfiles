@@ -33,6 +33,7 @@
 # python3 -m site --user-site
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
 export PYTHONUSERBASE=~/.local # ~/.local/{bin,lib}
+export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
 
 # $(go env GOROOT)/src/os/file.go os.UserConfigDir()
 # https://golang.org/design/30411-env
