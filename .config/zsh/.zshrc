@@ -113,6 +113,9 @@ fi
 
 for rcfile in ~/.config/zsh/rc.d/[0-9][0-9]*[^~]; do
     if [[ "$rcfile" == *"autosuggestions"* ]]; then
+        if [[ "$COLORTERM" != "truecolor" ]]; then
+            continue
+        fi
         ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$COLOR_GRAY"
         # Disable autosuggestions in zprof mode
         [[ $ZSH_PROFILE_STARTUP == true ]] && continue
