@@ -1,3 +1,5 @@
+local util = require("util")
+
 -- Set Hammerspoon's configuration file path to ~/.config/hammerspoon/init.lua:
 -- [x] defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 
@@ -18,9 +20,16 @@ hs.hotkey.bind({ "cmd" }, "space", function()
   hs.task.new("/usr/bin/open", nil, function() end, { "-a", "Launchpad" }):start()
 end)
 
--- Toggle Alacritty terminal
+-- Toggle Terminal
 hs.hotkey.bind({ "cmd" }, "return", function()
-  hs.application.launchOrFocus(os.getenv("HOME") .. "/Applications/Alacritty.app")
+  local alacrittyAppPath = os.getenv("HOME") .. "/Applications/Alacritty.app"
+  if util.file_exists(alacrittyAppPath) then
+    hs.application.launchOrFocus(alacrittyAppPath)
+  else
+    -- hs.application.launchOrFocus("Terminal")
+    -- osascript -e 'id of app "Terminal"'
+    hs.application.launchOrFocusByBundleID("com.apple.Terminal")
+  end
 end)
 
 -- Load EmmyLua spoon for Lua autocompletion support
