@@ -239,12 +239,12 @@ packages:
           exit 0
       fi
       if [[ -f ~/.local/etc/shadowsocks-rust-local.json ]]; then
-          ln -sf ~/.local/etc/shadowsocks-rust-local.json /usr/local/etc/shadowsocks-rust-local.json
-          ln -sf ~/.local/etc/shadowsocks-rust-local.acl /usr/local/etc/shadowsocks-rust-local.acl
+          ln -sf ~/.local/etc/shadowsocks-rust-local.json /opt/local/etc/shadowsocks-rust-local.json
+          ln -sf ~/.local/etc/shadowsocks-rust-local.acl /opt/local/etc/shadowsocks-rust-local.acl
       fi
       if [[ -f ~/.local/bin/sslocal ]]; then
-          ln -sf ~/.local/bin/sslocal /usr/local/bin/sslocal
-          ln -sf ~/.local/bin/ssservice /usr/local/bin/ssservice
+          ln -sf ~/.local/bin/sslocal /opt/local/bin/sslocal
+          ln -sf ~/.local/bin/ssservice /opt/local/bin/ssservice
       fi
 
       # https://github.com/shadowsocks/shadowsocks-rust/blob/master/configs/org.shadowsocks.shadowsocks-rust.plist
@@ -562,7 +562,7 @@ packages:
       # opt/socket_vmnet/bin/socket_vmnet
       - bin/socket_vmnet
       - bin/socket_vmnet_client
-    dst: /usr/local/bin # defaults to $XDG_BIN_HOME
+    dst: /opt/local/bin # defaults to $XDG_BIN_HOME
 
     # sudo launchctl list | grep socket_vmnet
     # sudo launchctl list io.github.lima-vm.socket_vmnet.bridged.en0
