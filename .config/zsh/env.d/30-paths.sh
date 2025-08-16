@@ -72,6 +72,10 @@ if type uv &>/dev/null; then
     fi
 fi
 
+if [[ -d ~/.ansible/.venv/bin ]]; then
+    PATH=~/.ansible/.venv/bin:$PATH
+fi
+
 # Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)
 # Personal executable scripts: ~/bin
 # shellcheck disable=SC2076
