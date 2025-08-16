@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 # Better completion for ssh in Zsh.
 # https://github.com/sunlei/zsh-ssh
 # v0.0.7

@@ -18,7 +18,7 @@ if type brew &>/dev/null; then
             PATH="$p:$PATH"
         done
     fi
-    # keg-only bin: which means it was not symlinked into /usr/local,
+    # keg-only bin: which means it was not symlinked into /opt/local,
     # - 系统已经安装了此软件的某个版本
     # - 某个软件在 brew 中有多个版本，非最新版本往往为 keg-only
     # Only non-keg-only formulae are symlinked into the Homebrew prefix.
@@ -33,7 +33,7 @@ if type brew &>/dev/null; then
         PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
     fi
 
-    # use /usr/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
+    # use /opt/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
     if ls ${HOMEBREW_PREFIX}/opt/man-db/libexec/bin &>/dev/null; then
         PATH="${HOMEBREW_PREFIX}/opt/man-db/libexec/bin:$PATH"
     fi
@@ -58,10 +58,18 @@ if type brew &>/dev/null; then
     # 会自动在 $PATH 的同级目录下找 "man" 或者 "share/man" 目录，所以这里不需要处理 $MANPATH
 
     # 通过 manpath -d 查看 manpath 的添加过程：
-    # path directory /usr/local/opt/curl/bin is not in the config file
-    #   adding /usr/local/opt/curl/share/man to manpath
-    # path directory /usr/local/opt/coreutils/libexec/gnubin is not in the config file
-    #   adding /usr/local/opt/coreutils/libexec/man to manpath
+    # path directory /opt/local/opt/curl/bin is not in the config file
+    #   adding /opt/local/opt/curl/share/man to manpath
+    # path directory /opt/local/opt/coreutils/libexec/gnubin is not in the config file
+    #   adding /opt/local/opt/coreutils/libexec/man to manpath
+fi
+
+if type uv &>/dev/null; then
+    if ls ~/.local/share/uv/tools/*/bin &>/dev/null; then
+        for p in ~/.local/share/uv/tools/*/bin; do
+            PATH="$p:$PATH"
+        done
+    fi
 fi
 
 # Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)

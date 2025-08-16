@@ -1,0 +1,14 @@
+# vim: set filetype=yaml.ansible:
+---
+# sudo dnf install zsh
+
+- name: Ensure zsh is installed
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.dnf:
+    name: zsh
+    state: present
+
+- name: Set zsh as the default login shell for the current user
+  when: "'/zsh' not in ansible_env.SHELL"
+  ansible.builtin.command: chsh -s $(which zsh)
+  changed_when: false

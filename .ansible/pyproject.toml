@@ -1,0 +1,9 @@
+[project]
+name = "ansihome"
+version = "0.1.0"
+description = "Ansible Home"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ansible>=11.9.0",
+]

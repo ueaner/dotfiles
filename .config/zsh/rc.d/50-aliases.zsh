@@ -24,6 +24,9 @@ alias reload='for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done'
 
 alias vimdiff="nvim -d" # diff mode
 alias view="nvim -R"    # readonly mode
+if ! command -v vim >/dev/null; then
+    command -v nvim >/dev/null && alias vim="nvim" || alias vim="vi"
+fi
 # rg search-text | vim -
 # fd filename-pattern | xargs vim -
 
@@ -76,9 +79,6 @@ alias -g JSON="| python -m json.tool | bat -p -l json"
 alias csv="column -t -s,"
 alias tsv="column -t -s $'\t'"
 
-# named directories: cd ~www
-hash -d www=/usr/local/www/
-
 # Stopwatch
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 # Make free more user-friendly
@@ -122,7 +122,7 @@ fi
 alias proxy='export all_proxy=socks5://127.0.0.1:1080'
 alias unproxy='unset all_proxy'
 
-alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs nvim'
+alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs vim'
 
 alias dnf='sudo dnf'
 

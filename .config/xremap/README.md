@@ -20,7 +20,7 @@
 
 桌面环境 `GNOME Wayland` 和 `Sway` 的脚本/配置文件为：
 
-- [gsettings.sh]
+- [gsettings]
 - [~/.config/sway/config]
 
 以下为 `GNOME Wayland` 和 `Sway` 两个桌面环境下的安装、使用及注意事项。
@@ -41,13 +41,11 @@ cargo install xremap --features wlroots # Sway, Wayfire, etc.
 参考 https://copr-dist-git.fedorainfracloud.org/cgit/blakegardner/xremap/xremap.git/tree/xremap.spec
 
 1. 推荐使用 rootless 方式运行，即[不使用 sudo 运行]，核心是赋予当前用户具有对输入设备的读写权限，以便监听输入键，响应映射键。
-
    - 如果不存在 `input` 组则创建该组: `getent group input >/dev/null || sudo groupadd -r input`
    - 加入 input 组: `sudo gpasswd -a $USER input`
    - 为 input 组赋予读写权限: `echo 'KERNEL=="uinput", GROUP="input", TAG+="uaccess"' | sudo tee /usr/lib/udev/rules.d/00-xremap-input.rules`
 
 2. 安装 [Xremap GNOME Shell extension], Sway 环境不需要安装，主要是获取当前活动窗口，需要配置指定应用或排除某些应用时很重要。通过命令行获取[应用名称]：
-
    - GNOME Wayland: `busctl --user call org.gnome.Shell /com/k0kubun/Xremap com.k0kubun.Xremap WMClasses`
    - Sway: `swaymsg -t get_tree`
 
@@ -62,7 +60,6 @@ cargo install xremap --features wlroots # Sway, Wayfire, etc.
 这里主要记录配置上的一些注意点：
 
 1. 按键精确匹配 `exact_match: true`, 默认为 false 映射一个快捷键会扇出多个快捷键：
-
    - 如映射了 Super-n: down
      - 按下 Super-Shift-n 会触发 Shift-down
      - 按下 Super-Control-n 会触发 Control-down
@@ -70,7 +67,6 @@ cargo install xremap --features wlroots # Sway, Wayfire, etc.
 很可能稍不留神就拦截到系统定义的快捷键，触发一些未知结果，建议使用精确匹配 `exact_match: true`, 只拦截显式定义的快捷键。
 
 2. 映射键中的特殊字符使用 KEY_XXX 的形式定义，KEY_XXX 的具体名称可以在[这里]查看。一个实际例子：
-
    - 如 GNOME 下映射 `Super-a: C-KEY_SLASH` 做全选
 
 直接映射 `C-a` 会拦截 `GNOME gtk-key-theme=Emacs` 跳转到行首的动作, 幸运的是 `C-/` 也可触发全选，可以代替 `C-a` 触发全选。
@@ -207,7 +203,7 @@ journalctl -b --user -u xremap.service -f
 [~/.config/autostart/xremap.desktop]: https://github.com/ueaner/dotfiles/tree/main/.config/autostart/xremap.desktop
 [~/.config/systemd/user/xremap.service]: https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
 [/usr/lib/udev/rules.d/00-xremap-input.rules]: https://github.com/ueaner/dotfiles/blob/main/.config/xremap/00-xremap-input.rules
-[gsettings.sh]: https://github.com/ueaner/dotfiles/blob/main/ansible/roles/system/files/gsettings.sh
+[gsettings]: https://github.com/ueaner/dotfiles/blob/main/bin/gnome-gsettings-macos-ish
 [~/.config/sway/config]: https://github.com/ueaner/dotfiles/blob/main/.config/sway/config
 [应用名称]: https://github.com/xremap/xremap#application
 [systemd bootup]: https://www.freedesktop.org/software/systemd/man/bootup.html

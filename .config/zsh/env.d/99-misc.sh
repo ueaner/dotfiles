@@ -1,7 +1,7 @@
 [[ -f $HOME/.local/etc/token.sh ]] && source $HOME/.local/etc/token.sh
 
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
-export ANSIBLE_CONFIG=~/ansible/ansible.cfg
+export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
 
 [[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
 
@@ -29,7 +29,7 @@ fi
 # export XMODIFIERS=@im=ibus
 
 # Native Wayland for Chrome
-# cp https://github.com/ueaner/dotfiles/blob/main/ansible/roles/tools/files/chrome-flags.conf to:
+# cp https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/tools/files/chrome-flags.conf to:
 # ~/.var/app/com.google.Chrome/config/chrome-flags.conf
 # ~/.var/app/org.chromium.Chromium/config/chromium-flags.conf
 # ~/.var/app/com.brave.Browser/config/brave-flags.conf

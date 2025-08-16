@@ -39,7 +39,7 @@ fi
 - Building a macOS-ish Linux Workstation Environment
 
 ```bash
-~/ansible/install
+~/.ansible/install
 ```
 
 - See the [ansible] directory for more features
@@ -94,9 +94,9 @@ plantuml.jar
 [Dotfiles: Best Way to Store in a Bare Git Repository](https://www.atlassian.com/git/tutorials/dotfiles)
 
 [XDG]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-[ansible]: https://github.com/ueaner/dotfiles/tree/main/ansible#features
-[macOS-ish Desktop Environment]: ./ansible/roles/basic/tasks/desktop-environment.yml
-[Programming Languages Environment]: ./ansible/roles/packages/tasks/lang.yml
-[Terminal Environment]: ./ansible/roles/terminal/tasks/main.yml
-[packages]: ./ansible/roles/packages/vars/main.yml
+[ansible]: https://github.com/ueaner/dotfiles/tree/main/.ansible#features
+[macOS-ish Desktop Environment]: ./.ansible/roles/basic/tasks/desktop-environment.yml
+[Programming Languages Environment]: ./.ansible/roles/packages/tasks/lang.yml
+[Terminal Environment]: ./.ansible/roles/terminal/tasks/main.yml
+[packages]: ./.ansible/roles/packages/vars/main.yml
 [~/bin]: ./bin

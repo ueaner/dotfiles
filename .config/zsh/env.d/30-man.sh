@@ -18,7 +18,7 @@ export MANPAGER="nvim +Man!"
 # run-help bindkey
 [[ -d /usr/share/zsh/help ]] && export HELPDIR=/usr/share/zsh/help
 [[ -d /usr/share/zsh/$ZSH_VERSION/help ]] && export HELPDIR=/usr/share/zsh/$ZSH_VERSION/help
-[[ -d /usr/local/share/zsh/help ]] && export HELPDIR=/usr/local/share/zsh/help
-[[ -d /usr/local/share/zsh/$ZSH_VERSION/help ]] && export HELPDIR=/usr/local/share/zsh/$ZSH_VERSION/help
-unalias run-help # run-help is an alias for man
+[[ -d /opt/local/share/zsh/help ]] && export HELPDIR=/opt/local/share/zsh/help
+[[ -d /opt/local/share/zsh/$ZSH_VERSION/help ]] && export HELPDIR=/opt/local/share/zsh/$ZSH_VERSION/help
+unalias run-help      # run-help is an alias for man
 autoload -Uz run-help # run-help is an autoload shell function

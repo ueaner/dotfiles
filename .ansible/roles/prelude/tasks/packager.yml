@@ -1,0 +1,56 @@
+---
+
+- name: Configure Package Manager (Fedora - dnf & flatpak)
+  when: ansible_distribution == "Fedora"
+  block:
+    - name: Using the Tsinghua/USTC repositories for dnf
+      ansible.builtin.script: ~/bin/dnf-util -m ustc -x -c
+      changed_when: false
+
+    - name: Using the SJTU mirror for flatpak
+      # See: ~/.local/share/flatpak/repo/config
+      # Flatpak package installations may fail while the mirror is syncing with the origin server.
+      # Try running `curl -L -I https://dl.flathub.org/repo/config` locally to test.
+      # https://mirrors.ustc.edu.cn/help/flathub.html
+      ansible.builtin.shell: |
+        set -o pipefail
+        if ! flatpak remotes --user --columns=name,url | grep --quiet sjtu; then
+            # curl -L https://mirror.sjtu.edu.cn/flathub/flathub.gpg -o /tmp/flathub.gpg
+            # flatpak remote-modify --user --gpg-import=/tmp/flathub.gpg --url=https://mirror.sjtu.edu.cn/flathub flathub
+            curl -L https://dl.flathub.org/repo/flathub.gpg -o /tmp/flathub.gpg
+            flatpak remote-modify --user --gpg-import=/tmp/flathub.gpg --url=https://dl.flathub.org/repo flathub
+            # flatpak remote-modify --url=https://mirrors.ustc.edu.cn/flathub flathub
+        fi
+
+        flatpak remotes --show-details
+      changed_when: false
+
+      # curl -L https://sdk.gnome.org/keys/gnome-sdk.gpg -o /tmp/gnome-sdk.gpg
+      # flatpak remote-add --user --if-not-exists --gpg-import=/tmp/gnome-sdk.gpg gnome-apps https://sdk.gnome.org/repo-apps/
+
+    # Fedora 41+: ansible.builtin.dnf depends on python3-libdnf5
+    # See: https://github.com/ansible/ansible/issues/84206
+    - name: Ensure python3-libdnf5 is installed on Fedora 41+
+      ansible.builtin.command: sudo dnf install -y python3-libdnf5
+      changed_when: false
+
+
+- name: Configure Package Manager (macOS - brew)
+  when: ansible_system == "Darwin"
+  environment:
+    HOMEBREW_BREW_GIT_REMOTE: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+    HOMEBREW_CORE_GIT_REMOTE: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+    HOMEBREW_BOTTLE_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+    HOMEBREW_API_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+  block:
+    - name: Ensure brew is installed
+      ansible.builtin.shell:
+        set -o pipefail
+        if ! command -v brew >/dev/null; then
+            curl -L ${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o /tmp/brew-install.sh
+            sed -i 's|HOMEBREW_PREFIX="/opt/homebrew"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
+            sed -i 's|HOMEBREW_PREFIX="/usr/local"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
+
+            NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
+        fi
+      changed_when: false

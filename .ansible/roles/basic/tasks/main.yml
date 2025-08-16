@@ -1,0 +1,60 @@
+# Desktop Environment
+---
+
+# ----------------------------------------------------------------
+# sudo without password
+# ----------------------------------------------------------------
+- name: Sudo without password (include sudo)
+  ansible.builtin.include_tasks: sudo.yml
+
+# ----------------------------------------------------------------
+# fs.inotify: too many open files
+# ----------------------------------------------------------------
+- name: Fix too many open files (include inotify)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: inotify.yml
+
+# ----------------------------------------------------------------
+# /usr/local/bin permissions
+# ----------------------------------------------------------------
+- name: Change the owner of the /usr/local/bin directory to {{ ansible_env.USER }}
+  ansible.builtin.include_tasks: bin.yml
+
+# ----------------------------------------------------------------
+# Lets normal users use evdev and uinput without sudo
+# ----------------------------------------------------------------
+- name: Lets normal users use evdev and uinput without sudo (include uinput)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: uinput.yml
+
+# ----------------------------------------------------------------
+# macOS-ish desktop environment
+# ----------------------------------------------------------------
+- name: Install and start xremap service (include xremap)
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: xremap.yml
+
+- name: Configure Desktop Environment (include desktop-environment)
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: desktop-environment.yml
+
+# ----------------------------------------------------------------
+# fcitx5
+# ----------------------------------------------------------------
+- name: Configure Input Method (include fcitx5)
+  when:
+    - chinese
+    - ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: fcitx5.yml
+
+# ----------------------------------------------------------------
+# broadcom wireless
+# ----------------------------------------------------------------
+- name: Install the broadcom wireless driver under MacBook (kernel-{{ kernel_version }})
+  when:
+    - ansible_distribution == "Fedora"
+    - ansible_product_name.startswith('MacBook')
+  ansible.builtin.script: ~/bin/kernel-broadcom-wl
+  changed_when: false
+  # failed_when: basic_broadcom_wl.rc != 0
+  notify: Need to reboot after installing wireless driver under MacBook

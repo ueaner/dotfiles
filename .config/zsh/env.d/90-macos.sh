@@ -37,12 +37,12 @@ export HOMEBREW_PIP_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simp
 # 10.15 定义 CPATH 代替软链 /usr/include
 export CPATH=$(xcrun --show-sdk-path)/usr/include
 
-# /usr/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
+# /opt/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
 # export JAVA_HOME=`/usr/libexec/java_home`
 # export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
 # export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 
-#export GRADLE_USER_HOME="/usr/local/opt/gradle/libexec"
+#export GRADLE_USER_HOME="/opt/local/opt/gradle/libexec"
 # Linux下: sudo alternatives --config java
 #export JAVA_HOME=/usr/java/default
 

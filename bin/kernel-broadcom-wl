@@ -64,7 +64,7 @@ target_version=$(kernel-rpm-closest-version | cut -d' ' -f2)
 
 if [[ -z "$target_version" ]]; then
     echo "Cannot determine kernel version"
-    echo "Please check the kernel-headers versions in the ~/ansible/roles/packages/vars/main.yml"
+    echo "Please check the kernel-headers versions in the ~/.ansible/roles/packages/vars/main.yml"
     echo "See https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&release=F${VERSION_ID}"
     exit 1
 fi

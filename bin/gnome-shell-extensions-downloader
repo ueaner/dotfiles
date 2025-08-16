@@ -120,12 +120,12 @@ sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
 download-gesture-improvements() {
     case "$sv" in
     47) # GNOME 47
-        curl -L "https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "/tmp/g47.zip"
+        curl -L "${GITHUB_PROXY}https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "/tmp/g47.zip"
         unzip -q "/tmp/g47.zip" -d "/tmp/"
         cd /tmp/gestureImprovements47@gestures/ && zip -q -r "$dir/gestureImprovements@gestures.shell-extension.zip" ./*
         ;;
     46) # GNOME 46
-        curl -L -O "https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$dir/gestureImprovements@gestures.shell-extension.zip"
+        curl -L -O "${GITHUB_PROXY}https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$dir/gestureImprovements@gestures.shell-extension.zip"
         ;;
     *) ;;
     esac

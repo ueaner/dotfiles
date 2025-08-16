@@ -1,0 +1,15 @@
+---
+# ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages" --tags nvim -vv
+# sudo dnf install neovim
+
+- name: Check if nvimrc exists
+  ansible.builtin.stat:
+    path: "$HOME/.config/nvim"
+  register: terminal_nvimrc_check
+
+- name: Install nvimrc
+  # noqa command-instead-of-module
+  ansible.builtin.shell: |
+    git clone https://github.com/ueaner/nvimrc.git $HOME/.config/nvim
+  changed_when: false
+  when: not terminal_nvimrc_check.stat.exists

@@ -17,8 +17,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     export LC_ALL=zh_CN.UTF-8
 fi
 
-export EDITOR=nvim
-export VISUAL=nvim
+export EDITOR=vim
+export VISUAL=vim
 
 # https://github.com/golang/go/issues/9341#issuecomment-91626818
 # 尽可能使用 ssh 免密码的方式

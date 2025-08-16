@@ -1,4 +1,3 @@
-#!/usr/bin/env zsh
 # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
 # https://en.wikipedia.org/wiki/Primary_color
 # https://en.wikipedia.org/wiki/Secondary_color

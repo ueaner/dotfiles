@@ -16,7 +16,7 @@ declare -A versions
 # https://mikefarah.gitbook.io/yq/operators/comment-operators#remove-strip-all-comments
 
 . /etc/os-release
-versions_yaml=$(yq -r ".fedora.f${VERSION_ID}.kernel-headers" <~/ansible/roles/packages/vars/main.yml |
+versions_yaml=$(yq -r ".fedora.f${VERSION_ID}.kernel-headers" <~/.ansible/roles/packages/vars/main.yml |
     yq '... comments="" | .[] | [select(kind == "scalar") | {..: ..}, select(kind == "map") | .] | .[]')
 
 while IFS=":" read -r key value; do

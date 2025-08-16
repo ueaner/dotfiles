@@ -1,0 +1,852 @@
+---
+# packages for x86_64, Package Keeper -> pk
+# deps: yq, jq, bash4+, grep3+, gnu-tar
+# NOTE: Avoid double quotes in shell scripts
+
+# Variable Default Values
+task: ""
+tags_extend: []
+tags_prefix: ""
+
+# github_proxy: "{{ ansible_env.GITHUB_PROXY }}"
+github_proxy: "{{ lookup('env', 'GITHUB_PROXY', default='') }}"
+
+# gnome_shell_version_command: "gnome-shell --version | cut -d' ' -f3 | cut -d'.' -f1"
+# gnome_shell_version: "{{ lookup('pipe', gnome_shell_version_command) }}"
+# gnome_shell_version: 47
+
+# curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | jq -r ".updates.F$VERSION_ID.stable"
+# kernel_headers_version: 6.13.3-200.fc41
+# kernel_headers_version_slash: "{{ kernel_headers_version.split('-') | join('/') }}"
+fedora:
+  f41:
+    release-date: 2024-10-29
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.11.3/300.fc41/x86_64/kernel-headers-6.11.3-300.fc41.x86_64.rpm
+      - 6.11.3-300.fc41
+      - 6.12.4-200.fc41
+      # kernel-headers-version: kernel-version
+      - 6.13.3-200.fc41: 6.13.3-201.fc41
+      - 6.14.3-200.fc41
+      - 6.15.3-100.fc41
+  f42:
+    release-date: 2025-04-22
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.14.3/300.fc42/x86_64/kernel-headers-6.14.3-300.fc42.x86_64.rpm
+      - 6.14.3-300.fc42
+      - 6.15.3-200.fc42
+  f43:
+    release-date: 2025-11-11
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.17.3/300.fc43/x86_64/kernel-headers-6.17.3-300.fc43.x86_64.rpm
+      - 6.17.3-300.fc43
+
+template:
+  gnome-shell-extensions:
+    version: curl -s --get -L https://extensions.gnome.org/extension-info/ --data-urlencode shell_version=$(gnome-shell --version | cut -d' ' -f3 | cut -d'.' -f1) --data-urlencode uuid=<archive> | jq -r .version_tag
+    archive: https://extensions.gnome.org/download-extension/<archive>.shell-extension.zip?version_tag=<version>
+    extensions:
+      # GNOME 47+ [touchpad: Allow gestures with >3 fingers]: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/3275
+      # Used with libinput-gestures and dotool. https://github.com/lmr97/linux-3-finger-drag
+      # - disable-three-finger@lxp-git.github.com # https://extensions.gnome.org/extension/7403/disable-3-finger-gestures/
+      # [Touchpad: support three-finger drag configuration]: https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/3351
+      # Edit ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/metadata.json to add the new GNOME version to the shell-version field, e.g. 48
+      #   https://github.com/sidevesh/gnome-gesture-improvements--transpiled
+      #   https://github.com/thyttan/gnome-gesture-improvements
+      # - gestureImprovements@gestures # https://extensions.gnome.org/extension/4245/gesture-improvements/
+      - gnome-shell-go-to-last-workspace@github.com # https://extensions.gnome.org/extension/1089/go-to-last-workspace/
+      - clipboard-indicator@tudmotu.com # https://extensions.gnome.org/extension/779/clipboard-indicator/ <Super>bracketleft/bracketright
+      - xremap@k0kubun.com # https://extensions.gnome.org/extension/5060/xremap/
+      - kimpanel@kde.org # https://extensions.gnome.org/extension/261/kimpanel/
+      - system-monitor@gnome-shell-extensions.gcampax.github.com # https://extensions.gnome.org/extension/6807/system-monitor/
+      - gsconnect@andyholmes.github.io # https://extensions.gnome.org/extension/1319/gsconnect/
+      - color-picker@tuberry # https://extensions.gnome.org/extension/3396/color-picker/
+  github:
+    # The <archive> key is automatically added to $vars.
+    # Replace placeholders in template URL with $vars
+    version: curl -s https://api.github.com/repos/<repo>/releases/latest | jq -r .tag_name # replace with $vars
+    # https://github.com/arl/gitmux/releases/download/v0.11.2/gitmux_v0.11.2_linux_amd64.tar.gz
+    archive: "{{ github_proxy }}https://github.com/<repo>/releases/download/<version>/<archive>" # replace with $vars
+    # https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz
+    nightly: "{{ github_proxy }}https://github.com/<repo>/releases/download/nightly/<archive>"
+    # https://github.com/xremap/xremap/releases/latest/download/xremap-linux-x86_64-gnome.zip
+    latest: "{{ github_proxy }}https://github.com/<repo>/releases/latest/download/<archive>"
+    # brew install grep (3+) for macOS
+    download-url: curl -s https://api.github.com/repos/<repo>/releases/latest | grep browser_download_url | grep -P '<archive>' | sort | head -n1 | grep -P 'https://.+<archive>' -o
+
+# The rules for naming locally saved files are as follows:
+#
+# 1. The file names should be in lowercase and follow the format:
+#    package name-$(uname -s)-$(uname -m)-[gnome/sway].zip/tar.gz/tar.xz/jar/etc.
+#    - Examples:
+#      - plantuml.jar
+#      - SourceCodePro.tar.xz
+#      - fnm-darwin.zip
+#      - nvim-linux-x86_64.tar.gz
+#      - xremap-linux-x86_64-sway.zip
+#
+# 2. Exception: If the 'use_remote_name' parameter is used, then the original remote file name should be kept.
+#    - Examples:
+#      - kernel-6.13.3-201.fc41.x86_64.rpm
+#      - xremap@k0kubun.com.shell-extension.zip
+#
+# This ensures consistency and clarity when saving files locally, making it easier to identify the package details
+# such as the operating system, CPU architecture, and desktop environment if applicable.
+
+# 必要安装包: 已 macOS 下需要的最低需要为准
+# 能手工安装的, 就不使用 brew 安装
+packages:
+
+  # deps: nodejs, tree-sitter-cli
+  nvim:
+    vars:
+      repo: neovim/neovim
+    template: "{{ template.github.latest }}"
+    # uname -m:
+    # - Linux: x86_64, aarch64
+    # - Darwin: x86_64, arm64
+    archives:
+      - nvim-linux-x86_64.tar.gz
+      - nvim-linux-aarch64.tar.gz: nvim-linux-arm64.tar.gz
+      - nvim-darwin-x86_64.tar.gz: nvim-macos-x86_64.tar.gz
+      - nvim-darwin-arm64.tar.gz: nvim-macos-arm64.tar.gz
+    strip: 1
+    dst: $XDG_DATA_HOME/nvim-latest # defaults to $XDG_BIN_HOME
+    # proxy: # unused
+    #   site: "{{ ansible_env.GITHUB_PROXY }}"
+    #   tunnel: http://127.0.0.1:1080
+    install-post: |
+      ln -sf $XDG_DATA_HOME/nvim-latest/bin/nvim $XDG_BIN_HOME/nvim
+
+  gnome-shell-extensions:
+    vars:
+      gnome-shell-version: gnome-shell --version | cut -d' ' -f3 | cut -d'.' -f1
+      version: "{{ template['gnome-shell-extensions'].version }}"
+    template: "{{ template['gnome-shell-extensions'].archive }}"
+    # download to $XDG_BACKUP_DIR/archives/gnome-shell-extensions
+    # Subdirectory under {{ archives_dir }}
+    archives_subdir: "gnome-shell-extensions"
+    # remote name with <version>
+    use_remote_name: 2
+    archives: "{{ template['gnome-shell-extensions'].extensions }}"
+    # archives: "{{ template['gnome-shell-extensions'].extensions | product(['.shell-extension.zip']) | map('join') | list }}"
+    # Automatically enter the archives_dir directory to execute scripts
+    install: |-
+      if ! ps aux | grep -q '[g]nome-session'; then
+          echo 'Non-GNOME environment'
+          exit 0
+      fi
+      if [[ -n $SSH_CLIENT ]]; then
+          echo 'Non-local GNOME environment.'
+          echo 'Unzip the extension package to the extension directory, then re-login and manually enable the extension.'
+          for f in *.shell-extension.zip; do
+              uuid=${f%.shell-extension.zip}
+              unzip -q $f -d $HOME/.local/share/gnome-shell/extensions/$uuid/
+          done
+          exit 0
+      fi
+      for f in *.shell-extension.zip; do
+          echo gnome-extensions install --force $f
+          gnome-extensions install --force $f
+      done
+
+  # 对包有一个简单的分类:
+  # - 普通包(二进制包): 默认安装路径为 ~/.local/bin/
+  # - 字体包: 默认安装路径 macOS: ~/Library/Fonts/, Linux ~/.local/share/fonts
+  nerd-fonts:
+    vars:
+      repo: ryanoasis/nerd-fonts
+    template: "{{ template.github.latest }}"
+    # yq -r '.archives[]'
+    archives:
+      - SourceCodePro.tar.xz
+    dst: ~/.local/share/fonts/SourceCodePro
+
+  tldr-pages.en:
+    vars:
+      repo: tldr-pages/tldr
+    template: "{{ template.github.latest }}"
+    archives:
+      - tldr-pages.en.zip
+    dst: ~/.cache/tldr/pages
+
+  # ~/Library/Caches/ for macOS
+  tldr-pages.zh:
+    vars:
+      repo: tldr-pages/tldr
+    template: "{{ template.github.latest }}"
+    archives:
+      - tldr-pages.zh.zip
+    dst: ~/.cache/tldr/pages.zh
+
+  man-pages.zh:
+    install: |-
+      ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
+      mv /tmp/zhman/src ~/.local/share/man/zh_CN
+
+  tldr:
+    install: |-
+      python3 -m pip install --upgrade --user tldr
+    # Rust 版本待完善, 在 TLRC_CONFIG 配置文件中更改了 cache.dir, 依旧取找 ~/Library/Caches/ 目录
+    # vars:
+    #   repo: tldr-pages/tlrc
+    #   version: "{{ template.github.version }}"
+    # template: "{{ template.github.archive }}"
+    # archives:
+    #   - tldr-linux-x86_64.tar.gz: tlrc-<version>-x86_64-unknown-linux-gnu.tar.gz
+    #   - tldr-darwin-x86_64.tar.gz: tlrc-<version>-x86_64-apple-darwin.tar.gz
+    # include:
+    #   - tldr
+    # install-post: |-
+    #   curl --create-dirs -L -o ~/.local/share/man/tldr.1 \
+    #        ${GITHUB_PROXY}https://raw.githubusercontent.com/tldr-pages/tlrc/refs/heads/main/tldr.1
+    #   curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_tldr \
+    #        ${GITHUB_PROXY}https://raw.githubusercontent.com/tldr-pages/tlrc/refs/heads/main/completions/_tldr
+    #   tldr --version
+
+  # rename, remove, and copy files and directories using your editor
+  edir:
+    install: |-
+      python3 -m pip install --upgrade --user edir
+
+  # Required: Linux
+  xremap:
+    vars:
+      repo: xremap/xremap
+    template: "{{ template.github.latest }}"
+    archives:
+      - xremap-linux-x86_64-gnome.zip
+      - xremap-linux-x86_64-sway.zip: xremap-linux-x86_64-wlroots.zip
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    include:
+      - xremap
+
+  shadowsocks-rust:
+    vars:
+      repo: shadowsocks/shadowsocks-rust
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - shadowsocks-linux-x86_64.tar.xz: shadowsocks-<version>.x86_64-unknown-linux-gnu.tar.xz
+      - shadowsocks-darwin-x86_64.tar.xz: shadowsocks-<version>.x86_64-apple-darwin.tar.xz
+    include:
+      - sslocal
+      - ssmanager
+      - ssserver
+      - ssservice
+      - ssurl
+
+    # launchctl unload ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    # launchctl load ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    # launchctl list | grep shadowsocks
+    # launchctl list org.shadowsocks.shadowsocks-rust
+    install-post: |
+      if [[ $(uname -s) != 'Darwin' ]]; then
+          exit 0
+      fi
+      if [[ -f ~/.local/etc/shadowsocks-rust-local.json ]]; then
+          ln -sf ~/.local/etc/shadowsocks-rust-local.json /opt/local/etc/shadowsocks-rust-local.json
+          ln -sf ~/.local/etc/shadowsocks-rust-local.acl /opt/local/etc/shadowsocks-rust-local.acl
+      fi
+      if [[ -f ~/.local/bin/sslocal ]]; then
+          ln -sf ~/.local/bin/sslocal /opt/local/bin/sslocal
+          ln -sf ~/.local/bin/ssservice /opt/local/bin/ssservice
+      fi
+
+      # https://github.com/shadowsocks/shadowsocks-rust/blob/master/configs/org.shadowsocks.shadowsocks-rust.plist
+      if [[ -f ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ]]; then
+          ln -sf ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+      fi
+
+
+  gitmux:
+    vars:
+      repo: arl/gitmux
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - gitmux-linux-x86_64.tar.gz: gitmux_<version>_linux_amd64.tar.gz
+      - gitmux-darwin-x86_64.tar.gz: gitmux_<version>_macOS_amd64.tar.gz
+    include:
+      - gitmux
+
+  lazygit:
+    vars:
+      repo: jesseduffield/lazygit
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.48.0", but the archive name uses "0.48.0" without the "v".
+      # https://github.com/jesseduffield/lazygit/releases/download/v0.48.0/lazygit_0.48.0_Linux_x86_64.tar.gz
+      - lazygit-linux-x86_64.tar.gz: lazygit_.+_Linux_x86_64.tar.gz
+      # https://github.com/jesseduffield/lazygit/releases/download/v0.48.0/lazygit_0.48.0_Darwin_x86_64.tar.gz
+      - lazygit-darwin-x86_64.tar.gz: lazygit_.+_Darwin_x86_64.tar.gz
+    include:
+      - lazygit
+
+  bottom:
+    vars:
+      repo: ClementTsang/bottom
+    template: "{{ template.github.latest }}"
+    archives:
+      - bottom-linux-x86_64.tar.gz: bottom_x86_64-unknown-linux-gnu.tar.gz
+      - bottom-darwin-x86_64.tar.gz: bottom_x86_64-apple-darwin.tar.gz
+    include:
+      - btm
+
+  zoxide:
+    vars:
+      repo: ajeetdsouza/zoxide
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.9.8", but the archive name uses "0.9.8" without the "v".
+      # https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.8/zoxide-0.9.8-x86_64-unknown-linux-musl.tar.gz
+      - zoxide-linux-x86_64.tar.gz: zoxide-.+-x86_64-unknown-linux-musl.tar.gz
+      # https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.8/zoxide-0.9.8-x86_64-apple-darwin.tar.gz
+      - zoxide-darwin-x86_64.tar.gz: zoxide-.+-x86_64-apple-darwin.tar.gz
+    include:
+      - zoxide
+
+  fzf:
+    vars:
+      repo: junegunn/fzf
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.65.0", but the archive name uses "0.65.0" without the "v".
+      # https://github.com/junegunn/fzf/releases/download/v0.65.0/fzf-0.65.0-linux_amd64.tar.gz
+      - fzf-linux-x86_64.tar.gz: fzf-.+-linux_amd64.tar.gz
+      # https://github.com/junegunn/fzf/releases/download/v0.65.0/fzf-0.65.0-darwin_amd64.tar.gz
+      - fzf-darwin-x86_64.tar.gz: fzf-.+-darwin_amd64.tar.gz
+    include:
+      - fzf
+    install-post: |
+      curl --create-dirs -L -o ~/.local/bin/fzf-tmux \
+           {{ github_proxy }}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/bin/fzf-tmux
+      curl --create-dirs -L -o ~/.local/share/fzf/shell/completion.zsh \
+           {{ github_proxy }}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/completion.zsh
+      curl --create-dirs -L -o ~/.local/share/fzf/shell/key-bindings.zsh \
+           {{ github_proxy }}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/key-bindings.zsh
+      chmod +x ~/.local/bin/fzf-tmux
+      fzf --version
+
+  fd:
+    vars:
+      repo: sharkdp/fd
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - fd-linux-x86_64.tar.gz: fd-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - fd-darwin-x86_64.tar.gz: fd-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      # fd-v10.2.0-x86_64-apple-darwin/fd
+      - fd
+    install-post: |
+      curl --create-dirs -L -o ~/.local/share/man/fd.1 \
+           {{ github_proxy }}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/doc/fd.1
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_fd \
+           {{ github_proxy }}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/contrib/completion/_fd
+      fd --version
+
+  ripgrep:
+    vars:
+      repo: BurntSushi/ripgrep
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - ripgrep-linux-x86_64.tar.gz: ripgrep-<version>-x86_64-unknown-linux-musl.tar.gz
+      - ripgrep-darwin-x86_64.tar.gz: ripgrep-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - rg
+    install-post: |
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_rg \
+           {{ github_proxy }}https://raw.githubusercontent.com/BurntSushi/ripgrep/refs/heads/master/crates/core/flags/complete/rg.zsh
+      rg --version
+
+  jq:
+    vars:
+      repo: mikefarah/yq
+    template: "{{ template.github.latest }}"
+    archives:
+      - jq-linux-x86_64: jq-linux-amd64
+      - jq-darwin-x86_64: jq-macos-amd64
+    install: |-
+      kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+      architecture=$(uname -m | tr '[:upper:]' '[:lower:]')
+      cp yq-${kernel}-${architecture} ~/.local/bin/jq
+      chmod +x ~/.local/bin/jq
+
+  yq:
+    vars:
+      repo: mikefarah/yq
+    template: "{{ template.github.latest }}"
+    archives:
+      - yq-linux-x86_64: yq_linux_amd64
+      - yq-darwin-x86_64: yq_darwin_amd64
+    install: |-
+      kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+      architecture=$(uname -m | tr '[:upper:]' '[:lower:]')
+      cp yq-${kernel}-${architecture} ~/.local/bin/yq
+      chmod +x ~/.local/bin/yq
+
+  difft:
+    vars:
+      repo: Wilfred/difftastic
+    template: "{{ template.github.latest }}"
+    archives:
+      - difft-linux-x86_64.tar.gz: difft-x86_64-unknown-linux-gnu.tar.gz
+      - difft-darwin-x86_64.tar.gz: difft-x86_64-apple-darwin.tar.gz
+    include:
+      - difft
+
+  delta:
+    vars:
+      repo: dandavison/delta
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - delta-linux-x86_64.tar.gz: delta-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - delta-darwin-x86_64.tar.gz: delta-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - delta
+
+  bat:
+    vars:
+      repo: sharkdp/bat
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - bat-linux-x86_64.tar.gz: bat-<version>-x86_64-unknown-linux-gnu.tar.gz
+      - bat-darwin-x86_64.tar.gz: bat-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - bat
+
+  dua:
+    vars:
+      repo: Byron/dua-cli
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - dua-linux-x86_64.tar.gz: dua-<version>-x86_64-unknown-linux-musl.tar.gz
+      - dua-darwin-x86_64.tar.gz: dua-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - dua
+
+  duf:
+    vars:
+      repo: muesli/duf
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v0.8.1", but the archive name uses "0.8.1" without the "v".
+      # https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_x86_64.tar.gz
+      - duf-linux-x86_64.tar.gz: duf_.+_linux_x86_64.tar.gz
+      # https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_Darwin_x86_64.tar.gz
+      - duf-darwin-x86_64.tar.gz: duf_.+_Darwin_x86_64.tar.gz
+    include:
+      - duf
+
+  fastfetch:
+    vars:
+      repo: fastfetch-cli/fastfetch
+    template: "{{ template.github.latest }}"
+    archives:
+      - fastfetch-linux-x86_64.tar.gz: fastfetch-linux-amd64.tar.gz
+      - fastfetch-darwin-x86_64.tar.gz: fastfetch-macos-amd64.tar.gz
+    strip: 2
+    include:
+      # fastfetch-macos-amd64/usr/bin/fastfetch
+      - bin/fastfetch
+    dst: ~/.local/ # ~/.local/bin/fastfetch
+
+  tree-sitter:
+    vars:
+      repo: tree-sitter/tree-sitter
+    template: "{{ template.github.latest }}"
+    archives:
+      - tree-sitter-linux-x86_64.gz: tree-sitter-linux-x64.gz
+      - tree-sitter-darwin-x86_64.gz: tree-sitter-macos-x64.gz
+    include:
+      - tree-sitter
+    install-post: |-
+      chmod +x ~/.local/bin/tree-sitter
+
+  task:
+    vars:
+      repo: go-task/task
+    template: "{{ template.github.latest }}"
+    archives:
+      - task-linux-x86_64.tar.gz: task_linux_amd64.tar.gz
+      - task-darwin-x86_64.tar.gz: task_darwin_amd64.tar.gz
+    include:
+      - task
+
+  uv:
+    vars:
+      repo: astral-sh/uv
+    template: "{{ template.github.latest }}"
+    archives:
+      - uv-linux-x86_64.tar.gz: uv-x86_64-unknown-linux-gnu.tar.gz
+      - uv-darwin-x86_64.tar.gz: uv-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - uv
+      - uvx
+
+  scc:
+    vars:
+      repo: boyter/scc
+    template: "{{ template.github.latest }}"
+    archives:
+      - scc-linux-x86_64.tar.gz: scc_Linux_x86_64.tar.gz
+      - scc-darwin-x86_64.tar.gz: scc_Darwin_x86_64.tar.gz
+    include:
+      - scc
+
+  zk:
+    vars:
+      repo: mickael-menu/zk
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - zk-linux-x86_64.tar.gz: zk-<version>-linux-amd64.tar.gz
+      - zk-darwin-x86_64.tar.gz: zk-<version>-macos-x86_64.tar.gz
+    include:
+      - zk
+
+  wasm-pack:
+    vars:
+      repo: rustwasm/wasm-pack
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - wasm-pack-linux-x86_64.tar.gz: wasm-pack-<version>-x86_64-unknown-linux-musl.tar.gz
+      - wasm-pack-darwin-x86_64.tar.gz: wasm-pack-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - wasm-pack
+      # wasm-pack-v0.13.1-x86_64-unknown-linux-musl/wasm-pack
+      # - "*/wasm-pack"
+
+  plantuml:
+    vars:
+      repo: plantuml/plantuml
+    template: "{{ template.github.latest }}"
+    archives:
+      - plantuml.jar
+
+  # for host
+  lima:
+    vars:
+      repo: lima-vm/lima
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # https://github.com/lima-vm/lima/releases/download/${VERSION}/lima-${VERSION:1}-$(uname -s)-$(uname -m).tar.gz
+      # The requested version number is "v1.2.1", but the archive name uses "1.2.1" without the "v".
+      # https://github.com/lima-vm/lima/releases/download/v1.2.1/lima-1.2.1-Linux-x86_64.tar.gz
+      - lima-linux-x86_64.tar.gz: lima-.+-Linux-x86_64.tar.gz
+      - lima-darwin-x86_64.tar.gz: lima-.+-Darwin-x86_64.tar.gz
+    dst: $XDG_DATA_HOME/lima # defaults to $XDG_BIN_HOME
+    install-post: |
+      ln -sf $XDG_DATA_HOME/lima/bin/* $XDG_BIN_HOME
+      limactl completion zsh > ~/.local/share/zsh/site-functions/_limactl
+      limactl --version
+
+  # For macOS hosts
+  socket_vmnet:
+    vars:
+      repo: lima-vm/socket_vmnet
+      # Avoid double quotes in shell scripts
+      download-url: "{{ template.github['download-url'] }}"
+    template: "{{ github_proxy }}<download-url>"
+    archives:
+      # The requested version number is "v1.2.1", but the archive name uses "1.2.1" without the "v".
+      # https://github.com/lima-vm/socket_vmnet/releases/download/v1.2.1/socket_vmnet-1.2.1-x86_64.tar.gz
+      - socket_vmnet-darwin-x86_64.tar.gz: socket_vmnet-.*-x86_64.tar.gz
+    # tar xf ../socket_vmnet-1.2.1-x86_64.tar.gz --strip=4 --wildcards '*/bin/socket_vmnet' '*/bin/socket_vmnet_client'
+    strip: 4
+    include:
+      # opt/socket_vmnet/bin/socket_vmnet
+      - bin/socket_vmnet
+      - bin/socket_vmnet_client
+    dst: /opt/local/bin # defaults to $XDG_BIN_HOME
+
+    # sudo launchctl list | grep socket_vmnet
+    # sudo launchctl list io.github.lima-vm.socket_vmnet.bridged.en0
+    # launchctl print system/io.github.lima-vm.socket_vmnet.bridged.en0
+    install-post: |-
+      if [[ $(uname -s) != 'Darwin' ]]; then
+          exit 0
+      fi
+
+      if [[ -f /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
+          exit 0
+      fi
+      if [[ -f ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
+          sudo cp ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist
+          sudo launchctl bootstrap system /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist
+          sudo launchctl enable system/io.github.lima-vm.socket_vmnet.bridged.en0
+          sudo launchctl kickstart -kp system/io.github.lima-vm.socket_vmnet.bridged.en0
+      fi
+
+  bun:
+    vars:
+      repo: oven-sh/bun
+    template: "{{ template.github.latest }}"
+    archives:
+      - bun-linux-x86_64.zip: bun-linux-x64.zip
+      - bun-darwin-x86_64.zip: bun-darwin-x64.zip
+    strip: 1
+    include:
+      - bun
+    install-post: |
+      bun completions > ~/.local/share/zsh/site-functions/_bun
+      bun --version
+
+  # Install to $XDG_DATA_HOME/<lang>
+  # Link <lang>/bin/* to $XDG_BIN_HOME
+  go:
+    vars:
+      version: curl -s 'https://golang.google.cn/VERSION?m=text' | head -n1
+    archives:
+      # https://dl.google.com/go/go1.24.0.linux-amd64.tar.gz
+      - go-linux-x86_64.tar.gz: https://dl.google.com/go/<version>.linux-amd64.tar.gz
+      - go-darwin-x86_64.tar.gz: https://dl.google.com/go/<version>.darwin-amd64.tar.gz
+    strip: 1
+    dst: $XDG_DATA_HOME/go # defaults to $XDG_BIN_HOME
+    install-post: |
+      ln -sf $XDG_DATA_HOME/go/bin/* $XDG_BIN_HOME
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_golang \
+           {{ github_proxy }}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang
+      go version
+
+  node:
+    vars:
+      version: curl -s -L https://nodejs.org/download/release/index.json | jq -r '[.[] | select(.lts!=false)] | sort_by(.lts, .version) | reverse | .[0].version'
+    # https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
+    archives:
+      - node-linux-x86_64.tar.xz: https://nodejs.org/dist/<version>/node-<version>-linux-x64.tar.xz
+      - node-darwin-x86_64.tar.xz: https://nodejs.org/dist/<version>/node-<version>-darwin-x64.tar.xz
+    strip: 1
+    dst: $XDG_DATA_HOME/node # defaults to $XDG_BIN_HOME
+    install-post: |
+      ln -sf $XDG_DATA_HOME/node/bin/* $XDG_BIN_HOME
+      corepack enable pnpm
+      pnpm config set global-bin-dir ~/.local/bin
+      pnpm completion zsh > ~/.local/share/zsh/site-functions/_pnpm
+      pnpm i -g npm-check-updates
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_node \
+          {{ github_proxy }}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_node
+      node --version
+
+  # https://developer.fedoraproject.org/tech/languages/rust/rust-installation.html
+  rust:
+    # https://static.rust-lang.org/dist/rust-1.84.1-x86_64-unknown-linux-gnu.tar.xz
+    install: |-
+      export CARGO_HOME=$XDG_DATA_HOME/cargo
+      export RUSTUP_HOME=$XDG_DATA_HOME/rustup
+
+      if [[ ! -x $CARGO_HOME/bin/rustc ]]; then
+          curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+          $CARGO_HOME/bin/rustup default stable
+      else
+          rustup self update
+          rustup update
+      fi
+      $CARGO_HOME/bin/rustc --version
+
+      # install-post error: no default toolchain is configured
+      ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+      ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d ' ' -f1)/share/zsh/site-functions/_cargo \
+          ~/.local/share/zsh/site-functions/_cargo
+      rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
+      rustc --version
+
+  zig:
+    vars:
+      # version: curl -s -L https://ziglang.org/download/index.json | jq -r 'del(.master) | keys_unsorted | sort_by( split(".") | map(tonumber) ) | last'
+      version: curl -s -L https://ziglang.org/download/index.json | jq -r 'del(.master) | keys_unsorted | first'
+    # https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
+    archives:
+      - zig-linux-x86_64.tar.gz: https://ziglang.org/download/<version>/zig-linux-x86_64-<version>.tar.xz
+      - zig-darwin-x86_64.tar.gz: https://ziglang.org/download/<version>/zig-macos-x86_64-<version>.tar.xz
+    strip: 1
+    dst: $XDG_DATA_HOME/zig # defaults to $XDG_BIN_HOME
+    install-post: |
+      ln -sf $XDG_DATA_HOME/zig/zig $XDG_BIN_HOME
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_zig \
+          {{ github_proxy }}https://raw.githubusercontent.com/ziglang/shell-completions/master/_zig
+      zig version
+
+  python:
+    install: |-
+      export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
+
+      # curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh -s -- --help
+      if [[ ! -x $XDG_BIN_HOME/uv ]]; then
+          export UV_INSTALLER_GITHUB_BASE_URL=${GITHUB_PROXY}https://github.com
+          export UV_NO_MODIFY_PATH=1
+          export INSTALLER_PRINT_VERBOSE=1
+
+          # curl https://astral.sh/uv/install.sh -sSf | sh
+          curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh
+          uv python install
+      else
+          uv self update
+          uv python upgrade
+      fi
+
+      # uv tool install --upgrade ansible
+      if [[ -d ~/.ansible ]]; then
+          cd ~/.ansible
+          # ~/.ansible/.venv/bin/ansible --version
+          uv run ansible --version
+      fi
+
+      uv --version
+      uv python list --managed-python --only-installed
+
+      uv generate-shell-completion zsh > ~/.local/share/zsh/site-functions/_uv
+
+  deno:
+    vars:
+      repo: denoland/deno
+    template: "{{ template.github.latest }}"
+    archives:
+      # https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip
+      - deno-linux-x86_64.zip: deno-x86_64-unknown-linux-gnu.zip
+      # https://github.com/denoland/deno/releases/latest/download/deno-x86_64-apple-darwin.zip
+      - deno-darwin-x86_64.zip: deno-x86_64-apple-darwin.zip
+    include:
+      - deno
+    install-post: |
+      deno completions zsh > ~/.local/share/zsh/site-functions/_deno
+      deno --version
+
+
+  # TODO: Android
+
+dnf:
+  - wl-clipboard
+  - zsh
+  - tmux
+  - alacritty
+  - xlsclients # list x11 client applications running on a display
+
+# brew uninstall --force $(brew list)
+# brew install ...
+# 只安装基于 C/C++ 源码的基础工具, 对齐 GNU 基础命令
+# deps: yq, jq, bash4+, grep3+, gnu-tar
+brew:
+  - tmux
+  - bash-completion@2
+  - zsh-completions
+  # Compatible with Linux command parameters
+  - bash
+  - grep
+  - gnu-tar
+  - gnu-sed
+  - gnu-time
+  - gnu-which
+  - binutils
+  - coreutils
+  - diffutils
+  - findutils
+  - inetutils
+  - gawk
+  - pstree
+  - tree
+  - less
+
+  - git
+  - curl
+  - wget # wget2 has too many dependencies
+
+  #- Python is required by lld, llvm, meson and sphinx-doc
+  - python
+
+  # shadowsocks-rust acl
+  # - proxychains-ng
+  # - privoxy
+  # - tcpflow
+  # - tcptrace
+  # - sshpass
+  # - ffmpeg gd imagemagick yt-dlp spotdl
+  # - scrcpy
+
+  # - llama.cpp
+  # - llvm lld acpica
+  # - qemu --build-from-source --cc=llvm_clang -v
+
+# brew install --cask ...
+brew_cask:
+  - hammerspoon
+  - font-sauce-code-pro-nerd-font
+  - font-noto-sans-mono-cjk-sc
+  - alacritty --no-quarantine
+  - android-platform-tools
+  - appcleaner
+  - the-unarchiver
+  - baidunetdisk
+  - dingtalk
+  - tencent-meeting
+  - tencent-docs
+  - wpsoffice
+  - drawio
+  - google-chrome
+  - kap
+  - keycastr
+  - maccy
+  - vlc
+  - omnigraffle
+  - mark-text
+  - pdfexpert
+  - visual-studio-code
+  - wireshark-app
+  - charles
+  - tableplus
+  - multipass
+  - qq
+  - sogouinput
+
+
+flatpak:
+  - ca.desrt.dconf-editor
+  - com.baidu.NetDisk
+  - com.github.phase1geo.minder
+  - com.github.tchx84.Flatseal
+  - com.google.Chrome
+  # Add the following to `~/.local/share/flatpak/overrides/com.qq.QQ` to enable wayland or configure with Flatseal
+  # [Context]
+  # sockets=wayland;!x11
+  - com.qq.QQ
+  - com.tencent.WeChat
+  - org.mozilla.Thunderbird
+  - dev.zed.Zed
+  - io.gitlab.news_flash.NewsFlash
+  - io.podman_desktop.PodmanDesktop
+  - org.blender.Blender
+  - org.inkscape.Inkscape
+  - org.shotcut.Shotcut
+  - com.obsproject.Studio
+  - org.videolan.VLC
+  - net.base_art.Glide
+  - in.srev.guiscrcpy
+  - eu.nokun.MirrorHall # Use Linux devices as second screens
+  - org.freedesktop.Bustle
+  - org.gnome.dspy
+  - org.gnome.Sudoku
+  - org.gnome.Decibels # music
+  - io.github.mhogomchungu.media-downloader

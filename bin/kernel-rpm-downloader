@@ -33,7 +33,7 @@ if [[ -n "$2" ]]; then
 fi
 
 # https://packages.fedoraproject.org/pkgs/kernel/
-# packages_yaml=$(yq -r ".template.kernel.packages" <~/ansible/roles/packages/vars/main.yml)
+# packages_yaml=$(yq -r ".template.kernel.packages" <~/.ansible/roles/packages/vars/main.yml)
 # while IFS='' read -r line; do packages+=("$line"); done < <(echo "$packages_yaml" | yq '.[]')
 
 packages=(

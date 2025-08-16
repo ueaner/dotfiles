@@ -4,8 +4,8 @@
 FPATH="/usr/share/zsh/${ZSH_VERSION}/functions" # zsh builtin command 补全提示路径
 
 compdirs=(
-    "/usr/local/share/zsh-completions"      # macOS by brew, brew install zsh-completions 包的路径
-    "/usr/local/share/zsh/site-functions"   # macOS by brew, 安装的软件包的补全提示路径
+    "/opt/local/share/zsh-completions"      # macOS by brew, brew install zsh-completions 包的路径
+    "/opt/local/share/zsh/site-functions"   # macOS by brew, 安装的软件包的补全提示路径
     "/usr/share/zsh/site-functions"         # Fedora by dnf, 安装的软件包的补全提示路径
     "$HOME/.local/share/zsh/site-functions" # 自定义补全提示路径
 )

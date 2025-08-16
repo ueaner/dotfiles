@@ -10,7 +10,7 @@
 # https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
 if [[ $- == *i* ]]; then
     # macOS by brew
-    [[ -f "/usr/local/opt/fzf/shell/completion.zsh" ]] && . "/usr/local/opt/fzf/shell/completion.zsh"
+    [[ -f "/opt/local/opt/fzf/shell/completion.zsh" ]] && . "/opt/local/opt/fzf/shell/completion.zsh"
     # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f41/f/fzf.spec#_83
     [[ -f "/usr/share/zsh/site-functions/_fzf" ]] && . "/usr/share/zsh/site-functions/_fzf"
     # by ansible
@@ -21,7 +21,7 @@ fi
 # - CTRL-R for shell history
 # - CTRL-T for file / directory search
 # macOS by brew
-[[ -f "/usr/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/usr/local/opt/fzf/shell/key-bindings.zsh"
+[[ -f "/opt/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/opt/local/opt/fzf/shell/key-bindings.zsh"
 # Fedora by dnf
 [[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
 # by ansible

@@ -1,0 +1,44 @@
+# Terminal Environment
+---
+
+# ----------------------------------------------------------------
+# neovim
+# ----------------------------------------------------------------
+- name: Install/Upgrade neovim
+  ansible.builtin.include_tasks: neovim.yml
+  tags:
+    - neovim
+
+# ----------------------------------------------------------------
+# alacritty.desktop for Sway
+# ----------------------------------------------------------------
+- name: Alacritty desktop entry add font.size option
+  ansible.builtin.include_tasks: alacritty.yaml
+
+# ----------------------------------------------------------------
+# gitmux: git status in tmux status bar
+# ----------------------------------------------------------------
+- name: Install/Upgrade gitmux
+  ansible.builtin.include_tasks: tmux.yml
+
+# ----------------------------------------------------------------
+# zsh
+# ----------------------------------------------------------------
+- name: Set zsh as the default login shell
+  ansible.builtin.include_tasks: zsh.yml
+
+# ----------------------------------------------------------------
+# lazygit
+# ----------------------------------------------------------------
+- name: Install/Upgrade lazygit
+  ansible.builtin.include_tasks: git.yml
+  tags:
+    - git
+
+# ----------------------------------------------------------------
+# tldr
+# ----------------------------------------------------------------
+- name: Install/Upgrade tldr python client
+  ansible.builtin.include_tasks: tldr.yml
+  tags:
+    - tldr
