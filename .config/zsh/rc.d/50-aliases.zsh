@@ -22,11 +22,14 @@ fi
 # Reload the shell (i.e. invoke as a login shell)
 alias reload='for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done'
 
-alias vimdiff="nvim -d" # diff mode
-alias view="nvim -R"    # readonly mode
-if ! command -v vim >/dev/null; then
-    command -v nvim >/dev/null && alias vim="nvim" || alias vim="vi"
+if command -v nvim >/dev/null; then
+    alias vim="nvim"
+    alias vimdiff="nvim -d" # diff mode
+    alias view="nvim -R"    # readonly mode
+elif ! command -v vim >/dev/null; then
+    alias vim="vi"
 fi
+
 # rg search-text | vim -
 # fd filename-pattern | xargs vim -
 
