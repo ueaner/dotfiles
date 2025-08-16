@@ -35,7 +35,7 @@
       changed_when: false
 
 
-- name: Configure Package Manager (macOS - brew)
+- name: Ensure brew is installed (macOS - brew)
   when: ansible_system == "Darwin"
   environment:
     HOMEBREW_BREW_GIT_REMOTE: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
@@ -43,14 +43,20 @@
     HOMEBREW_BOTTLE_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
     HOMEBREW_API_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
   block:
-    - name: Ensure brew is installed
+
+    - name: Check if brew command exists
+      ansible.builtin.command: which brew
+      register: prelude_brew_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install brew
+      when: prelude_brew_check.rc != 0
       ansible.builtin.shell:
         set -o pipefail
-        if ! command -v brew >/dev/null; then
-            curl -L ${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o /tmp/brew-install.sh
-            sed -i 's|HOMEBREW_PREFIX="/opt/homebrew"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
-            sed -i 's|HOMEBREW_PREFIX="/usr/local"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
+        curl -L ${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o /tmp/brew-install.sh
+        sed -i 's|HOMEBREW_PREFIX="/opt/homebrew"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
+        sed -i 's|HOMEBREW_PREFIX="/usr/local"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
 
-            NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
-        fi
+        NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
       changed_when: false
