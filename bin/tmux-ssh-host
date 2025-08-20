@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# 获取指定 tmux pane 中 ssh 目标主机名
+
+echo "[$$ tmux-ssh-host] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+pane_pid=$1
+
+# 找到前台进程
+fg_pid=$(ps -o pid= -t "$(ps -o tty= -p "$pane_pid" | tr -d ' ')" |
+    awk '$1 != '"$pane_pid"' {print $1; exit}')
+
+# 没取到就退
+[[ -z "$fg_pid" ]] && exit 0
+
+# 输出完整命令行
+# ps -o args= -p "$fg_pid"
+
+# 给定 ssh 进程的 PID，输出它的目标 host
+
+# 取出完整命令行（保留空格）
+# shellcheck disable=SC2046
+set -- $(ps -o args= -p "$fg_pid")
+
+[[ "$1" = "ssh" ]] || exit 1 # 确保真的是 ssh
+shift                        # 去掉 "ssh"
+
+while [ $# -gt 0 ]; do
+    case $1 in
+    -[1246AaCfGgKkMNnqsTtVvXxYy]) shift 2 ;; # 带 1 个参数的短选项
+    -[bDEeFIiJLlmOopQRSWw]) shift 2 ;;       # 同上
+    -F* | --config=*) shift ;;               # 长格式 -F<file>
+    -i*) shift ;;                            # -i<identity> 或 -i <identity>
+    -o*) shift ;;                            # -oKey=Val
+    -p*) shift ;;                            # -p<port> / -p <port>
+    -J*) shift ;;                            # -J[user@]host[:port]
+    --)
+        shift
+        break
+        ;;            # 显式结束选项
+    -* | "") shift ;; # 未知或空
+    *)
+        host=$1
+        break
+        ;; # 第一个非选项就是 host
+    esac
+done
+
+echo "[$$ tmux-ssh-host] pane_pid: $pane_pid, fg_pid: $fg_pid, host: $host" >>/tmp/xreaker.log
+
+[ -n "$host" ] && printf '%s\n' "${host##*@}" # 去掉 user@
