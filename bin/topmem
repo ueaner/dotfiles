@@ -1,4 +1,6 @@
-#!/usr/bin/env -S nvim -l
+#!/usr/bin/env -S nvim -u NONE -U NONE -N -i NONE -l
+-- vim: ft=lua
+
 local f, concat, sort = string.format, table.concat, table.sort
 local found, uv = pcall(require, "luv")
 
