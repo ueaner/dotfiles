@@ -34,9 +34,9 @@
 #   $ unzip -c kimpanel@kde.org.shell-extension.zip metadata.json | grep uuid | cut -d \" -f4
 #   $ unzip -p kimpanel@kde.org.shell-extension.zip metadata.json | python3 -c "import json; import sys; obj=json.load(sys.stdin); print(obj['uuid'])"
 
-if [[ ! -d ~/.local/share/gnome-shell/extensions ]]; then
-    mkdir -p ~/.local/share/gnome-shell/extensions
-fi
+# if [[ ! -d ~/.local/share/gnome-shell/extensions ]]; then
+#     mkdir -p ~/.local/share/gnome-shell/extensions
+# fi
 
 EXTENSIONS_SITE="https://extensions.gnome.org"
 # USER_EXTDIR="$HOME/.local/share/gnome-shell/extensions"
@@ -50,6 +50,7 @@ Usage: gnome-shell-extensions-downloader <uuid|pk> [-f|--force] --dir=/path/to/d
 
     --dir                    Set directory used for downloading packages to. Default location is to the current working directory.
     -f, --force              Overwrite an existing extension
+    --shell-version          GNOME Shell version (By default, gnome-shell is used to get the current version.)
 
     -h, --help               Show this message
 
@@ -64,6 +65,7 @@ EOF
 
 force=false
 dir="."
+sv=
 uuid=
 pk=
 info=
@@ -97,6 +99,14 @@ while [[ $# -gt 0 ]]; do
         fi
         shift
         ;;
+    --shell-version)
+        sv=$2
+        shift 2
+        ;;
+    --shell-version=*)
+        sv=$(echo "$1" | cut -d= -f2)
+        shift
+        ;;
     *)
         [[ $1 =~ ^[0-9]+$ ]] && pk=$1 || uuid=$1
         shift
@@ -105,27 +115,44 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! -d "$dir" ]]; then
-    echo "Directory \"$dir\" does not exist."
+    printf "Directory \"%s\" does not exist.\n\n" "$dir"
+    help
     exit 1
 else
     dir=$(realpath "$dir")
 fi
 
-echo "uuid=$uuid pk=$pk dir=$dir force=$force"
-
-sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
+if [[ -n "$sv" ]]; then
+    if [[ ! "$sv" =~ ^[0-9]+$ ]]; then
+        printf "Please enter the correct version number.\n\n"
+        help
+        exit 1
+    fi
+else
+    if which gnome-shell >/dev/null 2>&1; then
+        sv=$(gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.')
+    else
+        printf "Please use the \"--shell-version\" parameter to specify the version number.\n\n"
+        help
+        exit 1
+    fi
+fi
 # sv_prev=$(("$sv" - 1))
+
+echo "uuid=$uuid pk=$pk dir=$dir shell-version=$sv force=$force"
 
 # https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/latest/download/gestureImprovements@gestures.zip
 download-gesture-improvements() {
+    outputfile="$dir/gestureImprovements@gestures.shell-extension.zip"
     case "$sv" in
+    48) # GNOME 48
+        curl -L "${GITHUB_PROXY}https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/download/32/gestureImprovements@gestures.zip" -o "$outputfile"
+        ;;
     47) # GNOME 47
-        curl -L "${GITHUB_PROXY}https://github.com/user-attachments/files/17069476/gestureImprovements47%40gestures.zip" -o "/tmp/g47.zip"
-        unzip -q "/tmp/g47.zip" -d "/tmp/"
-        cd /tmp/gestureImprovements47@gestures/ && zip -q -r "$dir/gestureImprovements@gestures.shell-extension.zip" ./*
+        curl -L "${GITHUB_PROXY}https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/download/31/gestureImprovements@gestures.zip" -o "$outputfile"
         ;;
     46) # GNOME 46
-        curl -L -O "${GITHUB_PROXY}https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$dir/gestureImprovements@gestures.shell-extension.zip"
+        curl -L "${GITHUB_PROXY}https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$outputfile"
         ;;
     *) ;;
     esac
@@ -184,27 +211,35 @@ remote_url="$EXTENSIONS_SITE$download_url"
 
 echo "Download $remote_url to $local_file"
 
-# Get the size of the existing local file
-local_size=$(stat -c%s "$local_file")
-# Get the size of the remote file
-remote_size=$(curl -s --head "$remote_url" | grep -i "Content-Length" | cut -d ' ' -f 2 | tail -n1 | sed 's/\r//g')
+# Compare the sizes of local_file and remote file
+if [[ -f "${local_file}" ]]; then
+    # Get the size of the existing local file
+    local_size=$(stat -c%s "$local_file")
+    # Get the size of the remote file
+    remote_size=$(curl -s --head "$remote_url" | grep -i "Content-Length" | cut -d ' ' -f 2 | tail -n1 | sed 's/\r//g')
 
-if [[ "$remote_size" -eq "$local_size" ]]; then
-    echo "Local and remote file sizes match. Skipping download"
-else
-    # Backup local file
-    [[ -f "${local_file}" ]] && mv "${local_file}" "${local_file}.bak"
-    curl -C - -L -O "$remote_url"
-    ret=$?
-    if [[ $ret -eq 0 ]]; then
-        # Remove backup file when download succeeds
-        [[ -f "${local_file}.bak" ]] && rm -f "${local_file}.bak"
-    else
-        # Restore backup file when download fails
-        [[ -f "${local_file}.bak" ]] && mv "${local_file}.bak" "${local_file}"
-        echo "Failed to download $uuid"
-        exit 1
+    if [[ "$remote_size" -eq "$local_size" ]]; then
+        echo "Local and remote file sizes match. Skipping download"
+        echo "Downloaded $(unzip -p "$local_file" metadata.json | jq -r .uuid)"
+        echo "Use the command \"gnome-extensions install --force '$local_file'\" to install the extension."
+        exit 0
     fi
+
+    # Backup local file
+    mv "${local_file}" "${local_file}.bak"
+fi
+
+# Download
+curl -C - -L -O "$remote_url"
+ret=$?
+if [[ $ret -eq 0 ]]; then
+    # Remove backup file when download succeeds
+    [[ -f "${local_file}.bak" ]] && rm -f "${local_file}.bak"
+else
+    # Restore backup file when download fails
+    [[ -f "${local_file}.bak" ]] && mv "${local_file}.bak" "${local_file}"
+    echo "Failed to download $uuid"
+    exit 1
 fi
 
 echo "Downloaded $(unzip -p "$local_file" metadata.json | jq -r .uuid)"
