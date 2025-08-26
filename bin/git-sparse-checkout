@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-show-help() {
+help() {
     cat <<EOF
 git sparse checkout
 
@@ -37,17 +37,17 @@ while getopts ${OPTSTRING} opt; do
         ldir=$OPTARG
         ;;
     h)
-        show-help
+        help
         exit 0
         ;;
     :)
         echo "Option -${OPTARG} requires an argument."
-        show-help
+        help
         exit 1
         ;;
     ?)
         echo "Invalid option: -${OPTARG}."
-        show-help
+        help
         exit 1
         ;;
     esac
@@ -57,13 +57,13 @@ shift $((OPTIND - 1))
 
 if [[ -z "$rurl" ]]; then
     echo "The -r and -l arguments are required."
-    show-help
+    help
     exit 1
 fi
 
 if [[ -z "$ldir" ]]; then
     echo "The -r and -l arguments are required."
-    show-help
+    help
     exit 1
 fi
 

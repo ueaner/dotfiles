@@ -4,7 +4,7 @@
 # dnf-util [--mirror=<ustc|tsinghua|official>] [--repo=<fedora|rpmfusion>] [--clean] [--config]
 # dnf-util [-m <ustc|tsinghua|official>] [-r <fedora|rpmfusion>] [-x] [-c]
 
-show-help() {
+help() {
     cat <<EOF
 dnf util
 
@@ -64,7 +64,7 @@ while getopts ${OPTSTRING} opt; do
         mirror=$OPTARG
         if [[ "$mirror" != "ustc" && "$mirror" != "tsinghua" && "$mirror" != "official" ]]; then
             echo "Option -${OPTARG} argument must be one of \"ustc | tsinghua | fedora\"."
-            show-help
+            help
             exit 1
         fi
         no_option=false
@@ -74,7 +74,7 @@ while getopts ${OPTSTRING} opt; do
         [[ -z "$repo" ]] && repo=all
         if [[ "$repo" != "all" && "$repo" != "fedora" && "$repo" != "rpmfusion" ]]; then
             echo "Option -${OPTARG} argument must be one of \"all | fedora | rpmfusion\"."
-            show-help
+            help
             exit 1
         fi
         no_option=false
@@ -88,17 +88,17 @@ while getopts ${OPTSTRING} opt; do
         no_option=false
         ;;
     h)
-        show-help
+        help
         exit 0
         ;;
     :)
         echo "Option -${OPTARG} requires an argument."
-        show-help
+        help
         exit 1
         ;;
     ?)
         echo "Invalid option: -${OPTARG}."
-        show-help
+        help
         exit 1
         ;;
     esac
@@ -110,7 +110,7 @@ if [[ -n "$repo" ]]; then
     if [[ -z "$mirror" ]]; then
         echo "Please specify a mirror (-m) for the repository (-r)."
         echo
-        show-help
+        help
         exit 1
     fi
 else
