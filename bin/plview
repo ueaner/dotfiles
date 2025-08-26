@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# View plist files in xml or json format
+
+help() {
+    cat <<EOF
+View plist files in xml or json format
+
+Usage: plview <-xml|-json> some.plist
+
+    -xml                     View in xml format (Default)
+    -json                    View in json format
+
+    -h, --help               Show this message
+EOF
+}
+
+fmt=xml
+plistfile=
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -xml)
+        fmt=xml
+        shift
+        ;;
+    -json)
+        fmt=json
+        shift
+        ;;
+    *)
+        plistfile=$1
+        shift
+        ;;
+    esac
+done
+
+if [[ -z "$plistfile" ]]; then
+    printf "Please provide a plist file.\n\n"
+    help
+    exit 1
+fi
+if [[ ! -f "$plistfile" ]]; then
+    printf "The file %s does not exist.\n\n" $plistfile
+    help
+    exit 1
+fi
+
+tmpf=$(mktemp /tmp/plist-XXX.$fmt)
+
+if [[ "$fmt" == "json" ]]; then
+    plutil -convert json -o "$tmpf" "$plistfile"
+else
+    plutil -convert xml1 -o "$tmpf" "$plistfile"
+fi
+cat $tmpf
