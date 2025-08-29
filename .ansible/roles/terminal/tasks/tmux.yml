@@ -1,15 +1,42 @@
 ---
 
-- name: Install/Upgrade gitmux for Linux
-  when: ansible_system == "Linux"
-  ansible.builtin.unarchive:
-    src: "{{ archives_server }}/gitmux-linux-x86_64.tar.gz"
-    dest: "~/.local/bin/"
-    include: gitmux
+- name: Ensure Tmux is installed
+  tags:
+    - upgrade
+    - tmux
+  block:
+    - name: Install Tmux (Fedora)
+      when: ansible_distribution == "Fedora"
+      become: true
+      ansible.builtin.dnf:
+        name: tmux
+        state: present
 
-- name: Install/Upgrade gitmux for macOS
-  when: ansible_system == "Darwin"
-  ansible.builtin.unarchive:
-    src: "{{ archives_server }}/gitmux-macos-x86_64.tar.gz"
-    dest: "~/.local/bin/"
-    include: gitmux
+    - name: Install Tmux (macOS)
+      when: ansible_system == "Darwin"
+      environment: "{{ brew_environment }}"
+      ansible.builtin.shell: |-
+        if ! brew list tmux >/dev/null 2>&1; then
+            brew install tmux
+        fi
+      changed_when: false
+
+
+- name: Install gitmux
+  install-package:
+    name: gitmux
+    placeholders:
+      repo: arl/gitmux
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      # https://github.com/arl/gitmux/releases/download/v0.11.5/gitmux_v0.11.5_linux_amd64.tar.gz
+      - gitmux_<version>_linux_amd64.tar.gz
+      - gitmux_<version>_linux_arm64.tar.gz
+      - gitmux_<version>_macOS_amd64.tar.gz
+      - gitmux_<version>_macOS_arm64.tar.gz
+    include:
+      - gitmux
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      gitmux -V

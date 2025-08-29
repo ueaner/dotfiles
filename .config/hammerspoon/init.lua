@@ -16,9 +16,9 @@ local util = require("util")
 -- [ ] System Preferences -> Keyboard -> Launchpad & Dock -> Change the Show Launchpad shortcut to ⌘Space
 
 -- Toggle Launchpad
-hs.hotkey.bind({ "cmd" }, "space", function()
-  hs.task.new("/usr/bin/open", nil, function() end, { "-a", "Launchpad" }):start()
-end)
+-- hs.hotkey.bind({ "cmd" }, "space", function()
+--   hs.task.new("/usr/bin/open", nil, function() end, { "-a", "Launchpad" }):start()
+-- end)
 
 -- Toggle Terminal
 hs.hotkey.bind({ "cmd" }, "return", function()

@@ -4,6 +4,7 @@
 
 - name: Ensure zsh is installed
   when: ansible_distribution == "Fedora"
+  become: true
   ansible.builtin.dnf:
     name: zsh
     state: present

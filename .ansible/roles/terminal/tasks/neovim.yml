@@ -1,13 +1,52 @@
 ---
-# ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages" --tags nvim -vv
-# sudo dnf install neovim
+
+- name: Install tree-sitter
+  install-package:
+    name: tree-sitter
+    placeholders:
+      repo: tree-sitter/tree-sitter
+    template: "{{ template.github.latest }}"
+    archives:
+      - tree-sitter-linux-x64.gz
+      - tree-sitter-linux-arm64.gz
+      - tree-sitter-macos-x64.gz
+      - tree-sitter-macos-arm64.gz
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    include:
+      - tree-sitter
+    postinstall: |-
+      chmod +x $XDG_BIN_HOME/tree-sitter
+      tree-sitter --version
+  tags:
+    - tree-sitter
+
+- name: Install nvim
+  install-package:
+    name: nvim
+    placeholders:
+      repo: neovim/neovim
+    template: "{{ template.github.latest }}"
+    archives:
+      - nvim-linux-x86_64.tar.gz
+      - nvim-linux-arm64.tar.gz
+      - nvim-macos-x86_64.tar.gz
+      - nvim-macos-arm64.tar.gz
+    strip: 1
+    dst: "$XDG_DATA_HOME/nvim-latest"
+    postinstall: |-
+      ln -sf $XDG_DATA_HOME/nvim-latest/bin/nvim $XDG_BIN_HOME/nvim
+      nvim --version
+  tags:
+    - nvim
+    - neovim
+
 
 - name: Check if nvimrc exists
   ansible.builtin.stat:
     path: "$HOME/.config/nvim"
   register: terminal_nvimrc_check
 
-- name: Install nvimrc
+- name: Clone nvimrc
   # noqa command-instead-of-module
   ansible.builtin.shell: |
     git clone https://github.com/ueaner/nvimrc.git $HOME/.config/nvim

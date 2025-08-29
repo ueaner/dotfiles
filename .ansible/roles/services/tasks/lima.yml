@@ -1,0 +1,76 @@
+---
+
+# For host
+- name: Install lima
+  install-package:
+    name: lima
+    placeholders:
+      repo: lima-vm/lima
+      version: "{{ template.github.version_v }}"
+    template: "{{ template.github.archive_v }}"
+    archives:
+      # https://github.com/lima-vm/lima/releases/download/${VERSION}/lima-${VERSION:1}-$(uname -s)-$(uname -m).tar.gz
+      # The requested version number is "v1.2.1", but the archive name uses "1.2.1" without the "v".
+      # https://github.com/lima-vm/lima/releases/download/v1.2.1/lima-1.2.1-Linux-x86_64.tar.gz
+      - lima-<version>-Linux-x86_64.tar.gz
+      - lima-<version>-Linux-aarch64.tar.gz
+      - lima-<version>-Darwin-x86_64.tar.gz
+      - lima-<version>-Darwin-arm64.tar.gz
+    dst: $XDG_DATA_HOME/lima # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      ln -sf $XDG_DATA_HOME/lima/bin/* $XDG_BIN_HOME
+      limactl completion zsh > ~/.local/share/zsh/site-functions/_limactl
+      limactl --version
+  tags:
+    - lima
+
+
+# For macOS host
+- name: Install socket_vmnet (Darwin)
+  when: ansible_system == "Darwin"
+  install-package:
+    name: socket_vmnet
+    placeholders:
+      repo: lima-vm/socket_vmnet
+      version: "{{ template.github.version }}"
+      ver: echo '<version>' | sed 's/^v//'
+    template: "{{ template.github.archive }}"
+    archives:
+      # The requested version number is "v1.2.1", but the archive name uses "1.2.1" without the "v".
+      # https://github.com/lima-vm/socket_vmnet/releases/download/v1.2.1/socket_vmnet-1.2.1-x86_64.tar.gz
+      - socket_vmnet-<ver>-x86_64.tar.gz
+      - socket_vmnet-<ver>-arm64.tar.gz
+    strip: 3
+    include:
+      # opt/socket_vmnet/bin/socket_vmnet
+      - bin/socket_vmnet
+      - bin/socket_vmnet_client
+    dst: /opt/local/bin # defaults to $XDG_BIN_HOME
+    # sudo launchctl list | grep socket_vmnet
+    # sudo launchctl list io.github.lima-vm.socket_vmnet.bridged.en0
+    # launchctl print system/io.github.lima-vm.socket_vmnet.bridged.en0
+    postinstall: |-
+      socket_vmnet --version
+
+      if [[ -f /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
+          exit 0
+      fi
+      if [[ -f ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
+          sudo cp ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist
+          sudo launchctl bootstrap system /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist
+          sudo launchctl enable system/io.github.lima-vm.socket_vmnet.bridged.en0
+          sudo launchctl kickstart -kp system/io.github.lima-vm.socket_vmnet.bridged.en0
+      fi
+  tags:
+    - socket_vmnet
+
+
+# For macOS host
+- name: Install socket_vmnet (Darwin)
+  when: ansible_system == "Darwin"
+  environment: "{{ brew_environment }}"
+  ansible.builtin.shell: |-
+    set -o pipefail
+    brew install acpica llvm lld
+    brew install qemu --build-from-source --cc=llvm_clang -v
+  changed_when: false

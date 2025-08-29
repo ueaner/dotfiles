@@ -1,0 +1,82 @@
+---
+
+- name: Install apps via dnf (Fedora)
+  when: ansible_distribution == "Fedora"
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - wl-clipboard
+      - xlsclients # list x11 client applications running on a display
+
+- name: Install/Upgrade web apps
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.include_tasks: web.yml
+
+- name: Install/Upgrade apps via flatpak (Fedora)
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.shell: |-
+    set -o pipefail
+    flatpak install --user {{ item }}
+  loop:
+    - ca.desrt.dconf-editor
+    - com.baidu.NetDisk
+    - com.github.phase1geo.minder
+    - com.github.tchx84.Flatseal
+    - com.google.Chrome
+    # Add the following to `~/.local/share/flatpak/overrides/com.qq.QQ` to enable wayland or configure with Flatseal
+    # [Context]
+    # sockets=wayland;!x11
+    - com.qq.QQ
+    - com.tencent.WeChat
+    - org.mozilla.Thunderbird
+    - dev.zed.Zed
+    - io.gitlab.news_flash.NewsFlash
+    - io.podman_desktop.PodmanDesktop
+    - org.blender.Blender
+    - org.inkscape.Inkscape
+    - org.shotcut.Shotcut
+    - com.obsproject.Studio
+    - org.videolan.VLC
+    - org.gimp.GIMP
+    - net.base_art.Glide
+    - in.srev.guiscrcpy
+    - eu.nokun.MirrorHall # Use Linux devices as second screens
+    - org.freedesktop.Bustle
+    - org.gnome.dspy
+    - org.gnome.Sudoku
+    - org.gnome.Decibels # music
+    - io.github.mhogomchungu.media-downloader
+  changed_when: false
+
+# Compatible with Linux command parameters
+# Use lima-vm whenever possible
+- name: Install apps via brew (macOS)
+  when: ansible_system == "Darwin"
+  environment: "{{ brew_environment }}"
+  ansible.builtin.shell: |-
+    set -o pipefail
+    brew install --cask {{ item }}
+  loop:
+    - dingtalk
+    - wechat
+    - qq
+    - google-chrome
+    - visual-studio-code
+    - android-platform-tools
+    - appcleaner
+    - the-unarchiver
+    - baidunetdisk
+    - tencent-meeting
+    - tencent-docs
+    - wpsoffice
+    - drawio
+    - kap
+    - keycastr
+    - maccy
+    - vlc
+    - omnigraffle
+    - pdfexpert
+    - wireshark-app
+    - charles
+    - tableplus
+  changed_when: false

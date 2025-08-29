@@ -74,6 +74,11 @@ autoload -Uz incarg
 zle -N incarg
 bindkey -M vicmd '^A' incarg
 
+
+# WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
+# WORDCHARS=${WORDCHARS//\/}
+export WORDCHARS='*?_-.[]~=/&;!#$%^()<>:'
+
 # ^I: TAB
 # ^M: Enter
 # ^?: Delete / Backspace

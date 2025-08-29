@@ -4,6 +4,7 @@
 # - Control Node: Python 3.11+
 # - Managed (Target) Nodes: Python 3.8+
 #
+# See:
 # https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
 # https://access.redhat.com/articles/7128367
 #
@@ -32,22 +33,32 @@ fi
 ANSIBLE_BIN_PATH=~/.local/bin
 
 if [[ ! -x "$ANSIBLE_BIN_PATH/ansible" ]]; then
-    if command -v uv >/dev/null; then
-        # uv tool install --upgrade ansible
+    export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
+    export UV_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+
+    # curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh -s -- --help
+    if [[ ! -x $XDG_BIN_HOME/uv ]]; then
+        export UV_INSTALLER_GITHUB_BASE_URL=${GITHUB_PROXY}https://github.com
+        export UV_NO_MODIFY_PATH=1
+        export INSTALLER_PRINT_VERBOSE=1
+
+        # curl https://astral.sh/uv/install.sh -sSf | sh
+        curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh
+    else
+        uv self update
+    fi
+
+    uv python list --managed-python --only-installed
+    uv python list --no-managed-python
+
+    if [[ -d ~/.ansible ]]; then
         cd ~/.ansible
-        # install ansible
-        uv run ansible --version
         # ~/.ansible/.venv/bin/ansible --version
+        uv run ansible --version
+
         ANSIBLE_BIN_PATH=~/.ansible/.venv/bin
     else
-        if ! python3 -m pip --version &>/dev/null; then
-            # install & upgrade pip
-            python3 -m ensurepip --upgrade --user
-            python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --upgrade --user pip
-        fi
-
-        # install ansible
-        python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --user ansible
+        uv tool install --upgrade ansible
     fi
 fi
 
@@ -57,5 +68,4 @@ $ANSIBLE_BIN_PATH/ansible-config dump --only-changed -t all
 # ----------------------------------------------------------------
 # Let's gooooo
 # ----------------------------------------------------------------
-$ANSIBLE_BIN_PATH/ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages task=download" --tags all-packages
 $ANSIBLE_BIN_PATH/ansible-playbook ~/.ansible/unix.yml --ask-become-pass

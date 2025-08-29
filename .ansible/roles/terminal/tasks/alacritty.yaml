@@ -1,6 +1,24 @@
-# vim: set filetype=yaml.ansible:
 ---
-# sudo dnf install alacritty
+- name: Ensure Alacritty is installed
+  tags:
+    - upgrade
+    - alacritty
+  block:
+    - name: Install Alacritty (Fedora)
+      when: ansible_distribution == "Fedora"
+      become: true
+      ansible.builtin.dnf:
+        name: alacritty
+        state: present
+
+    - name: Install Alacritty (macOS)
+      when: ansible_system == "Darwin"
+      environment: "{{ brew_environment }}"
+      ansible.builtin.shell: |-
+        if ! brew list --cask alacritty >/dev/null 2>&1; then
+            brew install --cask alacritty --no-quarantine
+        fi
+      changed_when: false
 
 # desktop-file-install \
 #   --dir=${HOME}/.local/share/applications \

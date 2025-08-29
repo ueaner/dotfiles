@@ -1,0 +1,31 @@
+---
+
+# go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+- name: Install Caddy
+  ansible.builtin.shell: |-
+    set -o pipefail
+    go install github.com/caddyserver/forwardproxy/cmd/caddy@latest
+    caddy list-modules | grep forward_proxy
+
+    if [[ $(uname -s) == 'Linux' ]]; then
+        systemctl --user enable --now caddy
+        exit $?
+    fi
+
+    if [[ -f ~/.local/bin/caddy ]]; then
+        ln -sf ~/.local/bin/caddy /opt/local/bin/caddy
+    fi
+    if [[ -f ~/.local/etc/Caddyfile ]]; then
+        ln -sf ~/.local/etc/Caddyfile /opt/local/etc/Caddyfile
+    fi
+    if [[ -f ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ]]; then
+        ln -sf ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ~/Library/LaunchAgents/com.caddyserver.web.plist
+    fi
+
+    if [[ -f ~/Library/LaunchAgents/com.caddyserver.web.plist ]]; then
+        if launchctl print gui/$(id -u)/com.caddyserver.web >/dev/null 2>&1; then
+            launchctl unload ~/Library/LaunchAgents/com.caddyserver.web.plist
+        fi
+        launchctl load ~/Library/LaunchAgents/com.caddyserver.web.plist
+    fi
+  changed_when: false

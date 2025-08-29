@@ -1,8 +1,6 @@
 # 编程语言
 
-安装和更新 `go` `rust` `node` 等编程语言版本及安装路径。
-
-版本定义在 [./vars/main.yml] 文件中。
+安装和更新 `go` `rust` `nodejs` 等编程语言版本。
 
 使用前先设置 `ANSIBLE_CONFIG` 环境变量:
 
@@ -16,33 +14,32 @@ export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
 ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" -vvv
 ```
 
-- 安装/更新 [Go] 语言的版本
+- 安装/更新 [Go] 语言
 
 ```bash
 ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "go" -vvv
 ```
 
-- 安装/更新 [Rust] 语言的版本
+- 安装/更新 [Rust] 语言
 
 ```bash
 ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "rust" -vvv
 ```
 
-- 安装/更新 [Node.js] 语言的版本
+- 安装/更新 [JavaScript] 运行时
 
 ```bash
-ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "node" -vvv
+ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "js" -vvv
 ```
 
-- 安装/更新 [Deno] 语言的版本
+- 安装/更新 [Zig] 语言
 
 ```bash
-ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "deno" -vvv
+ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "zig" -vvv
 ```
 
-[./vars/main.yml]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/vars/main.yml
 [所有给定语言]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/main.yml
 [Go]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/go.yml
 [Rust]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/rust.yml
-[Node.js]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/node.yml
-[Deno]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/deno.yml
+[JavaScript]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/js.yml
+[Zig]: https://github.com/ueaner/dotfiles/blob/main/.ansible/roles/lang/tasks/zig.yml

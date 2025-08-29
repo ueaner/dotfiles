@@ -13,7 +13,7 @@ github_proxy: "{{ lookup('env', 'GITHUB_PROXY', default='') }}"
 
 # gnome_shell_version_command: "gnome-shell --version | cut -d' ' -f3 | cut -d'.' -f1"
 # gnome_shell_version: "{{ lookup('pipe', gnome_shell_version_command) }}"
-# gnome_shell_version: 47
+# gnome_shell_version: 48
 
 # curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | jq -r ".updates.F$VERSION_ID.stable"
 # kernel_headers_version: 6.13.3-200.fc41
@@ -46,21 +46,14 @@ template:
     version: curl -s --get -L https://extensions.gnome.org/extension-info/ --data-urlencode shell_version=$(gnome-shell --version | cut -d' ' -f3 | cut -d'.' -f1) --data-urlencode uuid=<archive> | jq -r .version_tag
     archive: https://extensions.gnome.org/download-extension/<archive>.shell-extension.zip?version_tag=<version>
     extensions:
-      # GNOME 47+ [touchpad: Allow gestures with >3 fingers]: https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/3275
-      # Used with libinput-gestures and dotool. https://github.com/lmr97/linux-3-finger-drag
-      # - disable-three-finger@lxp-git.github.com # https://extensions.gnome.org/extension/7403/disable-3-finger-gestures/
-      # [Touchpad: support three-finger drag configuration]: https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/3351
-      # Edit ~/.local/share/gnome-shell/extensions/gestureImprovements@gestures/metadata.json to add the new GNOME version to the shell-version field, e.g. 48
-      #   https://github.com/sidevesh/gnome-gesture-improvements--transpiled
-      #   https://github.com/thyttan/gnome-gesture-improvements
-      # - gestureImprovements@gestures # https://extensions.gnome.org/extension/4245/gesture-improvements/
-      - gnome-shell-go-to-last-workspace@github.com # https://extensions.gnome.org/extension/1089/go-to-last-workspace/
-      - clipboard-indicator@tudmotu.com # https://extensions.gnome.org/extension/779/clipboard-indicator/ <Super>bracketleft/bracketright
-      - xremap@k0kubun.com # https://extensions.gnome.org/extension/5060/xremap/
-      - kimpanel@kde.org # https://extensions.gnome.org/extension/261/kimpanel/
-      - system-monitor@gnome-shell-extensions.gcampax.github.com # https://extensions.gnome.org/extension/6807/system-monitor/
-      - gsconnect@andyholmes.github.io # https://extensions.gnome.org/extension/1319/gsconnect/
-      - color-picker@tuberry # https://extensions.gnome.org/extension/3396/color-picker/
+      - gnome-shell-go-to-last-workspace@github.com # Quickly toggle between two workspaces with one key
+      - clipboard-indicator@tudmotu.com # <Super>bracketleft/bracketright
+      - xremap@k0kubun.com # Allow xremap to fetch the focused app name using D-Bus
+      - kimpanel@kde.org # Input Method Panel
+      - system-monitor@gnome-shell-extensions.gcampax.github.com # Monitor system from the top bar
+      - gsconnect@andyholmes.github.io
+      - color-picker@tuberry
+      - gestureImprovements@gestures
   github:
     # The <archive> key is automatically added to $vars.
     # Replace placeholders in template URL with $vars
@@ -96,7 +89,6 @@ template:
 # 必要安装包: 已 macOS 下需要的最低需要为准
 # 能手工安装的, 就不使用 brew 安装
 packages:
-
   # deps: nodejs, tree-sitter-cli
   nvim:
     vars:
@@ -258,7 +250,6 @@ packages:
           ln -sf ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
       fi
 
-
   gitmux:
     vars:
       repo: arl/gitmux
@@ -371,7 +362,7 @@ packages:
 
   jq:
     vars:
-      repo: mikefarah/yq
+      repo: jqlang/jq
     template: "{{ template.github.latest }}"
     archives:
       - jq-linux-x86_64: jq-linux-amd64
@@ -735,15 +726,14 @@ packages:
       deno completions zsh > ~/.local/share/zsh/site-functions/_deno
       deno --version
 
-
   # TODO: Android
 
 dnf:
   - wl-clipboard
+  - xlsclients # list x11 client applications running on a display
   - zsh
   - tmux
   - alacritty
-  - xlsclients # list x11 client applications running on a display
 
 # brew uninstall --force $(brew list)
 # brew install ...
@@ -793,9 +783,8 @@ brew:
 # brew install --cask ...
 brew_cask:
   - hammerspoon
-  - font-sauce-code-pro-nerd-font
-  - font-noto-sans-mono-cjk-sc
   - alacritty --no-quarantine
+  - sogouinput
   - android-platform-tools
   - appcleaner
   - the-unarchiver
@@ -817,10 +806,10 @@ brew_cask:
   - wireshark-app
   - charles
   - tableplus
-  - multipass
   - qq
-  - sogouinput
-
+  # - multipass
+  # - font-sauce-code-pro-nerd-font
+  # - font-noto-sans-mono-cjk-sc
 
 flatpak:
   - ca.desrt.dconf-editor

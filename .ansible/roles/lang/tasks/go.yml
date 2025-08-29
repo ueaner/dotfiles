@@ -4,72 +4,23 @@
 
 ---
 
-# sudo dnf install go --setopt=install_weak_deps=False
-- name: Install/Upgrade Golang
+- name: Install/Upgrade Go
+  install-package:
+    name: go
+    placeholders:
+      version: curl -s 'https://golang.google.cn/VERSION?m=text' | head -n1
+    archives:
+      # https://dl.google.com/go/go1.25.0.linux-arm64.tar.gz
+      - https://dl.google.com/go/<version>.linux-amd64.tar.gz
+      - https://dl.google.com/go/<version>.linux-arm64.tar.gz
+      - https://dl.google.com/go/<version>.darwin-amd64.tar.gz
+      - https://dl.google.com/go/<version>.darwin-arm64.tar.gz
+    strip: 1
+    dst: $XDG_DATA_HOME/go # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      # ln -sf $XDG_DATA_HOME/go/bin/* $XDG_BIN_HOME
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_golang \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang
+      go version
   tags:
-    - upgrade
     - go
-  block:
-
-    # Install golang, check file stat
-
-    - name: Check if go is installed
-      ansible.builtin.stat:
-        path: "$XDG_DATA_HOME/go/bin/go"
-      register: lang_go_check
-
-    - name: Install Golang
-      when: not lang_go_check.stat.exists
-      ansible.builtin.unarchive:
-        src: https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz
-        dest: "$XDG_DATA_HOME/"
-        remote_src: true
-      changed_when: false
-
-    - name: Symlink golang bin to /usr/local/bin/
-      ansible.builtin.command:
-        cmd: ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
-      changed_when: false
-
-    # Upgrade golang, check version
-    # go install golang.org/dl/go{{ versions.go }}@latest
-    # go{{ versions.go }} download
-
-    - name: Check if golang version is {{ versions.go }}
-      ansible.builtin.command:
-        cmd: "go version"
-      changed_when: false
-      register: lang_go_version
-
-    - name: Upgrading Golang (Skip this task if version is already {{ versions.go }})
-      when: "versions.go not in lang_go_version.stdout"
-      ansible.builtin.unarchive:
-        src: https://dl.google.com/go/go{{ versions.go }}.linux-amd64.tar.gz
-        dest: "$XDG_DATA_HOME/"
-        remote_src: true
-      changed_when: false
-
-    - name: Symlink golang bin to /usr/local/bin/
-      ansible.builtin.command:
-        cmd: ln -sf $XDG_DATA_HOME/go/bin/* /usr/local/bin/
-      changed_when: false
-
-    - name: Install zsh completion for go
-      when: ansible_user_shell.endswith('zsh')
-      ansible.builtin.get_url:
-        url: https://github.com/zsh-users/zsh-completions/raw/refs/heads/master/src/_golang
-        dest: "~/.local/share/zsh/site-functions/"
-        mode: "0644"
-        force: true
-
-    # Golang Installation Finished, echo version
-
-    - name: Golang Installation Finished
-      ansible.builtin.command:
-        cmd: "go version"
-      changed_when: false
-      register: lang_go_version
-
-    - name: DEBUG go version
-      ansible.builtin.debug:
-        var: lang_go_version.stdout

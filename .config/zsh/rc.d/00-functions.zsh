@@ -153,12 +153,3 @@ vv() {
     # Open Neovim with the selected config
     NVIM_APPNAME=$(basename "$config") nvim "$@"
 }
-
-# Only for macOS
-# View plist xml
-plist-view() {
-    f=$(mktemp /tmp/plist-XXX)
-    plutil -convert xml1 -o "$f" "$1"
-    more "$f"
-    rm -f "$f"
-}

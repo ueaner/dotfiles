@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------
+# WebAssembly, TODO: To Be Continued
+# ----------------------------------------------------------------
+
+---
+
+- name: Install wasm-pack
+  install-package:
+    name: wasm-pack
+    placeholders:
+      repo: drager/wasm-pack
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      # https://github.com/drager/wasm-pack/releases/download/v0.13.1/wasm-pack-v0.13.1-x86_64-unknown-linux-musl.tar.gz
+      - wasm-pack-<version>-x86_64-unknown-linux-musl.tar.gz
+      - wasm-pack-<version>-aarch64-unknown-linux-musl.tar.gz
+      - wasm-pack-<version>-x86_64-apple-darwin.tar.gz
+    strip: 1
+    include:
+      - wasm-pack
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      wasm-pack --version
+  tags:
+    - wasm-pack

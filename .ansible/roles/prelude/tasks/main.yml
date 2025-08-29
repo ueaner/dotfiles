@@ -37,6 +37,27 @@
   ansible.builtin.include_tasks: sudo.yml
 
 # ----------------------------------------------------------------
+# fs.inotify: too many open files
+# ----------------------------------------------------------------
+- name: Fix too many open files (include inotify)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: inotify.yml
+
+# ----------------------------------------------------------------
+# /usr/local/bin permissions
+# ----------------------------------------------------------------
+- name: Change the owner of the /usr/local/bin directory to {{ ansible_env.USER }}
+  ansible.builtin.include_tasks: bin.yml
+
+# ----------------------------------------------------------------
+# Lets normal users use evdev and uinput without sudo
+# ----------------------------------------------------------------
+- name: Lets normal users use evdev and uinput without sudo (include uinput)
+  when: ansible_system == "Linux"
+  ansible.builtin.include_tasks: uinput.yml
+
+
+# ----------------------------------------------------------------
 # hostname
 # ----------------------------------------------------------------
 - name: Set the hostname of the Linux host in the LAN (include hostname)

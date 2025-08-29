@@ -25,20 +25,20 @@
 # ----------------------------------------------------------------
 # Node.js
 # ----------------------------------------------------------------
-- name: Install/Upgrade Node.js (include_tasks)
-  ansible.builtin.include_tasks: node.yml
+- name: Install/Upgrade JavaScript runtime (include_tasks)
+  ansible.builtin.include_tasks: js.yml
   tags:
     - upgrade
-    - node
+    - js
 
 # ----------------------------------------------------------------
-# Deno
+# Zig
 # ----------------------------------------------------------------
 - name: Install/Upgrade Deno (include_tasks)
-  ansible.builtin.include_tasks: deno.yml
+  ansible.builtin.include_tasks: zig.yml
   tags:
     - upgrade
-    - deno
+    - zig
 
 
 #

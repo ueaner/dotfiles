@@ -11,15 +11,37 @@ chinese: on
 # hostname -I parameter is not supported on macOS
 # ansible_controller_ipv4_command: "hostname -I | cut -d' ' -f1"
 # Compatible with macOS and Linux
-# Linux 需要安装 net-tools 才能使用 ifconfig
 ansible_controller_ipv4_command: "[[ $(uname -s) == 'Darwin' ]] && /sbin/ifconfig | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' || hostname -I | cut -d' ' -f1"
 ansible_controller_ipv4: "{{ lookup('pipe', ansible_controller_ipv4_command) }}"
 
-# In specific task: environment: "{{ proxy_env }}"
-proxy_env:
+
+# |-: Remove ending newline
+# noqa jinja[spacing]
+PATH: |-
+  {%- set local_bin = ansible_env.XDG_BIN_HOME | default(ansible_env.HOME ~ '/.local/bin') -%}
+  {%- set opt_bin = '/opt/local/bin' -%}
+  {%- set path = ansible_env.PATH -%}
+
+  {%- if ansible_system == 'Darwin' and opt_bin not in path -%}
+    {%- set path = opt_bin ~ ':' ~ path -%}
+  {%- endif -%}
+
+  {%- if local_bin not in path.split(':') -%}
+    {%- set path = local_bin ~ ':' ~ path -%}
+  {%- endif -%}
+
+  {{- path -}}
+
+
+# In specific task: environment: "{{ proxy_environment }}"
+proxy_environment:
   http_proxy: "socks5://{{ ansible_controller_ipv4 }}:1080"
   https_proxy: "socks5://{{ ansible_controller_ipv4 }}:1080"
   # all_proxy: http://127.0.0.1:1080
+
+GITHUB_PROXY: "{{ lookup('env', 'GITHUB_PROXY', default='') }}"
+
+gnome_shell_version_command: if which gnome-shell >/dev/null 2>&1; then gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.'; fi
 
 desktop_command: |-
   KERNEL=$(uname -s)         # Darwin | Linux
@@ -47,3 +69,66 @@ archives_dir: "{{ backup_dir ~ '/archives' }}"
 # ANSIBLE_ARCHIVES_SERVER defined in ~/.ansible/plugins/callback/my_callback.py
 # archives_server: "{{ lookup('env', 'ANSIBLE_ARCHIVES_SERVER', default=archives_dir) }}"
 archives_server: "{{ archives_dir if inventory_hostname == 'localhost' else lookup('env', 'ANSIBLE_ARCHIVES_SERVER') }}"
+
+
+# template for install-package module
+template:
+  github:
+    # The <archive> key is automatically added to $vars.
+    # Replace placeholders in template URL with $vars
+    version: curl -s https://api.github.com/repos/<repo>/releases/latest | jq -r .tag_name # replace with $vars
+    version_v: curl -s https://api.github.com/repos/<repo>/releases/latest | jq -r .tag_name | sed 's/^v//' # use with archive_v
+    # https://github.com/arl/gitmux/releases/download/v0.11.2/gitmux_v0.11.2_linux_amd64.tar.gz
+    archive: "{{ GITHUB_PROXY }}https://github.com/<repo>/releases/download/<version>/<archive>" # replace with $vars
+    archive_v: "{{ GITHUB_PROXY }}https://github.com/<repo>/releases/download/v<version>/<archive>" # use with version_v
+    # https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz
+    nightly: "{{ GITHUB_PROXY }}https://github.com/<repo>/releases/download/nightly/<archive>"
+    # https://github.com/xremap/xremap/releases/latest/download/xremap-linux-x86_64-gnome.zip
+    latest: "{{ GITHUB_PROXY }}https://github.com/<repo>/releases/latest/download/<archive>"
+    # Requires grep (v3+) on macOS, and the Ansible target node is local
+    # brew install grep
+    download-url: curl -s https://api.github.com/repos/<repo>/releases/latest | grep browser_download_url | grep -P '<archive>' | sort | head -n1 | grep -P 'https://.+<archive>' -o
+
+
+# Defaults env for target nodes
+brew_environment:
+  VARS_SCOPE: all
+
+
+
+# curl -s https://src.fedoraproject.org/_dg/bodhi_updates/rpms/kernel-headers | jq -r ".updates.F$VERSION_ID.stable"
+# kernel_headers_version: 6.13.3-200.fc41
+# kernel_headers_version_slash: "{{ kernel_headers_version.split('-') | join('/') }}"
+fedora:
+  f41:
+    release-date: 2024-10-29
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.11.3/300.fc41/x86_64/kernel-headers-6.11.3-300.fc41.x86_64.rpm
+      - 6.11.3-300.fc41
+      - 6.12.4-200.fc41
+      # kernel-headers-version: kernel-version
+      - 6.13.3-200.fc41: 6.13.4-200.fc41
+      - 6.14.3-200.fc41
+      - 6.15.3-100.fc41
+
+      # https://kojipkgs.fedoraproject.org/packages/kernel/6.13.3/201.fc41/x86_64/kernel-6.13.3-201.fc41.x86_64.rpm
+      # https://kojipkgs.fedoraproject.org/packages/kernel/6.13.3/200.fc41/x86_64/kernel-6.13.3-200.fc41.x86_64.rpm
+      - https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver")")
+
+      - kernel-6.15.3-100.fc41 kernel-headers-6.15.3-100.fc41 linux-firmware-20250613-1.fc41
+      - kernel-6.14.3-200.fc41 kernel-headers-6.14.3-200.fc41
+      - kernel-6.13.4-200.fc41 kernel-headers-6.13.3-200.fc41
+      - bpftool-7.5.0-1.fc41 kernel-6.12.4-200.fc41 kernel-headers-6.12.4-200.fc41
+      - kernel-6.11.3-300.fc41 kernel-headers-6.11.3-300.fc41
+
+  f42:
+    release-date: 2025-04-22
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.14.3/300.fc42/x86_64/kernel-headers-6.14.3-300.fc42.x86_64.rpm
+      - 6.14.3-300.fc42
+      - 6.15.3-200.fc42
+  f43:
+    release-date: 2025-11-11
+    kernel-headers:
+      # https://kojipkgs.fedoraproject.org/packages/kernel-headers/6.17.3/300.fc43/x86_64/kernel-headers-6.17.3-300.fc43.x86_64.rpm
+      - 6.17.3-300.fc43

@@ -1,0 +1,20 @@
+---
+
+- name: Install fcitx5 (Fedora)
+  when: ansible_distribution == "Fedora"
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - fcitx5
+      - fcitx5-chinese-addons
+      - fcitx5-autostart
+
+
+- name: Install Sogou Input Method (macOS)
+  when: ansible_system == "Darwin"
+  environment: "{{ brew_environment }}"
+  ansible.builtin.shell: |-
+    if ! brew list --cask sogouinput >/dev/null 2>&1; then
+        brew install --cask sogouinput
+    fi
+  changed_when: false

@@ -36,9 +36,17 @@
     - git
 
 # ----------------------------------------------------------------
-# tldr
+# man pages
 # ----------------------------------------------------------------
-- name: Install/Upgrade tldr python client
-  ansible.builtin.include_tasks: tldr.yml
+- name: Install/Upgrade man pages
+  ansible.builtin.include_tasks: man.yml
   tags:
-    - tldr
+    - man
+
+# ----------------------------------------------------------------
+# More command-line tools
+# ----------------------------------------------------------------
+- name: Install/Upgrade more command-line tools
+  ansible.builtin.include_tasks: cmdline-tools.yml
+  tags:
+    - cmdline-tools

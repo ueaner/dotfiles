@@ -1,15 +1,24 @@
 ---
 
-- name: Install/Upgrade lazygit for Linux
-  when: ansible_system == "Linux"
-  ansible.builtin.unarchive:
-    src: "{{ archives_server }}/lazygit-linux-x86_64.tar.gz"
-    dest: "~/.local/bin"
-    include: lazygit
-
-- name: Install/Upgrade lazygit for macOS
-  when: ansible_system == "Darwin"
-  ansible.builtin.unarchive:
-    src: "{{ archives_server }}/lazygit-macos-x86_64.tar.gz"
-    dest: "~/.local/bin"
-    include: lazygit
+- name: Install lazygit
+  install-package:
+    name: lazygit
+    placeholders:
+      repo: jesseduffield/lazygit
+      version: "{{ template.github.version_v }}"
+    template: "{{ template.github.archive_v }}"
+    archives:
+      # The requested version number is "v0.54.2", but the archive name uses "0.54.2" without the "v".
+      # https://github.com/jesseduffield/lazygit/releases/download/v0.54.2/lazygit_0.54.2_linux_x86_64.tar.gz
+      - lazygit_<version>_linux_x86_64.tar.gz
+      - lazygit_<version>_linux_arm64.tar.gz
+      - lazygit_<version>_darwin_x86_64.tar.gz
+      - lazygit_<version>_darwin_arm64.tar.gz
+    include:
+      - lazygit
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      lazygit --version
+  tags:
+    - lazygit
+    - git

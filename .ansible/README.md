@@ -1,153 +1,208 @@
-# Setup Linux Workstation
+# Unix Workstation Setup
 
-- Building a [macOS-ish Desktop Environment] (Shortcuts and Gestures) based on GNOME or Sway
-- [Programming Languages Environment]
-- [Terminal Environment]
-- Install common [packages]
-- etc.
+使用 Ansible 配置和管理个人 Unix 工作站，支持 Fedora Linux 和 macOS 系统。
+提供了完整的终端环境、桌面环境、编程语言和各种开发工具的配置，支持高度定制化的工作流。
 
-## ⚡️ Requirements
+使用了自定义的 [install-package] 模块，能够从 GitHub 等源自动下载和安装软件包，支持灵活的模板和占位符系统。
 
-Make sure you can access the network. If there is no wireless network, try the following for now:
+## 系统要求
 
-1. Wired Network (Network cable)
-2. USB Tethering (USB data cable) and (If on Android, Enable USB debugging)
-3. Bluetooth Tethering
+### 控制节点（运行 Ansible 的机器）
 
-## 🚀 Getting Started
+- Python 3.11+
+- Ansible Core 2.18+
 
-Ansible controller:
+### 目标节点（被配置的机器）
 
-```bash
-export PYTHONUSERBASE=~/.local
+- **Fedora Linux**（推荐 41+ 版本）
+- **macOS**（推荐 macOS 12+ 版本）
+- Python 3.8+
+- 建议目标机器的 sshd 服务启用免密码登录
 
-# install & upgrade pip
-python3 -m ensurepip --upgrade --user
-python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --upgrade --user pip
-# install ansible
-python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com --user ansible
+### 网络要求
 
-~/.local/bin/ansible --version
+确保可以访问网络，如果无法使用无线网络，可以尝试：
+
+1. 有线网络（网线）
+2. USB 网络共享（USB 数据线 + Android USB 调试）
+3. 蓝牙网络共享
+
+## 项目结构
+
+```
+.
+├── install                 # 一键安装完整 Unix 工作站脚本
+├── unix.yml                # Unix 工作站配置 playbook
+├── ansible.cfg             # Ansible 配置文件
+├── inventory               # 主机分组
+├── group_vars/             # 主机变量目录
+│   ├── all                 # 全局变量
+│   ├── local               # 本地主机变量
+│   └── mac15               # 特定主机变量
+├── plugins                 # 自定义插件
+│   ├── callback            # 回调插件
+│   ├── modules             # 自定义模块
+│   └── module_utils        # 模块工具
+├── roles                   # Ansible 角色
+│   ├── prelude             # 基础环境设置
+│   ├── desktop             # 桌面环境
+│   ├── terminal            # 终端环境
+│   ├── fonts               # 字体配置
+│   ├── lang                # 编程语言环境
+│   ├── server              # 服务器配置
+│   ├── services            # 用户服务
+│   ├── apps                # 图形应用
+│   └── done                # 完成标记
+├── pyproject.toml          # Python 项目依赖配置
+└── README.md               # 项目说明文件
 ```
 
-Target devices:
+## 功能特性
 
-- Enable the sshd service `sudo systemctl enable sshd`.
-- SSH login without password `ssh-copy-id <host>`.
-- Python 3.9+
+- 🖥️ **多桌面环境支持**：GNOME、Sway (Fedora) 和 macOS
+- 🐣 **终端环境**：完整的终端工具链配置
+- 📝 **开发环境**：多种编程语言和开发工具 (Go, Rust, Node.js/Bun, Zig)
+- 🐍 **Python 环境**：使用 uv 管理 Python 版本和包
+- 🔤 **字体配置**：Nerd Fonts 和 Noto Fonts
+- 📦 **应用管理**：图形应用程序自动安装
+- ⚙️ **系统优化**：系统级配置和优化
 
-## Let's gooooo
+### 基础环境 (prelude)
 
-Specify the Ansible configuration file by setting the [ANSIBLE_CONFIG] environment variable, so that you don't need to specify the `-i /path/to/inventory` parameter for a specific task.
+- 系统基础配置
+- 包管理器配置
+- 用户权限设置
+- 系统优化设置
+
+### 桌面环境 (desktop)
+
+配置和优化桌面环境，支持 GNOME、Sway 和 macOS 桌面环境：
+
+- macOS 风格的键盘映射 (GNOME and Sway via xremap)
+- 多种桌面环境支持 (GNOME, Sway, macOS)
+- 中文输入法配置
+- MacBook 网络驱动支持 (Fedora)
+
+### 终端环境 (terminal)
+
+配置强大的终端开发环境，包括：
+
+- Alacritty 终端
+- Git 版本控制工具
+- Neovim 文本编辑器
+- Tmux 终端复用器
+- Zsh shell
+
+### 编程语言 (lang)
+
+安装和管理多种编程语言环境：
+
+- Go 语言
+- Rust 语言
+- JavaScript 运行时
+- Python 环境（使用 uv 工具管理 Python 版本和包）
+- Zig 语言
+
+### 字体配置 (fonts)
+
+- Nerd Fonts (用于终端和开发)
+- Noto Fonts (全面的字体支持)
+
+### 服务配置 (services)
+
+- Caddy Web 服务器
+- Shadowsocks 代理服务
+- 其他常用服务
+
+## 使用方法
+
+1. 使用 [install](https://github.com/ueaner/dotfiles/blob/main/.ansible/install) 脚本运行完整的 Unix 工作站配置:
+
+```bash
+~/.ansible/install
+```
+
+该脚本会:
+
+- 克隆 [dotfiles] 仓库到 `~/.dotfiles`
+- 安装 Ansible 和相关依赖
+- 运行完整的 Unix 工作站配置
+
+2. 或者手动设置 Ansible 配置环境变量:
 
 ```bash
 export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
 ```
 
-List all-packages of the packages role:
+3. 运行完整的 Unix 工作站配置:
 
 ```bash
-yq '... comments="" | .packages | keys' <~/.ansible/roles/packages/vars/main.yml
+ansible-playbook ~/.ansible/unix.yml --ask-become-pass
 ```
 
-Download the package to be used.
+4. 运行特定角色:
 
 ```bash
-~/.local/bin/ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages task=download" --tags all-packages
+# 配置桌面环境
+ansible-playbook ~/.ansible/unix.yml -e "role=desktop" --ask-become-pass
+
+# 配置终端环境
+ansible-playbook ~/.ansible/unix.yml -e "role=terminal" --ask-become-pass
+
+# 安装字体
+ansible-playbook ~/.ansible/unix.yml -e "role=fonts" --ask-become-pass
+
+# 配置编程语言环境
+ansible-playbook ~/.ansible/unix.yml -e "role=lang" --ask-become-pass
+
+# 配置特定编程语言
+ansible-playbook ~/.ansible/unix.yml -e "role=lang" --tags "go" --ask-become-pass
+
+# 安装图形应用程序
+ansible-playbook ~/.ansible/unix.yml -e "role=apps" --ask-become-pass
+
+# 配置服务
+ansible-playbook ~/.ansible/unix.yml -e "role=services" --ask-become-pass
 ```
 
-Initialize the macOS-ish desktop environment (Shortcuts & Gestures), programming language environment, terminal environment and common [packages].
+5. 查看可用的任务和标签:
 
 ```bash
-~/.local/bin/ansible-playbook ~/.ansible/unix.yml --ask-become-pass
+# 列出所有任务
+ansible-playbook ~/.ansible/unix.yml --list-tasks
+
+# 列出所有标签
+ansible-playbook ~/.ansible/unix.yml --list-tags
 ```
 
-Update programming language versions and common [packages].
+## 配置说明
 
-```bash
-~/.local/bin/ansible-playbook ~/.ansible/unix.yml --tags all-packages
-```
+主要的配置文件是 [ansible.cfg]，其中定义了：
 
-Install/upgrade go, rust, zig, node and other programming language versions.
+- inventory 文件位置
+- 插件路径
+- 临时文件目录
+- 权限提升方法
 
-```bash
-~/.local/bin/ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages" --tags "go"
-```
+## 环境变量
 
-Install/upgrade lazygit, tldr and other common [packages].
+项目使用以下环境变量：
 
-```bash
-~/.local/bin/ansible-playbook ~/.ansible/unix.yml --extra-vars "role=packages" --tags "lazygit"
-```
+- `GITHUB_PROXY` - GitHub 代理设置
+- `XDG_*` 系列变量 - 符合 XDG 标准的配置目录
 
-## Features
+## 自定义配置
 
-Initialize the desktop environment, programming language environment, terminal environment and common [packages].
+可以通过修改以下文件来自定义配置：
 
-The flags used in ansible task:
+- `group_vars/all` - 全局变量
+- `host_vars/` - 主机特定变量
+- 各角色下的任务文件和模板
 
-- Device: MacBook(aqua, gnome), ChromeBook(sway)
-- System: macOS Darwin, Fedora Linux 41+
-- Desktop: aqua, gnome, sway
+## 许可证
 
-Such as the [Github task lists]:
+MIT
 
-Install util-linux for Fedora.
-
-- [x] To mark a task as completed
-- [ ] To mark a task as incomplete
-
-| Feature  | Role                  | System                | Desktop     | Remark                        |
-| -------- | --------------------- | --------------------- | ----------- | ----------------------------- |
-| prelude  | Clone dotfiles        | [x] Fedora, [x] macOS | all         | NOPASSWD                      |
-| prelude  | Set hostname          | [x] Fedora            | gnome, sway | NOPASSWD                      |
-| prelude  | sudo without password | [x] Fedora, [x] macOS | all         | NOPASSWD                      |
-| prelude  | Package Manager       | [x] Fedora, [x] macOS | all         | dnf, flatpak, brew            |
-| packages | Programming Languages | [x] Fedora, [x] macOS | all         | Download, Install/Upgrade     |
-| packages | All [packages]        | [x] Fedora, [x] macOS | all         | Download, Install/Upgrade     |
-| packages | Specific [packages]   | [x] Fedora, [x] macOS | all         | Download, Install/Upgrade     |
-| packages | GUI tools (flatpak)   | [x] Fedora            | gnome, sway | Install/Upgrade               |
-| packages | Terminal tools (dnf)  | [x] Fedora            | gnome, sway | Install/Upgrade               |
-| basic    | Too many open files   | [x] Fedora            | gnome, sway | -                             |
-| basic    | evdev/uinput          | [x] Fedora            | gnome, sway | use evdev/uinput without sudo |
-| basic    | Xremap                | [x] Fedora            | gnome, sway | macOS-ish keyboard remap      |
-| basic    | GNOME DE              | [x] Fedora            | gnome       | shortcuts, gestures, etc      |
-| basic    | Sway DE               | [x] Fedora            | sway        | in dotfiles                   |
-| basic    | Input Method          | [x] Fedora            | gnome, sway | fcitx5, libpinyin             |
-| basic    | broadcom-wl          | [x] Fedora            | gnome, sway | on MacBook                    |
-| terminal | alacritty             | [x] Fedora, [ ] macOS | all         | font.size                     |
-| terminal | tmux                  | [x] Fedora, [x] macOS | all         | gitmux, etc.                  |
-| terminal | zsh                   | [x] Fedora, [x] macOS | all         | default login shell           |
-| terminal | git                   | [x] Fedora, [x] macOS | all         | lazygit, etc.                 |
-| terminal | tldr                  | [x] Fedora, [x] macOS | all         | tldr python client            |
-| terminal | neovim                | [x] Fedora, [x] macOS | all         | neovim-nightly, neovide       |
-| fonts    | Nerd Fonts            | [x] Fedora, [x] macOS | all         | -                             |
-| fonts    | Noto Fonts            | [x] Fedora            | gnome, sway | -                             |
-| services | shadowsocks           | [x] Fedora, [x] macOS | all         | shadowsocks-rust (local)      |
-
-## 注意事项
-
-1. tags: starting with the main.yml file, add tags to the task
-   - ansible-playbook ~/.ansible/unix.yml -vvv --tags "download" --list-tasks
-   - ansible-playbook ~/.ansible/unix.yml -vvv --tags "install" --list-tags
-   - ansible-playbook ~/.ansible/unix.yml -vvv --tags "go"
-
-2. [ansible-lint rules]: Avoid checking by adding comments `# noqa rule-name`, where `rule-name` can be seen in the execution results of `ansible-lint`.
-
-3. [All three possible ways of ignoring rules]
-   - `noqa` inline -> for individual tasks
-   - `skip_list` in config file -> for general deactivation
-   - `.ansible-lint-ignore` -> for deactivation on file level
-
-## 参考
-
-- [6 troubleshooting skills for Ansible playbooks]
-- [Controlling how Ansible behaves: precedence rules]
-
-[6 troubleshooting skills for Ansible playbooks]: https://www.redhat.com/sysadmin/troubleshoot-ansible-playbooks
-[Controlling how Ansible behaves: precedence rules]: https://docs.ansible.com/ansible/latest/reference_appendices/general_precedence.html
-[ansible-lint rules]: https://ansible-lint.readthedocs.io/rules/
-[All three possible ways of ignoring rules]: https://github.com/ansible/ansible-lint/issues/3068#issuecomment-1438617565
-[packages]: ./roles/packages/vars/main.yml
-[ANSIBLE_CONFIG]: https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
-[Github task lists]: https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/about-task-lists#creating-task-lists
+[dotfiles]: https://github.com/ueaner/dotfiles
+[install-package]: https://github.com/ueaner/dotfiles/blob/main/.ansible/plugins/modules/install-package.py
+[ansible.cfg]: https://github.com/ueaner/dotfiles/blob/main/.ansible/ansible.cfg

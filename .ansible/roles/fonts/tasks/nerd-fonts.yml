@@ -12,7 +12,7 @@
 
     - name: Installing {{ item }}
       ansible.builtin.unarchive:
-        src: "{{ archives_server }}/{{ item }}.tar.xz"
+        src: "{{ GITHUB_PROXY }}/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.tar.xz"
         dest: ~/.local/share/fonts/{{ item }}
         creates: ~/.local/share/fonts/{{ item }}/done
 
@@ -33,6 +33,43 @@
 
     - name: Installing {{ item }}
       ansible.builtin.unarchive:
-        src: "{{ archives_server }}/{{ item }}.tar.xz"
+        src: "{{ GITHUB_PROXY }}/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.tar.xz"
         dest: ~/Library/Fonts/{{ item }}
         creates: ~/Library/Fonts/{{ item }}/done
+
+
+# - name: Install nerd-fonts (Linux)
+#   when: ansible_system == "Linux"
+#   install-package:
+#     name: nerd-fonts
+#     placeholders:
+#       repo: ryanoasis/nerd-fonts
+#     template: "{{ template.github.latest }}"
+#     archives:
+#       - SourceCodePro.tar.xz
+#     dst: ~/.local/share/fonts/SourceCodePro
+#     postinstall: |-
+#       if ! ls ~/.local/share/fonts/SourceCodePro/*.ttf &>/dev/null; then
+#           exit 1
+#       fi
+#   tags:
+#     - nerd-fonts
+#     - fonts
+#
+# - name: Install nerd-fonts (Darwin)
+#   when: ansible_system == "Darwin"
+#   install-package:
+#     name: nerd-fonts
+#     placeholders:
+#       repo: ryanoasis/nerd-fonts
+#     template: "{{ template.github.latest }}"
+#     archives:
+#       - SourceCodePro.tar.xz
+#     dst: ~/Library/Fonts/SourceCodePro
+#     postinstall: |-
+#       if ! ls ~/Library/Fonts/SourceCodePro/*.ttf &>/dev/null; then
+#           exit 1
+#       fi
+#   tags:
+#     - nerd-fonts
+#     - fonts

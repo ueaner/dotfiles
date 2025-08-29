@@ -1,0 +1,79 @@
+# ----------------------------------------------------------------
+# Node.js, Bun, Deno Install/Upgrade
+# ----------------------------------------------------------------
+
+---
+
+- name: Install/Upgrade Node.js
+  install-package:
+    name: node
+    placeholders:
+      version: curl -s -L https://nodejs.org/download/release/index.json | jq -r '[.[] | select(.lts!=false)] | sort_by(.lts, .version) | reverse | .[0].version'
+    archives:
+      # https://nodejs.org/dist/v22.18.0/node-v22.18.0-linux-x64.tar.xz
+      - https://nodejs.org/dist/<version>/node-<version>-linux-x64.tar.xz
+      - https://nodejs.org/dist/<version>/node-<version>-linux-arm64.tar.xz
+      - https://nodejs.org/dist/<version>/node-<version>-darwin-x64.tar.xz
+      - https://nodejs.org/dist/<version>/node-<version>-darwin-arm64.tar.xz
+    strip: 1
+    dst: $XDG_DATA_HOME/node # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      ln -sf $XDG_DATA_HOME/node/bin/* $XDG_BIN_HOME
+
+      corepack enable pnpm
+      corepack prepare pnpm@latest --activate
+      pnpm config set global-bin-dir ~/.local/bin
+      pnpm completion zsh > ~/.local/share/zsh/site-functions/_pnpm
+
+      curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_node \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_node
+      node --version
+  tags:
+    - nodejs
+    - node
+
+
+- name: Install/Upgrade bun
+  install-package:
+    name: bun
+    placeholders:
+      repo: oven-sh/bun
+    template: "{{ template.github.latest }}"
+    archives:
+      - bun-linux-x64.zip
+      - bun-linux-aarch64.zip
+      - bun-darwin-x64.zip
+      - bun-darwin-aarch64.zip
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    strip: 1
+    include:
+      - bun
+    postinstall: |-
+      chmod +x ~/.local/bin/bun
+      bun completions > ~/.local/share/zsh/site-functions/_bun
+      bun --version
+  tags:
+    - bun
+
+
+- name: Install/Upgrade Deno
+  install-package:
+    name: deno
+    placeholders:
+      repo: denoland/deno
+    template: "{{ template.github.latest }}"
+    archives:
+      # https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip
+      - deno-x86_64-unknown-linux-gnu.zip
+      - deno-aarch64-unknown-linux-gnu.zip
+      - deno-x86_64-apple-darwin.zip
+      - deno-aarch64-apple-darwin.zip
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    include:
+      - deno
+    postinstall: |-
+      chmod +x ~/.local/bin/deno
+      deno completions zsh > ~/.local/share/zsh/site-functions/_deno
+      deno --version
+  tags:
+    - deno

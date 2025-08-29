@@ -1,0 +1,23 @@
+---
+
+# brew install llama.cpp
+- name: Install llama.cpp
+  when: ansible_system == "Darwin"
+  install-package:
+    name: llama.cpp
+    placeholders:
+      repo: ggml-org/llama.cpp
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      # https://github.com/ggml-org/llama.cpp/releases/download/b6292/llama-b6292-bin-macos-x64.zip
+      - llama-<version>-bin-macos-x64.zip
+      - llama-<version>-bin-macos-arm64.zip
+    dst: $XDG_DATA_HOME/llama # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      if [[ -x $XDG_DATA_HOME/llama/llama-server ]]; then
+          ln -sf $XDG_DATA_HOME/llama/llama-server ~/.local/bin/llama-server
+          llama-server --version
+      fi
+  tags:
+    - llama

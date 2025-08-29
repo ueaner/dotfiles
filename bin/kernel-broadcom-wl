@@ -2,22 +2,16 @@
 #
 # This script handles Broadcom wireless connectivity issues on a Macbook with Fedora 41+.
 #
-# NOTE: Go to https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable
-# and select the system version from the Releases field,
-# or go to https://koji.fedoraproject.org/koji/packageinfo?packageID=27325,
-# and configure the kernel-headers versions into packages.yml.
-#
 # Network:
 # 1. Wired network
 # 2. USB tethering (Settings -> Portable hotspot -> USB tethering)
 # 3. Bluetooth tethering (Settings -> Portable hotspot -> Bluetooth tethering)
 #
 # @depends
-# - https://github.com/ueaner/dotfiles/blob/main/bin/base.sh
 # - https://github.com/ueaner/dotfiles/blob/main/bin/kernel-rpm-downloader
+# - jq
 #
 #   ~/bin/
-#   ├── base.sh
 #   ├── kernel-broadcom-wl
 #   └── kernel-rpm-downloader
 #
@@ -28,18 +22,7 @@
 #  packages upgrade    41      6.12.13     6.12.4
 #    system upgrade    42      6.13.1      6.12.4
 
-case "$1" in
--h | --help)
-    echo "This script handles Broadcom wireless connectivity issues on a Macbook with Fedora."
-    echo
-    echo "Usage: kernel-broadcom-wl [options]"
-    echo
-    echo "  -h, --help               Show this message"
-    echo
-    exit 0
-    ;;
-esac
-
+# Check if Wi-Fi is available
 if ! lspci | grep -i broadcom | grep -q -i wireless; then
     echo "Non-Broadcom wireless network adapter, no need to continue."
     exit 0
@@ -49,80 +32,71 @@ if nmcli conn show --active | grep -q -i wifi; then
     exit 0
 fi
 
-# shellcheck source=base.sh
-. ~/bin/base.sh
-
-VERSION_ID=$(grep "VERSION_ID=" /etc/os-release | cut -f2 -d'=')
-VERSION_ID_PREV=$((VERSION_ID - 1))
-kernel_version=$(uname -r)
-
-[[ -n "$XDG_BACKUP_DIR" ]] && download_dir="$XDG_BACKUP_DIR/archives" || download_dir="$HOME/.cache/archives"
-
 # NOTE: 0. Determine the kernel-headers version
 
-target_version=$(kernel-rpm-closest-version | cut -d' ' -f2)
+# 获取将要安装与当前 kernel 版本最接近的 kernel-headers 和 kernel
+fver=$(rpm -E %fedora)
+kver=$(rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}\n' | grep -o -E '^kernel-[0-9]+.[0-9]+' | head -1)
+updates=$(
+    curl -s "https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&releases=F${fver}" |
+        jq -r '.updates[].title' |
+        grep -Ew '100|200|300' |
+        awk '{
+    out = ""
+    for (i = 1; i <= NF; i++) {
+        if ($i ~ /^kernel-[0-9]/ || $i ~ /^kernel-headers-[0-9]/) {
+            out = out (out ? " " : "") $i
+        }
+    }
+    if (out) print out
+}' | grep "$kver"
+)
 
-if [[ -z "$target_version" ]]; then
-    echo "Cannot determine kernel version"
-    echo "Please check the kernel-headers versions in the ~/.ansible/roles/packages/vars/main.yml"
-    echo "See https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&release=F${VERSION_ID}"
-    exit 1
-fi
+read -r k_target h_target <<<"$updates"
 
-target_version="${target_version}.$(uname -m)"
-target_headers_version="$(kernel-rpm-closest-version | cut -d' ' -f1).$(uname -m)"
+k_target="${k_target}.$(uname -m)"
+h_target="${h_target}.$(uname -m)"
 
 # NOTE: 1. Check if kmod-wl is installed
 
+k_version=$(echo "$k_target" | sed -r 's/kernel-//')
 akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
-k_versions=(
-    "${kernel_version}"
-    "${target_version}"
-)
 
-for k_version in "${k_versions[@]}"; do
-    kmod_wl="kmod-wl-${k_version}-${akmod_wl_version}"
-    if rpm --quiet -q "$kmod_wl" >/dev/null; then
-        echo "$kmod_wl already installed"
-        # exit 0
-    fi
-done
+# eg: kmod-wl-6.15.3-200.fc42.x86_64-6.30.223.271-58.fc42.x86_64
+kmod_wl="kmod-wl-${k_version}-${akmod_wl_version}"
+if rpm --quiet -q "$kmod_wl" >/dev/null; then
+    echo "$kmod_wl already installed"
+    echo "Reboot your computer and enjoy the Wi-Fi network."
+    exit 0
+fi
 
 # NOTE: 2. Download and install kernel* packages
-download_dir="$download_dir/kernel-$kernel_version"
 
-if [[ ! -d "$download_dir" ]]; then
-    echo "Download kernel-headers-$target_version.rpm related packages"
-    ~/bin/kernel-rpm-downloader "kernel-$target_version" "kernel-headers-$target_headers_version"
-    ret=$?
-    if [[ $ret -ne 0 ]]; then
-        echo "Failed to download kernel-headers-$target_version.rpm packages"
-        exit 1
-    fi
-fi
+[[ -n "$XDG_BACKUP_DIR" ]] && download_dir="$XDG_BACKUP_DIR/archives/$k_target" || download_dir="$HOME/.cache/archives/$k_target"
+mkdir -p "$download_dir"
 cd "$download_dir" || exit 1
+
+echo "Download $k_target and $h_target packages"
+~/bin/kernel-rpm-downloader "$k_target" "$h_target" --dir="$download_dir"
+ret=$?
+if [[ $ret -ne 0 ]]; then
+    echo "Failed to download $k_target and $h_target packages"
+    exit 1
+fi
 
 # Ignore upgrade of kernel* packages
 sudo dnf upgrade -y --refresh --exclude=kernel\*
 
+echo "Install $k_target and $h_target"
+
 # Allow install/update/downgrade of kernel* packages
 sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
-
-# downgrade
-if version-lt "$target_version" "$kernel_version"; then
-    # downgrade_kernel=true
-    echo "Downgrade kernel version to $target_version"
-    # shellcheck disable=SC2086,SC2046
-    sudo dnf downgrade -y kernel*.$(uname -m).rpm --allowerasing --skip-broken
-fi
-
-echo "Install kernel-headers and kernel $target_version"
 # shellcheck disable=SC2086,SC2046
 sudo dnf install -y kernel*.$(uname -m).rpm
 # Ignore install/update/downgrade of kernel* packages
 echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
 
-# NOTE: 3. Install `broadcom-wl` related packages
+# NOTE: 3. Install `broadcom-wl` and kmod-wl packages
 
 sudo dnf install -y akmods akmod-wl broadcom-wl
 
@@ -135,12 +109,12 @@ sudo akmods
 # NOTE: 4. Check if the new kmod-wl build was successful
 
 akmod_wl_version=$(rpm -q akmod-wl | sed 's/^akmod-wl-//')
-kmod_wl="kmod-wl-${target_version}-${akmod_wl_version}"
+kmod_wl="kmod-wl-${k_version}-${akmod_wl_version}"
 if rpm --quiet -q "$kmod_wl"; then
     echo "$kmod_wl installed"
 
-    echo "Set next boot to use kernel-$target_version by default"
-    sudo grubby --set-default "/boot/vmlinuz-$target_version"
+    echo "Set next boot to use kernel-$k_version by default"
+    sudo grubby --set-default "/boot/vmlinuz-$k_version"
     sudo grubby --default-kernel
     echo "Congratulations, now just reboot your computer and enjoy the Wi-Fi network."
     exit 0
@@ -151,38 +125,24 @@ fi
 cat <<EOF
 $kmod_wl installation failed.
 See links below (Waiting for RPM Fusion to patch akmod-wl):
-- [Fedora Discussion]: https://discussion.fedoraproject.org/ tags: #broadcom #wifi #macbook #f${VERSION_ID}
-- [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${VERSION_ID}&version=f${VERSION_ID_PREV}
+- [Fedora Discussion]: https://discussion.fedoraproject.org/ tags: #broadcom #wifi #macbook #f${fver}
+- [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${fver}
 - [RPM Fusion wl-kmod]: https://github.com/rpmfusion/wl-kmod
 EOF
 
-if [[ "$target_version" == "$kernel_version" ]]; then
+if [[ "$(uname -r)" == "$k_version" ]]; then
     exit 1
 fi
 
-downgrade=
-if ! version-lte "$target_version" "$kernel_version"; then
-    downgrade=$(
-        cat <<EOF
-
-    # Download current kernel* rpm packages
-    ~/bin/kernel-rpm-downloader kernel-${kernel_version}
-    # Downgrade to current kernel* ${kernel_version}
-    sudo dnf downgrade -y ${download_dir}/kernel-${kernel_version}/kernel*.$(uname -m).rpm --allowerasing --skip-broken
-    sudo dnf install -y ${download_dir}/kernel-${kernel_version}/kernel*.$(uname -m).rpm
-EOF
-    )
-fi
 cat <<EOF
 
-You may want to remove the newly installed kernel* $target_version packages.
+You may want to remove the newly installed kernel* $k_version packages.
 Ways to remove the kernel:
 
     # Allow install/update/downgrade of kernel* packages
     sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
-$downgrade
     # Remove the newly installed kernel* packages
-    rpm -qa | grep kernel | grep $target_version | xargs sudo dnf remove -y
+    rpm -qa | grep kernel | grep $k_version | xargs sudo dnf remove -y
     # Checking
     rpm -qa | grep kernel | sort
 

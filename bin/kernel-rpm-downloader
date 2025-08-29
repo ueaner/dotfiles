@@ -2,39 +2,85 @@
 #
 # Download `kernel-headers` and `kernel` packages.
 #
-# Usage:
-#   kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64
-#   kernel-rpm-downloader 6.11.3-300.fc41.x86_64
-#   kernel-rpm-downloader kernel-6.13.3-201.fc41.x86_64 kernel-headers-6.13.3-200.fc41.x86_64
-#
+
+help() {
+    cat <<EOF
+kernel rpm downloader
+
+Usage: kernel-rpm-downloader <kernel-xxx> [<kernel-headers-xxx>] --dir=/path/to/download/dir
+
+    --dir                    Set directory used for downloading packages to.
+                             The default location is the <kernel-xxx> directory under the current working directory.
+
+    -h, --help               Show this message
+
+Example:
+
+    kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64
+    kernel-rpm-downloader kernel-6.13.4-200.fc41.x86_64 kernel-headers-6.13.3-200.fc41.x86_64 --dir=/tmp
+EOF
+}
+
+dir=
+kernel_target=
+kernel_headers_target=
+
+if [[ $# -eq 0 ]]; then
+    help
+    exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -h | --help)
+        help
+        exit 0
+        ;;
+    --dir)
+        dir=$2
+        shift 2
+        ;;
+    --dir=*)
+        dir=$(echo "$1" | cut -d= -f2)
+        if [[ "$dir" == "~"* ]]; then
+            # Replace ~ with $HOME
+            dir="${HOME}${dir:1}"
+        fi
+        shift
+        ;;
+    *)
+        if [[ $1 =~ ^kernel-[0-9]+ ]]; then
+            kernel_target=$1
+        elif [[ $1 =~ ^kernel-headers-[0-9]+ ]]; then
+            kernel_headers_target=$1
+        fi
+        shift
+        ;;
+    esac
+done
 
 # The kernel format is similar to the output of `rpm -q kernel`
 # eg: kernel-6.11.3-300.fc41.x86_64
-kernel="$1"
-if [[ -z "$1" ]]; then
+if [[ -z "$kernel_target" ]]; then
     # kernel=$(rpm -q kernel)
     echo "The argument format is similar to the output of \`rpm -q kernel\`"
-    echo "Usage: kernel-rpm-downloader kernel-6.11.3-300.fc41.x86_64"
+    help
     exit 1
 fi
 
 # The kernel_ver format is similar to the output of `uname -r`
 # eg: 6.11.3-300.fc41.x86_64
-kernel_ver=$(echo "$kernel" | sed -r 's/kernel-//')
+kernel_ver=$(echo "$kernel_target" | sed -r 's/kernel-//')
 # Replace the first "-" and the last "." to "/"
 # eg: 6.11.3/300.fc41/x86_64
 kernel_slash_ver=$(echo "$kernel_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
 
 kernel_headers_ver="$kernel_ver"
 kernel_headers_slash_ver="$kernel_slash_ver"
-if [[ -n "$2" ]]; then
-    kernel_headers_ver=$(echo "$2" | sed -r 's/kernel-headers-//')
+if [[ -n "$kernel_headers_target" ]]; then
+    kernel_headers_ver=$(echo "$kernel_headers_target" | sed -r 's/kernel-headers-//')
     kernel_headers_slash_ver=$(echo "$kernel_headers_ver" | tr "-" "/" | sed -r 's/(.*)\./\1\//')
 fi
-
-# https://packages.fedoraproject.org/pkgs/kernel/
-# packages_yaml=$(yq -r ".template.kernel.packages" <~/.ansible/roles/packages/vars/main.yml)
-# while IFS='' read -r line; do packages+=("$line"); done < <(echo "$packages_yaml" | yq '.[]')
 
 packages=(
     kernel
@@ -55,14 +101,16 @@ for pkg in "${packages[@]}"; do
     rpms+=("$(printf "https://kojipkgs.fedoraproject.org/packages/kernel/%s/%s-%s.rpm" "$kernel_slash_ver" "$pkg" "$kernel_ver")")
 done
 
-[[ -n "$XDG_BACKUP_DIR" ]] && download_dir="$XDG_BACKUP_DIR/archives/kernel-$kernel_ver" || download_dir="$HOME/.cache/archives/kernel-$kernel_ver"
-mkdir -p "$download_dir"
-cd "$download_dir" || exit 1
+if [[ -z "$dir" ]]; then
+    dir="./$kernel_target"
+fi
+mkdir -p "$dir"
+cd "$dir" || exit 1
 
 printf '%s\n' "${rpms[@]}"
 wget -c "${rpms[@]}"
 ret=$?
 
-echo "Download to $download_dir directory"
+echo "Download to $dir directory"
 
 exit $ret

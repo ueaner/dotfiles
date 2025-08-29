@@ -4,72 +4,29 @@
 
 ---
 
+# https://developer.fedoraproject.org/tech/languages/rust/rust-installation.html
 - name: Install/Upgrade Rust
+  install-package:
+    name: rust
+    # https://static.rust-lang.org/dist/rust-1.84.1-x86_64-unknown-linux-gnu.tar.xz
+    install: |-
+      export CARGO_HOME=$XDG_DATA_HOME/cargo
+      export RUSTUP_HOME=$XDG_DATA_HOME/rustup
+
+      if [[ ! -x $CARGO_HOME/bin/rustc ]]; then
+          curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+          $CARGO_HOME/bin/rustup default stable
+      else
+          rustup self update
+          rustup update
+      fi
+      $CARGO_HOME/bin/rustc --version
+
+      # error: no default toolchain is configured
+      ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+      ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d ' ' -f1)/share/zsh/site-functions/_cargo \
+          ~/.local/share/zsh/site-functions/_cargo
+      rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
+      rustc --version
   tags:
-    - upgrade
     - rust
-  block:
-
-    # Install rust, check file stat
-
-    - name: Check if rust is installed
-      ansible.builtin.stat:
-        path: "$CARGO_HOME/bin/rustc"
-      register: lang_rust_check
-
-    - name: Installing Rust (Skip this task if already installed)
-      when: not lang_rust_check.stat.exists
-      # -y: auto accept options
-      ansible.builtin.shell: |
-        set -o pipefail
-        curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
-
-        ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
-        ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d ' ' -f1)/share/zsh/site-functions/_cargo ~/.local/share/zsh/site-functions/_cargo
-        rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
-      changed_when: false
-
-    # Upgrade rust, check version
-
-    - name: Check if rust version is {{ versions.rust }}
-      ansible.builtin.command:
-        cmd: "rustc --version"
-      changed_when: false
-      register: lang_rust_version
-
-    - name: Upgrading Rust (Skip this task if version is already {{ versions.rust }})
-      when: "versions.rust not in lang_rust_version.stdout"
-      ansible.builtin.shell: |
-        set -o pipefail
-        rustup self update
-        rustup update
-
-        ln -sf $XDG_DATA_HOME/cargo/bin/* /usr/local/bin/
-        ln -sf $XDG_DATA_HOME/rustup/toolchains/$(rustup default | cut -d " " -f1)/share/zsh/site-functions/_cargo ~/.local/share/zsh/site-functions/_cargo
-        rustup completions zsh > ~/.local/share/zsh/site-functions/_rustup
-      changed_when: false
-
-    # Rust Installation Finished, echo version
-
-    - name: Rust Installation Finished
-      ansible.builtin.command:
-        cmd: "rustc --version"
-      changed_when: false
-      register: lang_rust_version
-
-    - name: DEBUG Check if need to update `versions.rust` in `variables/versions.yml` file
-      when: "versions.rust not in lang_rust_version.stdout"
-      ansible.builtin.debug:
-        msg:
-          - "versions.rust: {{ versions.rust }} in `variables/versions.yml` file"
-          - "Need to update to the below version ↓"
-          - "rustc --version: {{ lang_rust_version.stdout }}"
-
-    - name: Installing cargo-nextest (Linux x86_64)
-      when: ansible_distribution == "Fedora"
-      ansible.builtin.shell: |
-        set -o pipefail
-        # curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_INSTALL_ROOT:-~/.local}/bin
-        URL=$(curl -s https://api.github.com/repos/nextest-rs/nextest/releases/latest | grep browser_download_url | grep 'x86_64-unknown-linux-gnu.tar.gz' | cut -d '"' -f 4)
-        curl -LsSf ${URL} | tar zxf - -C ${CARGO_INSTALL_ROOT:-~/.local}/bin
-      changed_when: false

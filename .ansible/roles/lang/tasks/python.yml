@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------
+# Zig, Install/Upgrade
+# ----------------------------------------------------------------
+
+---
+
+- name: Install/Upgrade Python
+  install-package:
+    name: python
+    install: |-
+      export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
+
+      # curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh -s -- --help
+      if [[ ! -x $XDG_BIN_HOME/uv ]]; then
+          export UV_INSTALLER_GITHUB_BASE_URL=${GITHUB_PROXY}https://github.com
+          export UV_NO_MODIFY_PATH=1
+          export INSTALLER_PRINT_VERBOSE=1
+
+          # curl https://astral.sh/uv/install.sh -sSf | sh
+          curl -LsSf ${GITHUB_PROXY}https://github.com/astral-sh/uv/releases/latest/download/uv-installer.sh | sh
+          uv python install
+      else
+          uv self update
+          uv python upgrade
+      fi
+
+      uv --version
+      uv python list --managed-python --only-installed
+      uv python list --no-managed-python
+
+      uv generate-shell-completion zsh > ~/.local/share/zsh/site-functions/_uv
+  tags:
+    - python

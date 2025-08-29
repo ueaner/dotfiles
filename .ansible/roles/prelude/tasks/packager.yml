@@ -37,21 +37,16 @@
 
 - name: Ensure brew is installed (macOS - brew)
   when: ansible_system == "Darwin"
-  environment:
-    HOMEBREW_BREW_GIT_REMOTE: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
-    HOMEBREW_CORE_GIT_REMOTE: "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
-    HOMEBREW_BOTTLE_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
-    HOMEBREW_API_DOMAIN: "https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+  environment: "{{ brew_environment }}"
   block:
 
     - name: Check if brew command exists
-      ansible.builtin.command: which brew
+      ansible.builtin.stat:
+        path: "/opt/local/bin/brew"
       register: prelude_brew_check
-      ignore_errors: true
-      changed_when: false
 
     - name: Install brew
-      when: prelude_brew_check.rc != 0
+      when: not prelude_brew_check.stat.exists
       ansible.builtin.shell:
         set -o pipefail
         curl -L ${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o /tmp/brew-install.sh
@@ -59,4 +54,5 @@
         sed -i 's|HOMEBREW_PREFIX="/usr/local"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
 
         NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
+        brew --version
       changed_when: false
