@@ -5,39 +5,37 @@
   when: desktop == "GNOME"
   block:
 
+    # Install the extension, then re-login and enable the extension using `gnome-extensions enable <uuid>`.
+    # - name: Install GNOME Shell extensions
+    #   when: desktop == "GNOME"
+    #   install-package:
+    #     name: "{{ item }}"
+    #     placeholders:
+    #       version: curl -s --get -L https://extensions.gnome.org/extension-info/ --data-urlencode shell_version={{ gnome_shell_version }} --data-urlencode uuid={{ item }} | jq -r .version_tag
+    #     template: https://extensions.gnome.org/download-extension/{{ item }}.shell-extension.zip?version_tag=<version>
+    #     archives: "{{ item }}.shell-extension.zip"
+    #     dst: ~/.local/share/gnome-shell/extensions/{{ item }} # defaults to $XDG_BIN_HOME
+    #     postinstall: gnome-extensions enable {{ item }} >/dev/null 2>&1
+
     # 1. First use Firefox to visit https://extensions.gnome.org/local/ and install the GNOME Shell Integration Extension
     # 2. After re-login, use Firefox to revisit https://extensions.gnome.org/local/ and enable the installed GNOME Shell Extensions
-    # - name: Install GNOME shell extensions
-    #   delegate_to: localhost
-    #   ansible.builtin.shell: |-
-    #     set -o pipefail
-    #     mkdir -p ~/.cache/archives
-    #     cd ~/.cache/archives
-    #     uuid={{ item }}
+    - name: Install GNOME shell extensions
+      # delegate_to: localhost
+      ansible.builtin.shell: |-
+        set -o pipefail
+        mkdir -p ~/.cache/archives
+        cd ~/.cache/archives
+        uuid={{ item }}
 
-    #     gnome-shell-extensions-downloader $uuid
+        gnome-shell-extensions-downloader $uuid
 
-    #     echo 'Install the extension, then re-login and enable the extension using `gnome-extensions enable <uuid>`.'
-    #     # unzip -q $uuid.shell-extension.zip -d $HOME/.local/share/gnome-shell/extensions/$uuid
-    #     gnome-extensions install --force $uuid.shell-extension.zip
-    #     gnome-extensions enable $uuid >/dev/null 2>&1
-
-    #   loop: "{{ packages['gnome-shell-extensions'].archives }}"
-    #   changed_when: false
-
-    # Install the extension, then re-login and enable the extension using `gnome-extensions enable <uuid>`.
-    - name: Install GNOME Shell extensions
-      when: desktop == "GNOME"
-      install-package:
-        name: "{{ item }}"
-        placeholders:
-          version: curl -s --get -L https://extensions.gnome.org/extension-info/ --data-urlencode shell_version={{ gnome_shell_version }} --data-urlencode uuid={{ item }} | jq -r .version_tag
-        template: https://extensions.gnome.org/download-extension/{{ item }}.shell-extension.zip?version_tag=<version>
-        archives: "{{ item }}.shell-extension.zip"
-        dst: ~/.local/share/gnome-shell/extensions/{{ item }} # defaults to $XDG_BIN_HOME
-        postinstall: gnome-extensions enable {{ item }} >/dev/null 2>&1
+        echo 'Install the extension, then re-login and enable the extension using `gnome-extensions enable <uuid>`.'
+        # unzip -q $uuid.shell-extension.zip -d $HOME/.local/share/gnome-shell/extensions/$uuid
+        gnome-extensions install --force $uuid.shell-extension.zip
+        gnome-extensions enable $uuid >/dev/null 2>&1
+      changed_when: false
       loop:
-        - gestureImprovements@gestures
+        - gestureImprovements@gestures # NOTE: Depends on gnome-shell-extensions-downloader
         - gnome-shell-go-to-last-workspace@github.com # Quickly toggle between two workspaces with one key
         - xremap@k0kubun.com # Allow xremap to fetch the focused app name using D-Bus
         - clipboard-indicator@tudmotu.com # <Super>bracketleft/bracketright
