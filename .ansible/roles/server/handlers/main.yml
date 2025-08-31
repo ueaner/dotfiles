@@ -25,6 +25,8 @@
   # noqa command-instead-of-module
   ansible.builtin.shell: |-
     systemctl enable --now frps.service
-    systemctl enable --now frpc-tunnel.service
+    if [[ -x /usr/local/bin/frpc ]]; then
+        systemctl enable --now frpc-tunnel.service
+    fi
   changed_when: false
   when: ansible_distribution == "CentOS"
