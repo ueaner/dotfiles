@@ -51,7 +51,7 @@ if [[ "$focused_app_id" == "Alacritty" ]] && [[ "$(tmux list-panes | wc -l)" -gt
     echo "[$$ sway-tmux-browser] at_arrow: $at_arrow" >>/tmp/xreaker.log
     if [[ "$at_arrow" == "0" ]]; then
         echo "[$$ sway-tmux-browser] switch tmux pane" >>/tmp/xreaker.log
-        eval "$tmux_cmd" &>/tmp/xreaker.log
+        eval "$tmux_cmd" &>/dev/null
         exit $?
     fi
 elif [[ "$arrow" == "right" ]] && [[ "$focused_app_id" == "org.mozilla.firefox" || "$focused_app_id" == "google-chrome" ]]; then
@@ -77,5 +77,5 @@ elif [[ "$arrow" == "right" ]] && [[ "$focused_app_id" == "org.mozilla.firefox" 
 fi
 
 echo "[$$ sway-tmux-browser] switch sway container" >>/tmp/xreaker.log
-eval "$sway_cmd" &>>/tmp/xreaker.log
+eval "$sway_cmd" &>/dev/null
 exit $?
