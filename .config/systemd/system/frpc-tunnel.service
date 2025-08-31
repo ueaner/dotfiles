@@ -2,7 +2,7 @@
 # 2. systemctl --user enable --now frpc
 
 [Unit]
-Description=frp client
+Description=frpc tunnel
 After=network.target
 
 [Install]
@@ -10,5 +10,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/frpc -c %h/.local/etc/frpc-mac14.toml
+ExecStart=/usr/local/bin/frpc -c /usr/local/etc/frpc-tunnel.toml
 Restart=on-failure
+User=nobody
+Group=nobody

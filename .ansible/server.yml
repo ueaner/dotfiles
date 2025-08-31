@@ -4,6 +4,6 @@
 # ansible-playbook ~/.ansible/server.yml --tags frps -vvv
 
 - name: Setup Linux Server
-  hosts: srv
+  hosts: sp
   roles:
     - role: server

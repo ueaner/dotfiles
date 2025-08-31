@@ -10,7 +10,7 @@
     <array>
         <string>/opt/local/bin/frpc</string>
         <string>-c</string>
-        <string>/opt/local/etc/frpc_mac15.toml</string>
+        <string>/opt/local/etc/frpc-mac15.toml</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

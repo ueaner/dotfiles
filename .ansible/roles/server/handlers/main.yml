@@ -21,8 +21,10 @@
   changed_when: false
   when: ansible_distribution == "CentOS"
 
-- name: Start and enable frps
+- name: Start and enable frps and frpc-tunnel
   # noqa command-instead-of-module
-  ansible.builtin.command: systemctl enable --now frps.service
+  ansible.builtin.shell: |-
+    systemctl enable --now frps.service
+    systemctl enable --now frpc-tunnel.service
   changed_when: false
   when: ansible_distribution == "CentOS"

@@ -25,6 +25,18 @@
         dest: /etc/systemd/system/frps.service
         mode: "0644"
 
+    - name: Copy frpc-tunnel.toml file
+      ansible.builtin.copy:
+        src: ~/.local/etc/frpc-tunnel.toml
+        dest: /usr/local/etc/frpc-tunnel.toml
+        mode: "0644"
+
+    - name: Copy frpc-tunnel.service file
+      ansible.builtin.copy:
+        src: ~/.config/systemd/system/frpc-tunnel.service
+        dest: /etc/systemd/system/frpc-tunnel.service
+        mode: "0644"
+
     - name: Install frps server
       install-package:
         name: frps
@@ -44,6 +56,7 @@
         include:
           # frp_0.64.0_linux_amd64/frps
           - frps
+          - frpc
         postinstall: |-
           frps --version
-      notify: Start and enable frps
+      notify: Start and enable frps and frpc-tunnel
