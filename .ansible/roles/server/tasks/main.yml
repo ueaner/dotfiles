@@ -20,3 +20,10 @@
   tags:
     - upgrade
     - sstunnel
+
+- name: Install frps (server)
+  ansible.builtin.include_tasks: frps.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - upgrade
+    - frps

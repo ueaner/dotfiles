@@ -1,0 +1,17 @@
+# deploy to tx: local -> tx
+# 1. Copy this to /etc/systemd/system/frps.service
+# 2. systemctl enable --now frps
+
+[Unit]
+Description=frp server
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type = simple
+ExecStart=/usr/local/bin/frps -c /usr/local/etc/frps.toml
+Restart=on-failure
+User=nobody
+Group=nobody

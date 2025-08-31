@@ -1,0 +1,49 @@
+---
+
+# Server Only
+
+- name: Install frps server
+  when: ansible_distribution == "CentOS"
+  delegate_to: sp
+  tags:
+    - upgrade
+    - frps
+  block:
+    - name: Welcome to {{ ansible_distribution }}
+      ansible.builtin.debug:
+        msg: "Welcome to {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Copy frps.toml file
+      ansible.builtin.copy:
+        src: ~/.local/etc/frps.toml
+        dest: /usr/local/etc/frps.toml
+        mode: "0644"
+
+    - name: Copy frps.service file
+      ansible.builtin.copy:
+        src: ~/.config/systemd/system/frps.service
+        dest: /etc/systemd/system/frps.service
+        mode: "0644"
+
+    - name: Install frps server
+      install-package:
+        name: frps
+        placeholders:
+          repo: fatedier/frp
+          version: "{{ template.github.version_v }}"
+        template: "{{ template.github.archive_v }}"
+        archives:
+          # The requested version number is "v0.64.0", but the archive name uses "0.64.0" without the "v".
+          # https://github.com/fatedier/frp/releases/download/v0.64.0/frp_0.64.0_linux_amd64.tar.gz
+          - frp_<version>_linux_amd64.tar.gz
+          - frp_<version>_linux_arm64.tar.gz
+          - frp_<version>_darwin_amd64.tar.gz
+          - frp_<version>_darwin_arm64.tar.gz
+        dst: /usr/local/bin # defaults to $XDG_BIN_HOME
+        strip: 1
+        include:
+          # frp_0.64.0_linux_amd64/frps
+          - frps
+        postinstall: |-
+          frps --version
+      notify: Start and enable frps

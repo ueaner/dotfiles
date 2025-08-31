@@ -9,7 +9,7 @@
 # ansible-playbook ~/.ansible/unix.yml -e "role=terminal"
 # ansible-playbook ~/.ansible/unix.yml -e "role=fonts"
 # ansible-playbook ~/.ansible/unix.yml -e "role=lang" --tags go
-# ansible-playbook ~/.ansible/unix.yml -e "role=services"
+# ansible-playbook ~/.ansible/unix.yml -e "role=services" --tags frpc -vvv
 # ansible-playbook ~/.ansible/unix.yml -e "role=apps"
 
 - name: Setup Unix Workstation

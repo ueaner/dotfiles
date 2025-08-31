@@ -1,0 +1,14 @@
+# 1. Copy this to ~/.config/systemd/user/frpc.service
+# 2. systemctl --user enable --now frpc
+
+[Unit]
+Description=frp client
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/frpc -c %h/.local/etc/frpc_mac14.toml
+Restart=on-failure

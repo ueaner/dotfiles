@@ -23,3 +23,9 @@
   tags:
     - upgrade
     - llama
+
+- name: Install/Upgrade frp client
+  ansible.builtin.include_tasks: frpc.yml
+  tags:
+    - upgrade
+    - frpc

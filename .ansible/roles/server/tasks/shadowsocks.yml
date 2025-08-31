@@ -35,7 +35,7 @@
 
     - name: Install shadowsocks-rust-server.service file
       ansible.builtin.copy:
-        src: ~/.config/systemd/user/shadowsocks-rust-server.service
+        src: ~/.config/systemd/system/shadowsocks-rust-server.service
         # dest: ~/.config/systemd/user/shadowsocks-rust-server.service
         dest: /etc/systemd/system/shadowsocks-rust-server.service
         mode: "0644"
