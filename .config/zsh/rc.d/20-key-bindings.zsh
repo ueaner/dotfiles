@@ -77,7 +77,7 @@ bindkey -M vicmd '^A' incarg
 
 # WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # WORDCHARS=${WORDCHARS//\/}
-export WORDCHARS='*?_-.[]~=/&;!#$%^()<>:'
+export WORDCHARS='*?_-.[]~=/&;!#$%^()<>:|'
 
 # ^I: TAB
 # ^M: Enter

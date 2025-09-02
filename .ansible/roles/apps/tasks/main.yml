@@ -1,5 +1,27 @@
 ---
 
+# https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions
+- name: Install/Upgrade VSCode via dnf (Fedora)
+  when: ansible_distribution == "Fedora"
+  become: true
+  ansible.builtin.shell: |-
+    set -o pipefail
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'REPO'
+    [code]
+    name=Visual Studio Code
+    baseurl=https://packages.microsoft.com/yumrepos/vscode
+    enabled=1
+    autorefresh=1
+    type=rpm-md
+    gpgcheck=1
+    gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+    REPO
+
+    sudo dnf check-update
+    # sudo dnf install code # or code-insiders
+  changed_when: false
+
 - name: Install apps via dnf (Fedora)
   when: ansible_distribution == "Fedora"
   become: true
@@ -7,45 +29,47 @@
     name:
       - wl-clipboard
       - xlsclients # list x11 client applications running on a display
+      - code # or code-insiders
 
-- name: Install/Upgrade web apps
-  when: ansible_distribution == "Fedora"
-  ansible.builtin.include_tasks: web.yml
+# - name: Install/Upgrade web apps
+#   when: ansible_distribution == "Fedora"
+#   ansible.builtin.include_tasks: web.yml
 
 - name: Install/Upgrade apps via flatpak (Fedora)
   when: ansible_distribution == "Fedora"
   ansible.builtin.shell: |-
     set -o pipefail
-    flatpak install --user {{ item }}
+    if [[ -n "{{ item.desktop }}" && "{{ desktop }}" != "{{ item.desktop }}" ]]; then
+        exit 0
+    fi
+    flatpak install --user {{ item.name }}
   loop:
-    - ca.desrt.dconf-editor
-    - com.baidu.NetDisk
-    - com.github.phase1geo.minder
-    - com.github.tchx84.Flatseal
-    - com.google.Chrome
+    - { name: ca.desrt.dconf-editor, desktop: GNOME }
+    - { name: com.baidu.NetDisk }
+    - { name: com.google.Chrome }
+    - { name: com.tencent.WeChat }
+    - { name: com.github.gmg137.netease-cloud-music-gtk }
+    # - { name: io.gitlab.news_flash.NewsFlash }
+    # - { name: io.podman_desktop.PodmanDesktop }
+    # - { name: com.wps.Office }
+    # - { name: com.tencent.wemeet }
+    # - { name: dev.zed.Zed }
+    # - { name: io.github.mhogomchungu.media-downloader }
+    # - { name: com.github.tchx84.Flatseal }
     # Add the following to `~/.local/share/flatpak/overrides/com.qq.QQ` to enable wayland or configure with Flatseal
     # [Context]
     # sockets=wayland;!x11
-    - com.qq.QQ
-    - com.tencent.WeChat
-    - org.mozilla.Thunderbird
-    - dev.zed.Zed
-    - io.gitlab.news_flash.NewsFlash
-    - io.podman_desktop.PodmanDesktop
-    - org.blender.Blender
-    - org.inkscape.Inkscape
-    - org.shotcut.Shotcut
-    - com.obsproject.Studio
-    - org.videolan.VLC
-    - org.gimp.GIMP
-    - net.base_art.Glide
-    - in.srev.guiscrcpy
-    - eu.nokun.MirrorHall # Use Linux devices as second screens
-    - org.freedesktop.Bustle
-    - org.gnome.dspy
-    - org.gnome.Sudoku
-    - org.gnome.Decibels # music
-    - io.github.mhogomchungu.media-downloader
+    # - { name: com.qq.QQ }
+    # - { name: org.blender.Blender }
+    # - { name: org.videolan.VLC }
+    # - { name: org.shotcut.Shotcut }
+    # - { name: com.obsproject.Studio }
+    # - { name: org.inkscape.Inkscape }
+    # - { name: org.gimp.GIMP }
+    # - { name: in.srev.guiscrcpy }
+    # - { name: eu.nokun.MirrorHall } # Use Linux devices as second screens
+    # - { name: org.freedesktop.Bustle }
+    # - { name: org.gnome.Sudoku }
   changed_when: false
 
 # Compatible with Linux command parameters
@@ -57,26 +81,26 @@
     set -o pipefail
     brew install --cask {{ item }}
   loop:
-    - dingtalk
-    - wechat
-    - qq
+    - baidunetdisk
     - google-chrome
+    - wechat
+    - dingtalk
     - visual-studio-code
     - android-platform-tools
     - appcleaner
-    - the-unarchiver
-    - baidunetdisk
-    - tencent-meeting
-    - tencent-docs
-    - wpsoffice
-    - drawio
-    - kap
-    - keycastr
     - maccy
-    - vlc
-    - omnigraffle
-    - pdfexpert
-    - wireshark-app
-    - charles
-    - tableplus
+    # - kap
+    # - keycastr
+    # - tencent-docs
+    # - drawio
+    # - wpsoffice
+    # - the-unarchiver
+    # - tencent-meeting
+    # - vlc
+    # - omnigraffle
+    # - pdfexpert
+    # - wireshark-app
+    # - charles
+    # - tableplus
+    # - qq
   changed_when: false

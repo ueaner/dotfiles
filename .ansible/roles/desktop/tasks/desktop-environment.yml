@@ -40,7 +40,7 @@
         - xremap@k0kubun.com # Allow xremap to fetch the focused app name using D-Bus
         - clipboard-indicator@tudmotu.com # <Super>bracketleft/bracketright
         - kimpanel@kde.org # Input Method Panel
-        - desktop-lyric@tuberry
+        - desktop-lyric@tuberry # com.github.gmg137.netease-cloud-music-gtk
         - system-monitor@gnome-shell-extensions.gcampax.github.com # Monitor system from the top bar
         - native-window-placement@gnome-shell-extensions.gcampax.github.com # Arrange windows in overview in a more compact way.
         - color-picker@tuberry

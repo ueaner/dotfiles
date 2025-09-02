@@ -49,3 +49,11 @@
 # 执行完整的 Ansible 配置（会自动包含 prelude role）
 ansible-playbook ~/.ansible/unix.yml --ask-become-pass
 ```
+
+## 其他
+
+使用 podman 替换 docker
+
+```bash
+ln -s $(which podman) ~/.local/bin/docker
+```
