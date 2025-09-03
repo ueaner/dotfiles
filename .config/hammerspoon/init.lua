@@ -43,3 +43,9 @@ hs.hotkey.bind({ "cmd", "ctrl" }, "r", function()
   hs.reload()
   hs.notify.show("Hammerspoon", "Config reloaded!", "")
 end)
+
+-- Tiling
+hs.hotkey.bind({ "cmd" }, "left", util.tiling.left)
+hs.hotkey.bind({ "cmd" }, "right", util.tiling.right)
+hs.hotkey.bind({ "cmd" }, "up", util.tiling.toggleMaximize)
+hs.hotkey.bind({ "cmd" }, "down", util.tiling.centerOnScreen)

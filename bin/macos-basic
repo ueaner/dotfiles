@@ -69,3 +69,8 @@ echo "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbo
 
 # 3) Log Out
 killall Dock
+
+# Gestures
+
+# Scroll direction: Natural
+defaults write -g com.apple.swipescrolldirection -bool true
