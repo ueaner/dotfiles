@@ -74,3 +74,11 @@ killall Dock
 
 # Scroll direction: Natural
 defaults write -g com.apple.swipescrolldirection -bool true
+
+# Remote Login, sudo systemsetup -getremotelogin
+sudo systemsetup -setremotelogin on
+
+# Hotspot: Internet Sharing, sudo launchctl list | grep -i sharing
+# [ ] System Preferences -> Sharing -> Internet Sharing
+#     -> Share your connection from: Thunderbolt Ethernet
+#     -> To computers using: Wi-Fi
