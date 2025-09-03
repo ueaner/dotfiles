@@ -14,6 +14,7 @@
       ansible.builtin.unarchive:
         src: "{{ GITHUB_PROXY }}/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.tar.xz"
         dest: ~/.local/share/fonts/{{ item }}
+        remote_src: true
         creates: ~/.local/share/fonts/{{ item }}/done
 
     - name: Update font cache
@@ -35,6 +36,7 @@
       ansible.builtin.unarchive:
         src: "{{ GITHUB_PROXY }}/https://github.com/ryanoasis/nerd-fonts/releases/latest/download/SourceCodePro.tar.xz"
         dest: ~/Library/Fonts/{{ item }}
+        remote_src: true
         creates: ~/Library/Fonts/{{ item }}/done
 
 

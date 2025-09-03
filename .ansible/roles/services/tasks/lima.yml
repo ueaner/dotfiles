@@ -66,11 +66,13 @@
 
 
 # For macOS host
-- name: Install socket_vmnet (Darwin)
+- name: Install qemu (Darwin)
   when: ansible_system == "Darwin"
   environment: "{{ brew_environment }}"
   ansible.builtin.shell: |-
     set -o pipefail
-    brew install acpica llvm lld
-    brew install qemu --build-from-source --cc=llvm_clang -v
+    if ! brew list --formula qemu >/dev/null 2>&1; then
+        brew install acpica llvm lld
+        brew install qemu --build-from-source --cc=llvm_clang -v
+    fi
   changed_when: false

@@ -6,7 +6,8 @@
     install: |-
       if [[ -x ~/bin/git-sparse-checkout ]]; then
           ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
-          mv /tmp/zhman/src ~/.local/share/man/zh_CN
+          mkdir -p ~/.local/share/man/zh_CN
+          cp -r /tmp/zhman/src/* ~/.local/share/man/zh_CN
       fi
   tags:
     - man
@@ -57,6 +58,7 @@
       ansible.builtin.unarchive:
         src: "{{ GITHUB_PROXY }}https://github.com/tldr-pages/tldr/releases/latest/download/{{ item.src }}.zip"
         dest: ~/.cache/tldr/{{ item.dst }}
+        remote_src: true
       changed_when: false
       loop:
         - { src: "tldr-pages.en", dst: "pages" }

@@ -16,7 +16,7 @@
       when: ansible_system == "Darwin"
       environment: "{{ brew_environment }}"
       ansible.builtin.shell: |-
-        if ! brew list tmux >/dev/null 2>&1; then
+        if ! brew list --formula tmux >/dev/null 2>&1; then
             brew install tmux
         fi
       changed_when: false
