@@ -595,22 +595,49 @@ def main():
                     src_path = os.path.join(temp_extract_dir, include_file)
                     dest_path = os.path.join(dest, os.path.basename(include_file))
                     if os.path.exists(src_path):
-                        shutil.move(src_path, dest_path)
+                        # 使用原子操作替换文件，避免 "Text file busy" 错误
+                        temp_dest_path = dest_path + ".new"
+                        if os.path.isfile(src_path):
+                            shutil.copy2(src_path, temp_dest_path)
+                        else:  # src_path is a directory
+                            if os.path.exists(temp_dest_path):
+                                shutil.rmtree(temp_dest_path)
+                            shutil.copytree(src_path, temp_dest_path)
+                        # 直接使用原子操作替换目标文件
+                        if os.path.exists(dest_path):
+                            if os.path.isdir(dest_path):
+                                shutil.rmtree(dest_path)
+                            else:
+                                os.remove(dest_path)
+                        os.rename(temp_dest_path, dest_path)
             else:
                 # 否则复制所有文件
                 for item in os.listdir(temp_extract_dir):
                     src_path = os.path.join(temp_extract_dir, item)
                     dest_path = os.path.join(dest, item)
+                    # 使用原子操作替换文件，避免 "Text file busy" 错误
+                    temp_dest_path = dest_path + ".new"
+                    if os.path.isfile(src_path):
+                        shutil.copy2(src_path, temp_dest_path)
+                    else:  # src_path is a directory
+                        if os.path.exists(temp_dest_path):
+                            shutil.rmtree(temp_dest_path)
+                        shutil.copytree(src_path, temp_dest_path)
+                    # 直接使用原子操作替换目标文件
                     if os.path.exists(dest_path):
                         if os.path.isdir(dest_path):
                             shutil.rmtree(dest_path)
                         else:
                             os.remove(dest_path)
-                    shutil.move(src_path, dest_path)
+                    os.rename(temp_dest_path, dest_path)
         else:
             # 直接移动文件
             dest_path = os.path.join(dest, os.path.basename(local_archive))
-            shutil.move(local_file_path, dest_path)
+            # 使用原子操作替换文件，避免 "Text file busy" 错误
+            temp_dest_path = dest_path + ".new"
+            shutil.copy2(local_file_path, temp_dest_path)
+            # 直接使用原子操作替换目标文件
+            os.rename(temp_dest_path, dest_path)
 
         # 执行安装后脚本
         postinstall_result = None
