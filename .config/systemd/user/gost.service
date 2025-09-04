@@ -1,0 +1,14 @@
+# 1. Copy this to ~/.config/systemd/user/gost.service
+# 2. systemctl --user enable --now gost
+
+[Unit]
+Description=GO Simple Tunnel
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/gost -L http://:1081 -F socks5://:1080
+Restart=on-failure

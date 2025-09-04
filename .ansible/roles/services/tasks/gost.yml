@@ -1,0 +1,40 @@
+---
+
+- name: Install gost
+  install-package:
+    name: gost
+    placeholders:
+      repo: go-gost/gost
+      version: "{{ template.github.version_v }}"
+    template: "{{ template.github.archive_v }}"
+    archives:
+      # The requested version number is "v3.2.4", but the archive name uses "3.2.4" without the "v".
+      # https://github.com/go-gost/gost/releases/download/v3.2.4/gost_3.2.4_linux_amd64.tar.gz
+      - gost_<version>_linux_amd64.tar.gz
+      - gost_<version>_linux_arm64.tar.gz
+      - gost_<version>_darwin_amd64.tar.gz
+      - gost_<version>_darwin_arm64.tar.gz
+    include:
+      - gost
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+
+    postinstall: |-
+      set -o pipefail
+      if [[ $(uname -s) == 'Linux' ]]; then
+          systemctl --user enable --now gost
+          exit $?
+      fi
+
+      if [[ -f ~/.local/bin/gost ]]; then
+          ln -sf ~/.local/bin/gost /opt/local/bin/gost
+      fi
+      if [[ -f ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ]]; then
+          ln -sf ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ~/Library/LaunchAgents/run.gost.tunnel.plist
+      fi
+
+      if [[ -f ~/Library/LaunchAgents/run.gost.tunnel.plist ]]; then
+          if launchctl print gui/$(id -u)/run.gost.tunnel >/dev/null 2>&1; then
+              launchctl unload ~/Library/LaunchAgents/run.gost.tunnel.plist
+          fi
+          launchctl load ~/Library/LaunchAgents/run.gost.tunnel.plist
+      fi

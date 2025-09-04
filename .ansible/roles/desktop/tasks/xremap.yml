@@ -5,28 +5,23 @@
 # https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/xremap.service
 # https://github.com/ueaner/dotfiles/tree/main/.config/autostart/xremap.desktop
 
-- name: Check if xremap is installed
-  ansible.builtin.stat:
-    path: "~/.local/bin/xremap"
-  register: basic_xremap_check
-
 - name: Install xremap (GNOME Wayland)
   when:
-    - not basic_xremap_check.stat.exists
+    - ansible_system == "Linux"
     - desktop == "GNOME"
   ansible.builtin.unarchive:
     src: "{{ GITHUB_PROXY }}https://github.com/xremap/xremap/releases/latest/download/xremap-linux-x86_64-gnome.zip"
-    dest: "~/.local/bin/"
+    dest: "~/.local/bin"
     remote_src: true
   notify: Start xremap service
 
 - name: Install xremap (Sway)
   when:
-    - not basic_xremap_check.stat.exists
+    - ansible_system == "Linux"
     - desktop == "Sway"
   ansible.builtin.unarchive:
     src: "{{ GITHUB_PROXY }}https://github.com/xremap/xremap/releases/latest/download/xremap-linux-x86_64-wlroots.zip"
-    dest: "~/.local/bin/"
+    dest: "~/.local/bin"
     remote_src: true
   notify: Start xremap service
 

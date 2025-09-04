@@ -2,6 +2,7 @@
 
 # For host
 - name: Install lima
+  when: ansible_system == "Darwin"
   install-package:
     name: lima
     placeholders:

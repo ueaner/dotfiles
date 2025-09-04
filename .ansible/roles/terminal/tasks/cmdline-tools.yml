@@ -381,7 +381,7 @@
     name: edir
     install: |-
       if which uv >/dev/null 2>&1; then
-          uv tool install edir
+          uv tool install --upgrade edir --force
       else
           python3 -m ensurepip --upgrade --user
           python3 -m pip install --upgrade --user edir

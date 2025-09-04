@@ -1,0 +1,14 @@
+# 1. Copy this to ~/.config/systemd/user/caddy.service
+# 2. systemctl --user enable --now caddy
+
+[Unit]
+Description=Caddy web server
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/caddy run --config %h/.local/etc/Caddyfile
+Restart=on-failure
