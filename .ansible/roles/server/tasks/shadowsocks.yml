@@ -3,8 +3,9 @@
 # Server Only
 
 - name: Install shadowsocks-rust server
-  when: ansible_distribution == "CentOS"
-  delegate_to: ss
+  when:
+    - ansible_distribution == "CentOS"
+    - inventory_hostname == "ss"
   tags:
     - upgrade
     - ssserver

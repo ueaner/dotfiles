@@ -3,8 +3,9 @@
 # Server Only
 
 - name: Install frps server
-  when: ansible_distribution == "CentOS"
-  delegate_to: sp
+  when:
+    - ansible_distribution == "CentOS"
+    - inventory_hostname == "sp"
   tags:
     - upgrade
     - frps
