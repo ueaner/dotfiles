@@ -29,7 +29,7 @@ gui:
   sidePanelWidth: 0.3333
   expandFocusedSidePanel: false
   mainPanelSplitMode: flexible
-  language: auto
+  language: zh-CN
   timeFormat: 02 Jan 06 15:04 MST
   commitLength:
     show: true
@@ -55,7 +55,8 @@ git:
   autoFetch: true
   autoRefresh: true
   branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --
-  allBranchesLogCmd: git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=medium
+  allBranchesLogCmds:
+    - git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=medium
   overrideGpg: false
   disableForcePushing: false
   commitPrefixes: {}
