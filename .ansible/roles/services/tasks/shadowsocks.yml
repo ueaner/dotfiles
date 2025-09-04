@@ -30,7 +30,7 @@
           exit $?
       fi
 
-      if [[ -f ~/.local/bin/sslocal ]]; then
+      if [[ -x ~/.local/bin/sslocal ]]; then
           ln -sf ~/.local/bin/sslocal /opt/local/bin/sslocal
           ln -sf ~/.local/bin/ssservice /opt/local/bin/ssservice
       fi

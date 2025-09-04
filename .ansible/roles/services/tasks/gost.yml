@@ -25,7 +25,7 @@
           exit $?
       fi
 
-      if [[ -f ~/.local/bin/gost ]]; then
+      if [[ -x ~/.local/bin/gost ]]; then
           ln -sf ~/.local/bin/gost /opt/local/bin/gost
       fi
       if [[ -f ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ]]; then

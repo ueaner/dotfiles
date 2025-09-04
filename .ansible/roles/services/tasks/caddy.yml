@@ -44,7 +44,7 @@
           exit $?
       fi
 
-      if [[ -f ~/.local/bin/caddy ]]; then
+      if [[ -x ~/.local/bin/caddy ]]; then
           ln -sf ~/.local/bin/caddy /opt/local/bin/caddy
       fi
       if [[ -f ~/.local/etc/Caddyfile ]]; then

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>KeepAlive</key>
+    <true/>
+    <key>Label</key>
+    <string>run.gost.tunnel</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/local/bin/gost</string>
+        <string>-L</string>
+        <string>http://:1081</string>
+        <string>-F</string>
+        <string>socks5://:1080</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/gost.stderr.log</string>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/gost.stdout.log</string>
+</dict>
+</plist>

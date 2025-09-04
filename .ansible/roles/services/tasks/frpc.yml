@@ -28,7 +28,7 @@
           exit $?
       fi
 
-      if [[ -f ~/.local/bin/frpc ]]; then
+      if [[ -x ~/.local/bin/frpc ]]; then
           ln -sf ~/.local/bin/frpc /opt/local/bin/frpc
       fi
       if [[ -f ~/.local/etc/frpc-mac15.toml ]]; then
