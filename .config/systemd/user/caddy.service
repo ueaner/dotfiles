@@ -1,16 +1,26 @@
+# https://github.com/caddyserver/dist/blob/master/init/caddy.service
+# 0. go install github.com/caddyserver/forwardproxy/cmd/caddy@latest
 # 1. Copy this to ~/.config/systemd/user/caddy.service
 # 2. systemctl --user enable --now caddy
+# 3. journalctl -b --user -u caddy.service -f / systemctl --user status caddy
 
 [Unit]
-Description=Caddy web server
-After=network.target
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
 
 [Install]
 WantedBy=default.target
 
 [Service]
-Type=simple
-ExecStart=%h/.local/bin/caddy run --config %h/.local/etc/Caddyfile
+Type=notify
+ExecStart=%h/.local/bin/caddy run --environ --config %h/.local/etc/Caddyfile
+ExecReload=%h/.local/bin/caddy reload --config %h/.local/etc/Caddyfile --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 StandardOutput=file:/tmp/caddy.stdout.log
 StandardError=file:/tmp/caddy.stderr.log
-Restart=on-failure
