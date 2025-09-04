@@ -11,4 +11,6 @@ WantedBy=default.target
 [Service]
 Type=simple
 ExecStart=%h/.local/bin/caddy run --config %h/.local/etc/Caddyfile
+StandardOutput=file:/tmp/caddy.stdout.log
+StandardError=file:/tmp/caddy.stderr.log
 Restart=on-failure

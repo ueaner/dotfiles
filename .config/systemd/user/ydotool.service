@@ -5,6 +5,10 @@
 # 1. sudo dnf install ydotool
 [Unit]
 Description=Generic command-line automation tool (no X!)
+Documentation=https://github.com/ReimuNotMoe/ydotool
+
+[Install]
+WantedBy=default.target
 
 [Service]
 Type=simple
@@ -13,6 +17,5 @@ ExecStart=/usr/bin/ydotoold
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillMode=process
 TimeoutSec=180
-
-[Install]
-WantedBy=default.target
+StandardOutput=file:/tmp/ydotool.stdout.log
+StandardError=file:/tmp/ydotool.stderr.log

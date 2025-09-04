@@ -3,3 +3,5 @@ Description=My Scheduled Task
 
 [Service]
 ExecStart=%h/bin/mytask
+StandardOutput=file:/tmp/mytask.stdout.log
+StandardError=file:/tmp/mytask.stderr.log

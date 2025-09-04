@@ -8,4 +8,6 @@ Documentation=https://github.com/bulletmark/libinput-gestures
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/libinput-gestures
+StandardOutput=file:/tmp/libinput-gestures.stdout.log
+StandardError=file:/tmp/libinput-gestures.stderr.log
 Restart=always

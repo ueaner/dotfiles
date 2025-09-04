@@ -2,9 +2,12 @@
 Description=Command to simulate input anywhere (X11, Wayland, TTYs)
 Documentation=https://git.sr.ht/~geb/dotool/tree/HEAD/doc/dotool.1.scd
 
+[Install]
+WantedBy=default.target
+
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/dotoold
-
-[Install]
-WantedBy=default.target
+StandardOutput=file:/tmp/dotool.stdout.log
+StandardError=file:/tmp/dotool.stderr.log
+Restart=always
