@@ -22,6 +22,8 @@
       ln -sf $XDG_DATA_HOME/lima/bin/* $XDG_BIN_HOME
       limactl completion zsh > ~/.local/share/zsh/site-functions/_limactl
       limactl --version
+
+      ~/bin/lima-nerdctl-downloader
   tags:
     - lima
 
