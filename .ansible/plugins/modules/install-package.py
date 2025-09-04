@@ -166,6 +166,34 @@ def get_system_info():
     return system, arch
 
 
+def atomic_replace(src_path, dest_path):
+    """使用原子操作替换文件或目录"""
+    temp_dest_path = dest_path + ".new"
+
+    # 删除已存在的临时目标
+    if os.path.exists(temp_dest_path):
+        if os.path.isdir(temp_dest_path):
+            shutil.rmtree(temp_dest_path)
+        else:
+            os.remove(temp_dest_path)
+
+    # 复制源到临时目标
+    if os.path.isfile(src_path):
+        shutil.copy2(src_path, temp_dest_path)
+    else:  # src_path is a directory
+        shutil.copytree(src_path, temp_dest_path)
+
+    # 删除已存在的最终目标
+    if os.path.exists(dest_path):
+        if os.path.isdir(dest_path):
+            shutil.rmtree(dest_path)
+        else:
+            os.remove(dest_path)
+
+    # 重命名临时目标为最终目标
+    os.rename(temp_dest_path, dest_path)
+
+
 def match_archive(archives, system, arch):
     """匹配适合当前系统和架构的归档文件"""
     # 标准化系统和架构名称
@@ -596,40 +624,12 @@ def main():
                     dest_path = os.path.join(dest, os.path.basename(include_file))
                     if os.path.exists(src_path):
                         # 使用原子操作替换文件，避免 "Text file busy" 错误
-                        temp_dest_path = dest_path + ".new"
-                        if os.path.isfile(src_path):
-                            shutil.copy2(src_path, temp_dest_path)
-                        else:  # src_path is a directory
-                            if os.path.exists(temp_dest_path):
-                                shutil.rmtree(temp_dest_path)
-                            shutil.copytree(src_path, temp_dest_path)
-                        # 直接使用原子操作替换目标文件
-                        if os.path.exists(dest_path):
-                            if os.path.isdir(dest_path):
-                                shutil.rmtree(dest_path)
-                            else:
-                                os.remove(dest_path)
-                        os.rename(temp_dest_path, dest_path)
+                        atomic_replace(src_path, dest_path)
             else:
-                # 否则复制所有文件
-                for item in os.listdir(temp_extract_dir):
-                    src_path = os.path.join(temp_extract_dir, item)
-                    dest_path = os.path.join(dest, item)
-                    # 使用原子操作替换文件，避免 "Text file busy" 错误
-                    temp_dest_path = dest_path + ".new"
-                    if os.path.isfile(src_path):
-                        shutil.copy2(src_path, temp_dest_path)
-                    else:  # src_path is a directory
-                        if os.path.exists(temp_dest_path):
-                            shutil.rmtree(temp_dest_path)
-                        shutil.copytree(src_path, temp_dest_path)
-                    # 直接使用原子操作替换目标文件
-                    if os.path.exists(dest_path):
-                        if os.path.isdir(dest_path):
-                            shutil.rmtree(dest_path)
-                        else:
-                            os.remove(dest_path)
-                    os.rename(temp_dest_path, dest_path)
+                # 整体替换整个目录，保持包的完整性
+                # 使用原子操作替换文件，避免 "Text file busy" 错误
+                atomic_replace(temp_extract_dir, dest)
+
         else:
             # 直接移动文件
             dest_path = os.path.join(dest, os.path.basename(local_archive))
