@@ -256,3 +256,6 @@ if [[ -d $schemadir ]]; then
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']" # <Super>]
     gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"  # <Super>[
 fi
+
+# Launch Terminal
+~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"

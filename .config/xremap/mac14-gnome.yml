@@ -3,9 +3,7 @@
 
 # yamllint disable rule:colons
 ---
-
 keymap:
-
   # Sway = manages general workspaces and windows
   # Tmux = manages terminal sessions, terminal window splitting, and nvim/shell workflows
   # - name: Tmux
@@ -25,14 +23,15 @@ keymap:
       only: [Google-chrome, google-chrome, firefox]
     remap:
       # NOTE: Switching containers in Sway
-      Super-l: [Esc, Ctrl-l]  # Location bar / Select line
+      Super-l: [Esc, Ctrl-l] # Location bar / Select line
 
-  - name: Execute a command
-    exact_match: true
-    remap:
-      # ~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
-      Super-KEY_ENTER:
-        launch: ["alacritty"]
-      # Super-e:
-        # launch: ["flatpak", "run", "ca.desrt.dconf-editor"]
-        # launch: ["bash", "-c", "echo hello > /tmp/test"]
+
+  # - name: Execute a command
+  #   exact_match: true
+  #   remap:
+  #     # ~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+  #     Super-KEY_ENTER:
+  #       launch: ["alacritty"]
+  #     # Super-e:
+  #       # launch: ["flatpak", "run", "ca.desrt.dconf-editor"]
+  #       # launch: ["bash", "-c", "echo hello > /tmp/test"]

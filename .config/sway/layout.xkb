@@ -1,7 +1,9 @@
 # used by sway to swap keys
 #
-# The xkb setting affects keys mapped in sway, but not keys mapped in xremap,
-# so use xremap to handle physical key swapping instead of xkb.
+# The xkb settings affect keys mapped with sway bindsym, but not keys mapped in xremap,
+# so use xremap instead of xkb to handle physical key swapping.
+#
+# See: ~/.config/xremap/cb13-sway.yml
 #
 
 xkb_keymap {

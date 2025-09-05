@@ -1,14 +1,18 @@
 ---
 
 # Required when running xremap / dotool without sudo
+#
+# Add current user to input group
+# $ sudo gpasswd -a "$USER" input
+# Lets normal users use evdev and uinput without sudo
+# $ echo 'KERNEL=="uinput", GROUP="input", MODE="0660", OPTIONS+="static_node=uinput"' | sudo tee /usr/lib/udev/rules.d/99-uinput.rules
+#
+# 99-uinput.rules is loaded after 70-uaccess.rules
 - name: Lets normal users use evdev and uinput without sudo
   ansible.builtin.shell: |
     set -o pipefail
-    if [[ ! -f /usr/lib/udev/rules.d/00-uinput.rules ]]; then
-        # Add current user to input group
-        sudo gpasswd -a "$USER" input
-        # Lets normal users use evdev and uinput without sudo
-        echo 'KERNEL=="uinput", GROUP="input", TAG+="uaccess"' | sudo tee /usr/lib/udev/rules.d/00-uinput.rules
+    if [[ ! -f /usr/lib/udev/rules.d/99-uinput.rules ]]; then
+        echo 'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"' | sudo tee /usr/lib/udev/rules.d/99-uinput.rules
         sudo udevadm control --reload && sudo udevadm trigger
     fi
   changed_when: false
