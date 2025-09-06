@@ -33,7 +33,13 @@
     - node
 
 
+# FIXME on cb13:
+# $ file ~/.local/bin/bun
+# ~/.local/bin/bun: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=cae47aa962a9a70f6d2a46c863ec4b4568cdd92e, not stripped
+# $ ~/.local/bin/bun --version
+# zsh: illegal hardware instruction (core dumped)  ~/.local/bin/bun --version
 - name: Install/Upgrade bun
+  when: ansible_hostname != "cb13"
   install-package:
     name: bun
     placeholders:
