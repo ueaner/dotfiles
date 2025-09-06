@@ -1,1 +1,6 @@
+# 现代桌面环境下，当前登录用户会自动获得带有 uaccess 标签设备的访问权限
+
+# 确保 uinput 设备节点存在且可访问
 KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"
+# 为所有输入设备（如键盘、鼠标）添加 uaccess 标签
+KERNEL=="event*", SUBSYSTEM=="input", TAG+="uaccess"
