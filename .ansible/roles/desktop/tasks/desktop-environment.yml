@@ -82,6 +82,9 @@
       ansible.builtin.command: ~/bin/sway-bg
       changed_when: false
 
+    - name: Install wtype
+      ansible.builtin.command: sudo dnf install -y wtype
+      changed_when: false
 
 - name: Configure macOS Desktop Environment
   when: ansible_system == "Darwin"
