@@ -5,10 +5,9 @@
 # 3. journalctl -b --user -u caddy.service -f / systemctl --user status caddy
 
 [Unit]
-Description=Caddy
+Description=Caddy web server
 Documentation=https://caddyserver.com/docs/
-After=network.target network-online.target
-Requires=network-online.target
+After=network.target
 
 [Install]
 WantedBy=default.target
