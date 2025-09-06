@@ -10,7 +10,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/frpc -c %h/.local/etc/frpc-mac14.toml
+ExecStart=%h/.local/bin/frpc -c %h/.local/etc/frpc-%H.toml
 StandardOutput=file:/tmp/frpc.stdout.log
 StandardError=file:/tmp/frpc.stderr.log
 Restart=on-failure
