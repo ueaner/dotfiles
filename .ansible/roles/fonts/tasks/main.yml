@@ -10,3 +10,6 @@
 
 - name: Install Noto Fonts
   ansible.builtin.include_tasks: noto-fonts.yml
+
+- name: Install Maple Fonts
+  ansible.builtin.include_tasks: maple-fonts.yml

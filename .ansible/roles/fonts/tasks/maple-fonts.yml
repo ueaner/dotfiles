@@ -1,0 +1,29 @@
+---
+
+- name: Install Maple Mono (Linux)
+  when: ansible_system == "Linux"
+  install-package:
+    name: maple-mono
+    placeholders:
+      repo: subframe7536/maple-font
+    template: "{{ template.github.latest }}"
+    archives:
+      - MapleMono-NF-CN-unhinted.zip
+    dst: ~/.local/share/fonts/MapleMono
+  tags:
+    - maple
+    - fonts
+
+- name: Install Maple Mono (Darwin)
+  when: ansible_system == "Darwin"
+  install-package:
+    name: maple-mono
+    placeholders:
+      repo: subframe7536/maple-font
+    template: "{{ template.github.latest }}"
+    archives:
+      - MapleMono-NF-CN-unhinted.zip
+    dst: ~/Library/Fonts/MapleMono
+  tags:
+    - maple
+    - fonts
