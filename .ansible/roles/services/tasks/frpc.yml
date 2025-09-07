@@ -1,5 +1,20 @@
 ---
-- name: Install frpc (local)
+# 无论是否登录，开机即可提供服务
+
+# GNOME: gsettings get org.gnome.desktop.session idle-delay
+# Sway: swayidle
+- name: Ignore lid-closing event when on AC power
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [[ ! -f /etc/systemd/logind.conf.d/99-lid-power.conf ]]; then
+        sudo mkdir -p /etc/systemd/logind.conf.d
+        printf '[Login]\nHandleLidSwitch=suspend\nHandleLidSwitchExternalPower=ignore' | sudo tee /etc/systemd/logind.conf.d/99-lid-power.conf
+        sudo systemctl restart systemd-logind.service
+    fi
+  changed_when: false
+
+- name: Install frpc client (local)
   install-package:
     name: frpc
     placeholders:
@@ -24,7 +39,20 @@
     postinstall: |-
       frpc --version
       if [[ $(uname -s) == 'Linux' ]]; then
-          systemctl --user enable --now frpc
+          if [[ -x ~/.local/bin/frpc ]]; then
+              cp ~/.local/bin/frpc /usr/local/bin/frpc
+          fi
+          if [[ -f ~/.local/etc/frpc-{{ ansible_hostname }}.toml ]]; then
+              cp ~/.local/etc/frpc-{{ ansible_hostname }}.toml /usr/local/etc/frpc.toml
+          fi
+          if [[ -f ~/.config/systemd/system/frpc.service ]]; then
+              sudo cp ~/.config/systemd/system/frpc.service /etc/systemd/system/frpc.service
+          fi
+          if [[ -f /etc/systemd/system/frpc.service ]]; then
+              sudo systemctl daemon-reload
+              sudo systemctl enable --now frpc
+          fi
+
           exit $?
       fi
 

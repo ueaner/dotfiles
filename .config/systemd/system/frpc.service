@@ -1,0 +1,19 @@
+# 1. Copy this to /etc/systemd/system/frpc.service
+# 2. systemctl enable --now frpc
+
+[Unit]
+Description=frp client
+After=network-online.target
+Requires=network-online.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/frpc -c /usr/local/etc/frpc.toml
+StandardOutput=file:/tmp/frpc.stdout.log
+StandardError=file:/tmp/frpc.stderr.log
+User=nobody
+Group=nobody
+Restart=on-failure

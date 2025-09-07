@@ -1,5 +1,5 @@
-# 1. Copy this to ~/.config/systemd/user/frpc.service
-# 2. systemctl --user enable --now frpc
+# 1. Copy this to /etc/systemd/system/frpc-tunnel.service
+# 2. systemctl enable --now frpc-tunnel
 
 [Unit]
 Description=frpc tunnel
