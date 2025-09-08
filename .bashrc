@@ -37,7 +37,6 @@ fi
 # shellcheck source=.config/shell/shellenv
 source ~/.config/shell/shellenv
 
-# 使用数字开头，可以定义文件的加载顺序
 for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
     # shellcheck source=/dev/null
@@ -55,4 +54,4 @@ done
 
 alias reload='. ~/.bashrc'
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
-alias dotfiles='git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local'
+alias dotfiles='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'

@@ -16,13 +16,6 @@ for dir in "${compdirs[@]}"; do
   fi
 done
 
-ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
-# ZSH_COMPCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
-ZSH_COMPCACHE="$HOME/.local/share/zsh/site-functions"
-
-autoload -Uz compinit
-compinit -i -C -d "$ZSH_COMPDUMP"
-
 unsetopt menu_complete   # Do not autoselect the first completion entry
 unsetopt flowcontrol     # Disable start/stop characters in shell editor
 setopt auto_menu         # Show completion menu on successive tab press
@@ -88,12 +81,25 @@ source <({
 })
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
+# ... unless we really want to.
+zstyle '*' single-ignored show
+
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+ZSH_COMPCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+
 # Use caching to make completion for cammands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "$ZSH_COMPCACHE"
 
-# ... unless we really want to.
-zstyle '*' single-ignored show
+autoload -Uz compinit
+compinit -i -C -d "$ZSH_COMPDUMP"
+
+# 有补全文件更新时，使用 compsync 同步更新
+compsync() {
+    rm -f "$ZSH_COMPDUMP"
+    autoload -Uz compinit
+    compinit -i -C -d "$ZSH_COMPDUMP"
+}
 
 # /usr/share/bash-completion
 # automatically load bash completion functions
