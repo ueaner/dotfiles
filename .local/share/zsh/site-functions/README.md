@@ -17,9 +17,7 @@ pnpm completion zsh > ~/.local/share/zsh/site-functions/_pnpm
 deno completions zsh > ~/.local/share/zsh/site-functions/_deno
 tldr --print-completion zsh > ~/.local/share/zsh/site-functions/_tldr
 yq shell-completion zsh > ~/.local/share/zsh/site-functions/_yq
-
-
-compinit
+python3 -m pip completion --zsh > ~/.local/share/zsh/site-functions/_pip
 ```
 
 其他示例
@@ -40,17 +38,19 @@ _dotlocal() {
 
 ## 补全文件生效
 
-初始化补全文件生效
+有补全文件更新时，执行 `compsync` 使补全文件更新生效。
+
+点击查看 [compsync] 的方法定义，大致内容如下：
 
 ```bash
-autoload -Uz compinit
-compinit
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+
+compsync() {
+    rm -f "$ZSH_COMPDUMP"
+    autoload -Uz compinit
+    compinit -i -C -d "$ZSH_COMPDUMP"
+}
+
 ```
 
-改动之后的补全文件生效:
-
-```bash
-rm -f ~/.cache/zsh/zcompdump ~/.config/zsh/.zcompdump
-autoload -Uz _gnome_extensions
-compdef _gnome_extensions gnome-extensions
-```
+[compsync]: https://github.com/ueaner/dotfiles/blob/main/.config/shell/rc.d/20-completion.zsh

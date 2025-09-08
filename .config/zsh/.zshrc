@@ -87,7 +87,8 @@ stty -ixoff
 stty stop undef
 stty start undef
 
-source ~/.config/shell/shellrc
+# Quick access to configuration files
+alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc'
 
 printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
     "$([[ ! -o interactive ]] && echo non-)" \

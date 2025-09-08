@@ -1,6 +1,7 @@
-#
+# Pretty print the fpath
+alias fpath='echo -e ${FPATH//:/\\n}'
+
 # PATH 可执行文件路径，FPATH 可执行文件对应补全定义文件的路径
-#
 FPATH="/usr/share/zsh/${ZSH_VERSION}/functions" # zsh builtin command 补全提示路径
 
 compdirs=(
@@ -27,7 +28,6 @@ setopt globdots          # Include hidden files. or: _comp_options+=(globdots)
 # 参考：
 # https://thevaluable.dev/zsh-completion-guide-examples/
 # https://thevaluable.dev/zsh-install-configure-mouseless/
-# TODO: https://github.com/lincheney/fzf-tab-completion
 
 # 路径补全跳转使用 z 和 fzf
 

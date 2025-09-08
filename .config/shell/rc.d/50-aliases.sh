@@ -19,28 +19,9 @@ elif command -v shutdown >/dev/null; then
     alias poweroff='sudo shutdown -h now'
 fi
 
-alias ls="ls --color=auto -h"
-alias ll="ls --color=always -AlF -h -v"
-alias l="ls -lh"
-
-if command -v nvim >/dev/null; then
-    alias vim="nvim"
-    alias vimdiff="nvim -d" # diff mode
-    alias view="nvim -R"    # readonly mode
-elif ! command -v vim >/dev/null; then
-    alias vim="vi"
-fi
-
-# Pretty print the path
-alias path='echo -e ${PATH//:/\\n}'
-alias fpath='echo -e ${FPATH//:/\\n}'
-
 # rg search-text | vim -
 # fd filename-pattern | xargs vim -
 
-# Quick access to configuration files
-alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc'
-alias vimrc="vim +'e \$MYVIMRC'"
 alias todo='vim ~/projects/notebook/TODO.md'
 
 # curl http://httpbin.org/json | json
@@ -58,6 +39,7 @@ alias free="free -mt"
 alias mux='tmuxinator'
 alias f='fastfetch'
 alias duf="duf -hide-mp '/run/credentials/systemd*'"
+alias dus='du -d 1 * -h | sort -h'
 
 alias grep='grep --color=auto --exclude-dir={.git}'
 
@@ -79,20 +61,8 @@ alias ifactive="nmcli conn show --active"
 alias phprofiler="php -d xdebug.profiler_enable=1"
 #alias phpunit="phpunit -d xdebug.show_exception_trace=0"
 
-# sudo dnf install man-pages-zh-CN groff
-# alias cman='man -M $HOME/.local/share/man/zh_CN -P "/usr/bin/less -isR"'
-if [[ ! "$LANG" =~ ^zh_CN ]]; then
-    alias cman='man --locale=zh_CN'
-else
-    alias cman='man'
-fi
-
 alias proxy='export all_proxy=socks5://127.0.0.1:1080; export https_proxy=socks5://127.0.0.1:1080; export http_proxy=socks5://127.0.0.1:1080'
 alias proxy_http='export all_proxy=http://127.0.0.1:1081; export https_proxy=http://127.0.0.1:1081; export http_proxy=http://127.0.0.1:1081'
 alias unproxy='unset all_proxy; unset https_proxy; unset http_proxy'
 
-alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs vim'
-
 alias dnf='sudo dnf'
-
-alias dus='du -d 1 * -h | sort -h'

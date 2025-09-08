@@ -51,6 +51,9 @@ if type go &>/dev/null; then
     export GOVERSION
 fi
 
+# https://github.com/golang/go/issues/9341#issuecomment-91626818
+export GIT_TERMINAL_PROMPT=1
+
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 export CARGO_HOME=$XDG_DATA_HOME/cargo
 export RUSTUP_HOME=$XDG_DATA_HOME/rustup

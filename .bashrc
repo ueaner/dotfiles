@@ -34,8 +34,8 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-# shellcheck source=.config/shell/shellenv
-source ~/.config/shell/shellenv
+# Quick access to configuration files
+alias bashrc='${=EDITOR} ~/.bashrc'
 
 for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
