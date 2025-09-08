@@ -82,8 +82,10 @@ jobs() {
 
 telnet() {
     if type -p telnet >/dev/null; then
+        # shellcheck disable=SC2068
         command telnet $@
     else
+        # shellcheck disable=SC2068
         command nc -v -z -w 3 $@
     fi
 }

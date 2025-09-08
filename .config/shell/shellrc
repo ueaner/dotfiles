@@ -1,0 +1,9 @@
+# vim: set ft=sh:
+
+export GPG_TTY=$(tty)
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    sudo launchctl limit maxfiles 10240 unlimited
+else
+    ulimit -n 64000
+fi

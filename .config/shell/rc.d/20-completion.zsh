@@ -76,6 +76,11 @@ zstyle ':completion:*:manuals.(^1*)' insert-sections true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w"
 
+# Complete . and .. special directories
+zstyle ':completion:*' special-dirs true
+# disable named-directories autocompletion
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+
 # https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
 # dircolors -p: view the default color settings
 source <({

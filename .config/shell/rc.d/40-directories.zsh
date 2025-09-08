@@ -11,7 +11,3 @@ alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
 alias -g ......='../../../../..'
-
-alias ls="ls --color=auto -h"
-alias ll="ls --color=always -AlF -h -v"
-alias l="ls -lh"

@@ -6,31 +6,8 @@
 # find          cat
 # fd/ripgrep    bat
 
-# Fuzzy completion
-# https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
-if [[ $- == *i* ]]; then
-    # macOS by brew
-    [[ -f "/opt/local/opt/fzf/shell/completion.zsh" ]] && . "/opt/local/opt/fzf/shell/completion.zsh"
-    # Fedora by dnf, https://src.fedoraproject.org/rpms/fzf/blob/f41/f/fzf.spec#_83
-    [[ -f "/usr/share/zsh/site-functions/_fzf" ]] && . "/usr/share/zsh/site-functions/_fzf"
-    # by ansible
-    [[ -f ~/.local/share/fzf/shell/completion.zsh ]] && . ~/.local/share/fzf/shell/completion.zsh
-fi
-
-# Key bindings
-# - CTRL-R for shell history
-# - CTRL-T for file / directory search
-# macOS by brew
-[[ -f "/opt/local/opt/fzf/shell/key-bindings.zsh" ]] && . "/opt/local/opt/fzf/shell/key-bindings.zsh"
-# Fedora by dnf
-[[ -f "/usr/share/fzf/shell/key-bindings.zsh" ]] && . "/usr/share/fzf/shell/key-bindings.zsh"
-# by ansible
-[[ -f ~/.local/share/fzf/shell/key-bindings.zsh ]] && . ~/.local/share/fzf/shell/key-bindings.zsh
-
-# zsh completion
-# https://github.com/junegunn/fzf/blob/master/shell/completion.bash#L98
-# https://github.com/junegunn/fzf/issues/3349#issuecomment-1619425209
-[[ -f "/etc/bash_completion.d/fzf" ]] && compdef _gnu_generic fzf
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --$(basename $SHELL))
 
 # > man fzf
 # ANSI COLORS:

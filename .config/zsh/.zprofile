@@ -11,21 +11,10 @@
 
 echo "$$ .zprofile $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
-if [[ "$(uname -s)" == "Darwin" ]]; then
-    export LANG=zh_CN.UTF-8
-    export LC_CTYPE=zh_CN.UTF-8
-    export LC_ALL=zh_CN.UTF-8
-fi
-
-export EDITOR=vim
-export VISUAL=vim
-
-# https://github.com/golang/go/issues/9341#issuecomment-91626818
-# 尽可能使用 ssh 免密码的方式
-export GIT_TERMINAL_PROMPT=1
+source ~/.config/shell/shellenv
 
 # 使用数字开头，可以定义文件的加载顺序
-for envfile in ~/.config/zsh/env.d/[0-9][0-9]*[^~]; do
+for envfile in ~/.config/shell/env.d/[0-9][0-9]*sh; do
     # echo $envfile
     source $envfile
 done

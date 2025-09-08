@@ -2,6 +2,10 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
     return
 fi
 
+export LANG=zh_CN.UTF-8
+export LC_CTYPE=zh_CN.UTF-8
+export LC_ALL=zh_CN.UTF-8
+
 # 下载安装包的源
 #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
 # 如果自定义的 bottles 源没有找到对应的包，会从 brew 官方源下载

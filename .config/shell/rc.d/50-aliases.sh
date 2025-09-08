@@ -19,8 +19,9 @@ elif command -v shutdown >/dev/null; then
     alias poweroff='sudo shutdown -h now'
 fi
 
-# Reload the shell (i.e. invoke as a login shell)
-alias reload='for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done'
+alias ls="ls --color=auto -h"
+alias ll="ls --color=always -AlF -h -v"
+alias l="ls -lh"
 
 if command -v nvim >/dev/null; then
     alias vim="nvim"
@@ -30,6 +31,10 @@ elif ! command -v vim >/dev/null; then
     alias vim="vi"
 fi
 
+# Pretty print the path
+alias path='echo -e ${PATH//:/\\n}'
+alias fpath='echo -e ${FPATH//:/\\n}'
+
 # rg search-text | vim -
 # fd filename-pattern | xargs vim -
 
@@ -38,45 +43,8 @@ alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc'
 alias vimrc="vim +'e \$MYVIMRC'"
 alias todo='vim ~/projects/notebook/TODO.md'
 
-# More: https://www.thorsten-hans.com/5-types-of-zsh-aliases
-# suffix aliases
-alias -s {yml,yaml}=vim
-# global aliases
-# ls -l G do
-alias -g G='| grep -i'
-alias -g L='| less' # less is more
-alias -g T='| tail'
-alias -g H='| head'
-alias -g F='| fzf'
-# echo $path N
-# ListSeparator
-alias -g N='| tr -s " " "\n"'
-# PathListSeparator
-alias -g N:='| tr -s ":" "\n"'
-alias -g N,='| tr -s "," "\n"'
-# PathSeparator
-alias -g N/='| tr -s "/" "\n"'
-
-# Pretty print the path
-alias path='echo -e ${PATH//:/\\n}'
-alias fpath='echo -e ${FPATH//:/\\n}'
-
-DOT_HOME=$HOME
-# alias dotfiles='f(){ git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@; };f'
-# alias dotlocal='(){ git --git-dir=$DOT_HOME/.dotlocal/ --work-tree=$DOT_HOME/.local $@; }'
-
-# lazygit DOT, lazygit LOCAL
-alias -g DOT='--git-dir=$DOT_HOME/.dotfiles/ --work-tree=$DOT_HOME'
-alias -g LOCAL='--git-dir=$DOT_HOME/.dotlocal/ --work-tree=$DOT_HOME/.local'
-
-# To use the same auto-completion feature as git, the alias value starts with git.
-alias dotfiles='git DOT'
-alias dotlocal='git LOCAL'
-
 # curl http://httpbin.org/json | json
 alias json="python -m json.tool | bat -p -l json"
-# curl http://httpbin.org/json JSON
-alias -g JSON="| python -m json.tool | bat -p -l json"
 
 # https://www.stefaanlippens.net/pretty-csv.html
 alias csv="column -t -s,"
@@ -106,9 +74,6 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 
 # Show active network interfaces
 alias ifactive="nmcli conn show --active"
-
-# rq coreutils util-linux
-alias rq='(){ sudo dnf repoquery -l $@ | rg "/bin/"; }'
 
 # xdebug
 alias phprofiler="php -d xdebug.profiler_enable=1"

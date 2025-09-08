@@ -87,13 +87,7 @@ stty -ixoff
 stty stop undef
 stty start undef
 
-export GPG_TTY=$(tty)
-
-if [[ "$(uname -s)" == "Darwin" ]]; then
-    sudo launchctl limit maxfiles 10240 unlimited
-else
-    ulimit -n 64000
-fi
+source ~/.config/shell/shellrc
 
 printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
     "$([[ ! -o interactive ]] && echo non-)" \
@@ -111,7 +105,7 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-for rcfile in ~/.config/zsh/rc.d/[0-9][0-9]*[^~]; do
+for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*sh; do
     if [[ "$rcfile" == *"autosuggestions"* ]]; then
         if [[ "$COLORTERM" == "truecolor" ]]; then
             ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$COLOR_GRAY"
