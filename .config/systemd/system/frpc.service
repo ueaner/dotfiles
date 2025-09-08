@@ -1,5 +1,6 @@
 # 1. Copy this to /etc/systemd/system/frpc.service
 # 2. systemctl enable --now frpc
+# 3. journalctl -b -u frpc.service
 
 [Unit]
 Description=frp client
@@ -17,3 +18,7 @@ StandardError=file:/tmp/frpc.stderr.log
 User=nobody
 Group=nobody
 Restart=on-failure
+# Ensure retries every 10 seconds for 10 minutes
+RestartSec=10s
+StartLimitBurst=100
+StartLimitIntervalSec=10min
