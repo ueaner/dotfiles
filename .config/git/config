@@ -98,6 +98,7 @@
     dot = "!f() { git --git-dir=$HOME/.dotfiles --work-tree=$HOME $@; }; f"
     local = "!f() { git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@; }; f"
 
+    tree = "!f() { git ls-files | tree --fromfile $@; }; f"
 [apply]
 
     # Detect whitespace errors when applying a patch.
