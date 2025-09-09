@@ -2,18 +2,10 @@
 ---
 
 # ----------------------------------------------------------------
-# neovim
+# zsh
 # ----------------------------------------------------------------
-- name: Install/Upgrade neovim
-  ansible.builtin.include_tasks: neovim.yml
-  tags:
-    - neovim
-
-# ----------------------------------------------------------------
-# alacritty.desktop for Sway
-# ----------------------------------------------------------------
-- name: Alacritty desktop entry add font.size option
-  ansible.builtin.include_tasks: alacritty.yaml
+- name: Set zsh as the default login shell
+  ansible.builtin.include_tasks: zsh.yml
 
 # ----------------------------------------------------------------
 # gitmux: git status in tmux status bar
@@ -22,10 +14,18 @@
   ansible.builtin.include_tasks: tmux.yml
 
 # ----------------------------------------------------------------
-# zsh
+# alacritty.desktop for Sway
 # ----------------------------------------------------------------
-- name: Set zsh as the default login shell
-  ansible.builtin.include_tasks: zsh.yml
+- name: Alacritty desktop entry add font.size option
+  ansible.builtin.include_tasks: alacritty.yaml
+
+# ----------------------------------------------------------------
+# neovim
+# ----------------------------------------------------------------
+- name: Install/Upgrade neovim
+  ansible.builtin.include_tasks: neovim.yml
+  tags:
+    - neovim
 
 # ----------------------------------------------------------------
 # lazygit

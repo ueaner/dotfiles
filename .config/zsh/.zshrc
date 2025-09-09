@@ -72,7 +72,7 @@
 # 6. zsh 内置函数，如 zmv 批量修改文件名
 # $ zmv '(*).txt' '$1.html'
 
-echo "$$ .zshrc $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
+echo "[$$ .zshrc] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
 # 关闭 XON/XOFF flow control
 # Disable Ctrl-S and Ctrl-Q on terminal, stty -a 查看

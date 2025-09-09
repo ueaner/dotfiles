@@ -6,11 +6,14 @@ live_config_reload = true
 
 [env]
 TERM = "xterm-256color"
+# Ensure tmux can be found for terminal.shell.program
+PATH = "/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 
-# In macOS, Alacritty needs to start a zsh login shell first to load the .zprofile file.
-# [terminal.shell]
-# program = "/usr/local/bin/tmux"
-# args = ["new-session", "-A", "-D", "-s", "SACK"]
+[terminal.shell]
+program = "tmux"
+args = ["new-session", "-A", "-D", "-s", "SACK"]
+# program = "zsh"
+# args = ["--login"]
 
 [selection]
 save_to_clipboard = true
