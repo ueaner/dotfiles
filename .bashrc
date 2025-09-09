@@ -43,9 +43,6 @@ for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
     source $envfile
 done
 
-# shellcheck source=.config/shell/shellrc
-source ~/.config/shell/shellrc
-
 for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
     # shellcheck source=/dev/null

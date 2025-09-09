@@ -2,14 +2,9 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
     return
 fi
 
-# locale
-# 本地化编码名称由三部分组成：语言代码[_国家代码[.编码]]，如 zh_CN.UTF-8
-# a. 语言代码 (Language Code)
-# b. 国家代码 (Country Code)
-# c. 编码 (Encoding)
-export LANG=zh_CN.UTF-8
-export LC_CTYPE=zh_CN.UTF-8
-export LC_ALL=zh_CN.UTF-8
+# 安装相关编译工具: xcode-select —install
+# 10.15 定义 CPATH 代替软链 /usr/include
+export CPATH=$(xcrun --show-sdk-path)/usr/include
 
 # 下载安装包的源
 #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
@@ -41,24 +36,3 @@ export HOMEBREW_NO_INSTALL_FROM_API=1
 
 export HOMEBREW_CURL_RETRIES=1
 export HOMEBREW_PIP_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-
-# 安装相关编译工具: xcode-select —install
-# 10.15 定义 CPATH 代替软链 /usr/include
-export CPATH=$(xcrun --show-sdk-path)/usr/include
-
-# /opt/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
-# export JAVA_HOME=`/usr/libexec/java_home`
-# export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
-# export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
-
-#export GRADLE_USER_HOME="/opt/local/opt/gradle/libexec"
-# Linux下: sudo alternatives --config java
-#export JAVA_HOME=/usr/java/default
-
-export CAPACITOR_ANDROID_STUDIO_PATH="$HOME/Applications/Android Studio.app"
-
-# headless chrome
-# 双引号之间的定义不需要加反斜杠转义
-alias google-chrome="~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-export CHROME_EXECUTABLE="$HOME/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'

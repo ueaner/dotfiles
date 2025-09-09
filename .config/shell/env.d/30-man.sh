@@ -12,6 +12,11 @@ else
     export MANPAGER="less -R"
 fi
 
+# manpages-zh:
+# ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
+# mkdir -p ~/.local/share/man/zh_CN
+# cp -r /tmp/zhman/src/* ~/.local/share/man/zh_CN
+#
 # alias cman='man -M $HOME/.local/share/man/zh_CN -P "/usr/bin/less -isR"'
 if [[ ! "$LANG" =~ ^zh_CN ]]; then
     alias cman='man --locale=zh_CN'

@@ -36,13 +36,36 @@
 
 # https://github.com/golang/go/issues/9341#issuecomment-91626818
 export GIT_TERMINAL_PROMPT=1
+export GPG_TTY=$(tty)
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    sudo launchctl limit maxfiles 10240 unlimited
+else
+    ulimit -n 64000
+fi
+
+#
+# Python
+#
 # python3 -m site --user-base
 # python3 -m site --user-site
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE
 export PYTHONUSERBASE=~/.local # ~/.local/{bin,lib}
 export UV_PYTHON_INSTALL_MIRROR=${GITHUB_PROXY}https://github.com/astral-sh/python-build-standalone/releases/download
 
+# sudo dnf install conda
+# # https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-MacOSX-x86_64.sh --create-dirs -o ~/.local/share/miniconda3/miniconda.sh
+# bash ~/.local/share/miniconda3/miniconda.sh -b -u -p ~/.local/share/miniconda3
+if [[ -f "/usr/etc/profile.d/conda.sh" ]]; then
+    . "/usr/etc/profile.d/conda.sh"
+elif [ -f ~/.local/share/miniconda3/etc/profile.d/conda.sh ]; then
+    . ~/.local/share/miniconda3/etc/profile.d/conda.sh
+fi
+
+#
+# Golang
+#
 # $(go env GOROOT)/src/os/file.go os.UserConfigDir()
 # https://golang.org/design/30411-env
 export GOENV=$XDG_CONFIG_HOME/go/env
@@ -59,6 +82,9 @@ if type go &>/dev/null; then
     export GOVERSION
 fi
 
+#
+# Rust
+#
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 export CARGO_HOME=$XDG_DATA_HOME/cargo
 export RUSTUP_HOME=$XDG_DATA_HOME/rustup
@@ -76,10 +102,21 @@ export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
 # https://mirrors.ustc.edu.cn/help/rust-static.html
 export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 
+#
+# JavaScript
+#
+export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
+export PNPM_HOME=$XDG_DATA_HOME/pnpm
+export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
+export COREPACK_ENABLE_AUTO_PIN=0
+
 # https://docs.deno.com/runtime/reference/env_variables/
 export DENO_DIR=$XDG_DATA_HOME/deno
 export DENO_INSTALL_ROOT=$XDG_BIN_HOME
 
+#
+# Android
+#
 # https://developer.android.com/tools/variables
 # https://developer.android.com/ndk/guides/graphics/getting-started#creating
 export ANDROID_HOME=$XDG_DATA_HOME/android
@@ -91,17 +128,28 @@ if [[ -d "$ANDROID_HOME/ndk" ]]; then
     export NDK_HOME=$ANDROID_NDK_HOME
 fi
 
-# fnm install --lts
-# fnm default lts-latest
-# Node.js manager
-export FNM_DIR=$XDG_DATA_HOME/fnm
-# Node.js package manager
-export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
-# corepack use pnpm@latest
-# corepack enable pnpm
-# pnpm config set global-bin-dir ~/.local/bin
-export PNPM_HOME=$XDG_DATA_HOME/pnpm
-export COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
-export COREPACK_ENABLE_AUTO_PIN=0
+# /opt/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
+# export JAVA_HOME=`/usr/libexec/java_home`
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+# export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 
+#export GRADLE_USER_HOME="/opt/local/opt/gradle/libexec"
+# Linux下: sudo alternatives --config java
+#export JAVA_HOME=/usr/java/default
+
+# export CAPACITOR_ANDROID_STUDIO_PATH="$HOME/Applications/Android Studio.app"
+alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+
+#
+# Misc
+#
 export PHP_CS_FIXER_IGNORE_ENV=1
+
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
+export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
+
+export TASK_X_MAP_VARIABLES=1
+
+[[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
+
+[[ -f $HOME/.local/etc/token.sh ]] && source $HOME/.local/etc/token.sh
