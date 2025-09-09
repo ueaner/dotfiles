@@ -1,14 +1,19 @@
 # Environment configuration for programming languages and package management tools
 #
-# - /usr/local/bin
-#   - ln -sf $(which nvim) /usr/local/bin/vim
+# - /usr/local/bin or /usr/bin - System-wide binaries
+#   - libinput-gestures
+#   - dotool
+#   - frpc
 #
-# - ~/.local/bin - $XDG_BIN_HOME
-#   - ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+# - ~/.local/bin ($XDG_BIN_HOME) - User-wide binaries
+#   1. Programming language and package manager binaries are linked to the $XDG_BIN_HOME
 #   - ln -sf $XDG_DATA_HOME/go/bin/{go,gofmt} $XDG_BIN_HOME
+#   - ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+#   - ln -sf $XDG_DATA_HOME/node/bin/* $XDG_BIN_HOME
 #   - ln -sf $ANDROID_HOME/platform-tools/adb $XDG_BIN_HOME
 #   - ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $XDG_BIN_HOME
 #
+#   2. Package Manager installs binaries into $XDG_BIN_HOME
 #   - cargo install
 #   - go install
 #   - pip install --user
@@ -28,6 +33,9 @@
 #   text/x-script.python          ansible
 #   text/x-shellscript            tsx
 #
+
+# https://github.com/golang/go/issues/9341#issuecomment-91626818
+export GIT_TERMINAL_PROMPT=1
 
 # python3 -m site --user-base
 # python3 -m site --user-site
@@ -51,9 +59,6 @@ if type go &>/dev/null; then
     export GOVERSION
 fi
 
-# https://github.com/golang/go/issues/9341#issuecomment-91626818
-export GIT_TERMINAL_PROMPT=1
-
 # https://doc.rust-lang.org/cargo/reference/environment-variables.html
 export CARGO_HOME=$XDG_DATA_HOME/cargo
 export RUSTUP_HOME=$XDG_DATA_HOME/rustup
@@ -61,6 +66,15 @@ export CARGO_INSTALL_ROOT=~/.local # ~/.local/bin
 # base target directory: ~/.target
 # export CARGO_BUILD_TARGET_DIR=~/.target
 export CARGO_BUILD_TARGET_DIR=$XDG_CACHE_HOME/cargo-build
+
+# https://mirrors.tuna.tsinghua.edu.cn/help/rustup/
+export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+# export RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup
+# export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+# https://mirrors.sjtug.sjtu.edu.cn/docs/rust-static
+# export RUSTUP_DIST_SERVER=https://mirrors.sjtug.sjtu.edu.cn/rust-static/
+# https://mirrors.ustc.edu.cn/help/rust-static.html
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 
 # https://docs.deno.com/runtime/reference/env_variables/
 export DENO_DIR=$XDG_DATA_HOME/deno
