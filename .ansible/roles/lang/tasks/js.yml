@@ -61,6 +61,27 @@
   tags:
     - bun
 
+- name: Install/Upgrade bun (For Intel CPUs before 2013)
+  when: ansible_hostname == "cb13"
+  install-package:
+    name: bun
+    placeholders:
+      repo: oven-sh/bun
+    template: "{{ template.github.latest }}"
+    archives:
+      # - https://github.com/oven-sh/bun/releases/download/bun-v1.2.21/bun-linux-x64-baseline.zip
+      - bun-linux-x64-baseline.zip
+      - bun-darwin-x64-baseline.zip
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    strip: 1
+    include:
+      - bun
+    postinstall: |-
+      chmod +x ~/.local/bin/bun
+      bun completions > ~/.local/share/zsh/site-functions/_bun
+      bun --version
+  tags:
+    - bun
 
 - name: Install/Upgrade Deno
   install-package:
