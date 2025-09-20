@@ -21,6 +21,23 @@
         fi
       changed_when: false
 
+    - name: Install terminfo for tmux (macOS)
+      when: ansible_system == "Darwin"
+      environment: "{{ brew_environment }}"
+      ansible.builtin.shell: |-
+        if ! brew list --formula ncurses >/dev/null 2>&1; then
+            HOMEBREW_PREFIX=$(brew --prefix)
+            ${HOMEBREW_PREFIX}/opt/ncurses/bin/infocmp tmux-256color > /tmp/tmux-256color.info
+            ${HOMEBREW_PREFIX}/opt/ncurses/bin/infocmp tmux-direct > /tmp/tmux-direct.info
+            /usr/bin/tic -xe tmux-256color /tmp/tmux-256color.info
+            /usr/bin/tic -xe tmux-direct /tmp/tmux-direct.info
+        else
+            cd /tmp
+            curl -LO https://invisible-island.net/datafiles/current/terminfo.src.gz && gunzip terminfo.src.gz
+            tic -xe tmux-direct,tmux-256color terminfo.src
+        fi
+      changed_when: false
+
 
 - name: Install gitmux
   install-package:
