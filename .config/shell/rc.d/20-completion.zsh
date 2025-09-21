@@ -70,7 +70,7 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w"
 
 # Complete . and .. special directories
-zstyle ':completion:*' special-dirs true
+# zstyle ':completion:*' special-dirs true
 # disable named-directories autocompletion
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 
