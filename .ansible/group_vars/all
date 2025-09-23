@@ -7,6 +7,30 @@ chinese: on
 
 # variables
 
+hostnames:
+  MacBookPro12,1: mac15
+  MacBookPro11,1: mac14
+  Link: cb13
+
+desktop_command: |-
+  KERNEL=$(uname -s)         # Darwin | Linux
+  DESKTOP=                   # Aqua | GNOME | Sway
+
+  # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+  [[ -f /etc/os-release ]] && . /etc/os-release
+
+  if [[ "$KERNEL" == "Darwin" ]]; then
+      DESKTOP=Aqua
+  elif [[ "$ID" == "fedora" ]]; then
+      if [[ "${VARIANT_ID}" == "workstation" ]]; then
+          DESKTOP=GNOME
+      elif [[ "${VARIANT_ID}" == "sway" ]]; then
+          DESKTOP=Sway
+      fi
+  fi
+
+  printf $DESKTOP
+
 # Like all templating, lookups execute and are evaluated on the Ansible control machine.
 # hostname -I parameter is not supported on macOS
 # ansible_controller_ipv4_command: "hostname -I | cut -d' ' -f1"
@@ -42,25 +66,6 @@ proxy_environment:
 GITHUB_PROXY: "{{ lookup('env', 'GITHUB_PROXY', default='') }}"
 
 gnome_shell_version_command: if which gnome-shell >/dev/null 2>&1; then gnome-shell --version | cut -f3 -d' ' | cut -f1 -d'.'; fi
-
-desktop_command: |-
-  KERNEL=$(uname -s)         # Darwin | Linux
-  DESKTOP=                   # Aqua | GNOME | Sway
-
-  # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
-  [[ -f /etc/os-release ]] && . /etc/os-release
-
-  if [[ "$KERNEL" == "Darwin" ]]; then
-      DESKTOP=Aqua
-  elif [[ "$ID" == "fedora" ]]; then
-      if [[ "${VARIANT_ID}" == "workstation" ]]; then
-          DESKTOP=GNOME
-      elif [[ "${VARIANT_ID}" == "sway" ]]; then
-          DESKTOP=Sway
-      fi
-  fi
-
-  printf $DESKTOP
 
 # archives_dir: "{{ ansible_env.XDG_BACKUP_DIR ~ '/archives' if ansible_env.XDG_BACKUP_DIR is defined else ansible_env.HOME ~ '/.cache/archives' }}"
 backup_dir: "{{ lookup('env', 'XDG_BACKUP_DIR', default=lookup('env', 'HOME') ~ '/.cache') }}"
