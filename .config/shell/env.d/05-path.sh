@@ -43,26 +43,14 @@ if type brew &>/dev/null; then
     # brew install qemu --build-from-source --cc=llvm_clang -v
     if ls ${HOMEBREW_PREFIX}/opt/llvm/bin &>/dev/null; then
         PATH="${HOMEBREW_PREFIX}/opt/llvm/bin:$PATH"
-        # For compilers to find llvm you may need to set: [Just add --cc=llvm_clang option]
-        # LLVM_PREFIX="${HOMEBREW_PREFIX}/opt/llvm"
-        # export CC="${LLVM_PREFIX}/bin/clang"
-        # export CXX="${LLVM_PREFIX}/bin/clang++"
-        # export CPP="${LLVM_PREFIX}/bin/clang-cpp"
-        # export LDFLAGS="-L${LLVM_PREFIX}/lib -fuse-ld=lld -Wl,-rpath,${LLVM_PREFIX}/lib"
-        # export CPPFLAGS="-I${LLVM_PREFIX}/include"
-
-        # ERROR: Problem encountered: You either need GCC v7.4 or Clang v10.0 (or XCode Clang v15.0) to compile QEMU
-        # brew install qemu --build-from-source --cc=llvm_clang -v
     fi
 
-    # libexec 目录下有个软链 man 指向 gnuman，使用 man 命令查看手册时，
-    # 会自动在 $PATH 的同级目录下找 "man" 或者 "share/man" 目录，所以这里不需要处理 $MANPATH
-
-    # 通过 manpath -d 查看 manpath 的添加过程：
-    # path directory /opt/local/opt/curl/bin is not in the config file
-    #   adding /opt/local/opt/curl/share/man to manpath
-    # path directory /opt/local/opt/coreutils/libexec/gnubin is not in the config file
-    #   adding /opt/local/opt/coreutils/libexec/man to manpath
+    # For LightGBM
+    if ls ${HOMEBREW_PREFIX}/opt/libomp/lib &>/dev/null; then
+        if [[ "$DYLD_LIBRARY_PATH" != *"libomp"* ]]; then
+            export DYLD_LIBRARY_PATH="${HOMEBREW_PREFIX}/opt/libomp/lib:$DYLD_LIBRARY_PATH"
+        fi
+    fi
 fi
 
 if type uv &>/dev/null; then
