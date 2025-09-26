@@ -404,3 +404,28 @@
     dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
   tags:
     - plantuml
+
+
+- name: Install crush
+  install-package:
+    name: crush
+    placeholders:
+      repo: charmbracelet/crush
+      version: "{{ template.github.version_v }}"
+    template: "{{ template.github.archive_v }}"
+    archives:
+      # The requested version number is "v0.10.0", but the archive name uses "0.10.0" without the "v".
+      # https://github.com/charmbracelet/crush/releases/download/v0.10.0/crush_0.10.0_Linux_x86_64.tar.gz
+      - crush_<version>_Linux_x86_64.tar.gz
+      - crush_<version>_Linux_arm64.tar.gz
+      - crush_<version>_Darwin_x86_64.tar.gz
+      - crush_<version>_Darwin_arm64.tar.gz
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    strip: 1
+    include:
+      # crush_0.10.0_Linux_x86_64/crush
+      - crush
+    postinstall: |-
+      crush --version
+  tags:
+    - crush
