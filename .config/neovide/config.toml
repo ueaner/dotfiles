@@ -4,8 +4,8 @@
 # fc-list | grep 'Noto Sans Mono CJK SC'
 
 [font]
-size = 10
+size = 13
 
 [font.normal]
-family = "SauceCodePro Nerd Font"
+family = "Maple Mono NF CN"
 style = "Regular"
