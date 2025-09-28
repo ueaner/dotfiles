@@ -7,7 +7,13 @@
 # fd/ripgrep    bat
 
 # Set up fzf key bindings and fuzzy completion
-source <(fzf --$(basename $SHELL))
+# shellcheck source=/dev/null
+# shellcheck disable=SC2046,SC2086
+if type fzf &>/dev/null; then
+    # source <(fzf --$(basename $SHELL))
+    [[ -n "$BASH_VERSION" ]] && source <(fzf --bash)
+    [[ -n "$ZSH_VERSION" ]] && source <(fzf --zsh)
+fi
 
 # > man fzf
 # ANSI COLORS:

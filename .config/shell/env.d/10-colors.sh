@@ -7,6 +7,8 @@
 # cyan is green+blue, magenta is blue+red, and yellow is red+green
 
 # The closure function will automatically execute and then discard.
+# shellcheck source=/dev/null
+# shellcheck disable=SC2086
 source <({
     # Color values are consistent with alacritty terminal.
     arr=(

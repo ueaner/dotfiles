@@ -35,7 +35,8 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Quick access to configuration files
-alias bashrc='${=EDITOR} ~/.bashrc'
+# shellcheck disable=SC2139
+alias shrc="${EDITOR} ~/.bashrc"
 
 for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
@@ -51,4 +52,4 @@ done
 
 alias reload='. ~/.bashrc'
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
-alias dotfiles='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'
+alias dotlocal='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'
