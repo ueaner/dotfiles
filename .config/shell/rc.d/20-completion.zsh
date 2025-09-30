@@ -17,6 +17,22 @@ for dir in "${compdirs[@]}"; do
   fi
 done
 
+# GNU utils
+if type brew &>/dev/null; then
+    HOMEBREW_PREFIX=$(brew --prefix)
+
+    if ls ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions &>/dev/null; then
+        for p in ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions; do
+            FPATH="$p:$FPATH"
+        done
+    fi
+
+    # /usr/share/bash-completion
+    # brew install bash-completion@2
+    export BASH_COMPLETION_USER_FILE=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/bash_completion
+    export BASH_COMPLETION_DIR=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/completions
+fi
+
 unsetopt menu_complete   # Do not autoselect the first completion entry
 unsetopt flowcontrol     # Disable start/stop characters in shell editor
 setopt auto_menu         # Show completion menu on successive tab press
@@ -101,6 +117,5 @@ compsync() {
     compinit -i -C -d "$ZSH_COMPDUMP"
 }
 
-# /usr/share/bash-completion
 # automatically load bash completion functions
 autoload -U +X bashcompinit && bashcompinit

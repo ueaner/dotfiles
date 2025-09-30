@@ -11,11 +11,12 @@ alias path='echo -e ${PATH//:/\\n}'
 PATH="/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 # GNU utils
+# shellcheck disable=SC2231
 if type brew &>/dev/null; then
     HOMEBREW_PREFIX=$(brew --prefix)
     # gnubin
-    if ls "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin &>/dev/null; then
-        for p in "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin; do
+    if ls ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin &>/dev/null; then
+        for p in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do
             PATH="$p:$PATH"
         done
     fi
@@ -23,15 +24,10 @@ if type brew &>/dev/null; then
     # - 系统已经安装了此软件的某个版本
     # - 某个软件在 brew 中有多个版本，非最新版本往往为 keg-only
     # Only non-keg-only formulae are symlinked into the Homebrew prefix.
-    # for p in ${HOMEBREW_PREFIX}/opt/{curl,openssl,gnu-getopt}/bin; do
-    #     PATH="$p:$PATH"
-    # done
-
-    if ls ${HOMEBREW_PREFIX}/opt/curl/bin &>/dev/null; then
-        PATH="${HOMEBREW_PREFIX}/opt/curl/bin:$PATH"
-    fi
-    if ls ${HOMEBREW_PREFIX}/opt/openssl/bin &>/dev/null; then
-        PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
+    if ls ${HOMEBREW_PREFIX}/opt/{curl,openssl,gnu-getopt}/bin &>/dev/null; then
+        for p in ${HOMEBREW_PREFIX}/opt/{curl,openssl,gnu-getopt}/bin; do
+            PATH="$p:$PATH"
+        done
     fi
 
     # use /opt/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
