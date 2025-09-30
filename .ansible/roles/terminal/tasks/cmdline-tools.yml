@@ -429,3 +429,31 @@
       crush --version
   tags:
     - crush
+
+# Compatible with Linux command parameters
+- name: Install GNU utils for macOS
+  when: ansible_system == "Darwin"
+  environment: "{{ brew_environment }}"
+  ansible.builtin.shell: |-
+    set -o pipefail
+    brew install \
+        bash-completion@2 \
+        zsh-completions \
+        bash \
+        gnu-getopt \
+        grep \
+        gnu-tar \
+        gnu-sed \
+        gnu-time \
+        gnu-which \
+        binutils \
+        coreutils \
+        diffutils \
+        findutils \
+        inetutils \
+        gawk \
+        pstree \
+        tree \
+        less \
+        wget
+  changed_when: false

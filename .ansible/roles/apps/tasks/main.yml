@@ -72,7 +72,6 @@
     # - { name: org.gnome.Sudoku }
   changed_when: false
 
-# Compatible with Linux command parameters
 # Use lima-vm whenever possible
 - name: Install apps via brew (macOS)
   when: ansible_system == "Darwin"
