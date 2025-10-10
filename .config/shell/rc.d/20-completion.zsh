@@ -19,9 +19,9 @@ done
 
 # GNU utils
 if type brew &>/dev/null; then
-    HOMEBREW_PREFIX=$(brew --prefix)
-
-    if ls ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions &>/dev/null; then
+    # Defined in env.d/04-brew.sh
+    # HOMEBREW_PREFIX=$(brew --prefix)
+    if /bin/ls ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions &>/dev/null; then
         for p in ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions; do
             FPATH="$p:$FPATH"
         done
@@ -93,7 +93,9 @@ zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-dir
 # https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
 # dircolors -p: view the default color settings
 source <({
-    dircolors -b # export LS_COLORS
+    if type dircolors &>/dev/null; then
+        dircolors -b # export LS_COLORS
+    fi
 })
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 

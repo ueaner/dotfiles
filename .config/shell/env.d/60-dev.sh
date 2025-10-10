@@ -152,4 +152,4 @@ export TASK_X_MAP_VARIABLES=1
 
 [[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
 
-[[ -f $HOME/.local/etc/token.sh ]] && source $HOME/.local/etc/token.sh
+[[ -f ~/.local/etc/token.sh ]] && source ~/.local/etc/token.sh

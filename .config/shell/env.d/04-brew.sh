@@ -2,6 +2,14 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
     return
 fi
 
+if type brew &>/dev/null; then
+    # Ensure there is only one Cellar, which is /opt/local/Cellar
+    [[ -d /opt/local/Homebrew/Cellar ]] && rm -rf /opt/local/Homebrew/Cellar
+    mkdir -p /opt/local/Cellar
+    # export HOMEBREW_PREFIX=$(brew --prefix)
+    export HOMEBREW_PREFIX=/opt/local
+fi
+
 # 安装相关编译工具: xcode-select —install
 # 10.15 定义 CPATH 代替软链 /usr/include
 export CPATH=$(xcrun --show-sdk-path)/usr/include
@@ -27,8 +35,8 @@ export HOMEBREW_CASK_OPTS="--appdir=${HOME}/Applications"
 # 不要每次使用命令时更新
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_FORCE_BREWED_CURL=1
-export HOMEBREW_FORCE_BREWED_GIT=1
+# brew list --formula curl &>/dev/null && export HOMEBREW_FORCE_BREWED_CURL=1
+# brew list --formula git &>/dev/null && export HOMEBREW_FORCE_BREWED_GIT=1
 # 不使用 API 提供的包下载地址, 使包下载地址本地可控, 使用 brew edit <package> 更新其中的 url 值
 # 如 libunistring 包下载不了, 可以替换为 https://mirrors.ustc.edu.cn/gnu/libunistring/libunistring-1.3.tar.gz
 # 这里比较头疼的是访问使用代理访问不到 ftpmirror.gnu.org, 不使用代码访问不到 github.com

@@ -29,8 +29,8 @@ alias -g DOT='--git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias -g LOCAL='--git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'
 
 # To use the same auto-completion feature as git, the alias value starts with git.
-alias dotfiles='git DOT'
-alias dotlocal='git LOCAL'
+alias dotfiles='/usr/bin/git DOT'
+alias dotlocal='/usr/bin/git LOCAL'
 
 # alias dotfiles='f(){ git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@; };f'
 # alias dotlocal='(){ git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@; }'
