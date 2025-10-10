@@ -32,6 +32,10 @@ hs.hotkey.bind({ "cmd" }, "return", function()
   end
 end)
 
+-- Show Finder
+-- defaults write com.apple.Finder QuitMenuItem -bool true
+hs.hotkey.bind({ "cmd" }, "e", util.showFinder)
+
 -- Load EmmyLua spoon for Lua autocompletion support
 -- Download from: https://github.com/Hammerspoon/Spoons/raw/master/Spoons/EmmyLua.spoon.zip
 if hs.spoons.isInstalled("EmmyLua") ~= nil then

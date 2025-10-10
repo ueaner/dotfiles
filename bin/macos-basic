@@ -7,6 +7,10 @@ defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspo
 # Release <Super>H for Tmux:
 defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
 
+# Enable the "Quit Finder" option
+defaults write com.apple.Finder QuitMenuItem -bool true
+killall Finder
+
 # Disable Spotlight indexing:
 sudo mdutil -a -i off
 

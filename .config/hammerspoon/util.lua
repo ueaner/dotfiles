@@ -97,4 +97,67 @@ end
 
 M.tiling = Tiling
 
+-- 启动/切换 Finder, 保证 Finder 至少有一个可见窗口
+function M.showFinder()
+  -- 1. 启动（若已运行则只是 bring 到前台）
+  hs.application.launchOrFocusByBundleID("com.apple.finder")
+
+  -- 2. 拿到应用对象
+  local finder = hs.application.get("Finder")
+  if not finder then
+    hs.timer.doAfter(0.3, ensureFinderWindow) -- 极端情况，等下一轮
+    return
+  end
+
+  -- 3. 如果当前前台就是 Finder，直接处理；否则等它变成前台再处理
+  local function sendNewWindow()
+    -- 再次确认前台
+    if hs.application.frontmostApplication() ~= finder then
+      return
+    end
+
+    -- 4. 用 window.filter 拿窗口（排除 tab/面板）
+    local wins = hs.window.filter.new({ "Finder" }):getWindows()
+
+    -- 可见窗口
+    local visible = hs.fnutils.filter(wins, function(w)
+      return w:isVisible()
+    end)
+    if #visible > 0 then
+      return
+    end
+
+    -- 最小化窗口
+    local minimized = hs.fnutils.filter(wins, function(w)
+      return w:isMinimized()
+    end)
+    if #minimized > 0 then
+      minimized[1]:unminimize()
+      minimized[1]:focus()
+      return
+    end
+
+    -- 5. 真正无窗口 → ⌘N
+    hs.eventtap.keyStroke({ "cmd" }, "n")
+  end
+
+  -- 如果前台还不是 Finder，就等它
+  if hs.application.frontmostApplication() ~= finder then
+    local watcher
+    watcher = hs.application.watcher.new(function(_, event, _)
+      if event == hs.application.watcher.activated then
+        sendNewWindow()
+        watcher:stop()
+      end
+    end)
+    watcher:start()
+    -- 保险：最多等 1 s
+    hs.timer.doAfter(1, function()
+      watcher:stop()
+    end)
+  else
+    sendNewWindow()
+  end
+end
+
 return M
