@@ -102,4 +102,5 @@
     # - charles
     # - tableplus
     # - qq
-  changed_when: false
+  notify:
+    - Disable netdisk_service automatic startup
