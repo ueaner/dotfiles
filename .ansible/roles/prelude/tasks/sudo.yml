@@ -1,7 +1,6 @@
 ---
 
 - name: Allow user to use sudo without password
-  become: true
   ansible.builtin.shell: |
     set -o pipefail
     # Check if user has sudo NOPASSWD

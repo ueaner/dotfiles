@@ -1,7 +1,6 @@
 ---
 
 - name: Fix too many open files - fs.inotify
-  become: true
   ansible.builtin.shell: |
     set -o pipefail
     if [[ ! -f /usr/lib/sysctl.d/00-inotify.conf ]]; then

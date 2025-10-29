@@ -34,8 +34,9 @@
     # See: https://github.com/ansible/ansible/issues/84206
     # - name: Ensure python3-libdnf5 is installed on Fedora 41+
     #   become: true
-    #   ansible.builtin.command: sudo dnf install -y python3-libdnf5
-    #   changed_when: false
+    #   ansible.builtin.dnf:
+    #     name: python3-libdnf5
+    #     state: present
 
 
 - name: Ensure brew is installed (macOS - brew)

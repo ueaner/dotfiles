@@ -3,7 +3,6 @@
 # https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions
 # - name: Install/Upgrade VSCode via dnf (Fedora)
 #   when: ansible_distribution == "Fedora"
-#   become: true
 #   ansible.builtin.shell: |-
 #     set -o pipefail
 #     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc

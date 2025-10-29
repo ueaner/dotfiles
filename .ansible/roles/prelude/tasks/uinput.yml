@@ -9,7 +9,6 @@
 #
 # 99-uinput.rules is loaded after 70-uaccess.rules
 - name: Lets normal users use evdev and uinput without sudo
-  become: true
   ansible.builtin.shell: |
     set -o pipefail
     # Add current user to input group

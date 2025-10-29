@@ -14,6 +14,12 @@ set -e
 export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
 export PYTHONUSERBASE=~/.local
 
+# Check if user has sudo NOPASSWD
+if ! sudo -n true 2>/dev/null; then
+    # Allow user to use sudo without password
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
+fi
+
 # ----------------------------------------------------------------
 # Ensure ~/.dotfiles exists
 # ----------------------------------------------------------------
@@ -24,12 +30,6 @@ if [[ ! -d "$HOME/.dotfiles" ]]; then
     git clone --bare https://github.com/ueaner/dotfiles.git "$HOME/.dotfiles"
     git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" checkout
     git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
-fi
-
-# Check if user has sudo NOPASSWD
-if ! sudo -n true 2>/dev/null; then
-    # Allow user to use sudo without password
-    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"
 fi
 
 # ----------------------------------------------------------------
@@ -74,4 +74,4 @@ $ANSIBLE_BIN_PATH/ansible-config dump --only-changed -t all
 # ----------------------------------------------------------------
 # Let's gooooo
 # ----------------------------------------------------------------
-$ANSIBLE_BIN_PATH/ansible-playbook ~/.ansible/unix.yml --ask-become-pass
+$ANSIBLE_BIN_PATH/ansible-playbook ~/.ansible/unix.yml
