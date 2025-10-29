@@ -70,7 +70,9 @@
     # - { name: eu.nokun.MirrorHall } # Use Linux devices as second screens
     # - { name: org.freedesktop.Bustle }
     # - { name: org.gnome.Sudoku }
-  changed_when: false
+  # changed_when: false
+  notify:
+    - Native Wayland for Chrome
 
 # Use lima-vm whenever possible
 - name: Install apps via brew (macOS)
