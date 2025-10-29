@@ -83,6 +83,7 @@
       changed_when: false
 
     - name: Install wtype
+      become: true
       ansible.builtin.command: sudo dnf install -y wtype
       changed_when: false
 

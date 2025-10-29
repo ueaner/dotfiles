@@ -133,6 +133,18 @@ Error: Failed to prepare an output device: Permission denied (os error 13)
 echo 'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"' | sudo tee /usr/lib/udev/rules.d/99-uinput.rules
 ```
 
+另一种缺少输入设备读取权限的信息：
+
+```
+Error: Failed to prepare input devices: No device was selected!
+```
+
+解决方法：
+
+```bash
+sudo gpasswd -a $USER input
+```
+
 - reboot
 
 处理完之后确实可以使用了；但是通过 journalctl 看日志有时候会发现，依然会报权限问题，然后连续 6 次启动起不来，就不继续启动了，有时候是前 5 次失败，第 6 起来了。

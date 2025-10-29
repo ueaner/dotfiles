@@ -309,3 +309,6 @@
 [include]
 
     path = ~/.gitconfig.local
+[user]
+	email = ueaner@gmail.com
+	name = ueaner

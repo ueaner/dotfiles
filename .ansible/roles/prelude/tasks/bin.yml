@@ -3,6 +3,7 @@
 # sudo: xxx: command not found
 # ln -sf $CARGO_HOME/bin/* /usr/local/bin/
 - name: Change the owner of the /usr/local/{bin,etc} directory to {{ ansible_env.USER }}
+  become: true
   ansible.builtin.shell: |
     set -o pipefail
     KERNEL=$(uname -s)         # Darwin | Linux

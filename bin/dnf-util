@@ -127,6 +127,7 @@ if [[ "$repo" == "all" || "$repo" == "rpmfusion" ]]; then
         # preinstalled by fedora 41
         sudo dnf install -y distribution-gpg-keys
         sudo rpmkeys --import "/usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-$(rpm -E %fedora)"
+        sudo rpmkeys --import "/usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-fedora-$(rpm -E %fedora)"
         echo "# Install rpmfusion-free-release and rpmfusion-nonfree-release"
         sudo dnf install --setopt=localpkg_gpgcheck=1 \
             "https://mirrors.ustc.edu.cn/rpmfusion/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \

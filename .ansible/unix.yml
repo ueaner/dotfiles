@@ -32,6 +32,8 @@
 
     - role: desktop  # macOS-ish Desktop Environment
       when: (role == "all") or (role == "desktop")
+    - role: services
+      when: (role == "all") or (role == "services")
     - role: terminal  # Terminal Environment
       when: (role == "all") or (role == "terminal")
     - role: fonts
@@ -39,8 +41,6 @@
     # ansible-playbook ~/.ansible/unix.yml --extra-vars "role=lang" --tags "go" -vvv
     - role: lang  # Programming languages
       when: (role == "all") or (role == "lang")
-    - role: services
-      when: (role == "all") or (role == "services")
     - role: apps
       when: (role == "all") or (role == "apps")
     - role: done

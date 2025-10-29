@@ -90,8 +90,8 @@ packages=(
     kernel-modules
     kernel-modules-core
     kernel-modules-extra
-    kernel-tools
-    kernel-tools-libs
+    # kernel-tools
+    # kernel-tools-libs
 )
 
 # https://packages.fedoraproject.org/pkgs/kernel-headers/

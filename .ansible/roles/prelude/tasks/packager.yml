@@ -14,6 +14,7 @@
       # https://mirrors.ustc.edu.cn/help/flathub.html
       ansible.builtin.shell: |
         set -o pipefail
+        flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
         if ! flatpak remotes --user --columns=name,url | grep --quiet sjtu; then
             # curl -L https://mirror.sjtu.edu.cn/flathub/flathub.gpg -o /tmp/flathub.gpg
             # flatpak remote-modify --user --gpg-import=/tmp/flathub.gpg --url=https://mirror.sjtu.edu.cn/flathub flathub
@@ -29,10 +30,12 @@
       # flatpak remote-add --user --if-not-exists --gpg-import=/tmp/gnome-sdk.gpg gnome-apps https://sdk.gnome.org/repo-apps/
 
     # Fedora 41+: ansible.builtin.dnf depends on python3-libdnf5
+    # Fedora 43+: preinstalled
     # See: https://github.com/ansible/ansible/issues/84206
-    - name: Ensure python3-libdnf5 is installed on Fedora 41+
-      ansible.builtin.command: sudo dnf install -y python3-libdnf5
-      changed_when: false
+    # - name: Ensure python3-libdnf5 is installed on Fedora 41+
+    #   become: true
+    #   ansible.builtin.command: sudo dnf install -y python3-libdnf5
+    #   changed_when: false
 
 
 - name: Ensure brew is installed (macOS - brew)

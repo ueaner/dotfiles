@@ -4,3 +4,7 @@
 KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"
 # 为所有输入设备（如键盘、鼠标）添加 uaccess 标签
 KERNEL=="event*", SUBSYSTEM=="input", TAG+="uaccess"
+
+
+# 如果报 "No device was selected", 将当前用户加入 input 用户组
+# sudo gpasswd -a $USER input

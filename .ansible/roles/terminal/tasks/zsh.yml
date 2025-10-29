@@ -11,5 +11,5 @@
 
 - name: Set zsh as the default login shell for the current user
   when: "'/zsh' not in ansible_env.SHELL"
-  ansible.builtin.command: chsh -s $(which zsh)
+  ansible.builtin.shell: chsh -s $(which zsh)
   changed_when: false

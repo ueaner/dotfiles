@@ -12,7 +12,7 @@ ansible_connection=local
 
 [lan]
 cb13     desktop=Sway
-mac14    desktop=GNOME
+mac14    desktop=Sway
 mac15    desktop=Aqua
 mac14hot desktop=GNOME
 

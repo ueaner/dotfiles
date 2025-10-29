@@ -18,7 +18,7 @@
     strip: 1
     dst: $XDG_DATA_HOME/go # defaults to $XDG_BIN_HOME
     postinstall: |-
-      # ln -sf $XDG_DATA_HOME/go/bin/* $XDG_BIN_HOME
+      ln -sf $XDG_DATA_HOME/go/bin/* $XDG_BIN_HOME
       curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_golang \
           ${GITHUB_PROXY}https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang
       go version

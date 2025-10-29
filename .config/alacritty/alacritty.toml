@@ -65,7 +65,7 @@ white   = "#eaeaea"
 #       -  Chrome: Appearance Page zoom -> 125 %
 #       - Firefox: General Default zoom -> 120 %
 #   - Displays Scale 175 % -> 10.50
-size = 12.25
+size = 11.25
 
 [font.normal]
 family = "SauceCodePro Nerd Font"
