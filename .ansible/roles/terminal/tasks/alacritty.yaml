@@ -23,7 +23,7 @@
 # desktop-file-install \
 #   --dir=${HOME}/.local/share/applications \
 #   --set-key=Exec \
-#   --set-value="alacritty --option font.size=10.50" \
+#   --set-value="alacritty --option font.size=11.25" \
 #   /usr/share/applications/Alacritty.desktop
 - name: Alacritty desktop entry add font.size option
   when:
@@ -33,7 +33,7 @@
     if [[ -f /usr/share/applications/Alacritty.desktop && ! -f ~/.local/share/applications/Alacritty.desktop ]]; then
         mkdir -p ~/.local/share/applications
         cp /usr/share/applications/Alacritty.desktop ~/.local/share/applications/Alacritty.desktop
-        sed -i 's/^Exec=alacritty/Exec=alacritty --option font.size=11.25/' ~/.local/share/applications/Alacritty.desktop
+        sed -i 's/^Exec=alacritty/Exec=alacritty --option font.size=10.00/' ~/.local/share/applications/Alacritty.desktop
         update-desktop-database ~/.local/share/applications --verbose
         # sudo update-desktop-applications -v
     fi

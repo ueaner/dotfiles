@@ -10,7 +10,8 @@ set $down j
 set $up k
 set $right l
 
-set $term alacritty
+# set $term alacritty
+set $term alacritty --option font.size=10.00
 set $lock swaylock -f
 
 # Application launcher
