@@ -18,22 +18,22 @@
     format = "<span size='large'><b>%s</b></span>\n%b"
 
 [urgency_low]
-    background = "#2e3440"
+    background = "#21252d"
     foreground = "#eaeaea"
-    frame_color = "#2e3440"
+    frame_color = "#21252d"
     timeout = 10
     default_icon = dialog-information
 
 [urgency_normal]
-    background = "#2e3440"
+    background = "#21252d"
     foreground = "#eaeaea"
-    frame_color= "#2e3440"
+    frame_color= "#21252d"
     timeout = 10
     default_icon = dialog-information
 
 [urgency_critical]
-    background = "#2e3440"
+    background = "#21252d"
     foreground = "#eaeaea"
-    frame_color = "#2e3440"
+    frame_color = "#21252d"
     timeout = 60
     efault_icon = dialog-warning
