@@ -63,7 +63,7 @@
       ansible.builtin.command: ~/bin/gnome-lightweight
       changed_when: false
 
-    - name: Configure GNOME UI appearance
+    - name: Configure the UI appearance of GTK applications
       ansible.builtin.command: ~/bin/gnome-gsettings-ui
       changed_when: false
 
@@ -77,6 +77,10 @@
     - name: See Sway config
       ansible.builtin.debug:
         msg: "See ~/.config/sway/config"
+
+    - name: Configure the UI appearance of GTK applications
+      ansible.builtin.command: ~/bin/gnome-gsettings-ui
+      changed_when: false
 
     - name: Set Sway backgrounds
       ansible.builtin.command: ~/bin/sway-bg

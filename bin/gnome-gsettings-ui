@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# UI Appearance
+# UI Appearance of GTK applications
 #
 # The default settings for gsettings are located in /usr/share/glib-2.0/schemas.
 #
