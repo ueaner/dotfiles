@@ -1,0 +1,11 @@
+# Copy this to ~/.config/xremap/[host]-gnome.yml
+# Override the keymap in the `~/.config/xremap/config.toml` file under sway.
+# Keymap for MacBook only
+
+# yamllint disable rule:colons
+---
+# Remap CapsLock to Esc
+modmap:
+  - name: MacBook modmaps
+    remap:
+      CapsLock: Esc
