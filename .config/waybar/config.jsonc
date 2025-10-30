@@ -28,6 +28,9 @@
         "clock",
         "tray"
     ],
+    "sway/window": {
+        "format": "{app_id} - {shell}"
+    },
     // Modules configuration
     // "sway/workspaces": {
     //     "disable-scroll": true,
