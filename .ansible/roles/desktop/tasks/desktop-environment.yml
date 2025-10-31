@@ -82,9 +82,9 @@
       ansible.builtin.command: ~/bin/gnome-gsettings-ui
       changed_when: false
 
-    - name: Set Sway backgrounds
-      ansible.builtin.command: ~/bin/sway-bg
-      changed_when: false
+    # - name: Set Sway backgrounds
+    #   ansible.builtin.command: ~/bin/sway-bg
+    #   changed_when: false
 
     - name: Ensure wtype is installed
       when: ansible_distribution == "Fedora"
