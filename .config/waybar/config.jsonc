@@ -17,13 +17,12 @@
     "modules-right": [
         "idle_inhibitor",
         "pulseaudio",
-        // "network",
-        "power-profiles-daemon",
+        "network",
+        // "power-profiles-daemon",
         // "cpu",
         // "memory",
         // "temperature",
         "backlight",
-        // "sway/language",
         "battery",
         "clock",
         "tray"
@@ -114,7 +113,9 @@
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "format": {
-                "today": "<span color='#cfabe0'><b>{}</b></span>"
+                "today": "<span color='#cfabe0'><b>{}</b></span>",
+                "weekdays": "<span color='#ecce58'><b>{}</b></span>",
+                "months": "<span color='#8cb6e1'><b>{}</b></span>"
             }
         }
     },
@@ -184,13 +185,20 @@
         }
     },
     "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+        "interval": 1,
+        "format": "{icon}",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "tooltip-format": "{ipaddr}/{cidr}\n{ifname} via {gwaddr} {icon}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
+        "tooltip-format-wifi": "{ipaddr}/{cidr} {essid}\n{ifname} via {gwaddr} {icon}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
+        "tooltip-format-linked": "{ifname} (No IP) {icon}",
+        "tooltip-format-disconnected": "Disconnected {icon}",
+        "format-icons": {
+            // "wifi": [ "󰤯", "󰤟", "󰤢", "󰤥", "󰤨" ],
+            "wifi": "",
+            "linked": "󰪎",
+            "ethernet": "",
+            "disconnected": ""
+        }
     },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
