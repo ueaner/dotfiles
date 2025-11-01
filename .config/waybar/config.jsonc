@@ -28,7 +28,11 @@
         "tray"
     ],
     "sway/window": {
-        "format": "{app_id} - {shell}"
+        "format": "{app_id} - {shell}",
+        "rewrite": {
+            "^ - $": "",
+            "(.*) - xdg_shell$": "$1"
+        }
     },
     // Modules configuration
     // "sway/workspaces": {
