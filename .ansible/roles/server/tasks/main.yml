@@ -27,3 +27,10 @@
   tags:
     - upgrade
     - frps
+
+- name: Install caddy server
+  ansible.builtin.include_tasks: caddy.yml
+  when: ansible_distribution == "CentOS"
+  tags:
+    - upgrade
+    - caddy

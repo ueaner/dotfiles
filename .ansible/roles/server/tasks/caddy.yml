@@ -1,0 +1,45 @@
+---
+
+# Server Only
+
+- name: Install caddy server
+  when:
+    - ansible_distribution == "CentOS"
+    - inventory_hostname == "sp"
+  tags:
+    - upgrade
+    - caddy
+  block:
+    - name: Ensure caddy server is installed
+      ansible.builtin.shell: |-
+        if ! id caddy >/dev/null 2>&1; then
+          groupadd --system caddy
+          useradd --system \
+            --gid caddy \
+            --create-home \
+            --shell /usr/sbin/nologin \
+            --comment "Caddy web server" \
+            caddy
+        fi
+        id caddy
+      changed_when: false
+
+    # https://caddyserver.com/download?package=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2
+    - name: Install caddy with waf
+      ansible.builtin.copy:
+        src: ~/.local/bin/caddy
+        dest: /usr/local/bin/caddy
+        mode: "0755"
+
+    - name: Copy Caddyfile file
+      ansible.builtin.copy:
+        src: ~/.local/etc/Caddyfile.waf
+        dest: /usr/local/etc/Caddyfile
+        mode: "0644"
+
+    - name: Copy caddy.service file
+      ansible.builtin.copy:
+        src: ~/.config/systemd/system/caddy.service
+        dest: /etc/systemd/system/caddy.service
+        mode: "0644"
+      notify: Start and enable caddy server

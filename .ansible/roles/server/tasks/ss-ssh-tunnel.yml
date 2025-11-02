@@ -20,7 +20,13 @@
         dest: ~/.ssh/id_rsa
         mode: "0600"
 
-    - name: Install nginx.conf file
+    - name: Copy EnvironmentFile file
+      ansible.builtin.copy:
+        src: ~/.local/etc/EnvironmentFile
+        dest: /usr/local/etc/EnvironmentFile
+        mode: "0644"
+
+    - name: Copy ss-ssh-tunnel.service file
       ansible.builtin.copy:
         src: ~/.local/etc/ss-ssh-tunnel.service
         dest: /etc/systemd/system/ss-ssh-tunnel.service

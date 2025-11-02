@@ -30,3 +30,9 @@
     fi
   changed_when: false
   when: ansible_distribution == "CentOS"
+
+- name: Start and enable caddy server
+  # noqa command-instead-of-module
+  ansible.builtin.command: systemctl enable --now caddy.service
+  changed_when: false
+  when: ansible_distribution == "CentOS"
