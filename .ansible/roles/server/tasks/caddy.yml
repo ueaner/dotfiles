@@ -24,7 +24,6 @@
         id caddy
       changed_when: false
 
-    # https://caddyserver.com/download?package=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2
     - name: Install caddy with waf
       ansible.builtin.copy:
         src: ~/.local/bin/caddy

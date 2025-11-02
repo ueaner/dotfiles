@@ -1,62 +1,79 @@
 ---
 
-- name: Install xcaddy
-  install-package:
-    name: xcaddy
-    placeholders:
-      repo: caddyserver/xcaddy
-      version: "{{ template.github.version_v }}"
-    template: "{{ template.github.archive_v }}"
-    archives:
-      # The requested version number is "v0.4.5", but the archive name uses "0.4.5" without the "v".
-      # https://github.com/caddyserver/xcaddy/releases/download/v0.4.5/xcaddy_0.4.5_linux_amd64.tar.gz
-      - xcaddy_<version>_linux_amd64.tar.gz
-      - xcaddy_<version>_linux_arm64.tar.gz
-      - xcaddy_<version>_mac_amd64.tar.gz
-      - xcaddy_<version>_mac_arm64.tar.gz
-    include:
-      - xcaddy
-    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+# https://caddyserver.com/download?package=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2
+# curl -L 'https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2' -o caddy
+- name: Download the Caddy binary file with WAF support (Linux)
+  when: ansible_system == "Linux"
+  ansible.builtin.get_url:
+    url: https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2
+    dest: ~/.local/bin/caddy
+    mode: '0755'
 
-# go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-# xcaddy build --with github.com/caddyserver/forwardproxy
-- name: Install caddy
-  install-package:
-    name: caddy
-    placeholders:
-      repo: caddyserver/caddy
-      version: "{{ template.github.version_v }}"
-    template: "{{ template.github.archive_v }}"
-    archives:
-      # The requested version number is "v2.10.2", but the archive name uses "2.10.2" without the "v".
-      # https://github.com/caddyserver/caddy/releases/download/v2.10.2/caddy_2.10.2_linux_amd64.tar.gz
-      - caddy_<version>_linux_amd64.tar.gz
-      - caddy_<version>_linux_arm64.tar.gz
-      - caddy_<version>_mac_amd64.tar.gz
-      - caddy_<version>_mac_arm64.tar.gz
-    include:
-      - caddy
-    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
-    postinstall: |-
-      set -o pipefail
-      if [[ $(uname -s) == 'Linux' ]]; then
-          systemctl --user enable --now caddy
-          exit $?
-      fi
+- name: Download the Caddy binary file with WAF support (macOS)
+  when: ansible_system == "Linux"
+  ansible.builtin.get_url:
+    url: https://caddyserver.com/api/download?os=darwin&arch=amd64&p=github.com%2Fcorazawaf%2Fcoraza-caddy%2Fv2
+    dest: ~/.local/bin/caddy
+    mode: '0755'
 
-      if [[ -x ~/.local/bin/caddy ]]; then
-          ln -sf ~/.local/bin/caddy /opt/local/bin/caddy
-      fi
-      if [[ -f ~/.local/etc/Caddyfile ]]; then
-          ln -sf ~/.local/etc/Caddyfile /opt/local/etc/Caddyfile
-      fi
-      if [[ -f ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ]]; then
-          ln -sf ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ~/Library/LaunchAgents/com.caddyserver.web.plist
-      fi
 
-      if [[ -f ~/Library/LaunchAgents/com.caddyserver.web.plist ]]; then
-          if launchctl print gui/$(id -u)/com.caddyserver.web >/dev/null 2>&1; then
-              launchctl unload ~/Library/LaunchAgents/com.caddyserver.web.plist
-          fi
-          launchctl load ~/Library/LaunchAgents/com.caddyserver.web.plist
-      fi
+# - name: Install xcaddy
+#   install-package:
+#     name: xcaddy
+#     placeholders:
+#       repo: caddyserver/xcaddy
+#       version: "{{ template.github.version_v }}"
+#     template: "{{ template.github.archive_v }}"
+#     archives:
+#       # The requested version number is "v0.4.5", but the archive name uses "0.4.5" without the "v".
+#       # https://github.com/caddyserver/xcaddy/releases/download/v0.4.5/xcaddy_0.4.5_linux_amd64.tar.gz
+#       - xcaddy_<version>_linux_amd64.tar.gz
+#       - xcaddy_<version>_linux_arm64.tar.gz
+#       - xcaddy_<version>_mac_amd64.tar.gz
+#       - xcaddy_<version>_mac_arm64.tar.gz
+#     include:
+#       - xcaddy
+#     dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+#
+# # go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+# # xcaddy build --with github.com/caddyserver/forwardproxy
+# - name: Install caddy
+#   install-package:
+#     name: caddy
+#     placeholders:
+#       repo: caddyserver/caddy
+#       version: "{{ template.github.version_v }}"
+#     template: "{{ template.github.archive_v }}"
+#     archives:
+#       # The requested version number is "v2.10.2", but the archive name uses "2.10.2" without the "v".
+#       # https://github.com/caddyserver/caddy/releases/download/v2.10.2/caddy_2.10.2_linux_amd64.tar.gz
+#       - caddy_<version>_linux_amd64.tar.gz
+#       - caddy_<version>_linux_arm64.tar.gz
+#       - caddy_<version>_mac_amd64.tar.gz
+#       - caddy_<version>_mac_arm64.tar.gz
+#     include:
+#       - caddy
+#     dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+#     postinstall: |-
+#       set -o pipefail
+#       if [[ $(uname -s) == 'Linux' ]]; then
+#           systemctl --user enable --now caddy
+#           exit $?
+#       fi
+#
+#       if [[ -x ~/.local/bin/caddy ]]; then
+#           ln -sf ~/.local/bin/caddy /opt/local/bin/caddy
+#       fi
+#       if [[ -f ~/.local/etc/Caddyfile ]]; then
+#           ln -sf ~/.local/etc/Caddyfile /opt/local/etc/Caddyfile
+#       fi
+#       if [[ -f ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ]]; then
+#           ln -sf ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ~/Library/LaunchAgents/com.caddyserver.web.plist
+#       fi
+#
+#       if [[ -f ~/Library/LaunchAgents/com.caddyserver.web.plist ]]; then
+#           if launchctl print gui/$(id -u)/com.caddyserver.web >/dev/null 2>&1; then
+#               launchctl unload ~/Library/LaunchAgents/com.caddyserver.web.plist
+#           fi
+#           launchctl load ~/Library/LaunchAgents/com.caddyserver.web.plist
+#       fi
