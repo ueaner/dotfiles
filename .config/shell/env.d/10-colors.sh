@@ -20,7 +20,7 @@ source <({
         magenta   "#cfabe0"
         cyan      "#81cabf"
         white     "#eaeaea"
-        gray      "#778899"  # #4c566a
+        gray      "#778899"  # #42495c
         darkgray  "#21252d"
         dark      "#07090c"
     )
