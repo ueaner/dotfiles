@@ -1,5 +1,13 @@
 ---
 
+- name: Install luarocks
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - compat-lua-devel-5.1.5
+      - compat-lua-5.1.5
+      - luarocks
+
 - name: Install tree-sitter
   install-package:
     name: tree-sitter
@@ -38,6 +46,11 @@
     postinstall: |-
       ln -sf $XDG_DATA_HOME/nvim-latest/bin/nvim $XDG_BIN_HOME/nvim
       nvim --version
+
+      # sudo dnf install compat-lua-devel compat-lua luarocks
+      if [[ -x /usr/bin/lua-5.1 ]]; then
+          sudo ln -sf /usr/bin/lua-5.1 /usr/bin/lua5.1
+      fi
 
       if [[ "$(uname -s)" == "Darwin" ]]; then
           # 先自签名
