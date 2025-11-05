@@ -17,19 +17,14 @@
     l = log --pretty=oneline -n 20 --graph --abbrev-commit --stat
     ld = "log -p --ext-diff"
 
-    # ld = "-c diff.external=difft log -p --ext-diff"
-    # dd = "!d() { GIT_EXTERNAL_DIFF=difft git diff $@; }; d"
-
-    # Show the diff between the latest commit and the current state.
-    # d = difftool
-    d = diff
-
-    # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
-    # eg: git di 1, git di 3
-    di = "!d() { git diff HEAD~$1; }; d"
-
     # View the current working tree status using the short format.
     s = status -sb
+
+    # Show the diff between the latest commit and the current state.
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+    # `git di $number` shows the diff between the state `$number` revisions ago and the current state.
+    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
 
     a = add
 
@@ -38,9 +33,6 @@
 
     # Clone a repository including all submodules.
     c = clone --recursive
-
-    # Switch to a branch, creating it if necessary.
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
     ca = commit -a
     ci = commit
@@ -82,12 +74,8 @@
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
     # Remove branches that have already been merged with main.
-    # a.k.a. ‘delete merged’
+    # a.k.a. 'delete merged'
     dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
-
-    # for github remotes
-    pr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
-    pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
     # List contributors with number of commits.
     contributors = shortlog --summary --numbered
@@ -95,10 +83,15 @@
     # Show the user email for the current repository.
     whoami = config user.email
 
+    tree = "!f() { git ls-files | tree --fromfile $@; }; f"
+
+    # for dotfiles
     dot = "!f() { git --git-dir=$HOME/.dotfiles --work-tree=$HOME $@; }; f"
     local = "!f() { git --git-dir=$HOME/.dotlocal/ --work-tree=$HOME/.local $@; }; f"
 
-    tree = "!f() { git ls-files | tree --fromfile $@; }; f"
+    # for github remotes
+    pr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+    pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 [apply]
 
     # Detect whitespace errors when applying a patch.
@@ -134,12 +127,6 @@
 
     editor = nvim
     quotepath = false
-
-    # 始终使用 Unix-style line endings (LF), Git v2.10+
-    #autocrlf = input
-
-    # 在 git show 和 git diff 的输出中启用 difft
-    # pager = difft
 
 [color]
 
@@ -180,6 +167,7 @@
 
     # Detect copies as well as renames.
     renames = copies
+
     colorMoved = default
     tool = difft
     # Difftastic By Default
@@ -233,11 +221,12 @@
     cmd = delta $LOCAL $REMOTE
 
 [merge]
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
     # Support mergetool editor
     # git mergetool --tool-help
 
-    # Include summaries of merged commits in newly created merge commit messages
-    log = true
     tool = vimdiff
     conflictstyle = diff3
 
@@ -309,6 +298,3 @@
 [include]
 
     path = ~/.gitconfig.local
-[user]
-	email = ueaner@gmail.com
-	name = ueaner
