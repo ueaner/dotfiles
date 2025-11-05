@@ -27,10 +27,6 @@ window#waybar.Alacritty {
     background-color: @alacritty-background;
 }
 
-window#waybar.Alacritty #scratchpad {
-    background-color: @alacritty-background;
-}
-
 button {
     box-shadow: inset 0 -3px transparent;
     border: none;
@@ -84,7 +80,6 @@ button:hover {
 #tray,
 #mode,
 #idle_inhibitor,
-#scratchpad,
 #power-profiles-daemon,
 #mpd {
     padding: 0 10px;
@@ -290,7 +285,7 @@ label:focus {
 }
 
 #scratchpad {
-    background-color: @main-background;
+    padding: 0 10px;
 }
 
 #scratchpad.empty {
