@@ -30,3 +30,15 @@
   changed_when: false
   # failed_when: basic_broadcom_wl.rc != 0
   notify: Need to reboot after installing wireless driver under MacBook
+
+# ----------------------------------------------------------------
+# Intel no_turbo
+# ----------------------------------------------------------------
+- name: Ensure the intel-noturbo service is enabled at startup
+  when:
+    - ansible_distribution == "Fedora"
+    - ansible_product_name.startswith('MacBook')
+  ansible.builtin.systemd_service:
+    name: intel-noturbo.service
+    enabled: true
+    scope: user
