@@ -1,6 +1,7 @@
 /* vim: set filetype=less: */
 /******************************************************************************
  * Waybar style.css with GTK3 CSS variables
+ * /etc/xdg/waybar/style.css
  ******************************************************************************/
 
 @import "colors.css";
@@ -21,6 +22,13 @@ window#waybar {
 
 window#waybar.hidden {
     opacity: 0.2;
+}
+
+window#waybar.empty {
+    background-color: transparent;
+}
+window#waybar.solo {
+    background-color: @main-background;
 }
 
 window#waybar.Alacritty {
