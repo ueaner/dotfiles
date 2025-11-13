@@ -3,6 +3,7 @@
 - https://github.com/catppuccin/fcitx5/tree/main/src/catppuccin-mocha-blue
 - https://github.com/catppuccin/fcitx5/tree/main/src/catppuccin-mocha-mauve
 - https://github.com/thep0y/fcitx5-themes-candlelight/blob/main/macOS-dark
+- https://github.com/Reverier-Xu/Fluent-fcitx5/tree/master/FluentDark
 
 - [Contrast Checker] Contrast Ratio: 7.5:1
 
