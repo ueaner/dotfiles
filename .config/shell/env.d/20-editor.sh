@@ -7,8 +7,14 @@ if command -v nvim >/dev/null; then
     alias vim="nvim"
     alias vimdiff="nvim -d" # diff mode
     alias view="nvim -R"    # readonly mode
+    # For https://github.com/bulletmark/edir
+    export EDITOR=nvim
+    export VISUAL=nvim
 elif ! command -v vim >/dev/null; then
     alias vim="vi"
+    # For https://github.com/bulletmark/edir
+    export EDITOR=vi
+    export VISUAL=vi
 fi
 
 alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs vim'
