@@ -1,13 +1,15 @@
 # Dotfiles
 
-- Based on the [XDG] specification, use git to manage configuration files and asset files in the HOME directory.
+Based on the [XDG] specification, use git to manage configuration files and asset files in the HOME directory.
+
+<img width="2560" height="1600" alt="Fedora Sway Spin" src="https://github.com/user-attachments/assets/7db8fe9f-5188-4c91-9860-5ffff7ee73b3" />
 
 ## ✨ Features
 
-- Support for GNOME and Sway on Fedora
+- Support for GNOME and [Sway] on Fedora
 - [macOS-ish Desktop Environment]: Shortcuts and Gestures
+- [Terminal Environment]: [zsh], [Alacritty], [Tmux], [Neovim]
 - [Programming Languages Environment]
-- [Terminal Environment]
 - Common [packages]
 - etc.
 
@@ -23,17 +25,6 @@ if [[ ! -d "$HOME/.dotfiles" ]]; then
     git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" checkout
     git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
 fi
-```
-
-- Make GNOME more lightweight
-
-0. power saver
-1. Use flatpak instead of gnome-software
-2. Disable & mask unused user services
-3. Remove unused packages
-
-```bash
-~/bin/gnome-lightweight
 ```
 
 - Building a macOS-ish Linux Workstation Environment
@@ -95,8 +86,13 @@ plantuml.jar
 
 [XDG]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 [ansible]: https://github.com/ueaner/dotfiles/tree/main/.ansible#features
-[macOS-ish Desktop Environment]: ./.ansible/roles/basic/tasks/desktop-environment.yml
-[Programming Languages Environment]: ./.ansible/roles/packages/tasks/lang.yml
-[Terminal Environment]: ./.ansible/roles/terminal/tasks/main.yml
-[packages]: ./.ansible/roles/packages/vars/main.yml
+[Sway]: ./.config/sway
+[macOS-ish Desktop Environment]: ./.ansible/roles/desktop/tasks/desktop-environment.yml
+[Programming Languages Environment]: ./.ansible/roles/lang/tasks
+[Terminal Environment]: ./.ansible/roles/terminal/tasks
+[packages]: ./.ansible/roles/terminal/tasks/cmdline-tools.yml
 [~/bin]: ./bin
+[zsh]: ./.config/zsh
+[Alacritty]: ./.config/alacritty
+[Tmux]: ./.config/tmux
+[Neovim]: https://github.com/ueaner/nvimrc
