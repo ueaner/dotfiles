@@ -101,9 +101,9 @@ tt() {
 
     if ! tmux has-session; then
         # -d: start the new session in detached mode
-        # tmux new-session -d -s "SACK"
-        # tmux attach-session -t "SACK"
-        tmux new-session -s "SACK"
+        # tmux new-session -d -s "MAIN"
+        # tmux attach-session -t "MAIN"
+        tmux new-session -s "TERM"
         return
     fi
 

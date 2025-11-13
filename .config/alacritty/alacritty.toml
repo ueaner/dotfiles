@@ -12,7 +12,7 @@ PATH = "/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 [terminal.shell]
 program = "tmux"
-args = ["new-session", "-A", "-D", "-s", "SACK"]
+args = ["new-session", "-A", "-D", "-s", "TERM"]
 # program = "zsh"
 # args = ["--login"]
 
