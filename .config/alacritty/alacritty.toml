@@ -50,13 +50,23 @@ white   = "#eaeaea"
 # Named ANSI colors [8-15]
 [colors.bright]
 black   = "#778899"
-red     = "#df6566"
-green   = "#c5d15c"
-yellow  = "#ecce58"
-blue    = "#8cb6e1"
-magenta = "#cfabe0"
-cyan    = "#81cabf"
-white   = "#eaeaea"
+red     = "#ff3334"
+green   = "#9ec400"
+yellow  = "#e7c547"
+blue    = "#7aa6da"
+magenta = "#b77ee0"
+cyan    = "#54ced6"
+white   = "#ffffff"
+
+[colors.dim]
+black   = "#000000"
+red     = "#8c3336"
+green   = "#7a8530"
+yellow  = "#97822e"
+blue    = "#506d8f"
+magenta = "#80638e"
+cyan    = "#497e7a"
+white   = "#9a9a9a"
 
 [font]
 # macOS: 12.25
