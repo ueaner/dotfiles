@@ -1,3 +1,4 @@
+---
 gui:
   scrollHeight: 2
   scrollPastBottom: true
@@ -42,10 +43,10 @@ gui:
   commandLogSize: 8
   splitDiff: auto
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never # or: externalDiffCommand: difft --color=always
-    useConfig: false
+  pagers:
+    - pager: delta --dark --paging=never
+      colorArg: never
+    - externalDiffCommand: difft --color=always
   commit:
     signOff: false
   merging:
@@ -164,7 +165,7 @@ keybinding:
     viewResetOptions: D
     fetch: f
     toggleTreeView: "`"
-    openMergeTool: M
+    openMergeOptions: M
     openStatusFilter: <c-b>
     copyFileInfoToClipboard: "y"
   branches:
