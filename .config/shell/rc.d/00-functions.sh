@@ -28,7 +28,7 @@ history-stats() {
 }
 
 tcplisten() {
-    if [[ $(uname -s) = Darwin ]]; then
+    if [[ "${OSTYPE}" == darwin* ]]; then
         netstat -anL
     else
         netstat -lnptu

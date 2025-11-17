@@ -38,7 +38,7 @@
 export GIT_TERMINAL_PROMPT=1
 export GPG_TTY=$(tty)
 
-if [[ "$(uname -s)" == "Darwin" ]]; then
+if [[ "${OSTYPE}" == darwin* ]]; then
     sudo launchctl limit maxfiles 10240 unlimited
 else
     ulimit -n 64000
