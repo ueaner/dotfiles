@@ -32,7 +32,7 @@ window#waybar.solo {
 }
 
 window#waybar.Alacritty {
-    background-color: @alacritty-background;
+    background-color: @term-background;
 }
 
 button {
@@ -51,7 +51,8 @@ button:hover {
 }
 
 #workspaces button {
-    padding: 0 5px;
+    padding: 0 5px;  /* {name} */
+    /* padding: 0 10px;  {icon} */
     background-color: transparent;
     color: @main-foreground;
 }
@@ -126,7 +127,7 @@ button:hover {
 @keyframes blink {
     to {
         background-color: @main-foreground;
-        color: @alacritty-background;
+        color: @term-background;
     }
 }
 
@@ -160,7 +161,7 @@ button:hover {
 }
 
 label:focus {
-    background-color: @alacritty-background;
+    background-color: @term-background;
 }
 
 #cpu {
@@ -289,7 +290,7 @@ label:focus {
 }
 
 #keyboard-state>label.locked {
-    background-color: @alacritty-background;
+    background-color: @term-background;
 }
 
 #scratchpad {
@@ -319,4 +320,16 @@ label:focus {
 
 #privacy-item.audio-out {
     background-color: @secondary-background;
+}
+
+#custom-power {
+    padding: 0 10px;
+    background-color: @secondary-background;
+    color: @main-foreground;
+}
+window#waybar.Alacritty #custom-power {
+    background-color: @main-background;
+}
+window#waybar.empty #custom-power {
+    background-color: @main-background;
 }

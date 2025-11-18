@@ -17,7 +17,7 @@
     "modules-right": [
         "idle_inhibitor",
         "pulseaudio",
-        "network",
+        // "network",
         // "power-profiles-daemon",
         // "cpu",
         // "memory",
@@ -25,7 +25,8 @@
         "backlight",
         "battery",
         "clock",
-        "tray"
+        "tray",
+        "custom/power"
     ],
     "sway/window": {
         "format": "{app_id} - {shell}",
@@ -35,22 +36,22 @@
         }
     },
     // Modules configuration
-    // "sway/workspaces": {
-    //     "disable-scroll": true,
-    //     "all-outputs": true,
-    //     "warp-on-scroll": false,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    // },
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "warp-on-scroll": false,
+        "format": "{name}",
+        "format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": "",
+            "5": "",
+            "urgent": "",
+            // "focused": "",
+            "default": ""
+        }
+    },
     "keyboard-state": {
         "numlock": true,
         "capslock": true,
@@ -61,7 +62,7 @@
         }
     },
     "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
+        "format": "<span style='italic'>{}</span>"
     },
     "sway/scratchpad": {
         "format": "{icon} {count}",
@@ -83,7 +84,7 @@
             "on": " "
         },
         "random-icons": {
-            "off": "<span color=\"#f53c3c\"></span> ",
+            "off": "<span color='#df6566'></span> ",
             "on": " "
         },
         "repeat-icons": {
@@ -192,10 +193,10 @@
         "interval": 1,
         "format": "{icon}",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "tooltip-format": "{ipaddr}/{cidr}\n{ifname} via {gwaddr} {icon}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
-        "tooltip-format-wifi": "{ipaddr}/{cidr} {essid}\n{ifname} via {gwaddr} {icon}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
-        "tooltip-format-linked": "{ifname} (No IP) {icon}",
-        "tooltip-format-disconnected": "Disconnected {icon}",
+        "tooltip-format": "{ipaddr}/{cidr}\n{ifname} via {gwaddr}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
+        "tooltip-format-wifi": "{ipaddr}/{cidr} ({essid})\n{ifname} via {gwaddr}\n{bandwidthDownBytes} B/s ↓ / {bandwidthUpBytes} B/s ↑",
+        "tooltip-format-linked": "{ifname} (No IP)",
+        "tooltip-format-disconnected": "Disconnected",
         "format-icons": {
             // "wifi": [ "󰤯", "󰤟", "󰤢", "󰤥", "󰤨" ],
             "wifi": "",
@@ -240,7 +241,7 @@
         // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
     },
     "custom/power": {
-        "format": "⏻ ",
+        "format": "",
         "tooltip": false,
         "menu": "on-click",
         "menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
