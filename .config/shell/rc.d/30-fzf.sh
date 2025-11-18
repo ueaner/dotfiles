@@ -47,33 +47,36 @@ fi
 #     dim
 #     italic
 
+[[ -n "$WAYLAND_DISPLAY" ]] && clipcopy="wl-copy" || clipcopy="pbcopy"
+
 # Fuzzy completion for files and directories
 export FZF_COMPLETION_TRIGGER=';'
+# https://vitormv.github.io/fzf-themes/
 export FZF_DEFAULT_OPTS=$(
     printf '%s' \
         " --layout=reverse --height 50% --inline-info" \
         " --preview-window 'right:60%:hidden' --preview '(bat {} || cat {} || tree -C -L 2 {}) 2> /dev/null | head -500'" \
-        " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo {} | clipcopy)+abort'" \
+        " --bind '?:toggle-preview' --bind 'ctrl-y:execute-silent(echo -n {} | ${clipcopy})+abort'" \
         " --bind alt-up:half-page-up,alt-down:half-page-down" \
         " --bind ctrl-b:preview-page-up,ctrl-f:preview-page-down" \
         " --bind ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down" \
         " --bind shift-up:preview-top,shift-down:preview-bottom" \
         " --header '[CTRL-Y] copy line, [?] toggle preview, [TAB] and [Shift-TAB] to mark multiple items' --header-lines=0 " \
-        " --ansi --color=bg:black,hl:yellow,hl+:red,fg+:blue,bg+:black,info:yellow,border:blue,prompt:magenta,pointer:red,marker:red,spinner:yellow,header:gray"
+        " --ansi --color=bg:black,bg+:black,fg+:blue,hl:yellow,hl+:magenta,pointer:magenta,marker:magenta,prompt:magenta,info:yellow,header:gray,border:blue,spinner:yellow"
 )
 
 export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --preview 'echo {}'"
 
-export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow --exclude '.git' --exclude 'node_modules' 2> /dev/null | sed 's@^\./@@'"
+export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__'"
 
 # vim **<tab>
 _fzf_compgen_path() {
     # Remove the prefix ./ append: | sed 's@^\./@@'
-    fd --type=file --type=symlink --hidden --follow --exclude ".git" --exclude "node_modules" --exclude ".venv" . "$1" 2>/dev/null
+    fd --type=file --type=symlink --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__' . "$1"
 }
 # cd **<tab>
 _fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" --exclude "node_modules" --exclude ".venv" . "$1" 2>/dev/null
+    fd --type d --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__' . "$1"
 }
 
 # pip3 install --user tldr

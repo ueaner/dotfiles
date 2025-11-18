@@ -69,10 +69,10 @@
     postinstall: |-
       curl --create-dirs -L -o ~/.local/bin/fzf-tmux \
           ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/bin/fzf-tmux
-      curl --create-dirs -L -o ~/.local/share/fzf/shell/completion.zsh \
-          ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/completion.zsh
-      curl --create-dirs -L -o ~/.local/share/fzf/shell/key-bindings.zsh \
-          ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/key-bindings.zsh
+      curl --create-dirs -L -o ~/.local/share/man/man1/fzf.1 \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/man/man1/fzf.1
+      curl --create-dirs -L -o ~/.local/share/man/man1/fzf-tmux.1 \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/man/man1/fzf-tmux.1
       chmod +x ~/.local/bin/fzf-tmux
       fzf --version
   tags:
@@ -98,7 +98,7 @@
       # fd-v10.2.0-x86_64-apple-darwin/fd
       - fd
     postinstall: |-
-      curl --create-dirs -L -o ~/.local/share/man/fd.1 \
+      curl --create-dirs -L -o ~/.local/share/man/man1/fd.1
             ${GITHUB_PROXY}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/doc/fd.1
       curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_fd \
             ${GITHUB_PROXY}https://raw.githubusercontent.com/sharkdp/fd/refs/heads/master/contrib/completion/_fd
