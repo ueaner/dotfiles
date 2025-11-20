@@ -1,0 +1,13 @@
+# 1. Copy this to ~/.config/systemd/user/cliphist.service
+# 2. Use ~/.config/autostart/cliphist.desktop on desktop environment startup
+#      - systemctl --user disable --now cliphist
+# 3. journalctl -b --user -u cliphist.service -f / systemctl --user status cliphist
+
+[Unit]
+Description=Wayland clipboard manager
+
+# Listen for clipboard changes
+[Service]
+Type=simple
+ExecStart=wl-paste --watch %h/.local/bin/cliphist store
+Restart=on-failure

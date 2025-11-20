@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Cliphist
+Exec=systemctl --user start cliphist
+Terminal=false
