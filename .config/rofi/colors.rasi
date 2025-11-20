@@ -8,7 +8,7 @@
     main-foreground:            #eaeaea; /* Rofi 主文本颜色 */
     secondary-background:       #2e3440; /* 次要背景，用于输入栏、边框等 */
 
-    selected-background:        #cfabe0; /* 选中项背景 */
+    selected-background:        #8cb6e1; /* 选中项背景 */
     selected-foreground:        #21252d; /* 选中项文本 (深色, 确保对比度) */
 
     urgent-background:          #df6566; /* 紧急项背景 */
@@ -17,4 +17,3 @@
     active-background:          #2e3440; /* 活跃项背景 */
     active-foreground:          #eaeaea; /* 活跃项文本 */
 }
-

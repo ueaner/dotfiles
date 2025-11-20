@@ -6,31 +6,31 @@
 
 * {
     /* Rofi 内置属性的颜色值定义 */
-    foreground:                 @main-foreground;
-    normal-foreground:          @foreground;
-    /* urgent-foreground:          @urgent-foreground; */
-    /* active-foreground:          @active-foreground; */
+    background:                  transparent;
+    foreground:                  @main-foreground;
+    normal-background:           transparent;
+    normal-foreground:           @main-foreground;
+    urgent-background:           transparent;
+    urgent-foreground:           @selected-foreground;
 
-    selected-normal-foreground: @selected-foreground;
-    selected-urgent-foreground: @urgent-foreground;
-    selected-active-foreground: @active-foreground;
+    alternate-normal-background: transparent;
+    alternate-normal-foreground: @main-foreground;
+    alternate-urgent-background: transparent;
+    alternate-urgent-foreground: @selected-foreground;
+    alternate-active-background: transparent;
+    alternate-active-foreground: @active-foreground;
 
-    background:                 transparent;
-    normal-background:          transparent;
-    alternate-normal-background:transparent;
-    urgent-background:          transparent;
-    alternate-urgent-background:transparent;
-    active-background:          @secondary-background;
-    alternate-active-background:transparent;
+    selected-normal-background:  @selected-background;
+    selected-normal-foreground:  @selected-foreground;
+    selected-urgent-background:  @urgent-background;
+    selected-urgent-foreground:  @urgent-foreground;
+    selected-active-background:  @active-background;
+    selected-active-foreground:  @active-foreground;
 
-    selected-normal-background: @selected-background;
-    selected-urgent-background: @urgent-background;
-    selected-active-background: @secondary-background;
+    border-color:                @secondary-background;
+    separatorcolor:              @border-color;
 
-    border-color:               @secondary-background;
-    separatorcolor:             @border-color;
-
-    spacing:                    2;
+    spacing:                     2;
 }
 
 configuration {
@@ -62,11 +62,13 @@ textbox {
 }
 
 listview {
+    lines: 12;
+    columns: 1;
     fixed-height: 0;
     /* border:       2px dash 0px 0px; */
     border:       0;
     border-color: @separatorcolor;
-    spacing:      2px;
+    spacing:      8px;
     scrollbar:    true;
     padding:      5px 0 0 0;
 }
@@ -78,6 +80,7 @@ element {
 element-text {
     background-color: inherit;
     text-color:       inherit;
+    /* highlight:        @active-foreground; */
 }
 
 /* Normal state */
