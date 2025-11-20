@@ -150,8 +150,6 @@ export PHP_CS_FIXER_IGNORE_ENV=1
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
 export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
 
-export TASK_X_MAP_VARIABLES=1
-
 [[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
 
 [[ -f ~/.local/etc/token.sh ]] && source ~/.local/etc/token.sh
