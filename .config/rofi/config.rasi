@@ -36,6 +36,9 @@
 configuration {
     show-icons: true;
     combi-hide-mode-prefix: true;
+    display-combi: "󰕘 Combi";
+    display-drun: "󰀻 Apps";
+    window-format: "{c} · {t}";
 }
 
 window {
