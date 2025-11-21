@@ -1,2 +1,69 @@
+# vim: set filetype=dosini:
 image=~/.local/share/backgrounds/f42-01-night.jxl
 scaling=fill
+
+# https://github.com/swaywm/swaylock/blob/master/main.c@set_default_colors
+
+# background
+color=#21252d
+# backspace highlight
+bs-hl-color=#db3300
+# key highlight
+key-hl-color=#33db00
+# caps lock backspace highlight
+caps-lock-bs-hl-color=#db3300
+# caps lock key highlight
+caps-lock-key-hl-color=#33db00
+# separator
+separator-color=#0d1117
+
+# layout background
+layout-bg-color=#0d1117c0
+# layout border
+layout-border-color=#0d111700
+# layout text
+layout-text-color=#eaeaea
+
+# input
+inside-color=#0d1117c0
+# cleared
+inside-clear-color=#e5a445c0
+# caps lock
+inside-caps-lock-color=#0d1117c0
+# verifying
+inside-ver-color=#0072ffc0
+# wrong
+inside-wrong-color=#fa0000c0
+
+# input
+line-color=#0d1117
+# cleared
+line-clear-color=#0d1117
+# caps lock
+line-caps-lock-color=#0d1117
+# verifying
+line-ver-color=#0d1117
+# wrong
+line-wrong-color=#0d1117
+
+# input
+ring-color=#337d00
+# cleared
+ring-clear-color=#e5a445
+# caps lock
+ring-caps-lock-color=#e5a445
+# verifying
+ring-ver-color=#3300ff
+# wrong
+ring-wrong-color=#7d3300
+
+# input
+text-color=#e5a445
+# cleared
+text-clear-color=#0d1117
+# caps lock
+text-caps-lock-color=#e5a445
+# verifying
+text-ver-color=#0d1117
+# wrong
+text-wrong-color=#0d1117
