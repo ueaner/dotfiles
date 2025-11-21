@@ -1,3 +1,4 @@
+# vim: set filetype=dosini:
 # dunstctl reload
 #
 # Examples:
@@ -6,34 +7,37 @@
 #   dunstify -h int:value:100 "DONE 100%"
 #
 [global]
-    enable_posix_regex = true
-    gap_size = 10
-    origin = top-center
-    offset = 10x30
+    origin = top-right
+    offset = (10, 15)
     corner_radius = 8
-    icon_theme = Papirus
-    show_age_threshold = 11
-    font = Monospace 10
+    gap_size = 10
+    enable_posix_regex = true
     enable_recursive_icon_lookup = true
-    format = "<span size='large'><b>%s</b></span>\n%b"
+    format = "<span line_height='1.5'><span size='large'><b>%a</b> · %s</span>\n%b</span>"
+
+    mouse_left_click = do_action, close_current
+    mouse_right_click = close_all
 
 [urgency_low]
     background = "#21252d"
     foreground = "#eaeaea"
-    frame_color = "#21252d"
+    frame_color = "#2e3440"
     timeout = 10
     default_icon = dialog-information
+    icon_position = right
 
 [urgency_normal]
     background = "#21252d"
     foreground = "#eaeaea"
-    frame_color= "#21252d"
+    frame_color= "#2e3440"
     timeout = 10
     default_icon = dialog-information
+    icon_position = right
 
 [urgency_critical]
     background = "#21252d"
     foreground = "#eaeaea"
-    frame_color = "#21252d"
+    frame_color = "#df6566"
     timeout = 60
-    efault_icon = dialog-warning
+    default_icon = dialog-warning
+    icon_position = right
