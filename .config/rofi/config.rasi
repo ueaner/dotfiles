@@ -6,6 +6,15 @@ configuration {
     display-combi: "󰕘 Combi";
     display-drun: "󰀻 Apps";
     window-format: "{c} · {t}";
+
+    kb-row-select: "Control+y";
+    kb-secondary-paste: "Super+v";
+    kb-secondary-copy: "Super+c"; /* It can't work under Wayland. */
+    kb-entry-history-up: "Alt+Up,Control+o";
+    kb-entry-history-down: "Alt+Down,Control+i";
+    kb-remove-word-back: "Control+w";
+    /* kb-remove-word-forward: "Control+Alt+d"; */
+    kb-clear-line: "Control+BackSpace";
 }
 
 // inputbar {
