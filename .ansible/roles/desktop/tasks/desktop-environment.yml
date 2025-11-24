@@ -59,7 +59,7 @@
   when: desktop == "GNOME"
   block:
 
-    - name: Make gnome more lightweight
+    - name: Make GNOME more lightweight
       ansible.builtin.command: ~/bin/gnome-lightweight
       changed_when: false
 
@@ -77,6 +77,10 @@
     - name: See Sway config
       ansible.builtin.debug:
         msg: "See ~/.config/sway/config"
+
+    - name: Make Sway more lightweight
+      ansible.builtin.command: ~/bin/sway-lightweight
+      changed_when: false
 
     - name: Configure the UI appearance of GTK applications
       ansible.builtin.command: ~/bin/gnome-gsettings-ui
