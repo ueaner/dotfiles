@@ -1,0 +1,126 @@
+/******************************************************************************
+ * Rofi config.rasi with CSS variables
+ * https://github.com/newmanls/rofi-themes-collection/blob/master/themes/spotlight-dark.rasi
+ ******************************************************************************/
+
+/* MACOS SPOTLIGHT LIKE DARK THEME FOR ROFI  */
+/* Author: Newman Sanchez (https://github.com/newmanls) */
+
+* {
+    font: "Noto Sans Mono 12, Font Awesome 6 Free 12, Font Awesome 6 Brands 12, monospace 12";
+
+    bg0: #21252de6;
+    bg1: #2e3440e6;
+    bg2: #7aa6dae6;
+
+    fg0: #eaeaea;
+    fg1: #21252d;
+    fg2: #42495c;
+
+    background-color: transparent;
+    text-color:       @fg0;
+
+    margin:  0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    background-color: @bg0;
+
+    location:      center;
+    width:         640;
+    border-radius: 8;
+}
+
+inputbar {
+    font: "Noto Sans Mono 14, Font Awesome 6 Free 14, Font Awesome 6 Brands 14, monospace 14";
+
+    padding: 12px;
+    spacing: 12px;
+
+    // https://github.com/davatorium/rofi/blob/2.0.0/doc/default_theme.rasi#L147
+    // [ prompt, textbox-prompt-colon, entry, overlay, num-filtered-rows, textbox-num-sep, num-rows, case-indicator ]
+    children: [ textbox-prompt-colon, entry, num-filtered-rows ];
+}
+
+textbox-prompt-colon {
+    // 确保指定字体包含该图标的字体和大小
+    font: "Font Awesome 6 Free Solid 14";
+
+    expand:  false;
+    str:     "";
+    padding: 0px 5px;
+}
+
+num-filtered-rows, textbox-num-sep, num-rows {
+    expand:     false;
+    text-color: @fg2;
+}
+textbox-num-sep {
+    str:     "/";
+    padding: 0;
+}
+num-filtered-rows {
+    padding:    0 2px 0 8px;
+}
+num-rows {
+    padding:    0 8px 0 2px;
+}
+
+prompt, textbox-prompt-colon, entry, overlay, num-filtered-rows, textbox-num-sep, num-rows, case-indicator, element-icon, element-text {
+    vertical-align: 0.5;
+}
+
+entry {
+    font: inherit;
+
+    placeholder:       "Search";
+    placeholder-color: @fg2;
+}
+
+message {
+    border:           2px 0 0;
+    border-color:     @bg1;
+    background-color: @bg1;
+}
+
+textbox {
+    padding: 8px 24px;
+}
+
+listview {
+    lines:   10;
+    columns: 1;
+
+    fixed-height: false;
+    border:       1px 0 0;
+    border-color: @bg1;
+}
+
+element {
+    padding:          8px 16px;
+    spacing:          16px;
+    background-color: transparent;
+}
+
+element normal active {
+    text-color: @bg2;
+}
+
+element alternate active {
+    text-color: @bg2;
+}
+
+element selected normal, element selected active {
+    background-color: @bg2;
+    text-color:       @fg1;
+}
+
+element-icon {
+    size: 1em;
+}
+
+element-text {
+    text-color: inherit;
+}
