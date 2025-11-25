@@ -48,9 +48,11 @@
     # - { name: com.baidu.NetDisk }
     - { name: com.google.Chrome }
     - { name: com.tencent.WeChat }
+    # - { name: com.dingtalk.DingTalk }
+    # - { name: cn.feishu.Feishu }
     - { name: com.github.gmg137.netease-cloud-music-gtk }
     # - { name: io.gitlab.news_flash.NewsFlash }
-    # - { name: io.podman_desktop.PodmanDesktop }
+    # - { name: io.podman_desktop.PodmanDesktop } # gtk4: com.github.marhkb.Pods
     # - { name: com.wps.Office }
     # - { name: com.tencent.wemeet }
     # - { name: dev.zed.Zed }
