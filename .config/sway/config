@@ -14,17 +14,15 @@ set $right l
 set $term alacritty --option font.size=10.00
 set $lock swaylock -f
 
-# Application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $rofi_cmd rofi \
-        -run-command 'swaymsg exec -- {cmd}' \
-        -run-shell-command 'swaymsg exec -- {terminal} -e {cmd}' \
-        -terminal '$term'
-set $menu $rofi_cmd -show combi -combi-modes "window,drun" -modes combi
+set $rofi rofi \
+    -run-command 'swaymsg exec -- {cmd}' \
+    -run-shell-command 'swaymsg exec -- {terminal} -e {cmd}' \
+    -terminal '$term'
 
 ### Include configs
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
 # Include host-specific configs
-include "config.d/host-specific/$(hostnamectl hostname).conf"
+include "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/host-specific/$(hostnamectl hostname).conf"
