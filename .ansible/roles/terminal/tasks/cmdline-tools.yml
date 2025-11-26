@@ -133,6 +133,28 @@
     - ripgrep
     - rg
 
+- name: Install yazi
+  install-package:
+    name: yazi
+    placeholders:
+      repo: sxyazi/yazi
+    template: "{{ template.github.latest }}"
+    archives:
+      - yazi-x86_64-unknown-linux-gnu.zip
+      - yazi-aarch64-unknown-linux-gnu.zip
+      - yazi-x86_64-apple-darwin.zip
+      - yazi-aarch64-apple-darwin.zip
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    strip: 1
+    include:
+      - yazi
+      - ya
+    postinstall: |-
+      chmod +x ~/.local/bin/yazi
+      chmod +x ~/.local/bin/ya
+      yazi --version
+  tags:
+    - yazi
 
 - name: Install jq
   install-package:
