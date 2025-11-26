@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Move the cursor to the center of the screen.
+
+# Get the geometry of the focused output
+output_geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .rect | "\(.x) \(.y) \(.width) \(.height)"')
+
+read -r x y width height <<<"$output_geometry"
+
+# Calculate the center coordinates
+center_x=$((x + width / 2))
+center_y=$((y + height / 2))
+
+# Move the cursor (assuming default seat "seat0")
+swaymsg seat - cursor set "$center_x" "$center_y"

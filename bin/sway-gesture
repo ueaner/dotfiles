@@ -24,8 +24,8 @@ if [ -z "$X" ]; then
 fi
 
 # 4. 计算窗口中心点坐标
-CENTER_X=$(echo "scale=0; $X + $W / 2" | bc)
-CENTER_Y=$(echo "scale=0; $Y + $H / 2" | bc)
+CENTER_X=$((X + W / 2))
+CENTER_Y=$((Y + H / 2))
 
 # 5. 使用 Sway 命令将光标移动到这个中心点
 swaymsg seat - cursor set "$CENTER_X" "$CENTER_Y"
