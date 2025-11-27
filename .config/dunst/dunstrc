@@ -41,3 +41,8 @@
     timeout = 60
     default_icon = dialog-warning
     icon_position = right
+
+[screenshot]
+    summary = "Screenshot Saved"
+    format = "<span line_height='1.5'><span size='large'>%s</span>\n%b</span>"
+    icon_position = right

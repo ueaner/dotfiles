@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# 截图通知，点击预览
+# @depends: dunst
+
+echo "[$$ sway-screenshot] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+# 检查 dunstify 是否可用
+if ! command -v dunstify >/dev/null; then
+    notify-send -u critical "Error" "dunstify not found. Please install it."
+    exit 1
+fi
+
+# --- 配置 ---
+SCREENSHOTS_DIR="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
+mkdir -p "$SCREENSHOTS_DIR"
+FILENAME="$(date +'%Y-%m-%d-%H%M%S.%N').png"
+FILEPATH="$SCREENSHOTS_DIR/$FILENAME"
+NOTIFY_ID="9876"
+
+SCREENSHOT_ACTION="$1"
+shift
+
+# --- 执行截图和通知 ---
+case "$SCREENSHOT_ACTION" in
+"output" | "area" | "active")
+    grimshot save "$SCREENSHOT_ACTION" "$FILEPATH"
+
+    if [ -f "$FILEPATH" ]; then
+
+        # 使用 dunstify 发送通知，并 block 等待 Action 返回
+        ACTION_KEY="preview_open"
+        ACTION_LABEL="Preview Screenshot"
+
+        ACTION_RESULT=$(
+            dunstify --block \
+                --replace="$NOTIFY_ID" \
+                --icon="$FILEPATH" \
+                --timeout=10000 \
+                --action="$ACTION_KEY,$ACTION_LABEL" \
+                "Screenshot Saved ($SCREENSHOT_ACTION)" \
+                "Click to Preview. $FILENAME"
+        )
+
+        echo "[$$ sway-screenshot] Screenshot Saved to $FILEPATH" >>/tmp/xreaker.log
+        echo "[$$ sway-screenshot] Dunstify Action Result: $ACTION_RESULT" >>/tmp/xreaker.log
+
+        # --- 处理返回的 Action ---
+        case "$ACTION_RESULT" in
+        "$ACTION_KEY")
+            # 点击通知，执行预览
+            /usr/bin/xdg-open "$FILEPATH"
+            ;;
+        *)
+            # 任何其他 Action ID 或错误
+            ;;
+        esac
+
+    else
+        dunstify -u critical "Screenshot Failed" "Could not capture screenshot."
+    fi
+    ;;
+*)
+    dunstify -u critical "Screenshot Error" "Invalid action: $SCREENSHOT_ACTION"
+    ;;
+esac
