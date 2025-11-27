@@ -1,6 +1,10 @@
 @theme "nightfall-blue"
 
 configuration {
+    matching: "fuzzy";
+    sort: true;
+    sorting-method: "fzf";
+
     show-icons: true;
     combi-hide-mode-prefix: true;
     display-combi: "󰕘 Combi";
