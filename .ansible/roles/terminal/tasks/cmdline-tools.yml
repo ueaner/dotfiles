@@ -414,6 +414,31 @@
     - edir
 
 
+- name: Install cliphist
+  when: ansible_system == "Linux"
+  install-package:
+    name: cliphist
+    placeholders:
+      repo: sentriz/cliphist
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - <version>-linux-amd64
+      - <version>-linux-arm
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      chmod +x $XDG_BIN_HOME/$PACKAGE_ARCHIVE_NAME
+      mv $XDG_BIN_HOME/$PACKAGE_ARCHIVE_NAME $XDG_BIN_HOME/cliphist
+
+      curl --create-dirs -L -o ~/.local/bin/cliphist-rofi-img \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/sentriz/cliphist/refs/heads/master/contrib/cliphist-rofi-img
+      chmod +x ~/.local/bin/cliphist-rofi-img
+
+      cliphist version
+  tags:
+    - cliphist
+
+
 - name: Install plantuml
   when: ansible_system == "Linux"
   install-package:
