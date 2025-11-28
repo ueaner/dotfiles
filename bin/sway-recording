@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# 录屏通知，点击预览
+# @depends: dunst
+
+echo "[$$ sway-recording] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+ICON=~/.local/share/fa-icons/video.svg
+
+# --- Dependency Check ---
+if ! command -v dunstify >/dev/null; then
+    notify-send -i $ICON -u critical "Dependency Error" "dunstify not found. Please install."
+    exit 1
+fi
+if ! command -v wf-recorder >/dev/null; then
+    notify-send -i $ICON -u critical "Dependency Error" "wf-recorder not found. Please install."
+    exit 1
+fi
+
+# --- 配置 ---
+RECORDINGS_DIR="${XDG_VIDEOS_DIR:-$HOME/Videos}/Recordings"
+mkdir -p "$RECORDINGS_DIR"
+
+FILENAME="Recording_$(date +'%Y-%m-%d-%H%M%S.%N').mkv"
+FILEPATH="$RECORDINGS_DIR/$FILENAME"
+PID_FILE="/tmp/wf-recorder.pid"          # Stores PID of the active recording process.
+OUTPUT_PATH_FILE="/tmp/wf-recorder.path" # Stores the output file path.
+NOTIFY_ID="9877"                         # Notification ID for replacement/actions.
+
+RECORD_ACTION="$1"
+shift
+
+if [[ "$RECORD_ACTION" == "stop" ]]; then
+    # 只停止当前脚本管理的 wf-recorder 进程
+    if [[ ! -f "$PID_FILE" ]]; then
+        notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
+        exit 1
+    fi
+    # 清理内容为空的 PID_FILE
+    if [[ -z "$(cat $PID_FILE)" ]]; then
+        rm -f "$PID_FILE"
+        notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
+        exit 1
+    fi
+else # Starting a new one
+    # 无论是当前脚本管理的 wf-recorder 进程，还是外部启动的 wf-recorder 进程，只要存在则不启动新的进程
+    PID=$(pgrep wf-recorder)
+    if [[ -n "$PID" ]]; then
+        notify-send -i $ICON -u critical "Recording Error" \
+            "Recording (PID: $PID) already in progress. Stop the current recording first."
+        exit 1
+    fi
+fi
+
+# --- Execution Logic ---
+case "$RECORD_ACTION" in
+"output_noaudio")
+    # 1. Execute wf-recorder in background
+    nohup wf-recorder -f "$FILEPATH" >/dev/null 2>&1 &
+
+    # 2. Store PID and file path
+    echo $! >"$PID_FILE"
+    echo "$FILEPATH" >"$OUTPUT_PATH_FILE"
+
+    echo "[$$ sway-recording] Recording Started, Recording PID $(cat $PID_FILE): $(pgrep --list-full wf-recorder)" >>/tmp/xreaker.log
+    ;;
+"area_noaudio")
+    nohup wf-recorder -g "$(slurp)" -f "$FILEPATH" >/dev/null 2>&1 &
+
+    echo $! >"$PID_FILE"
+    echo "$FILEPATH" >"$OUTPUT_PATH_FILE"
+    ;;
+"output_audio")
+    nohup wf-recorder -a -f "$FILEPATH" >/dev/null 2>&1 &
+
+    echo $! >"$PID_FILE"
+    echo "$FILEPATH" >"$OUTPUT_PATH_FILE"
+    ;;
+"area_audio")
+    nohup wf-recorder -g "$(slurp)" -a -f "$FILEPATH" >/dev/null 2>&1 &
+
+    echo $! >"$PID_FILE"
+    echo "$FILEPATH" >"$OUTPUT_PATH_FILE"
+    ;;
+"stop")
+    PID=$(cat "$PID_FILE")
+
+    # 检查路径缓存文件是否存在
+    if [[ ! -f "$OUTPUT_PATH_FILE" ]]; then
+        echo "[$$ sway-recording] Recording Process Details: $(pgrep --list-full --pidfile=$PID_FILE). Output path cache was missing." >>/tmp/xreaker.log
+
+        # 即使路径文件丢失，也要强制终止进程并清理 PID 文件
+        kill -SIGINT "$PID"
+        wait "$PID" 2>/dev/null
+        rm -f "$PID_FILE"
+
+        notify-send -i $ICON -u normal "Recording Stopped (Path Cache Missing)" \
+            "Recording (PID: $PID) terminated. Output file path unknown due to missing cache."
+        exit 1
+    fi
+
+    LAST_FILEPATH=$(cat "$OUTPUT_PATH_FILE")
+
+    # 1. Terminate process gracefully
+    kill -SIGINT "$PID"
+    # 2. Wait for process to exit and file writing to complete
+    wait "$PID" 2>/dev/null
+    # 3. Clean up temporary files
+    rm -f "$PID_FILE" "$OUTPUT_PATH_FILE"
+
+    # 4. Send blocking stop notification with preview action
+    ACTION_KEY="preview_open"
+    ACTION_LABEL="Preview Recording"
+
+    ACTION_RESULT=$(
+        dunstify --block \
+            --replace="$NOTIFY_ID" \
+            --icon="$ICON" \
+            --timeout=10000 \
+            --action="$ACTION_KEY,$ACTION_LABEL" \
+            "Recording Stopped" \
+            "Video saved: ${LAST_FILEPATH}"
+    )
+
+    # --- Handle returned Action ---
+    case "$ACTION_RESULT" in
+    "$ACTION_KEY")
+        # Open preview file
+        /usr/bin/xdg-open "$LAST_FILEPATH"
+        ;;
+    esac
+
+    ;;
+*)
+    notify-send -i $ICON -u critical "Invalid Action" "Received invalid command: $RECORD_ACTION"
+    ;;
+esac

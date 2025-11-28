@@ -103,6 +103,7 @@ element {
     padding:          8px 16px;
     spacing:          16px;
     background-color: transparent;
+    text-color:       @fg0;
 }
 
 element normal active {
@@ -118,8 +119,14 @@ element selected normal, element selected active {
     text-color:       @fg1;
 }
 
+/* https://github.com/davatorium/rofi/issues/1110 */
 element-icon {
     size: 1em;
+
+    /* background-color: transparent; */
+    /* text-color: inherit; */
+    /* fill: @fg0; */
+    /* tint: @fg0; */
 }
 
 element-text {

@@ -30,6 +30,7 @@
       - xlsclients # list x11 client applications running on a display
       # - code # or code-insiders
       - android-tools
+      - wf-recorder
 
 # - name: Install/Upgrade web apps
 #   when: ansible_distribution == "Fedora"

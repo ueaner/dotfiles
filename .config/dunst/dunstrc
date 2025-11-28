@@ -43,6 +43,6 @@
     icon_position = right
 
 [screenshot]
-    summary = "Screenshot Saved"
+    summary = "(Screenshot|Recording)"
     format = "<span line_height='1.5'><span size='large'>%s</span>\n%b</span>"
     icon_position = right

@@ -4,16 +4,19 @@
 
 echo "[$$ sway-screenshot] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
+ICON=~/.local/share/fa-icons/camera.svg
+
 # 检查 dunstify 是否可用
 if ! command -v dunstify >/dev/null; then
-    notify-send -u critical "Error" "dunstify not found. Please install it."
+    notify-send -i $ICON -u critical "Error" "dunstify not found. Please install it."
     exit 1
 fi
 
 # --- 配置 ---
 SCREENSHOTS_DIR="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
 mkdir -p "$SCREENSHOTS_DIR"
-FILENAME="$(date +'%Y-%m-%d-%H%M%S.%N').png"
+# GRIMSHOT_FILENAME_FORMAT="$(date +'%Y-%m-%d-%H%M%S.%N')" grimshot save ...
+FILENAME="Screenshot_$(date +'%Y-%m-%d-%H%M%S.%N').png"
 FILEPATH="$SCREENSHOTS_DIR/$FILENAME"
 NOTIFY_ID="9876"
 
@@ -22,10 +25,12 @@ shift
 
 # --- 执行截图和通知 ---
 case "$SCREENSHOT_ACTION" in
-"output" | "area" | "active")
+"active" | "screen" | "output" | "area" | "window" | "anything")
+
     grimshot save "$SCREENSHOT_ACTION" "$FILEPATH"
 
     if [ -f "$FILEPATH" ]; then
+        wl-copy --type image/png <"$FILEPATH"
 
         # 使用 dunstify 发送通知，并 block 等待 Action 返回
         ACTION_KEY="preview_open"
@@ -47,7 +52,7 @@ case "$SCREENSHOT_ACTION" in
         # --- 处理返回的 Action ---
         case "$ACTION_RESULT" in
         "$ACTION_KEY")
-            # 点击通知，执行预览
+            # 点击通知，打开预览
             /usr/bin/xdg-open "$FILEPATH"
             ;;
         *)
@@ -56,10 +61,10 @@ case "$SCREENSHOT_ACTION" in
         esac
 
     else
-        dunstify -u critical "Screenshot Failed" "Could not capture screenshot."
+        notify-send -i $ICON -u critical "Screenshot Failed" "Could not capture screenshot."
     fi
     ;;
 *)
-    dunstify -u critical "Screenshot Error" "Invalid action: $SCREENSHOT_ACTION"
+    notify-send -i $ICON -u critical "Screenshot Error" "Invalid action: $SCREENSHOT_ACTION"
     ;;
 esac
