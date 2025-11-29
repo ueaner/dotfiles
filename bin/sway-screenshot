@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 # 截图通知，点击预览
-# @depends: dunst
+# @depends: libnotify, dunst, grimshot, wl-clipboard
+#
+# xdg-mime query default image/png
+# xdg-mime default imv.desktop image/png
 
 echo "[$$ sway-screenshot] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
 ICON=~/.local/share/fa-icons/camera.svg
 
-# 检查 dunstify 是否可用
+# --- Dependency Check ---
 if ! command -v dunstify >/dev/null; then
-    notify-send -i $ICON -u critical "Error" "dunstify not found. Please install it."
+    notify-send -i $ICON -u critical "Screenshot Error" "dunstify not found. Please install it."
+    exit 1
+fi
+if ! command -v grimshot >/dev/null; then
+    notify-send -i $ICON -u critical "Screenshot Error" "grimshot not found. Please install it."
     exit 1
 fi
 
@@ -29,42 +36,40 @@ case "$SCREENSHOT_ACTION" in
 
     grimshot save "$SCREENSHOT_ACTION" "$FILEPATH"
 
-    if [ -f "$FILEPATH" ]; then
-        wl-copy --type image/png <"$FILEPATH"
-
-        # 使用 dunstify 发送通知，并 block 等待 Action 返回
-        ACTION_KEY="preview_open"
-        ACTION_LABEL="Preview Screenshot"
-
-        ACTION_RESULT=$(
-            dunstify --block \
-                --replace="$NOTIFY_ID" \
-                --icon="$FILEPATH" \
-                --timeout=10000 \
-                --action="$ACTION_KEY,$ACTION_LABEL" \
-                "Screenshot Saved ($SCREENSHOT_ACTION)" \
-                "Click to Preview. $FILENAME"
-        )
-
-        echo "[$$ sway-screenshot] Screenshot Saved to $FILEPATH" >>/tmp/xreaker.log
-        echo "[$$ sway-screenshot] Dunstify Action Result: $ACTION_RESULT" >>/tmp/xreaker.log
-
-        # --- 处理返回的 Action ---
-        case "$ACTION_RESULT" in
-        "$ACTION_KEY")
-            # 点击通知，打开预览
-            /usr/bin/xdg-open "$FILEPATH"
-            ;;
-        *)
-            # 任何其他 Action ID 或错误
-            ;;
-        esac
-
-    else
+    if [[ ! -f "$FILEPATH" ]]; then
         notify-send -i $ICON -u critical "Screenshot Failed" "Could not capture screenshot."
+        exit 1
     fi
+
+    wl-copy --type image/png <"$FILEPATH"
+
+    # 使用 dunstify 发送通知，并 block 等待 Action 返回
+    ACTION_KEY="preview_open"
+    ACTION_LABEL="Preview Screenshot"
+
+    ACTION_RESULT=$(
+        dunstify --block \
+            --replace="$NOTIFY_ID" \
+            --icon="$FILEPATH" \
+            --action="$ACTION_KEY,$ACTION_LABEL" \
+            "Screenshot Saved" \
+            "Click to Preview. $FILENAME"
+    )
+
+    echo "[$$ sway-screenshot] Screenshot Saved to $FILEPATH" >>/tmp/xreaker.log
+    echo "[$$ sway-screenshot] Dunstify Action Result: $ACTION_RESULT" >>/tmp/xreaker.log
+
+    # --- 处理返回的 Action ---
+    case "$ACTION_RESULT" in
+    "$ACTION_KEY")
+        # 点击通知，打开预览
+        /usr/bin/xdg-open "$FILEPATH"
+        ;;
+    esac
+
     ;;
 *)
     notify-send -i $ICON -u critical "Screenshot Error" "Invalid action: $SCREENSHOT_ACTION"
+    exit 1
     ;;
 esac

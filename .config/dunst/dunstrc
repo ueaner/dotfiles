@@ -45,4 +45,5 @@
 [screenshot]
     summary = "(Screenshot|Recording)"
     format = "<span line_height='1.5'><span size='large'>%s</span>\n%b</span>"
+    timeout = 10
     icon_position = right

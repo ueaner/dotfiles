@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # 录屏通知，点击预览
-# @depends: dunst
+# @depends: libnotify, dunst, wf-recorder, slurp
+#
+# 1. 只停止当前脚本管理的 wf-recorder 进程
+# 2. 只要存在 wf-recorder 进程则不启动新的进程（无论是当前脚本管理的，还是外部启动的）
 
 echo "[$$ sway-recording] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
@@ -8,11 +11,11 @@ ICON=~/.local/share/fa-icons/video.svg
 
 # --- Dependency Check ---
 if ! command -v dunstify >/dev/null; then
-    notify-send -i $ICON -u critical "Dependency Error" "dunstify not found. Please install."
+    notify-send -i $ICON -u critical "Recording Error" "dunstify not found. Please install it."
     exit 1
 fi
 if ! command -v wf-recorder >/dev/null; then
-    notify-send -i $ICON -u critical "Dependency Error" "wf-recorder not found. Please install."
+    notify-send -i $ICON -u critical "Recording Error" "wf-recorder not found. Please install it."
     exit 1
 fi
 
@@ -29,20 +32,8 @@ NOTIFY_ID="9877"                         # Notification ID for replacement/actio
 RECORD_ACTION="$1"
 shift
 
-if [[ "$RECORD_ACTION" == "stop" ]]; then
-    # 只停止当前脚本管理的 wf-recorder 进程
-    if [[ ! -f "$PID_FILE" ]]; then
-        notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
-        exit 1
-    fi
-    # 清理内容为空的 PID_FILE
-    if [[ -z "$(cat $PID_FILE)" ]]; then
-        rm -f "$PID_FILE"
-        notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
-        exit 1
-    fi
-else # Starting a new one
-    # 无论是当前脚本管理的 wf-recorder 进程，还是外部启动的 wf-recorder 进程，只要存在则不启动新的进程
+# 只要存在 wf-recorder 进程则不启动新的进程（无论是当前脚本管理的，还是外部启动的）
+if [[ "$RECORD_ACTION" != "stop" ]]; then
     PID=$(pgrep wf-recorder)
     if [[ -n "$PID" ]]; then
         notify-send -i $ICON -u critical "Recording Error" \
@@ -82,23 +73,19 @@ case "$RECORD_ACTION" in
     echo "$FILEPATH" >"$OUTPUT_PATH_FILE"
     ;;
 "stop")
-    PID=$(cat "$PID_FILE")
+    [[ -f "$PID_FILE" ]] && PID=$(cat "$PID_FILE") || PID=
+    [[ -f "$OUTPUT_PATH_FILE" ]] && LAST_FILEPATH=$(cat "$OUTPUT_PATH_FILE") || LAST_FILEPATH=
+    [[ -f "$OUTPUT_PATH_FILE" ]] && PATH_UNKNOWN_DETAILS="Output path does not exist." || PATH_UNKNOWN_DETAILS="Output path cache was missing."
 
-    # 检查路径缓存文件是否存在
-    if [[ ! -f "$OUTPUT_PATH_FILE" ]]; then
-        echo "[$$ sway-recording] Recording Process Details: $(pgrep --list-full --pidfile=$PID_FILE). Output path cache was missing." >>/tmp/xreaker.log
-
-        # 即使路径文件丢失，也要强制终止进程并清理 PID 文件
-        kill -SIGINT "$PID"
-        wait "$PID" 2>/dev/null
+    # 确保相应的 wf-recorder 进程存在
+    if [[ -z "$PID" ]] || ! pgrep wf-recorder | grep -q "$PID"; then
+        # 清理内容为空的 PID_FILE
         rm -f "$PID_FILE"
-
-        notify-send -i $ICON -u normal "Recording Stopped (Path Cache Missing)" \
-            "Recording (PID: $PID) terminated. Output file path unknown due to missing cache."
+        notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
         exit 1
     fi
 
-    LAST_FILEPATH=$(cat "$OUTPUT_PATH_FILE")
+    echo "[$$ sway-recording] Recording Process Details: $(pgrep --list-full --pidfile=$PID_FILE)." >>/tmp/xreaker.log
 
     # 1. Terminate process gracefully
     kill -SIGINT "$PID"
@@ -106,6 +93,13 @@ case "$RECORD_ACTION" in
     wait "$PID" 2>/dev/null
     # 3. Clean up temporary files
     rm -f "$PID_FILE" "$OUTPUT_PATH_FILE"
+
+    # 确保录屏文件存在
+    if [[ -z "$LAST_FILEPATH" || ! -f "$LAST_FILEPATH" ]]; then
+        notify-send -i $ICON -u normal "Recording Stopped (Path Unknown)" \
+            "Recording (PID: $PID) terminated. $PATH_UNKNOWN_DETAILS"
+        exit 1
+    fi
 
     # 4. Send blocking stop notification with preview action
     ACTION_KEY="preview_open"
@@ -115,10 +109,9 @@ case "$RECORD_ACTION" in
         dunstify --block \
             --replace="$NOTIFY_ID" \
             --icon="$ICON" \
-            --timeout=10000 \
             --action="$ACTION_KEY,$ACTION_LABEL" \
-            "Recording Stopped" \
-            "Video saved: ${LAST_FILEPATH}"
+            "Recording Saved" \
+            "Click to Preview. $LAST_FILEPATH"
     )
 
     # --- Handle returned Action ---
@@ -131,6 +124,7 @@ case "$RECORD_ACTION" in
 
     ;;
 *)
-    notify-send -i $ICON -u critical "Invalid Action" "Received invalid command: $RECORD_ACTION"
+    notify-send -i $ICON -u critical "Recording Error" "Invalid action: $RECORD_ACTION"
+    exit 1
     ;;
 esac
