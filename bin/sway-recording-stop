@@ -38,10 +38,6 @@ stop_wf_recorder_by_pid() {
     # 2. Wait for process to exit and file writing to complete
     wait "$pid" 2>/dev/null
 
-    # Notify Waybar to update
-    pkill -RTMIN+8 waybar
-    echo "[$$ sway-recording-stop] pkill -RTMIN+8 waybar" >>/tmp/xreaker.log
-
     # 3. Send blocking stop notification with preview action
     ACTION_KEY="preview_open"
     ACTION_LABEL="Preview Recording"
@@ -79,6 +75,15 @@ echo "$pids" | while IFS= read -r pid; do
     sleep 0.3
     stop_wf_recorder_by_pid "$pid" &
 done
+
+# 等待所有 wf-recorder 进程退出
+while pgrep -x wf-recorder >/dev/null; do
+    sleep 0.1
+done
+
+# Notify Waybar to update
+pkill -RTMIN+8 waybar
+echo "[$$ sway-recording-stop] Notify Waybar to update" >>/tmp/xreaker.log
 
 # 等待所有后台任务完成
 wait
