@@ -21,10 +21,10 @@ Stop Recording\0icon\x1f$FA_ICON_DIR/stop.svg
 EOF
 )
 
-# choice=$(echo "$RAW_CHOICE" | sed 's/<[^>]*>//g')
-
 # 使用 rofi 显示菜单并获取用户选择
 choice=$(echo -e "$options" | rofi -dmenu -i -p "Capture/Record Tool")
+
+# choice=$(echo "$RAW_CHOICE" | sed 's/<[^>]*>//g')
 
 # --- 执行动作 ---
 case "$choice" in
@@ -50,6 +50,6 @@ case "$choice" in
     ~/bin/sway-recording area_audio
     ;;
 "Stop Recording")
-    ~/bin/sway-recording stop
+    ~/bin/sway-recording-stop
     ;;
 esac

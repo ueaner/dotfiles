@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# 录屏状态
+
+# echo "[$$ sway-recording-status] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+# 使用 ps 命令获取进程的启动时间戳 (etime 字段)
+# etime 格式通常是 HH:MM:SS 或 MM:SS 或 D-HH:MM:SS
+# duration=$(ps -p "$pid" -o etime= | xargs)
+
+# 获取指定进程已经运行的秒数
+get_process_duration() {
+    pid=$1
+
+    seconds=$(ps -p "$pid" -o etimes= | awk '{print $1}')
+    hours=$((seconds / 3600))
+    minutes=$(((seconds % 3600) / 60))
+    secs=$((seconds % 60))
+    if ((hours > 0)); then
+        formatted=$(printf "%02d:%02d:%02d" "$hours" "$minutes" "$secs")
+    else
+        formatted=$(printf "%02d:%02d" "$minutes" "$secs")
+    fi
+
+    echo "$formatted"
+}
+
+pids=$(pgrep -x wf-recorder)
+if [[ -z "$pids" ]]; then
+    printf '{"text": "", "class": "idle"}'
+    exit 0
+fi
+
+COUNT=$(echo "$pids" | wc -l)
+if ((COUNT > 1)); then
+    tooltip="Click to Stop $COUNT Recording"
+    while IFS='' read -r pid; do
+        duration=$(get_process_duration "$pid")
+        tooltip="$tooltip\n[$pid]: $duration"
+    done < <(echo "$pids")
+
+    printf '{"text": "REC", "class": "recording", "tooltip": "%s"}' "$tooltip"
+
+else
+    pid=$pids
+    tooltip="Click to Stop Recording"
+    duration=$(get_process_duration "$pid")
+
+    printf '{"text": "REC %s", "class": "recording", "tooltip": "%s"}' "$duration" "$tooltip"
+fi
+
+exit 0

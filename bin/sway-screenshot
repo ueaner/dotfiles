@@ -41,6 +41,8 @@ case "$SCREENSHOT_ACTION" in
         exit 1
     fi
 
+    echo "[$$ sway-screenshot] Screenshot Saved to $FILEPATH" >>/tmp/xreaker.log
+
     wl-copy --type image/png <"$FILEPATH"
 
     # 使用 dunstify 发送通知，并 block 等待 Action 返回
@@ -53,10 +55,9 @@ case "$SCREENSHOT_ACTION" in
             --icon="$FILEPATH" \
             --action="$ACTION_KEY,$ACTION_LABEL" \
             "Screenshot Saved" \
-            "Click to Preview. $FILENAME"
+            "Click to Preview.\n$FILENAME"
     )
 
-    echo "[$$ sway-screenshot] Screenshot Saved to $FILEPATH" >>/tmp/xreaker.log
     echo "[$$ sway-screenshot] Dunstify Action Result: $ACTION_RESULT" >>/tmp/xreaker.log
 
     # --- 处理返回的 Action ---

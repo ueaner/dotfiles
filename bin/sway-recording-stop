@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# 停止录屏，点击通知，打开预览
+# @depends: libnotify, dunst, wf-recorder, slurp
+
+echo "[$$ sway-recording-stop] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+echo "[$$ sway-recording-stop] Recording Process Details: $(pgrep --list-full wf-recorder)." >>/tmp/xreaker.log
+
+ICON=~/.local/share/fa-icons/video.svg
+
+# --- Dependency Check ---
+if ! command -v dunstify >/dev/null; then
+    notify-send -i $ICON -u critical "Recording Error" "dunstify not found. Please install it."
+    exit 1
+fi
+
+stop_wf_recorder_by_pid() {
+    VIDEO_EXT="mkv"
+    RECORDING_FILE=
+    RECORDING_TIME=
+    RECORDER_LOG=
+    pid=$1
+
+    wfiles=$(lsof -p "$pid" | awk '$4 ~ /^[0-9]+w$/ && $5 == "REG" {print $NF}')
+    RECORDING_FILE=$(echo "$wfiles" | grep "\.${VIDEO_EXT}$")
+    RECORDER_LOG=$(echo "$wfiles" | grep '\.log$' | head -n 1)
+
+    # 使用 ps 命令获取进程的启动时间戳 (etime 字段)
+    # etime 格式通常是 HH:MM:SS 或 MM:SS 或 D-HH:MM:SS
+    RECORDING_TIME=$(ps -p "$PID" -o etime= | xargs)
+
+    echo "[$$ sway-recording-stop] Recording $pid Saved to $RECORDING_FILE, Duration: $RECORDING_TIME, Log: $RECORDER_LOG" >>/tmp/xreaker.log
+
+    # --- Execution Logic ---
+
+    # 1. Terminate process gracefully
+    kill -SIGINT "$pid"
+    # 2. Wait for process to exit and file writing to complete
+    wait "$pid" 2>/dev/null
+
+    # Notify Waybar to update
+    pkill -RTMIN+8 waybar
+    echo "[$$ sway-recording-stop] pkill -RTMIN+8 waybar" >>/tmp/xreaker.log
+
+    # 3. Send blocking stop notification with preview action
+    ACTION_KEY="preview_open"
+    ACTION_LABEL="Preview Recording"
+
+    ACTION_RESULT=$(
+        dunstify --block \
+            --icon="$ICON" \
+            --action="$ACTION_KEY,$ACTION_LABEL" \
+            "Recording Saved (Duration $RECORDING_TIME)" \
+            "Click to Preview.\n$RECORDING_FILE"
+    )
+
+    echo "[$$ sway-recording-stop] Dunstify Action Result ($pid): $ACTION_RESULT" >>/tmp/xreaker.log
+
+    # --- Handle returned Action ---
+    case "$ACTION_RESULT" in
+    "$ACTION_KEY")
+        # Open preview file
+        /usr/bin/xdg-open "$RECORDING_FILE"
+        ;;
+    esac
+}
+
+pids=$(pgrep -x wf-recorder)
+if [[ -z "$pids" ]]; then
+    notify-send -i $ICON -u critical "Recording Error" "No active recording found to stop."
+    exit 1
+fi
+
+COUNT=$(echo "$pids" | wc -l)
+echo "[$$ sway-recording-stop] Stop $COUNT screen recording processes." >>/tmp/xreaker.log
+
+# pkill wf-recorder
+echo "$pids" | while IFS= read -r pid; do
+    sleep 0.3
+    stop_wf_recorder_by_pid "$pid" &
+done
+
+# 等待所有后台任务完成
+wait

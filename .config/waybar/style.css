@@ -333,3 +333,27 @@ window#waybar.Alacritty #custom-power {
 window#waybar.empty #custom-power {
     background-color: @main-background;
 }
+
+/* @keyframes rec-blink { */
+/*     0% { background-color: @urgent-background; } */
+/*     50% { background-color: @darkred-color; } */
+/*     100% { background-color: @urgent-background; } */
+/* } */
+@keyframes rec-blink {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+#custom-recorder {
+    background-color: @urgent-background;
+    color: @main-foreground;
+    padding: 0 10px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+#custom-recorder.recording {
+    animation-name: rec-blink;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
