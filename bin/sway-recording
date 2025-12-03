@@ -59,5 +59,13 @@ case "$RECORD_ACTION" in
     ;;
 esac
 
-# Notify Waybar to update
-pkill -RTMIN+8 waybar
+# 录屏期间，通知 waybar 每秒更新 custom/recorder 模块
+TIMER_PID_FILE=/tmp/rec-timer.pid
+(
+    while pgrep -x wf-recorder >/dev/null; do
+        pkill -RTMIN+8 waybar
+        sleep 1
+    done
+    rm -f "$TIMER_PID_FILE" # 录屏结束自己清理
+) &
+echo $! >"$TIMER_PID_FILE"

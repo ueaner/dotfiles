@@ -258,8 +258,8 @@
         "exec": "~/bin/sway-recording-status",
         "return-type": "json",
         "on-click": "~/bin/sway-recording-stop",
-        "interval": 1, // Execute once per second to update the time
-        // "interval": "once", // Runs only once at startup
+        // "interval": 1, // Execute once per second to update the time
+        "interval": "once", // Runs only once at startup
         "signal": 8, // Listening signal SIGRTMIN+8
         "hide-empty-text": true // If the script returns empty text, hide the module.
     }
