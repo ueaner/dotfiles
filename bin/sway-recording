@@ -41,8 +41,6 @@ case "$RECORD_ACTION" in
 "output_noaudio")
     # Execute wf-recorder in background
     nohup wf-recorder -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
-
-    echo "[$$ sway-recording] Recording Started, Process Details: $(pgrep --list-full wf-recorder)." >>/tmp/xreaker.log
     ;;
 "area_noaudio")
     nohup wf-recorder -g "$(slurp)" -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
@@ -59,13 +57,19 @@ case "$RECORD_ACTION" in
     ;;
 esac
 
-# 录屏期间，通知 waybar 每秒更新 custom/recorder 模块
+echo "[$$ sway-recording] Recording Started, Process Details: $(pgrep --list-full wf-recorder)." >>/tmp/xreaker.log
+
+# Waybar Notification Timer
 TIMER_PID_FILE=/tmp/rec-timer.pid
 (
+    # 录屏期间，通知 waybar 每秒更新 custom/recorder 模块
     while pgrep -x wf-recorder >/dev/null; do
         pkill -RTMIN+8 waybar
         sleep 1
     done
-    rm -f "$TIMER_PID_FILE" # 录屏结束自己清理
+    # 录屏结束，再通知一次 waybar 更新
+    pkill -RTMIN+8 waybar
+    rm -f "$TIMER_PID_FILE"
+    echo "[$$ sway-recording] Recording Stopped." >>/tmp/xreaker.log
 ) &
 echo $! >"$TIMER_PID_FILE"
