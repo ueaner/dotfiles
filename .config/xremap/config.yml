@@ -9,7 +9,7 @@ keymap:
   - name: Files
     exact_match: true
     application:
-      only: org.gnome.Nautilus
+      only: [org.gnome.Nautilus, thunar]
     remap:
       KEY_ENTER:                   KEY_F2                         # Rename
 
