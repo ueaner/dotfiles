@@ -31,6 +31,7 @@
       # - code # or code-insiders
       - android-tools
       - wf-recorder
+      - mpv-libs # libmpv.so.2 for termusic
 
 # - name: Install/Upgrade web apps
 #   when: ansible_distribution == "Fedora"

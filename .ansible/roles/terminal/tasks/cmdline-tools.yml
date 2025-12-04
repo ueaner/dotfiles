@@ -477,6 +477,29 @@
   tags:
     - crush
 
+
+- name: Install termusic
+  install-package:
+    name: termusic
+    placeholders:
+      repo: tramhao/termusic
+      version: "{{ template.github.version }}"
+    template: "{{ template.github.archive }}"
+    archives:
+      - termusic-<version>-x86_64-linux.tar.xz
+      - termusic-<version>-x86_64-macos.tar.xz
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    strip: 1
+    include:
+      - termusic
+      - termusic-server
+    postinstall: |-
+      termusic --version
+  tags:
+    - termusic
+    - music
+
+
 # Compatible with Linux command parameters
 - name: Install GNU utils for macOS
   when: ansible_system == "Darwin"
