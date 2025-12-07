@@ -1,4 +1,4 @@
-# vim: set filetype=dosini:
+# vim: set filetype=cfg:
 # dunstctl reload
 #
 # Examples:
@@ -18,10 +18,14 @@
     mouse_left_click = do_action, close_current
     mouse_right_click = close_all
 
+    frame_width = 2
+    frame_color = "#2e3440"
+    separator_color= frame
+    highlight = "#8cb6e1"
+
 [urgency_low]
     background = "#21252d"
     foreground = "#eaeaea"
-    frame_color = "#2e3440"
     timeout = 10
     default_icon = dialog-information
     icon_position = right
@@ -29,7 +33,6 @@
 [urgency_normal]
     background = "#21252d"
     foreground = "#eaeaea"
-    frame_color= "#2e3440"
     timeout = 10
     default_icon = dialog-information
     icon_position = right
