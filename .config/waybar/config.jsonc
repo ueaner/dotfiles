@@ -9,7 +9,10 @@
     "modules-left": [
         "sway/workspaces",
         "sway/mode",
-        "sway/scratchpad"
+        "sway/scratchpad",
+        // XXX: After introducing "wlr/taskbar", the waybar cannot change its background color according to the scene.
+        // "wlr/taskbar",
+        "mpris"
     ],
     "modules-center": [
         "sway/window"
@@ -30,10 +33,18 @@
         "custom/power"
     ],
     "sway/window": {
+        // "icon": true,
         "format": "{app_id} - {shell}",
         "rewrite": {
             "^ - $": "",
             "(.*) - xdg_shell$": "$1"
+        }
+    },
+    "wlr/taskbar": {
+        "on-click": "activate",
+        "tooltip-format": "[{app_id}] {title}",
+        "app_ids-mapping": {
+            // "yazi": "thunar"
         }
     },
     // Modules configuration
@@ -262,5 +273,37 @@
         "interval": "once", // Runs only once at startup
         "signal": 8, // Listening signal SIGRTMIN+8
         "hide-empty-text": true // If the script returns empty text, hide the module.
+    },
+    "custom/mpris": {
+        "format": "{}",
+        // "return-type": "json",
+        // "format-icons": {
+        //     "Playing": " ",
+        //     "Paused": " ",
+        // },
+        "max-length": 30,
+        // https://github.com/polybar/polybar-scripts/blob/master/polybar-scripts/player-mpris-tail/player-mpris-tail.py
+        "exec": "/usr/bin/python ~/bin/player-mpris-tail.py -f '{icon} {artist} - {title}' -b chromium",
+        "on-click": "/usr/bin/python ~/bin/player-mpris-tail.py play-pause",
+        "on-click-right": "/usr/bin/python ~/bin/player-mpris-tail.py next",
+        "on-click-middle": "/usr/bin/python ~/bin/player-mpris-tail.py previous"
+    },
+    "mpris": {
+        // icon and title alignment
+        "format": "<span rise='1536'>{status_icon}</span> {title}",
+        "format-paused": "<span rise='1536'>{status_icon}</span> {title}",
+        "player-icons": {
+            "default": "",
+            "mpv": ""
+        },
+        "status-icons": {
+            "playing": "", // 
+            "paused": "", // 
+            "stopped": "" // 
+        },
+        "ignored-players": [
+            "firefox",
+            "chromium"
+        ]
     }
 }
