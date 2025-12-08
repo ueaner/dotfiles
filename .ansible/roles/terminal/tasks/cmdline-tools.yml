@@ -153,6 +153,14 @@
       chmod +x ~/.local/bin/yazi
       chmod +x ~/.local/bin/ya
       yazi --version
+
+      mkdir -p ~/.local/share/icons/hicolor/256x256/apps
+      # curl -L -o /tmp/yazi.webp https://yazi-rs.github.io/webp/logo.webp
+      curl -L -o /tmp/yazi.webp \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/yazi-rs/yazi-rs.github.io/refs/heads/main/static/webp/logo.webp
+
+      magick /tmp/yazi.webp ~/.local/share/icons/hicolor/256x256/apps/yazi.png
+      gtk-update-icon-cache -f -t ~/.local/share/icons
   tags:
     - yazi
 

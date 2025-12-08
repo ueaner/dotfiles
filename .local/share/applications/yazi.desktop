@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+TryExec=yazi
+Exec=foot --app-id=yazi -e yazi
+Icon=yazi
+Terminal=false
+Categories=Utility;FileManager;
+
+Name=Yazi File Manager
+GenericName=File Manager
+Comment=Blazing Fast Terminal File Manager
+MimeType=inode/directory;
+StartupWMClass=yazi
+Actions=New;
+
+[Desktop Action New]
+Name=New File Manager Window
+Exec=foot --app-id=yazi -e yazi
