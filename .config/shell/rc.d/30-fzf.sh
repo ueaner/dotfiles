@@ -67,16 +67,16 @@ export FZF_DEFAULT_OPTS=$(
 
 export FZF_CTRL_R_OPTS="$FZF_DEFAULT_OPTS --preview 'echo {}'"
 
-export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__'"
+export FZF_DEFAULT_COMMAND="fd --type=file --type=symlink --hidden --follow"
 
 # vim **<tab>
 _fzf_compgen_path() {
     # Remove the prefix ./ append: | sed 's@^\./@@'
-    fd --type=file --type=symlink --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__' . "$1"
+    fd --type=file --type=symlink --hidden --follow . "$1"
 }
 # cd **<tab>
 _fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude '.git' --exclude 'node_modules' --exclude '.venv' --exclude '__pycache__' . "$1"
+    fd --type d --hidden --follow . "$1"
 }
 
 # pip3 install --user tldr
