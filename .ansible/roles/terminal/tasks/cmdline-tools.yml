@@ -159,6 +159,9 @@
       curl -L -o /tmp/yazi.webp \
           ${GITHUB_PROXY}https://raw.githubusercontent.com/yazi-rs/yazi-rs.github.io/refs/heads/main/static/webp/logo.webp
 
+      curl --create-dirs -L -o ~/.config/yazi/theme.toml \
+          ${GITHUB_PROXY}https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/mocha/catppuccin-mocha-blue.toml
+
       magick /tmp/yazi.webp ~/.local/share/icons/hicolor/256x256/apps/yazi.png
       gtk-update-icon-cache -f -t ~/.local/share/icons
   tags:
