@@ -3,6 +3,7 @@
 
 # yamllint disable rule:colons
 ---
+keypress_delay_ms: 20
 
 keymap:
 
@@ -40,6 +41,7 @@ keymap:
       Super-n:                     Shift-Ctrl-n                   # Window: New
       Super-c:                     Shift-Ctrl-c                   # Copy
       Super-v:                     Shift-Ctrl-v                   # Paste
+      Super-f:                     Shift-Ctrl-f                   # Find
 
   - name: Tmux
     exact_match: true
@@ -52,8 +54,7 @@ keymap:
       Shift-Super-d:               [Alt-s, d]                     # Client: Detach
       Super-n:                     [Alt-s, n]                     # Session: New
       Shift-Super-n:               [Alt-s, Shift-n]               # Session: reName
-      Super-KEY_BACKSLASH:         [Alt-s, KEY_BACKSLASH]         # Session: \ Overview
-      Super-KEY_COMMA:             [Alt-s, KEY_COMMA]             # alias Super-\
+      Super-Super-e:               [Alt-s, Shift-e]               # Session: Overview
       Super-i:                     [Alt-s, i]                     # Window: Info
       Super-t:                     [Alt-s, t]                     # Window: New
       Super-w:                     [Alt-s, w]                     # Window: Close
@@ -72,8 +73,8 @@ keymap:
       Super-z:                     [Alt-s, z]                     # Pane: Zoom
       Super-x:                     [Alt-s, x]                     # Pane: Close
       Shift-Super-x:               [Alt-s, X]                     # Pane: Close other panes
-      Shift-Super-e:               [Alt-s, Shift-e]               # Pane: Evenly Layout
-      Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Pane: | Next Layout
+      Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Pane: Evenly Layout
+      Super-KEY_BACKSLASH:         [Alt-s, KEY_BACKSLASH]         # Pane: Next Layout
       Super-Esc:                   [Alt-s, Esc]                   # Mode: Copy Mode vi
       Shift-Super-KEY_SEMICOLON:   [Alt-s, Shift-KEY_SEMICOLON]   # Mode: : Command mode
       Super-KEY_SLASH:             [Alt-s, KEY_SLASH]             # Search: / in copy mode

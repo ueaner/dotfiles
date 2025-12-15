@@ -37,6 +37,7 @@
         "format": "{app_id} - {shell}",
         "rewrite": {
             "^ - $": "",
+            "^ - xwayland$": "XWayland",
             "(.*) - xdg_shell$": "$1"
         }
     },

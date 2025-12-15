@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# 若当前聚焦终端里 tmux 有多 pane，切 tmux 布局；否则切 Sway 容器分屏方向。
+
+echo "[$$ sway-layout-smart] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+
+read -r app_id pid < <(swaymsg -t get_tree | jq -r '
+    .. | select(.type?) | select(.focused==true) | [.app_id, .pid] | join(" ")
+')
+
+echo "[$$ sway-layout-smart] sway focused app_id: $app_id, pid: $pid, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+
+is_tmux_panes=$(
+    [[ "$app_id" =~ ^(Alacritty|foot|footclient)$ ]] &&         # 当前聚焦窗口是一个终端应用
+        pgrep -P "$pid" | xargs ps -o comm= | grep -q "tmux" && # 这个终端应用中运行了 tmux
+        [[ "$(tmux list-panes | wc -l)" -gt "1" ]] &&           # tmux 打开了多个 panes
+        echo "true" || echo "false"
+)
+
+if [[ "$is_tmux_panes" == "true" ]]; then
+    echo "[$$ sway-layout-smart] change tmux layout" >>/tmp/xreaker.log
+    zoomed=$(tmux display-message -p '#{window_zoomed_flag}')
+    # 全窗口状态不做操作，交由 Sway 继续处理
+    if [[ "$zoomed" == "0" ]]; then
+        tmux next-layout
+        exit $?
+    fi
+fi
+
+echo "[$$ sway-layout-smart] change sway container layout" >>/tmp/xreaker.log
+swaymsg layout toggle split

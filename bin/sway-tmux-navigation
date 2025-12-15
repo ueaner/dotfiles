@@ -2,11 +2,11 @@
 # Smart arrow-key navigation across tmux panes, browser address bar, and Sway containers.
 # @depends: jq, libnotify, wtype
 
-echo "[$$ sway-tmux-browser] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+echo "[$$ sway-tmux-navigation] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
 # arrows="left | down | up | right"
 # if ! echo "| $arrows |" | grep -F -q "| $1 |"; then
-#     notify-send "sway-tmux-browser: argument must be one of \"$arrows\""
+#     notify-send "sway-tmux-navigation: argument must be one of \"$arrows\""
 #     exit 1
 # fi
 
@@ -37,24 +37,31 @@ right)
     sway_cmd="swaymsg focus right"
     ;;
 *)
-    notify-send "[$$ sway-tmux-browser] argument must be one of \"left | down | up | right\""
+    notify-send "[$$ sway-tmux-navigation] argument must be one of \"left | down | up | right\""
     exit 1
     ;;
 esac
 
 # swaymsg -t get_tree -r | jq '.. | select(.type?) | select(.focused==true) | {name, app_id, id, pid}'
-focused_app_id=$(swaymsg -t get_tree -r | jq -r '.. | select(.type?) | select(.focused==true) | .app_id')
-echo "[$$ sway-tmux-browser] sway focused_app_id: $focused_app_id, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+# app_id=$(swaymsg -t get_tree -r | jq -r '.. | select(.type?) | select(.focused==true) | .app_id')
+read -r app_id pid < <(swaymsg -t get_tree | jq -r '
+    .. | select(.type?) | select(.focused==true) | [.app_id, .pid] | join(" ")
+')
 
-if [[ "$focused_app_id" == "Alacritty" ]] && [[ "$(tmux list-panes | wc -l)" -gt "1" ]]; then
+echo "[$$ sway-tmux-navigation] sway focused app_id: $app_id, pid: $pid, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+
+if [[ "$app_id" =~ ^(Alacritty|foot|footclient)$ ]] &&      # 当前聚焦窗口是一个终端应用
+    pgrep -P "$pid" | xargs ps -o comm= | grep -q "tmux" && # 这个终端应用中运行了 tmux
+    [[ "$(tmux list-panes | wc -l)" -gt "1" ]]; then        # tmux 打开了多个 panes
     at_arrow=$(eval "$at_arrow_cmd")
-    echo "[$$ sway-tmux-browser] at_arrow: $at_arrow" >>/tmp/xreaker.log
+    echo "[$$ sway-tmux-navigation] at_arrow: $at_arrow" >>/tmp/xreaker.log
     if [[ "$at_arrow" == "0" ]]; then
-        echo "[$$ sway-tmux-browser] switch tmux pane" >>/tmp/xreaker.log
+        echo "[$$ sway-tmux-navigation] switch tmux pane" >>/tmp/xreaker.log
         eval "$tmux_cmd" &>/dev/null
         exit $?
     fi
-elif [[ "$arrow" == "right" ]] && [[ "$focused_app_id" == "org.mozilla.firefox" || "$focused_app_id" == "google-chrome" ]]; then
+elif [[ "$app_id" =~ ^(org.mozilla.firefox|google-chrome)$ ]] && # 当前聚焦窗口是一个浏览器应用
+    [[ "$arrow" == "right" ]]; then                              # 键盘输入 $mod+l
     # 判断浏览器右侧是否有窗口
     has_right_container=$(swaymsg -t get_tree | jq -r '
   . as $tree
@@ -66,16 +73,16 @@ elif [[ "$arrow" == "right" ]] && [[ "$focused_app_id" == "org.mozilla.firefox" 
     # 如果浏览器右侧没有其他窗口
     if [[ "$has_right_container" == "no" ]]; then
         # 模拟按下 Ctrl+L 来聚焦地址栏
-        echo "[$$ sway-tmux-browser] $focused_app_id focuses the address bar" >>/tmp/xreaker.log
+        echo "[$$ sway-tmux-navigation] $app_id focuses the address bar" >>/tmp/xreaker.log
         if type -p wtype &>/dev/null; then
             wtype -M ctrl -P l -m ctrl -p l # Ctrl+L
         else
-            notify-send "[$$ sway-tmux-browser] command not found: wtype"
+            notify-send "[$$ sway-tmux-navigation] command not found: wtype"
         fi
         exit $?
     fi
 fi
 
-echo "[$$ sway-tmux-browser] switch sway container" >>/tmp/xreaker.log
+echo "[$$ sway-tmux-navigation] switch sway container" >>/tmp/xreaker.log
 eval "$sway_cmd" &>/dev/null
 exit $?

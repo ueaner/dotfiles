@@ -104,8 +104,7 @@ bindings = [
     { key = "N",           mods = "Super",         chars = "\u001Bsn"          }, # Session: New
     { key = "N",           mods = "Super|Shift",   chars = "\u001BsN"          }, # Session: reName
     # Session Explorer: choose number, hljk move or search
-    { key = "\\",          mods = "Super",         chars = "\u001Bs\\"         }, # Session: Overview
-    { key = ",",           mods = "Super",         chars = "\u001Bs,"          }, # alias Super-\
+    { key = "E",           mods = "Super|Shift",   chars = "\u001BsE"          }, # Session: Overview
     { key = "i",           mods = "Super",         chars = "\u001Bsi"          }, # Window: Info
     { key = "T",           mods = "Super",         chars = "\u001Bst"          }, # Window: New
     # { key = "T",           mods = "Super|Shift",   chars = "\u001BsT"          }, # Window: Reopen closed windows
@@ -126,8 +125,8 @@ bindings = [
     { key = "Z",           mods = "Super",         chars = "\u001Bsz"          }, # Pane: Zoom
     { key = "X",           mods = "Super",         chars = "\u001Bsx"          }, # Pane: Close
     { key = "X",           mods = "Super|Shift",   chars = "\u001BsX"          }, # Pane: Close other panes
-    { key = "E",           mods = "Super|Shift",   chars = "\u001BsE"          }, # Pane: Evenly Layout
-    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Pane: Next Layout
+    { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Pane: Evenly Layout
+    { key = "\\",          mods = "Super",         chars = "\u001Bs\\"         }, # Pane: Next Layout
     # Switching panes in Tmux is like switching containers in Sway
     { key = "H",           mods = "Super",         chars = "\u001Bsh"          }, # Pane: Force Left
     { key = "J",           mods = "Super",         chars = "\u001Bsj"          }, # Pane: Force Down

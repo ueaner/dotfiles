@@ -31,6 +31,9 @@ window#waybar.solo {
     background-color: @main-background;
 }
 
+window#waybar.kitty,
+window#waybar.foot,
+window#waybar.footclient,
 window#waybar.Alacritty {
     background-color: @term-background;
 }

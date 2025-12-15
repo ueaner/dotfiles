@@ -1,7 +1,51 @@
 #!/usr/bin/env bash
-# sway-resize-smart —— 智能放大 / 缩小当前焦点窗口
-#
-# 功能概述
+# 放大/缩小当前焦点 Sway 窗口或 Tmux 窗格
+
+# 每次调整的大小增量
+DELTA=5
+# grow | shrink
+ACTION="$1"
+
+read -r app_id pid < <(swaymsg -t get_tree | jq -r '
+    .. | select(.type?) | select(.focused==true) | [.app_id, .pid] | join(" ")
+')
+
+echo "[$$ sway-tmux-resize] sway focused app_id: $app_id, pid: $pid, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+
+is_tmux_panes=$(
+    [[ "$app_id" =~ ^(Alacritty|foot|footclient)$ ]] &&         # 当前聚焦窗口是一个终端应用
+        pgrep -P "$pid" | xargs ps -o comm= | grep -q "tmux" && # 这个终端应用中运行了 tmux
+        [[ "$(tmux list-panes | wc -l)" -gt "1" ]] &&           # tmux 打开了多个 panes
+        echo "true" || echo "false"
+)
+
+if [[ "$is_tmux_panes" == "true" ]]; then
+    echo "[$$ sway-tmux-resize] scaling tmux pane size" >>/tmp/xreaker.log
+
+    # window_zoomed_flag 只对 tmux 窗口中有多 pane 生效
+    read -r zoomed pane_width pane_height < <(
+        tmux display-message -p '#{window_zoomed_flag} #{pane_width} #{pane_height}'
+    )
+
+    # 全窗口状态不做操作，交由 Sway 继续处理
+    if [[ "$zoomed" == "0" ]]; then
+        if [[ "$ACTION" == "grow" ]]; then
+            # 放大原 pane 的 10 %（向上取整）
+            tmux resize-pane -x "$(echo "$pane_width" | awk '{print int($1*1.1) + ($1*1.1 > int($1*1.1))}')" \
+                -y "$(echo "$pane_height" | awk '{print int($1*1.1) + ($1*1.1 > int($1*1.1))}')"
+        elif [[ "$ACTION" == "shrink" ]]; then
+            # 缩小原 pane 的 10 %（向下取整）
+            tmux resize-pane -x "$(echo "$pane_width" | awk '{print int($1*0.9)}')" \
+                -y "$(echo "$pane_height" | awk '{print int($1*0.9)}')"
+        fi
+
+        exit $?
+    fi
+fi
+
+echo "[$$ sway-tmux-resize] scaling sway container size" >>/tmp/xreaker.log
+
+# Sway 窗口缩放功能概述
 # 1. 自动检测当前焦点窗口的状态：
 #    • 浮动窗口（floating） → 按百分比同步放大 / 缩小，并保持中心对齐
 #    • 平铺窗口（tiling）   → 根据水平 / 垂直拆分方向，按像素级调整兄弟窗口占比
@@ -92,11 +136,6 @@
     (if ($idx // -1) > 0                   then "true" else "false" end),
     (if ($idx // 9) < ($sibs | length) - 1 then "true" else "false" end)
 ')
-
-# 每次调整的大小增量
-DELTA=5
-# grow | shrink
-ACTION="$1"
 
 # 全屏状态不做操作
 if [[ "$IS_FULL" == "true" ]]; then
