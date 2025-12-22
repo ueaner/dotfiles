@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 开始录屏，可选择全屏/局部，以及含声/无声
+# 开始录屏，可选择全屏/局部，以及有声/无声
 # @depends: libnotify, wf-recorder, slurp
 
 echo "[$$ sway-recording] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
@@ -42,14 +42,27 @@ case "$RECORD_ACTION" in
     # Execute wf-recorder in background
     nohup wf-recorder -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
     ;;
-"area_noaudio")
-    nohup wf-recorder -g "$(slurp)" -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
-    ;;
 "output_audio")
     nohup wf-recorder -a -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
     ;;
+"area_noaudio")
+    # 1. 先选择区域坐标
+    GEOM=$(slurp)
+    # 2. 检查用户是否取消了选择（例如按了 ESC）
+    if [[ -z "$GEOM" ]]; then
+        echo "[$$ sway-recording] Recording Canceled." >>/tmp/xreaker.log
+        exit 0
+    fi
+    # 3. 再录屏
+    nohup wf-recorder -g "$GEOM" -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
+    ;;
 "area_audio")
-    nohup wf-recorder -g "$(slurp)" -a -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
+    GEOM=$(slurp)
+    if [ -z "$GEOM" ]; then
+        echo "[$$ sway-recording] Recording Canceled." >>/tmp/xreaker.log
+        exit 0
+    fi
+    nohup wf-recorder -g "$GEOM" -a -f "$FILEPATH" 1>$RECORDER_LOG 2>&1 &
     ;;
 *)
     notify-send -i $ICON -u critical "Recording Error" "Invalid action: $RECORD_ACTION"

@@ -5,17 +5,17 @@
 FA_ICON_DIR=~/.local/share/fa-icons
 # 截图： (U+F030, camera)
 # 录制： (U+F03D, video)
-# 含声： (U+F130, microphone)
+# 有声： (U+F130, microphone)
 # 停止： (U+F04D, stop)
 
 options=$(
     cat <<EOF
 Full Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
-Area Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
 Window Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
+Area Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
 Full Screen Record (No Audio)\0icon\x1f$FA_ICON_DIR/video.svg
-Area Record (No Audio)\0icon\x1f$FA_ICON_DIR/video.svg
 Full Screen Record (With Audio)\0icon\x1f$FA_ICON_DIR/microphone.svg
+Area Record (No Audio)\0icon\x1f$FA_ICON_DIR/video.svg
 Area Record (With Audio)\0icon\x1f$FA_ICON_DIR/microphone.svg
 Stop Recording\0icon\x1f$FA_ICON_DIR/stop.svg
 EOF
@@ -31,20 +31,20 @@ case "$choice" in
 "Full Screen Shot")
     ~/bin/sway-screenshot output
     ;;
-"Area Screen Shot")
-    ~/bin/sway-screenshot area
-    ;;
 "Window Screen Shot")
     ~/bin/sway-screenshot window
+    ;;
+"Area Screen Shot")
+    ~/bin/sway-screenshot area
     ;;
 "Full Screen Record (No Audio)")
     ~/bin/sway-recording output_noaudio
     ;;
-"Area Record (No Audio)")
-    ~/bin/sway-recording area_noaudio
-    ;;
 "Full Screen Record (With Audio)")
     ~/bin/sway-recording output_audio
+    ;;
+"Area Record (No Audio)")
+    ~/bin/sway-recording area_noaudio
     ;;
 "Area Record (With Audio)")
     ~/bin/sway-recording area_audio
