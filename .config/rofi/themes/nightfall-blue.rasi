@@ -16,6 +16,7 @@
     fg0: #eaeaea;
     fg1: #21252d;
     fg2: #42495c;
+    fg3: #8c3336;
 
     background-color: transparent;
     text-color:       @fg0;
@@ -94,9 +95,11 @@ listview {
     lines:   10;
     columns: 1;
 
-    fixed-height: false;
     border:       1px 0 0;
     border-color: @bg1;
+
+    fixed-height: false;
+    dynamic:      true;
 }
 
 element {
@@ -106,17 +109,22 @@ element {
     text-color:       @fg0;
 }
 
-element normal active {
+element normal.active, element alternate.active {
     text-color: @bg2;
 }
 
-element alternate active {
-    text-color: @bg2;
-}
-
-element selected normal, element selected active {
+element selected.normal, element selected.active {
     background-color: @bg2;
     text-color:       @fg1;
+}
+
+element normal.urgent, element alternate.urgent {
+    text-color:       @fg3;
+}
+
+element selected.urgent {
+    background-color: @bg2;
+    text-color:       @fg3;
 }
 
 /* https://github.com/davatorium/rofi/issues/1110 */
