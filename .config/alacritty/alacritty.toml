@@ -126,8 +126,10 @@ bindings = [
     { key = "X",           mods = "Super",         chars = "\u001Bsx"          }, # Pane: Close
     { key = "X",           mods = "Super|Shift",   chars = "\u001BsX"          }, # Pane: Close other panes
     { key = "|",           mods = "Super|Shift",   chars = "\u001Bs|"          }, # Pane: Evenly Layout
+    # See: ~/bin/sway-tmux-layout
     { key = "\\",          mods = "Super",         chars = "\u001Bs\\"         }, # Pane: Next Layout
     # Switching panes in Tmux is like switching containers in Sway
+    # See: ~/bin/sway-tmux-navigation
     { key = "H",           mods = "Super",         chars = "\u001Bsh"          }, # Pane: Force Left
     { key = "J",           mods = "Super",         chars = "\u001Bsj"          }, # Pane: Force Down
     { key = "K",           mods = "Super",         chars = "\u001Bsk"          }, # Pane: Force Up

@@ -1,4 +1,4 @@
-# Copy this to ~/.config/xremap/[host]-gnome.yml
+# Copy this to ~/.config/xremap/[host]-sway.yml
 # Override the keymap in the `~/.config/xremap/config.toml` file under sway.
 # Keymap for MacBook only
 
