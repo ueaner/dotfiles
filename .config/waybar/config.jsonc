@@ -12,12 +12,13 @@
         "sway/scratchpad",
         // XXX: After introducing "wlr/taskbar", the waybar cannot change its background color according to the scene.
         // "wlr/taskbar",
-        "mpris"
-    ],
-    "modules-center": [
         "sway/window"
     ],
+    // "modules-center": [
+    //     "sway/window"
+    // ],
     "modules-right": [
+        "mpris",
         "custom/recorder",
         "idle_inhibitor",
         "pulseaudio",
@@ -53,15 +54,15 @@
         "disable-scroll": true,
         "all-outputs": true,
         "warp-on-scroll": false,
-        "format": "{name}",
+        "format": "{icon}",
         "format-icons": {
-            "1": "",
-            "2": "",
-            "3": "", // 
-            "4": "",
-            "5": "",
+            // "1": "",
+            // "2": "",
+            // "3": "", // 
+            // "4": "",
+            // "5": "",
             "urgent": "",
-            // "focused": "",
+            "focused": "",
             "default": ""
         }
     },
@@ -291,8 +292,8 @@
     },
     "mpris": {
         // icon and title alignment
-        "format": "<span rise='1536'>{status_icon}</span> {title}",
-        "format-paused": "<span rise='1536'>{status_icon}</span> {title}",
+        "format": "<span rise='1536' weight='bold'>{status_icon}</span> {title}",
+        "format-paused": "<span rise='1536' weight='bold'>{status_icon}</span> {title}",
         "player-icons": {
             "default": "",
             "mpv": ""
