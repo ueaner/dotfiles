@@ -425,6 +425,30 @@
     - edir
 
 
+- name: Install cowsay
+  install-package:
+    name: cowsay
+    placeholders:
+      repo: Code-Hex/Neo-cowsay
+      version: "{{ template.github.version_v }}"
+    template: "{{ template.github.archive_v }}"
+    archives:
+      # The requested version number is "v2.0.4", but the archive name uses "2.0.4" without the "v".
+      # https://github.com/Code-Hex/Neo-cowsay/releases/download/v2.0.4/cowsay_2.0.4_Linux_x86_64.tar.gz
+      - cowsay_<version>_Linux_x86_64.tar.gz
+      - cowsay_<version>_Linux_arm64.tar.gz
+      - cowsay_<version>_macOS_x86_64.tar.gz
+      - cowsay_<version>_macOS_arm64.tar.gz
+    include:
+      - cowsay
+      - cowthink
+    dst: $XDG_BIN_HOME # defaults to $XDG_BIN_HOME
+    postinstall: |-
+      cowsay -h
+  tags:
+    - cowsay
+
+
 - name: Install cliphist
   when: ansible_system == "Linux"
   install-package:

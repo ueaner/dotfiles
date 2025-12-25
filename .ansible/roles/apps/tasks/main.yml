@@ -32,10 +32,35 @@
       - android-tools
       - wf-recorder
       - mpv-libs # libmpv.so.2 for termusic
+      # Fun! fortune | cowsay | lolcat
+      # https://github.com/Code-Hex/Neo-cowsay
+      - figlet
+      - lolcat
+      - fortune-mod
 
 # - name: Install/Upgrade web apps
 #   when: ansible_distribution == "Fedora"
 #   ansible.builtin.include_tasks: web.yml
+
+
+- name: Install fun apps via dnf (Fedora)
+  when: ansible_distribution == "Fedora"
+  ansible.builtin.shell: |-
+    set -o pipefail
+    ~/bin/git-sparse-checkout -r https://github.com/ueaner/fortunes -l /tmp/fortunes /data
+    sudo mv /tmp/fortunes/data/* /usr/share/games/fortune/
+
+    tee -a ~/.zshrc.local <<EOF
+    # Quote Of The Day
+    if [[ -o interactive ]]; then
+        echo
+        fortune -e chinese | cowsay | lolcat
+        echo
+    fi
+    EOF
+
+  changed_when: false
+
 
 - name: Install/Upgrade apps via flatpak (Fedora)
   when: ansible_distribution == "Fedora"
@@ -46,6 +71,7 @@
     fi
     flatpak install --user {{ item.name }}
   loop:
+    - { name: com.github.tchx84.Flatseal }
     # - { name: ca.desrt.dconf-editor, desktop: GNOME }
     # - { name: com.baidu.NetDisk }
     - { name: com.google.Chrome }
@@ -59,7 +85,6 @@
     # - { name: com.tencent.wemeet }
     # - { name: dev.zed.Zed }
     # - { name: io.github.mhogomchungu.media-downloader }
-    # - { name: com.github.tchx84.Flatseal }
     # Add the following to `~/.local/share/flatpak/overrides/com.qq.QQ` to enable wayland or configure with Flatseal
     # [Context]
     # sockets=wayland;!x11
