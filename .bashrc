@@ -53,3 +53,6 @@ done
 alias reload='. ~/.bashrc'
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias dotlocal='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'
+
+# shellcheck source=/dev/null
+[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local

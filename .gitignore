@@ -1,0 +1,7 @@
+.zshrc.local
+.bashrc.local
+.config/shell/.localrc
+.local/etc/
+.ssh/
+.dotfiles/
+.dotlocal/
