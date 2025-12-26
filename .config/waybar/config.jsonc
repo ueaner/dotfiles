@@ -298,10 +298,11 @@
             "default": "",
             "mpv": ""
         },
+        // 1-finger click: play-pause, 2-finger click: next track, 3-finger click: previous track
         "status-icons": {
-            "playing": "", // 
-            "paused": "", // 
-            "stopped": "" // 
+            "playing": "", // 
+            "paused": "", // 
+            "stopped": "" // 
         },
         "ignored-players": [
             "firefox",
