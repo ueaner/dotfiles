@@ -66,3 +66,5 @@ alias proxy_http='export all_proxy=http://127.0.0.1:1081; export https_proxy=htt
 alias unproxy='unset all_proxy; unset https_proxy; unset http_proxy'
 
 alias dnf='sudo dnf'
+
+alias music='termusic --disable-cover'
