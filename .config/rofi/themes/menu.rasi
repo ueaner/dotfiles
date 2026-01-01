@@ -6,6 +6,8 @@
 /* MACOS SPOTLIGHT LIKE DARK THEME FOR ROFI  */
 /* Author: Newman Sanchez (https://github.com/newmanls) */
 
+/* nightfall blue */
+
 * {
     font: "Noto Sans Mono 12, Font Awesome 6 Free 12, Font Awesome 6 Brands 12, monospace 12";
 
@@ -28,7 +30,7 @@
 
 window {
     background-color: @bg0;
-    border-radius:    8;
+    border-radius:    8px;
 
     location: north;
     y-offset: 20%;
@@ -103,6 +105,7 @@ listview {
 }
 
 element {
+    cursor:           pointer;
     padding:          8px 16px;
     spacing:          16px;
     background-color: transparent;

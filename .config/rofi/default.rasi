@@ -1,0 +1,32 @@
+configuration {
+    matching: "fuzzy";
+    sort: true;
+    sorting-method: "fzf";
+
+    show-icons: true;
+    combi-hide-mode-prefix: true;
+    display-combi: "󰕘 Combi";
+    display-drun: "󰀻 Apps";
+    display-window: " Window";
+    window-format: "{c} · {t}";
+    drun-display-format: "{name}";
+    drun-match-fields: "name,generic";
+
+    kb-row-select: "Control+y";
+    kb-secondary-paste: "Super+v";
+    kb-secondary-copy: "Super+c"; /* It can't work under Wayland. */
+    kb-entry-history-up: "Alt+Up,Control+o";
+    kb-entry-history-down: "Alt+Down,Control+i";
+    kb-remove-word-back: "Control+w";
+    /* kb-remove-word-forward: "Control+Alt+d"; */
+    kb-clear-line: "Control+BackSpace";
+
+    kb-row-up: "Up";
+    kb-row-down: "Down";
+    kb-element-next: "Tab,Control+n";
+    kb-element-prev: "Shift+Tab,Control+p";
+}
+
+// inputbar {
+//     children: [ prompt, entry, num-filtered-rows, textbox-num-sep, num-rows ];
+// }

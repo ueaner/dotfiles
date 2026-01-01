@@ -8,56 +8,45 @@ subcmd="$1"
 empty_id=
 nodes_count=
 
-# IFS=$'\t' read -r max_index max_name total \
-#     <<<"$(swaymsg -t get_workspaces | jq -r '
-#       (max_by(.num) | [.num, .name]) + [length] | @tsv
-#     ')"
-# echo "$max_index $max_name $total"
+read -r focused_id max_id holes nums_str <<<"$(
+    swaymsg -t get_workspaces |
+        jq -r '
+            (map(.num) | sort) as $nums
+            | ($nums | max) as $max
+            | ($nums | length) as $total
+            | (.[] | select(.focused == true) | .num) as $focused
+            | [$focused, $max, $max - $total, ($nums | join(" "))] | @tsv
+        '
+)"
 
-IFS=$'\t' read -r max_id total holes focused_id \
-    <<<"$(swaymsg -t get_workspaces | jq -r '
-    map(.num) as $nums
-    | ($nums | max) as $max
-    | ($nums | length) as $total
-    | (.[] | select(.focused == true) | .num) as $focused
-    | [$max, $total, $max - $total, $focused] | @tsv
-  ')"
-# max=4 total=3 holes=1
+nodes_count=$(
+    swaymsg -t get_tree |
+        jq --argjson idx "$focused_id" '
+            .. | objects
+            | select(.type=="workspace" and .num==$idx)
+            | ((.nodes + .floating_nodes) | length)
+        '
+)
 
-# 存在间断 workspace
-if [ "$holes" -gt 0 ]; then
-    empty_id=$(
-        swaymsg -t get_workspaces |
-            jq -r '
-      (map(.num) | sort) as $nums
-      | range(1; $nums[-1] + 1) as $i          # 连续序列 1..max
-      | select($i != $nums[$i-1])              # 第一次不等
-      | $i
-    ' | head -n1
-    )
-fi
+# 1. 当前 workspace 内无窗口, 使用当前 workspace
+[[ $nodes_count -eq 0 ]] && empty_id=$focused_id
 
-# 无间断, 检查当前 workspace 内是否有窗口
 if [[ -z "$empty_id" ]]; then
-    nodes_count=$(
-        swaymsg -t get_tree |
-            jq --argjson idx "$focused_id" '
-        .. | objects
-        | select(.type=="workspace" and .num==$idx)
-        | ((.nodes + .floating_nodes) | length)
-    '
-    )
+    # 把空格分隔的编号读进数组
+    read -ra nums <<<"$nums_str"
 
-    if [[ "$nodes_count" -eq 0 ]]; then
-        # 当前 workspace 内是无窗口, 使用当前 workspace
-        empty_id=$focused_id
-    else
-        # 开启新的 workspace
-        empty_id=$((max_id + 1))
-    fi
+    # 2. 存在间断 workspace
+    for ((i = 1; i <= max_id; i++)); do
+        [[ ${nums[i - 1]} -eq $i ]] && continue
+        empty_id=$i
+        break
+    done
+
+    # 3. 开启新的 workspace
+    [[ -z "$empty_id" ]] && empty_id=$((max_id + 1))
 fi
 
-echo "[$$ sway-workspace] subcmd: $subcmd, max_id: $max_id, total: $total, holes: $holes, focused_id: $focused_id, empty_id: $empty_id" >>/tmp/xreaker.log
+echo "[$$ sway-workspace] subcmd: $subcmd, focused_id: $focused_id, max_id: $max_id, nums: $nums_str, empty_id: $empty_id" >>/tmp/xreaker.log
 
 case "$subcmd" in
 # for workspace
@@ -75,8 +64,7 @@ move-to-rightmost)
         exit 0
     fi
 
-    swaymsg move container to workspace "$max_id"
-    swaymsg workspace "$max_id"
+    swaymsg "move container to workspace $max_id; workspace $max_id"
     ;;
 move-to-empty)
     # 无间断, 最后一个 workspace 单窗口, 不新建不必要的 workspace
@@ -84,11 +72,10 @@ move-to-empty)
         exit 0
     fi
 
-    swaymsg move container to workspace "$empty_id"
-    swaymsg workspace "$empty_id"
+    swaymsg "move container to workspace $empty_id; workspace $empty_id"
     ;;
 *)
-    notify-send "[$$ sway-workspace] argument must be one of \"switch-to-rightmost | switch-to-empty | move-to-rightmost | move-to-empty\""
+    notify-send "[$$ sway-workspace] argument must be one of 'switch-to-rightmost | switch-to-empty | move-to-rightmost | move-to-empty'"
     exit 1
     ;;
 esac

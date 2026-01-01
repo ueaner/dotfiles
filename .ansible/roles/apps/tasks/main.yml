@@ -30,6 +30,7 @@
       - xlsclients # list x11 client applications running on a display
       # - code # or code-insiders
       - android-tools
+      - grimpicker
       - wf-recorder
       - mpv-libs # libmpv.so.2 for termusic
       # Fun! fortune | cowsay | lolcat

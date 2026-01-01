@@ -1,0 +1,87 @@
+* {
+    font: "Noto Sans Mono 9, Font Awesome 6 Free 9, Font Awesome 6 Brands 9, monospace 9";
+
+    bg0:  #21252de6;
+    bg1:  #2e3440e6;
+    bg2:  #0A84FFe6;
+
+    fg0:  #eaeaea;
+    fg1:  #42495c;
+
+    background-color: transparent;
+    text-color:       @fg0;
+
+    margin:  0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    background-color: @bg0;
+    border-radius:    8px;
+
+    location: north;
+    y-offset: 20%;
+    width:    60%;
+    // height:   60%;
+
+    // round(9.8 + (lines - 1) * 8.3, 1)
+    // padding: 1.2em 1.3em 1.2em 1.3em;
+    // round(9.3 + (lines - 1) * 8.3, 1)
+    padding: 1em;
+
+    children:   [ mainbox ];
+}
+
+mainbox {
+    children: [ listview ];
+}
+
+/* listview 横向排列 */
+listview {
+    spacing: 1em;
+
+    flow:          horizontal;
+    lines:         3;
+    columns:       5;
+    fixed-columns: false;
+
+    fixed-height: false;
+    dynamic:      true;
+
+    scrollbar: false;
+}
+
+/* element 内部纵向排列 */
+element {
+    cursor: pointer;
+
+    orientation: vertical;
+    align-items: center;
+
+    border-radius: 8px;
+
+    padding: 1em;
+    spacing: 0.3em;
+}
+
+element selected {
+    background-color: @bg2;
+}
+
+element-icon {
+    size: 3em;
+
+    vertical-align:   0.5;
+    horizontal-align: 0.5;
+}
+
+element-text {
+    /* vertical-align 0.5 表示垂直居中 (0是顶部, 1是底部) */
+    vertical-align:   0.5;
+    /* horizontal-align 0.5 表示水平居中 (0为左对齐, 1为右对齐) */
+    horizontal-align: 0.5;
+
+    /* 允许文本在可用高度内扩展 */
+    expand: true;
+}
