@@ -1,12 +1,14 @@
+/* Author: ueaner (https://github.com/ueaner) */
+
 * {
     font: "Noto Sans Mono 9, Font Awesome 6 Free 9, Font Awesome 6 Brands 9, monospace 9";
 
-    bg0:  #21252de6;
-    bg1:  #2e3440e6;
-    bg2:  #0A84FFe6;
+    bg0: #21252de6;
+    bg1: #2e3440e6;
+    bg2: #0A84FFe6;
 
-    fg0:  #eaeaea;
-    fg1:  #42495c;
+    fg0: #eaeaea;
+    fg1: #42495c;
 
     background-color: transparent;
     text-color:       @fg0;
@@ -41,28 +43,28 @@ mainbox {
 listview {
     spacing: 1em;
 
-    flow:          horizontal;
-    lines:         3;
-    columns:       5;
+    lines:   3;
+    columns: 5;
+
     fixed-columns: false;
+    fixed-height:  false;
+    dynamic:       true;
 
-    fixed-height: false;
-    dynamic:      true;
-
+    flow: horizontal;
     scrollbar: false;
 }
 
 /* element 内部纵向排列 */
 element {
+    padding: 1em;
+    spacing: 0.3em;
+
+    border-radius: 8px;
+
     cursor: pointer;
 
     orientation: vertical;
     align-items: center;
-
-    border-radius: 8px;
-
-    padding: 1em;
-    spacing: 0.3em;
 }
 
 element selected {

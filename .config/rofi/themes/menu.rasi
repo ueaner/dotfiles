@@ -1,10 +1,8 @@
-/******************************************************************************
- * Rofi config.rasi with CSS variables
- * https://github.com/newmanls/rofi-themes-collection/blob/master/themes/spotlight-dark.rasi
- ******************************************************************************/
+// https://github.com/newmanls/rofi-themes-collection/blob/master/themes/spotlight-dark.rasi
 
 /* MACOS SPOTLIGHT LIKE DARK THEME FOR ROFI  */
 /* Author: Newman Sanchez (https://github.com/newmanls) */
+/* Author: ueaner (https://github.com/ueaner) */
 
 /* nightfall blue */
 
@@ -49,9 +47,6 @@ inputbar {
 }
 
 textbox-prompt-colon {
-    // 确保指定字体包含该图标的字体和大小
-    font: "Font Awesome 6 Free Solid 14";
-
     expand:  false;
     str:     "";
     padding: 0px 5px;
@@ -93,23 +88,33 @@ textbox {
     padding: 8px 24px;
 }
 
+/* listview 纵向排列 */
 listview {
-    lines:   10;
-    columns: 1;
-
     border:       1px 0 0;
     border-color: @bg1;
 
-    fixed-height: false;
-    dynamic:      true;
+    lines:   10;
+    columns: 1;
+
+    fixed-columns: true;
+    fixed-height:  false;
+    dynamic:       true;
+
+    flow: vertical;
+    scrollbar: false;
 }
 
+/* element 内部横向排列 */
 element {
-    cursor:           pointer;
-    padding:          8px 16px;
-    spacing:          16px;
+    padding: 8px 16px;
+    spacing: 16px;
+
     background-color: transparent;
     text-color:       @fg0;
+
+    cursor: pointer;
+
+    orientation: horizontal;
 }
 
 element normal.active, element alternate.active {

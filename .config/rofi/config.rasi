@@ -1,3 +1,5 @@
+/* Rofi config.rasi with CSS variables */
+
 @import "default.rasi"
 
- @theme "menu"
+@theme "menu"

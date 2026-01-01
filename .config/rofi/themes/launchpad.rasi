@@ -1,3 +1,5 @@
+// https://github.com/newmanls/rofi-themes-collection/blob/master/themes/launchpad.rasi
+
 /* MACOS LAUNCHPAD LIKE THEME FOR ROFI */
 /* Author: Newman Sanchez (https://github.com/newmanls) */
 /* Author: ueaner (https://github.com/ueaner) */
@@ -5,13 +7,12 @@
 * {
     font: "Noto Sans Mono 9, Font Awesome 6 Free 9, Font Awesome 6 Brands 9, monospace 9";
 
-    bg0:  #21252de6;
-    bg1:  #2e3440e6;
-    bg2:  #0A84FFe6;
-    // bg2:  #0860f2E6;
+    bg0: #21252de6;
+    bg1: #2e3440e6;
+    bg2: #0A84FFe6;
 
-    fg0:  #eaeaea;
-    fg1:  #42495c;
+    fg0: #eaeaea;
+    fg1: #42495c;
 
     background-color: transparent;
     text-color:       @fg0;
@@ -59,26 +60,30 @@ entry {
     placeholder-color: @fg1;
 }
 
+/* listview 横向排列 */
 listview {
     margin:  48px calc( 50% - 560px );
     spacing: 48px;
 
-    flow:          horizontal;
-    columns:       7;
+    columns: 7;
+
     fixed-columns: true;
 
+    flow: horizontal;
     scrollbar: false;
 }
 
+/* element 内部纵向排列 */
 element {
-    cursor: pointer;
-    orientation: vertical;
-    align-items: center;
+    padding: 8px 4px;
+    spacing: 4px;
 
     border-radius: 8px;
 
-    padding: 8px 4px;
-    spacing: 4px;
+    cursor: pointer;
+
+    orientation: vertical;
+    align-items: center;
 }
 
 element selected {
