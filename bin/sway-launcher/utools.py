@@ -21,7 +21,7 @@ logger = logging.getLogger("utools")
 
 def format_icon(name: str) -> str:
     icon_path = FA_ICON_DIR / f"{name}.svg"
-    return str(icon_path) if icon_path.exists() else "application-x-executable"
+    return str(icon_path) if icon_path.exists() else name
 
 
 def calculate_window_size(count: int) -> tuple[int, int, str, str]:

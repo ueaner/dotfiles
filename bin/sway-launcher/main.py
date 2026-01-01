@@ -171,7 +171,7 @@ def main():
         return
 
     logger.warning(f"No match window/application: {selected_name}")
-    subprocess.run(["notify-send", "Rofi No Match", selected_name])
+    subprocess.run(["notify-send", "Apps (No match)", selected_name])
 
 
 if __name__ == "__main__":
