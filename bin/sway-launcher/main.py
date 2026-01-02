@@ -1,21 +1,34 @@
 #!/usr/bin/env python3
-# 基于 rofi -dmenu 自定义已打开窗口列表和应用列表菜单，支持图标展示、遵循 XDG 规范去重过滤；
-# 可使用 Shift+Return 在新工作区中打开选中的应用（如果在 Sway 中指定了特定应用所属的工作区，则遵循 Sway 的配置）。
-# 可通过 window, drun 或 window,drun 参数，选择 Rofi 菜单中显示哪些内容，默认为 window,drun 都显示
-#
-# 使用：
-# python ~/bin/sway-launcher/main.py -show window
-# python ~/bin/sway-launcher/main.py -show "window,drun"
-# python ~/bin/sway-launcher/main.py -show drun -theme launchpad
+
+"""基于 rofi -dmenu 的窗口管理与应用启动器。
+
+该脚本整合了当前打开的窗口列表和系统应用列表（drun），支持图标展示并遵循 XDG 规范进行去重过滤。
+支持通过快捷键 Shift+Return 在新工作区中打开选中的应用（尊重 Sway 中为特定应用指定所属工作区的配置）。
+
+用法:
+    python ~/bin/sway-launcher/main.py [选项]
+
+参数说明:
+    -show: 指定菜单显示内容，可选 "window", "drun" 或 "window,drun"（默认）。
+    -theme: 指定显示的布局主题。
+        - menu: 标准的列表菜单展示（默认）。
+        - panel: 面板模式。
+        - launchpad: 全屏启动板模式（适合高密度图标展示）。
+
+示例:
+    $ python ~/bin/sway-launcher/main.py -show window                 # 仅显示已打开窗口
+    $ python ~/bin/sway-launcher/main.py -show "window,drun"          # 同时显示窗口和应用列表
+    $ python ~/bin/sway-launcher/main.py -show drun -theme launchpad  # 以 Launchpad 样式启动应用列表
+"""
 
 import argparse
 import json
 import logging
-import math
 import os
 import subprocess
 
 from config import DESKTOP_DIRS
+from utils.rofi_helper import calculate_window_size
 from utils.sway_helper import get_all_apps, get_first_empty_workspace, get_running_windows
 
 # 获取 main 模块的 logger
@@ -24,24 +37,6 @@ logger = logging.getLogger(__name__)
 
 def is_flatpak(path):
     return "flatpak" in str(path).lower()
-
-
-def calculate_window_size(count: int) -> tuple[int, int, str, str]:
-    """
-    计算 Rofi 布局，每列最多 5 个，最多 3 行
-    :param count: 工具个数
-    """
-    cols = min(count, 5)
-    rows = min(math.ceil(count / 5), 3)
-
-    # window { padding: 1.3em }
-    # width = round(9.8 + (cols - 1) * 8.3, 1)
-    # height = round(9.8 + (rows - 1) * 8.3, 1)
-    # window { padding: 1em }
-    width = round(9.3 + (cols - 1) * 8.3, 1)
-    height = round(9.3 + (rows - 1) * 8.3, 1)
-
-    return cols, rows, f"{width}em", f"{height}em"
 
 
 def main():

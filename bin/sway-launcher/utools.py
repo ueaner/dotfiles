@@ -1,45 +1,35 @@
 #!/usr/bin/env python3
-# 基于 rofi -dmenu 的自定义工具列表
 
-# 使用：
-# python ~/bin/sway-launcher/utools.py -theme menu
-# python ~/bin/sway-launcher/utools.py # 作用同上，默认使用 menu 菜单展示工具列表
-# python ~/bin/sway-launcher/utools.py -theme panel
-# python ~/bin/sway-launcher/utools.py -theme launchpad
+"""基于 rofi -dmenu 的自定义工具列表。
+
+该脚本通过 rofi 界面展示并启动自定义工具，支持多种视觉布局模式（如菜单、面板、全屏启动板）。
+
+用法:
+    python ~/bin/sway-launcher/utools.py [选项]
+
+参数说明:
+    -theme: 指定显示的布局主题。
+        - menu: 标准的列表菜单展示（默认）。
+        - panel: 面板模式。
+        - launchpad: 全屏启动板模式（适合高密度图标展示）。
+
+示例:
+    $ python ~/bin/sway-launcher/utools.py
+    $ python ~/bin/sway-launcher/utools.py -theme panel
+    $ python ~/bin/sway-launcher/utools.py -theme launchpad
+"""
 
 import argparse
 import logging
-import math
 import subprocess
 
 from config import DEBUG_LOG, FA_ICON_DIR, TOOLS_REGISTRY
+from utils.icon_finder import find_fa_icon
 from utils.loaders import load_instances
+from utils.rofi_helper import calculate_window_size
 
 # 获取 tools 模块的 logger
 logger = logging.getLogger("utools")
-
-
-def format_icon(name: str) -> str:
-    icon_path = FA_ICON_DIR / f"{name}.svg"
-    return str(icon_path) if icon_path.exists() else name
-
-
-def calculate_window_size(count: int) -> tuple[int, int, str, str]:
-    """
-    计算 Rofi 布局，每列最多 5 个，最多 3 行
-    :param count: 工具个数
-    """
-    cols = min(count, 5)
-    rows = min(math.ceil(count / 5), 3)
-
-    # window { padding: 1.3em }
-    # width = round(9.8 + (cols - 1) * 8.3, 1)
-    # height = round(9.8 + (rows - 1) * 8.3, 1)
-    # window { padding: 1em }
-    width = round(9.3 + (cols - 1) * 8.3, 1)
-    height = round(9.3 + (rows - 1) * 8.3, 1)
-
-    return cols, rows, f"{width}em", f"{height}em"
 
 
 def main():
@@ -61,7 +51,7 @@ def main():
 
     # 2. 构造 Rofi 输入内容
     # Rofi 支持格式：显示文本\0icon\x1f图标路径
-    rofi_input = "\n".join([f"{t.name()}\0icon\x1f{format_icon(t.icon())}" for t in tools])
+    rofi_input = "\n".join([f"{t.name()}\0icon\x1f{find_fa_icon(t.icon(), FA_ICON_DIR)}" for t in tools])
 
     # 4. 调用 Rofi 选择
     rofi_cmd = [

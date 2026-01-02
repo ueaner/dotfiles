@@ -27,18 +27,24 @@ configuration {
     kb-element-prev: "Shift+Tab,Control+p";
 }
 
+//
+// 覆盖 menu.rasi 配置：
+//
 // inputbar {
 //     children: [ prompt, entry, num-filtered-rows, textbox-num-sep, num-rows ];
 // }
 
-// // width = round(9.3 + (cols - 1) * 8.3, 1)
+//
+// 覆盖 panel.rasi 配置：
+//
+// // width = round(2 + (cols - 1) + 7.3 * cols, 1)
 // // theme_str = f"window {{ y-offset: 20%; width: {width}em; }}"
 // window {
 //     y-offset: 20%;
 //     width:    60%;
 // }
 //
-// // cols = min(len(items), 5)  # 每列最多 5 个
+// // cols = min(len(items), 5)                 # 每列最多 5 个
 // // rows = min(math.ceil(len(items) / 5), 3)  # 最多 3 行
 // // theme_str = f"listview {{ columns: {cols}; lines: {rows}; }}"
 // listview {
