@@ -1,0 +1,16 @@
+[Added Associations]
+image/png=imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/svg+xml=imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/jpeg=imv-dir.desktop;swayimg.desktop;imv.desktop;
+
+[Default Applications]
+# xdg-mime default imv.desktop image/jpeg
+image/tiff=imv.desktop
+image/png=imv.desktop
+image/jpeg=imv.desktop
+image/svg+xml=imv.desktop
+image/gif=imv.desktop
+image/heif=imv.desktop
+image/jxl=imv.desktop
+image/webp=imv.desktop
+image/qoi=imv.desktop
