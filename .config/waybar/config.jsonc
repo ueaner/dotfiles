@@ -36,10 +36,15 @@
     "sway/window": {
         // "icon": true,
         "format": "{app_id} - {shell}",
+        // "format": "{title}",
+        "max-length": 35,
         "rewrite": {
             "^ - $": "",
             "^ - xwayland$": "XWayland",
-            "(.*) - xdg_shell$": "$1"
+            "(.*) - xdg_shell$": "$1",
+            // Remove UTF-8 BOM from {title}
+            "\uFEFF - (.*)": "$1"
+            // "(.*) - (.*)": "$2" // {title}
         }
     },
     "wlr/taskbar": {
