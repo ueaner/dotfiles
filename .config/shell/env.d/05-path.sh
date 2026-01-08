@@ -64,8 +64,8 @@ if type uv &>/dev/null; then
     fi
 fi
 
-if [[ -d ~/.ansible/.venv/bin ]]; then
-    PATH=~/.ansible/.venv/bin:$PATH
+if [[ -d ~/.local/share/nvim/mason/bin ]]; then
+    PATH=~/.local/share/nvim/mason/bin:$PATH
 fi
 
 # Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)
