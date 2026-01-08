@@ -3,17 +3,19 @@ import subprocess
 
 
 class Yazi:
-    def __init__(self, name="Yazi"):
+    _name: str
+
+    def __init__(self, name: str = "Yazi"):
         self._name = name
 
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def icon(self):
+    def icon(self) -> str:
         return "yazi"
 
     # swaymsg '[app_id="yazi"] focus' || foot --app-id=yazi -e yazi
-    def run(self):
+    def run(self) -> None:
         # 1. 尝试执行聚焦命令
         # capture_output=True 用于隐藏控制台输出
         result = subprocess.run(["swaymsg", '[app_id="yazi"] focus'], capture_output=True)

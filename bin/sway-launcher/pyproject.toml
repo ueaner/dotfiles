@@ -1,0 +1,44 @@
+[project]
+name = "sway-launcher"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.mypy]
+# ~/.local/share/nvim/mason/bin/mypy .
+python_version = 3.14
+strict = true
+show_error_codes = true
+pretty = true
+
+[tool.basedpyright]
+# ~/.local/share/nvim/mason/bin/basedpyright
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+reportUnusedCallResult = false
+
+[tool.ruff]
+# ~/.local/share/nvim/mason/bin/ruff check
+target-version = "py314"
+line-length = 120
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    ".mypy_cache",
+    ".ruff_cache",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]

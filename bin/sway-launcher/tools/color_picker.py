@@ -5,14 +5,16 @@ import subprocess
 class ColorPicker:
     """取色器，依赖 grimpicker"""
 
-    def __init__(self, name="Color Picker"):
+    _name: str
+
+    def __init__(self, name: str = "Color Picker"):
         self._name = name
 
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def icon(self):
+    def icon(self) -> str:
         return "eye-dropper"
 
-    def run(self):
+    def run(self) -> None:
         subprocess.run(["grimpicker", "--copy"])

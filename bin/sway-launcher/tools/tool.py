@@ -7,6 +7,6 @@ class Tool(Protocol):
 
     def icon(self) -> str: ...
 
-    def run(self):
+    def run(self) -> None:
         """执行工具的具体逻辑"""
         ...

@@ -1,8 +1,9 @@
 # utils/icon_finder.py
 import os
+from pathlib import Path
 
 
-def find_icon(icon_name, icon_dirs):
+def find_icon(icon_name: str, icon_dirs: list[Path]) -> str:
     """
     查找桌面图标路径
 
@@ -28,7 +29,7 @@ def find_icon(icon_name, icon_dirs):
     return "application-x-executable"
 
 
-def find_fa_icon(icon_name: str, icon_dir: str) -> str:
+def find_fa_icon(icon_name: str, icon_dir: Path) -> str:
     """
     查找 Font Awesome 图标路径
 

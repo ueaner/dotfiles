@@ -1,52 +1,53 @@
 import importlib
 import logging
-from typing import Iterable, TypeVar
+from collections.abc import Iterable
+from typing import Protocol, cast
 
-# 获取当前模块的专属 logger "utils.loaders"
+# 使用 PEP 695 定义类型别名，更易读且支持内省
+type ConfigItem = (
+    tuple[str, str] | tuple[str, str, tuple[object, ...]] | tuple[str, str, tuple[object, ...], dict[str, object]]
+)
+
+
+# 定义一个简单的调用协议，替代 Callable/BoundCallable
+class Creator(Protocol):
+    def __call__(self, *args: object, **kwargs: object) -> object: ...
+
+
 logger = logging.getLogger(__name__)
 
-# 定义泛型，以便调用时可以指定返回类型（如 list[Tool]）
-T = TypeVar("T")
 
-
-def load_instances(config_list: Iterable[tuple], target_type: type[T] | None = None) -> list[T]:
+def load_instances[T](config_list: Iterable[ConfigItem], target_type: type[T] | None = None) -> list[T]:
     """
-    通用实例加载器。
-
-    支持配置格式：
-    - (mod_path, cls_name)
-    - (mod_path, cls_name, (args, ...))
-    - (mod_path, cls_name, (args, ...), {kwargs, ...})
+    通用动态实例加载器。
     """
     instances: list[T] = []
 
     for item in config_list:
         try:
-            # 1. 解析配置
+            # 1. 结构化解包简化：利用 match 模式直接提取并收窄类型
             match item:
-                case mod_path, cls_name:
-                    args, kwargs = (), {}
-                case mod_path, cls_name, tuple() as args:
-                    kwargs = {}
-                case mod_path, cls_name, tuple() as args, dict() as kwargs:
-                    pass
-                case _:
-                    logger.error(f"Invalid format: {item}")
-                    continue
+                case (str() as mod, str() as cls, *rest):
+                    # 根据剩余参数长度解包 args 和 kwargs
+                    args = cast(tuple[object, ...], rest[0]) if len(rest) > 0 else ()
+                    kwargs = cast(dict[str, object], rest[1]) if len(rest) > 1 else {}
 
-            # 2. 动态加载
-            module = importlib.import_module(mod_path)
-            cls = getattr(module, cls_name)
-            instance = cls(*args, **kwargs)
+            # 2. 动态加载：getattr 返回值直接配合 Protocol
+            module = importlib.import_module(mod)
+            factory: Creator = getattr(module, cls)
+            instance = factory(*args, **kwargs)
 
-            # 3. 类型校验 (可选)
-            if target_type and not isinstance(instance, target_type):
-                logger.warning(f"Type mismatch: {cls_name} not a {target_type.__name__}")
+            # 3. 类型过滤
+            if target_type is not None:
+                if isinstance(instance, target_type):
+                    instances.append(instance)
+                else:
+                    logger.warning(f"Type mismatch: {cls} is not {target_type}")
+            else:
+                # 若无 target_type，则假定符合 T (调用者需负责此处的类型安全)
+                instances.append(cast(T, instance))
 
-            instances.append(instance)
-
-        except Exception as e:
-            # 将详细错误信息写入日志文件
-            logger.error(f"Failed to load {item}: {str(e)}", exc_info=True)
+        except Exception:
+            logger.exception(f"Failed to load instance from {item}")
 
     return instances

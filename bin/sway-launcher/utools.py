@@ -22,8 +22,11 @@
 import argparse
 import logging
 import subprocess
+from typing import NamedTuple
 
-from config import DEBUG_LOG, FA_ICON_DIR, TOOLS_REGISTRY
+from config import FA_ICON_DIR, TOOLS_REGISTRY
+from tools.tool import Tool
+from utils.exception_handler import handle_exception, report_exception
 from utils.icon_finder import find_fa_icon
 from utils.loaders import load_instances
 from utils.rofi_helper import calculate_window_size
@@ -32,27 +35,18 @@ from utils.rofi_helper import calculate_window_size
 logger = logging.getLogger("utools")
 
 
-def main():
-    # 1. 解析命令行参数
+class Args(NamedTuple):
+    theme: str
+
+
+def parse_arguments() -> Args:
+    """解析命令行参数"""
     parser = argparse.ArgumentParser(description="Sway Tool Launcher")
     parser.add_argument("-theme", dest="theme", default="menu", help="Layout theme: menu, panel or launchpad")
-    args = parser.parse_args()
+    return Args(**vars(parser.parse_args()))
 
-    # 工具总数
-    expected_count = len(TOOLS_REGISTRY)
 
-    # 1. 注册所有工具
-    tools = load_instances(TOOLS_REGISTRY)
-
-    # 判断是否全部加载成功
-    if len(tools) < expected_count:
-        logger.warning(f"Only {len(tools)}/{expected_count} tools loaded.")
-        subprocess.run(["notify-send", "Tool Load Error", f"Only {len(tools)}/{expected_count} tools loaded. See {DEBUG_LOG}."])
-
-    # 2. 构造 Rofi 输入内容
-    # Rofi 支持格式：显示文本\0icon\x1f图标路径
-    rofi_input = "\n".join([f"{t.name()}\0icon\x1f{find_fa_icon(t.icon(), FA_ICON_DIR)}" for t in tools])
-
+def build_rofi_command(theme: str, tools: list[Tool]) -> list[str]:
     # 4. 调用 Rofi 选择
     rofi_cmd = [
         "rofi",
@@ -71,28 +65,41 @@ def main():
         rofi_cmd.extend(["-eh", "2"])
 
     # 菜单 menu, 面板 panel, 全屏 launchpad
-    match args.theme:
+    match theme:
         case "panel":  # 使用横向大图标主题
             # 计算 Rofi 布局
             cols, rows, width, _ = calculate_window_size(len(tools))
             # rofi -show drun -theme-str 'listview { columns: 5; lines: 3; } window { width: 60%; y-offset: 20%; }'
-            # rofi window 的 width 默认设置了 60%, 对于少于 5 个工具的列表，需要设置 window 的 width, 以便单个工具的显示不会太宽
+            # rofi window 的 width 默认设置了 60%, 对于少于 5 个工具的列表，
+            # 需要设置 window 的 width, 以便单个工具的显示不会太宽
             theme_str = f"listview {{ columns: {cols}; lines: {rows}; }} window {{ width: {width}; }}"
             rofi_cmd.extend(["-theme", "panel", "-theme-str", theme_str])
-            logger.info(f"Applying Panel theme. -theme-str: {theme_str}")
+            logger.debug(f"Applying Panel theme. -theme-str: {theme_str}")
 
         case "launchpad":
             # Applying full-screen launchpad logic
             rofi_cmd.extend(["-theme", "launchpad"])
-            logger.info("Applying Launchpad theme.")
+            logger.debug("Applying Launchpad theme.")
 
         case "menu":
-            logger.info("Applying Menu (default) theme.")
+            logger.debug("Applying Menu (default) theme.")
 
         case _:
-            logger.warning(f"Unknown theme '{args.theme}', falling back to Menu (default) theme.")
-            subprocess.run(["notify-send", "Tool (Unknown theme)", f"Unknown theme '{args.theme}', falling back to default."])
+            report_exception(
+                error=Exception(f"Unknown theme '{theme}', falling back to Menu (default) theme."),
+                notify=True,
+            )
 
+    return rofi_cmd
+
+
+@handle_exception(fallback=("", 1))
+def execute_rofi_and_get_selection(rofi_cmd: list[str], tools: list[Tool]) -> tuple[str, int]:
+    """执行 Rofi 并获取用户选择和返回码"""
+    # Rofi 显示列表
+    rofi_input = "\n".join([f"{t.name()}\0icon\x1f{find_fa_icon(t.icon(), FA_ICON_DIR)}" for t in tools])
+
+    # 执行 Rofi 命令
     proc = subprocess.Popen(
         # 使用横向大图标主题
         rofi_cmd,
@@ -101,19 +108,46 @@ def main():
         text=True,
     )
     stdout, _ = proc.communicate(input=rofi_input)
-    selected_name = stdout.strip()
+    return stdout.strip(), proc.returncode
+
+
+def main() -> None:
+    # 1. 解析命令行参数
+    args = parse_arguments()
+    theme = args.theme
+
+    # 2. 注册所有工具
+    tools: list[Tool] = load_instances(TOOLS_REGISTRY)
+
+    # 工具总数
+    tools_count = len(tools)
+    expected_count = len(TOOLS_REGISTRY)
+
+    # 判断是否全部加载成功
+    if tools_count < expected_count:
+        report_exception(
+            error=Exception(f"Only {tools_count}/{expected_count} tools loaded."),
+            notify=True,
+        )
+
+    # 3. 调用 Rofi
+    rofi_cmd = build_rofi_command(theme, tools)
+    selected_name, _ = execute_rofi_and_get_selection(rofi_cmd, tools)
+
     if not selected_name:
         return
 
-    # 5. 匹配并运行工具
+    # 4. 匹配并运行工具
     selected_clean = " ".join(selected_name.split())
     for t in tools:
         if " ".join(t.name().split()) == selected_clean:
             t.run()
             return
 
-    logger.warning(f"No match tool: {selected_clean}")
-    subprocess.run(["notify-send", "Tool (No match)", selected_clean])
+    report_exception(
+        error=Exception(f"No match tool: {selected_clean}"),
+        notify=True,
+    )
 
 
 if __name__ == "__main__":
