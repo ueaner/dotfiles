@@ -112,8 +112,8 @@ zstyle ':completion::complete:*' cache-path "$ZSH_COMPCACHE"
 autoload -Uz compinit
 compinit -i -C -d "$ZSH_COMPDUMP"
 
-# 有补全文件更新时，使用 compsync 同步更新
-compsync() {
+# 有补全文件更新时，使用 update-zsh-compdump 同步更新
+update-zsh-compdump() {
     rm -f "$ZSH_COMPDUMP"
     autoload -Uz compinit
     compinit -i -C -d "$ZSH_COMPDUMP"

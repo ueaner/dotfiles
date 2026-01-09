@@ -38,14 +38,14 @@ _dotlocal() {
 
 ## 补全文件生效
 
-有补全文件更新时，执行 `compsync` 使补全文件更新生效。
+有补全文件更新时，执行 `update-zsh-compdump` 使补全文件更新生效。
 
-点击查看 [compsync] 的方法定义，大致内容如下：
+点击查看 [update-zsh-compdump] 的方法定义，大致内容如下：
 
 ```bash
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 
-compsync() {
+update-zsh-compdump() {
     rm -f "$ZSH_COMPDUMP"
     autoload -Uz compinit
     compinit -i -C -d "$ZSH_COMPDUMP"
@@ -53,4 +53,4 @@ compsync() {
 
 ```
 
-[compsync]: https://github.com/ueaner/dotfiles/blob/main/.config/shell/rc.d/20-completion.zsh
+[update-zsh-compdump]: https://github.com/ueaner/dotfiles/blob/main/.config/shell/rc.d/20-completion.zsh
