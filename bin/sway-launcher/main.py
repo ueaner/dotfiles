@@ -62,21 +62,19 @@ def build_rofi_lines(show_list: list[str]) -> tuple[list[WindowInfo], list[AppIn
         # 获取运行中的窗口
         windows = get_running_windows()
 
-        # 处理运行窗口的 display_name 显示字段
-        # 获取 app_id 字段的最大长度
+        # 对齐 app_id 字段右补全空格或截断，便于在 Rofi 上整齐显示
         max_len = max((len(w.app_id) for w in windows), default=0)
-        # 对齐宽度最大 20
+        # 对齐宽度最大 25
         align_len = min(max_len, 25)
-        # 将每个 id 字段右补全空格，便于在 Rofi 上整齐显示
         for w in windows:
             if len(w.app_id) > align_len:
-                # 截断前17位并添加3个点，总长20
+                # 截断并添加3个点
                 w.display_name = f"{w.app_id[:22]}... · {w.name}"
             else:
-                # 右侧补空格，确保总长20
+                # 右侧补空格
                 w.display_name = f"{w.app_id.ljust(align_len)} · {w.name}"
 
-            # 格式：显示文本 \0 icon \x1f 图标路径 \x1f info \x1f 附加数据
+            # 设置运行窗口项设为 normal.active 状态
             rofi_lines.append(f"{w.display_name}\0icon\x1f{w.icon}\x1factive\x1ftrue")
 
         logger.debug(f"windows: {json.dumps([[w.app_id, w.icon, w.shell, w.con_id] for w in windows])}")
@@ -86,8 +84,8 @@ def build_rofi_lines(show_list: list[str]) -> tuple[list[WindowInfo], list[AppIn
         apps = get_all_apps(DESKTOP_DIRS)
         for a in apps:
             a.display_name = a.name
-            # 应用部分：使用 \x1fmeta\x1f 传递搜索关键词
             line = f"{a.display_name}\0icon\x1f{a.icon}"
+            # 传递搜索关键词
             if a.generic:
                 # 将 generic 信息填入 meta 字段，Rofi 会搜索它但不会显示它
                 line += f"\x1fmeta\x1f{a.generic}"
@@ -117,12 +115,11 @@ def build_rofi_command(theme: str, rofi_lines: list[str]) -> list[str]:
 
     # 菜单 menu, 面板 panel, 全屏 launchpad
     match theme:
-        case "panel":  # 使用横向大图标主题
+        case "panel":
             # 计算 Rofi 布局
             cols, rows, width, _ = calculate_window_size(len(rofi_lines))
             # rofi -show drun -theme-str 'listview { columns: 3; lines: 5; } window { y-offset: 20%; width: 60%; }'
-            # rofi window 的 width 默认设置了 60%, 对于少于 5 个工具的列表，
-            # 需要设置 window 的 width, 以便单个工具的显示不会太宽
+            # 设置 window width 确保单个工具的显示不会太宽
             theme_str = f"listview {{ columns: {cols}; lines: {rows}; }} window {{ width: {width}; }}"
             rofi_cmd.extend(["-theme", "panel", "-theme-str", theme_str])
             logger.debug(f"Applying Panel theme. -theme-str: {theme_str}")
@@ -159,6 +156,7 @@ def execute_rofi_and_get_selection(rofi_cmd: list[str], rofi_lines: list[str]) -
         text=True,
     )
     stdout, _ = proc.communicate(input=rofi_input)
+    # 获取用户选择和返回码
     return stdout.strip(), proc.returncode
 
 
@@ -200,7 +198,7 @@ def main() -> None:
     theme = args.theme
 
     # 将参数解析为列表，例如 ["window", "drun"]
-    show_list = [s.strip() for s in args.show_types.split(",")]
+    show_list = args.show_types.split(",")
 
     # 2. 根据参数按需获取数据并构建 Rofi 行
     windows, apps, rofi_lines = build_rofi_lines(show_list)

@@ -25,7 +25,7 @@ def load_instances[T](config_list: Iterable[ConfigItem], target_type: type[T] | 
 
     for item in config_list:
         try:
-            # 1. 结构化解包简化：利用 match 模式直接提取并收窄类型
+            # 1. 解析配置
             match item:
                 case (str() as mod, str() as cls, *rest):
                     # 根据剩余参数长度解包 args 和 kwargs

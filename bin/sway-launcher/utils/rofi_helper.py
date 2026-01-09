@@ -2,15 +2,15 @@
 import math
 
 
-def calculate_window_size(count: int) -> tuple[int, int, str, str]:
+def calculate_window_size(count: int, max_cols: int = 5, max_rows: int = 3) -> tuple[int, int, str, str]:
     """
-    计算 Rofi 布局。每列最多 5 个，最多 3 行。
+    计算 Rofi 布局。每列最多 max_cols 个，最多 max_rows 行。
 
     Args:
         count: 工具个数。
     """
-    cols = min(count, 5)
-    rows = min(math.ceil(count / 5), 3)
+    cols = min(count, max_cols)
+    rows = min(math.ceil(count / max_cols), max_rows)
 
     # height (em): 2 + (rows - 1) + 7.3 * rows
     #

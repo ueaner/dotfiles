@@ -47,7 +47,7 @@ def parse_arguments() -> Args:
 
 
 def build_rofi_command(theme: str, tools: list[Tool]) -> list[str]:
-    # 4. 调用 Rofi 选择
+    """构建 Rofi 命令"""
     rofi_cmd = [
         "rofi",
         "-dmenu",
@@ -60,18 +60,17 @@ def build_rofi_command(theme: str, tools: list[Tool]) -> list[str]:
 
     # any() 会在找到第一个包含 "\r" 的元素时立即停止遍历
     if any("\r" in t.name() for t in tools):
-        # -eh 2 允许 element-text 显示为两行，配合 '\r' 使用
-        # 当包含 '\r' 时，使用 " ".join(item["display_name"].split()) == " ".join(selected_name.split()) 进行比对
+        # -eh 2 允许 element-text 使用 "\r" 显示为两行，
+        # 使用 " ".join(display_name.split()) == " ".join(selected_name.split()) 匹配选中项
         rofi_cmd.extend(["-eh", "2"])
 
     # 菜单 menu, 面板 panel, 全屏 launchpad
     match theme:
-        case "panel":  # 使用横向大图标主题
+        case "panel":
             # 计算 Rofi 布局
             cols, rows, width, _ = calculate_window_size(len(tools))
-            # rofi -show drun -theme-str 'listview { columns: 5; lines: 3; } window { width: 60%; y-offset: 20%; }'
-            # rofi window 的 width 默认设置了 60%, 对于少于 5 个工具的列表，
-            # 需要设置 window 的 width, 以便单个工具的显示不会太宽
+            # rofi -show drun -theme-str 'listview { columns: 3; lines: 5; } window { y-offset: 20%; width: 60%; }'
+            # 设置 window width 确保单个工具的显示不会太宽
             theme_str = f"listview {{ columns: {cols}; lines: {rows}; }} window {{ width: {width}; }}"
             rofi_cmd.extend(["-theme", "panel", "-theme-str", theme_str])
             logger.debug(f"Applying Panel theme. -theme-str: {theme_str}")
@@ -101,13 +100,13 @@ def execute_rofi_and_get_selection(rofi_cmd: list[str], tools: list[Tool]) -> tu
 
     # 执行 Rofi 命令
     proc = subprocess.Popen(
-        # 使用横向大图标主题
         rofi_cmd,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         text=True,
     )
     stdout, _ = proc.communicate(input=rofi_input)
+    # 获取用户选择和返回码
     return stdout.strip(), proc.returncode
 
 
@@ -119,11 +118,9 @@ def main() -> None:
     # 2. 注册所有工具
     tools: list[Tool] = load_instances(TOOLS_REGISTRY)
 
-    # 工具总数
+    # 如果未全部加载成功，则弹出桌面通知
     tools_count = len(tools)
     expected_count = len(TOOLS_REGISTRY)
-
-    # 判断是否全部加载成功
     if tools_count < expected_count:
         report_exception(
             error=Exception(f"Only {tools_count}/{expected_count} tools loaded."),
@@ -137,7 +134,7 @@ def main() -> None:
     if not selected_name:
         return
 
-    # 4. 匹配并运行工具
+    # 4. 匹配选择并运行工具
     selected_clean = " ".join(selected_name.split())
     for t in tools:
         if " ".join(t.name().split()) == selected_clean:

@@ -8,7 +8,6 @@ from collections.abc import Callable
 from functools import wraps
 from typing import ParamSpec, TypeVar, cast
 
-# 配置日志
 logger = logging.getLogger(__name__)
 
 

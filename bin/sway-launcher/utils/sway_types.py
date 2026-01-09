@@ -87,8 +87,8 @@ class Node(TypedDict, total=False):
 
 class RootNode(Node, total=False):
     type: Required[Literal["root"]]
-    nodes: list[Output]
-    floating_nodes: list[Output]
+    nodes: Required[list[Output]]
+    floating_nodes: list[Output]  # 空的
 
 
 class Output(Node, total=False):
@@ -98,8 +98,8 @@ class Output(Node, total=False):
     """
 
     type: Required[Literal["output"]]
-    nodes: list[Workspace]
-    floating_nodes: list[Workspace]
+    nodes: Required[list[Workspace]]
+    floating_nodes: list[Workspace]  # 空的
     # name: str
     # rect: Rect
 
@@ -129,6 +129,7 @@ class Workspace(Node, total=False):
     nodes: list[ContainerNode]
     floating_nodes: list[ContainerNode]
 
+    # 对于 Scratchpad workspace 没有 num 字段
     num: Required[int]
     visible: bool
     output: str
@@ -187,13 +188,27 @@ def is_root(node: SwayNode) -> TypeIs[RootNode]:
 
 
 def is_output(node: SwayNode) -> TypeIs[Output]:
+    # Output 存在于 RootNode 的 nodes 数组中
     return node["type"] == "output"
 
 
 def is_workspace(node: SwayNode) -> TypeIs[Workspace]:
+    # Workspace 存在于 Output 的 nodes 数组中
     return node["type"] == "workspace"
 
 
 def is_container(node: SwayNode) -> TypeIs[ContainerNode]:
     """如果返回 True，则 node 的类型在当前作用域被锁定为 ContainerNode"""
     return node["type"] == "con" or node["type"] == "floating_con"
+
+
+def is_scratchpad_output(node: Output) -> bool:
+    return node["name"] == "__i3"
+
+
+def is_scratchpad_workspace(node: Workspace) -> bool:
+    # Scratchpad 的特点：
+    # 1. Scratchpad 是一个 name 为 __i3_scratch 的 Workspace，
+    #    所在的 Output 节点 name 为 __i3 (为了兼容 i3)
+    # 2. Scratchpad 内的窗口，不可见且会被强制设为浮动状态
+    return node["name"] == "__i3_scratch"
