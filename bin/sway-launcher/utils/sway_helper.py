@@ -175,40 +175,50 @@ def get_first_empty_workspace() -> int:
     2. 寻找编号序列中第一个缺失的数字（填补空隙）。
     3. 返回 最大编号 + 1（开启新空间）。
     """
-    # 获取工作区列表
-    workspaces: list[Workspace] = sway_get_workspaces()
-    if not workspaces:
-        return 1
+    # # 获取工作区列表
+    # workspaces: list[Workspace] = sway_get_workspaces()
+    # if not workspaces:
+    #     return 1
 
-    focused_ws = next((w for w in workspaces if w.get("focused")), None)
-    focused_num = focused_ws.get("num") if focused_ws else None
-    if not focused_num:
-        return 1
+    # focused_ws = next((w for w in workspaces if w.get("focused")), None)
+    # focused_num = focused_ws.get("num") if focused_ws else None
+    # if not focused_num:
+    #     return 1
+    # existing_nums = {w["num"] for w in workspaces if w["num"] > 0}
 
     # RootNode
     tree = sway_get_tree()
     if not tree:
         return 1
 
+    # 工作区编号全局唯一
+    ws_nums: set[int] = set()
+
     # 1. 检查当前聚焦的工作区是否为空
-    for output in tree.get("nodes"):
-        if is_scratchpad_output(output):
+    for o in tree.get("nodes"):
+        if is_scratchpad_output(o):
             continue
-        for workspace in output.get("nodes"):
+
+        focused_ws_name = o.get("current_workspace") if o.get("current_workspace") else None
+        for w in o.get("nodes"):
             if (
-                workspace.get("num", 0) == focused_num
-                and not workspace.get("nodes")
-                and not workspace.get("floating_nodes")
+                focused_ws_name
+                and w.get("name") == focused_ws_name
+                # workspace.get("num", 0) == focused_num
+                and not w.get("nodes")
+                and not w.get("floating_nodes")
             ):
-                return focused_num
+                return w.get("num")
+
+            if w["num"] > 0:
+                ws_nums.add(w["num"])
 
     # 2. 寻找编号序列中的缺失项（填补空缺）
-    existing_nums = {w["num"] for w in workspaces if w["num"] > 0}
-    max_num = max(existing_nums) if existing_nums else 0
+    ws_max_num = max(ws_nums) if ws_nums else 0
 
-    for i in range(1, max_num + 1):
-        if i not in existing_nums:
+    for i in range(1, ws_max_num + 1):
+        if i not in ws_nums:
             return i
 
     # 3. 开启全新编号
-    return max_num + 1
+    return ws_max_num + 1

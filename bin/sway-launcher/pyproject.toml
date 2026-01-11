@@ -1,7 +1,7 @@
 [project]
 name = "sway-launcher"
 version = "0.1.0"
-description = "Add your description here"
+description = "Personalized desktop environment (DE) scripts"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = []

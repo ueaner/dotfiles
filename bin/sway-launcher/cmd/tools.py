@@ -3,26 +3,11 @@
 """基于 rofi -dmenu 的自定义工具列表。
 
 该脚本通过 rofi 界面展示并启动自定义工具，支持多种视觉布局模式（如菜单、面板、全屏启动板）。
-
-用法:
-    python ~/bin/sway-launcher/utools.py [选项]
-
-参数说明:
-    -theme: 指定显示的布局主题。
-        - menu: 标准的列表菜单展示（默认）。
-        - panel: 面板模式。
-        - launchpad: 全屏启动板模式（适合高密度图标展示）。
-
-示例:
-    $ python ~/bin/sway-launcher/utools.py
-    $ python ~/bin/sway-launcher/utools.py -theme panel
-    $ python ~/bin/sway-launcher/utools.py -theme launchpad
 """
 
 import argparse
 import logging
 import subprocess
-from typing import NamedTuple
 
 from config import FA_ICON_DIR, TOOLS_REGISTRY
 from tools.tool import Tool
@@ -33,17 +18,6 @@ from utils.rofi_helper import calculate_window_size
 
 # 获取 tools 模块的 logger
 logger = logging.getLogger("utools")
-
-
-class Args(NamedTuple):
-    theme: str
-
-
-def parse_arguments() -> Args:
-    """解析命令行参数"""
-    parser = argparse.ArgumentParser(description="Sway Tool Launcher")
-    parser.add_argument("-theme", dest="theme", default="menu", help="Layout theme: menu, panel or launchpad")
-    return Args(**vars(parser.parse_args()))
 
 
 def build_rofi_command(theme: str, tools: list[Tool]) -> list[str]:
@@ -110,9 +84,9 @@ def execute_rofi_and_get_selection(rofi_cmd: list[str], tools: list[Tool]) -> tu
     return stdout.strip(), proc.returncode
 
 
-def main() -> None:
+def cmd_tools(args: argparse.Namespace) -> None:
     # 1. 解析命令行参数
-    args = parse_arguments()
+    # args = parse_arguments()
     theme = args.theme
 
     # 2. 注册所有工具
@@ -145,7 +119,3 @@ def main() -> None:
         error=Exception(f"No match tool: {selected_clean}"),
         notify=True,
     )
-
-
-if __name__ == "__main__":
-    main()
