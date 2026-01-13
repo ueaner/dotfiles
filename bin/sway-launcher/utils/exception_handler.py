@@ -21,7 +21,6 @@ def report_exception(error: Exception, context: str = "", notify: bool = False) 
         notify: 是否发送桌面通知，默认不发送，避免在循环中使用 notify = True
     """
     error_msg = f"{context}: {str(error)}" if context else str(error)
-    print(error_msg)
 
     # 检查当前是否有活跃的异常堆栈
     if sys.exc_info()[0] is not None:

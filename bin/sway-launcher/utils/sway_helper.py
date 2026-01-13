@@ -14,28 +14,19 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(slots=True)
-class AppInfo:
-    """已安装的应用信息"""
-
+class App:
     app_id: str
     name: str
-    generic: str
-    exec: str
-    path: str
-    icon: str | None = None
-    display_name: str | None = None
+    icon: str
+    # 已安装应用的独有字段
+    generic: str = ""
+    exec: str = ""
+    # 运行中的窗口的独有字段
+    con_id: int = -1
+    shell: str = "unknown"
 
-
-@dataclass(slots=True)
-class WindowInfo:
-    """运行中的窗口信息"""
-
-    app_id: str
-    name: str  # title
-    con_id: int
-    shell: str
-    icon: str | None = None
-    display_name: str | None = None
+    def is_window(self) -> bool:
+        return self.con_id != -1
 
 
 @handle_exception(fallback=None, notify=True)
@@ -64,7 +55,7 @@ def sway_get_workspaces() -> list[Workspace]:
 
 # from line_profiler import profile
 # @profile
-def get_all_apps(desktop_dirs: Iterable[Path]) -> list[AppInfo]:
+def get_all_apps(desktop_dirs: Iterable[Path]) -> list[App]:
     """扫描 desktop_dirs 目录并按规则去重、解析"""
     # 扫描并去重 .desktop 应用
     id_to_path: dict[str, Path] = {}
@@ -81,14 +72,22 @@ def get_all_apps(desktop_dirs: Iterable[Path]) -> list[AppInfo]:
             if app_id not in id_to_path:
                 id_to_path[app_id] = entry
 
-    apps: list[AppInfo] = []
+    apps: list[App] = []
     current_desktops = get_current_desktops()
 
     for path in id_to_path.values():
         parsed = parse_desktop_file(path, current_desktops)
         if parsed:
             # 将字典解包或手动映射到 dataclass
-            apps.append(AppInfo(**parsed))
+            apps.append(
+                App(
+                    app_id=parsed["app_id"],
+                    name=parsed["name"],
+                    icon=parsed["icon"],
+                    generic=parsed["generic"],
+                    exec=parsed["exec"],
+                )
+            )
 
     apps.sort(key=lambda x: x.name.lower())
 
@@ -104,10 +103,10 @@ def get_all_apps(desktop_dirs: Iterable[Path]) -> list[AppInfo]:
     return apps
 
 
-def build_window_info(node: ContainerNode) -> WindowInfo | None:
+def build_window_info(node: ContainerNode) -> App | None:
     xprops: X11Window | None = node.get("window_properties")
 
-    app_id: str | None = (xprops.get("class") if xprops else None) or node.get("app_id") or node.get("sandbox_app_id")
+    app_id = (xprops.get("class") if xprops else None) or node.get("app_id") or node.get("sandbox_app_id")
     if not app_id:
         return None
 
@@ -116,21 +115,21 @@ def build_window_info(node: ContainerNode) -> WindowInfo | None:
 
     # "<span color='#7aa6da'>●</span>", # 🔘
     # 取图标优先使用 sandbox_app_id
-    icon: str | None = node.get("sandbox_app_id") or node.get("app_id") or (xprops.get("class") if xprops else None)
+    icon = node.get("sandbox_app_id") or node.get("app_id") or (xprops.get("class", "") if xprops else "")
 
-    return WindowInfo(
+    return App(
         app_id=app_id,
         name=node.get("name").lstrip("\ufeff").removeprefix(" - "),
+        icon=icon,
         con_id=node.get("id"),
         shell=node.get("shell", ""),
-        icon=icon,
     )
 
 
 # https://man.archlinux.org/man/sway-ipc.7.en#4._GET_TREE
-def get_running_windows() -> list[WindowInfo]:
+def get_running_windows() -> list[App]:
     """获取运行中的窗口列表"""
-    windows: list[WindowInfo] = []
+    windows: list[App] = []
 
     tree = sway_get_tree()
     if not tree:
@@ -149,9 +148,9 @@ def get_running_windows() -> list[WindowInfo]:
     return windows
 
 
-def get_scratchpad_windows() -> list[WindowInfo]:
+def get_scratchpad_windows() -> list[App]:
     """获取 Scratchpad 窗口列表"""
-    windows: list[WindowInfo] = []
+    windows: list[App] = []
 
     tree = sway_get_tree()
     if not tree:

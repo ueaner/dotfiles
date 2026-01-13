@@ -12,11 +12,11 @@
     bg0: #21252de6;
     bg1: #2e3440e6;
     bg2: #7aa6dae6;
+    bg3: #0A84FFe6;
 
     fg0: #eaeaea;
-    fg1: #21252d;
-    fg2: #42495c;
-    fg3: #8c3336;
+    fg1: #42495c;
+    fg2: #8c3336;
 
     background-color: transparent;
     text-color:       @fg0;
@@ -54,7 +54,7 @@ textbox-prompt-colon {
 
 num-filtered-rows, textbox-num-sep, num-rows {
     expand:     false;
-    text-color: @fg2;
+    text-color: @fg1;
 }
 textbox-num-sep {
     str:     "/";
@@ -75,7 +75,7 @@ entry {
     font: inherit;
 
     placeholder:       "Search";
-    placeholder-color: @fg2;
+    placeholder-color: @fg1;
 }
 
 message {
@@ -121,18 +121,25 @@ element normal.active, element alternate.active {
     text-color: @bg2;
 }
 
-element selected.normal, element selected.active {
+element selected {
     background-color: @bg2;
-    text-color:       @fg1;
+}
+
+element selected.normal {
+    text-color:       @bg0;
+}
+
+element selected.active {
+    text-color:       @bg1;
 }
 
 element normal.urgent, element alternate.urgent {
-    text-color:       @fg3;
+    text-color:       @fg2;
 }
 
 element selected.urgent {
     background-color: @bg2;
-    text-color:       @fg3;
+    text-color:       @fg2;
 }
 
 /* https://github.com/davatorium/rofi/issues/1110 */

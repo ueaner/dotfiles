@@ -40,9 +40,9 @@ BACKGROUND_TOOLS = {"wl-copy", "xclip", "xsel"}
 
 FA_ICON_DIR: Path = Path.home() / ".local/share/fa-icons"
 
-TOOLS_REGISTRY = [
-    ("tools.color_picker", "ColorPicker"),  # 无参数
-    ("tools.clipboard", "Clipboard"),  # 无参数
-    ("tools.yazi", "Yazi"),  # 无参数
-    # ("tools.example", "Example", ("Example\r(Extra info)",)),  # 单参数
+TOOLS = [
+    ("tool.color_picker", "ColorPicker"),  # 无参数
+    ("tool.clipboard", "Clipboard"),  # 无参数
+    ("tool.yazi", "Yazi"),  # 无参数
+    # ("tool.example", "Example", ("Example\r(Extra info)",)),  # 单参数
 ]

@@ -1,7 +1,6 @@
 # utils/xdg_parser.py
 import logging
 import os
-import re
 import shutil
 from pathlib import Path
 
@@ -9,21 +8,18 @@ from .exception_handler import handle_exception
 
 logger = logging.getLogger(__name__)
 
-# 清理 Exec 占位符并去空格
-STRIP_EXEC_RE = re.compile(r"%[fFuUikpst]")
-
 DESKTOP_FIELDS: set[str] = {
     "Name",
     "GenericName",
-    "Exec",
-    "TryExec",
     "Icon",
-    "Type",
+    "TryExec",
     "NoDisplay",
     "Hidden",
     "OnlyShowIn",
     "NotShowIn",
-    "URL",
+    # "Type",
+    # "Exec",  # re.compile(r"%[fFuUikpst]")
+    # "URL",
 }
 
 
@@ -89,27 +85,12 @@ def parse_desktop_file(path: Path, current_desktops: set[str]) -> dict[str, str]
     if (try_exec := entry.get("TryExec")) and not shutil.which(try_exec):
         return None
 
-    # 4. 字段提取
-    final_exec = ""
-    entry_type = entry.get("Type", "Application")
-    if entry_type == "Application":
-        if not (exec_raw := entry.get("Exec")):
-            return None
-        final_exec = STRIP_EXEC_RE.sub("", exec_raw).strip()
-    elif entry_type == "Link":
-        final_exec = entry.get("URL", "")
-    else:
-        # 忽略 Directory, Service 等类型
-        return None
-
-    if not final_exec:
-        return None
+    final_exec = f"flatpak run {path.stem}" if "flatpak" in str(path).lower() else f"gtk-launch {path.stem}"
 
     return {
         "app_id": path.stem,
         "name": entry.get("Name", path.stem),
-        "generic": entry.get("GenericName", ""),
         "icon": entry.get("Icon", ""),
+        "generic": entry.get("GenericName", ""),
         "exec": final_exec,
-        "path": str(path),
     }

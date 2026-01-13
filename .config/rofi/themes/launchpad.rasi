@@ -9,10 +9,12 @@
 
     bg0: #21252de6;
     bg1: #2e3440e6;
-    bg2: #0A84FFe6;
+    bg2: #7aa6dae6;
+    bg3: #0A84FFe6;
 
     fg0: #eaeaea;
     fg1: #42495c;
+    fg2: #8c3336;
 
     background-color: transparent;
     text-color:       @fg0;
@@ -86,8 +88,20 @@ element {
     align-items: center;
 }
 
+element normal.active, element alternate.active {
+    text-color: @bg2;
+}
+
 element selected {
-    background-color: @bg2;
+    background-color: @bg3;
+}
+
+element selected.normal {
+    text-color:       @bg0;
+}
+
+element selected.active {
+    text-color:       @bg1;
 }
 
 element-icon {
@@ -105,4 +119,5 @@ element-text {
 
     /* 允许文本在可用高度内扩展 */
     expand: true;
+    text-color: inherit;
 }
