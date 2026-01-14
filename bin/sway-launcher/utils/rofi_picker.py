@@ -12,7 +12,9 @@ def calculate_window_size(count: int, max_cols: int = 5, max_rows: int = 3) -> t
     计算 Rofi 布局。每列最多 max_cols 个，最多 max_rows 行。
 
     Args:
-        count: 工具个数。
+        count: 条目个数。
+        max_cols: 最大列数。
+        max_rows: 最大行数。
     """
     cols = min(count, max_cols)
     rows = min(math.ceil(count / max_cols), max_rows)
@@ -127,7 +129,7 @@ class RofiPicker(Picker):
                 return ["-theme", "launchpad"]
 
             case Theme.MENU:
-                return []  # 默认主题不需要额外选项
+                return ["-theme", "menu"]
 
     def execute_command(self, cmd: list[str], input_str: str) -> tuple[str, int]:
         """执行命令并获取结果"""

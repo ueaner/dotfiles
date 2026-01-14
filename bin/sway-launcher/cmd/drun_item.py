@@ -1,11 +1,18 @@
 import subprocess
 
-from utils.launcher import RunnableItem
-from utils.sway_helper import App
+from config import DESKTOP_DIRS
+from utils.launcher import Config, Item, ItemProvider
+from utils.sway_helper import App, get_all_apps
 
 
-class AppItem(RunnableItem):
-    """应用项目的具体实现"""
+class AppItemProvider(ItemProvider[Item]):
+    def items(self, config: Config) -> list[Item]:
+        apps = get_all_apps(DESKTOP_DIRS)
+        return [AppItem(app) for app in apps]
+
+
+class AppItem(Item):
+    """应用条目的具体实现"""
 
     data: App
 
@@ -26,10 +33,15 @@ class AppItem(RunnableItem):
             return f"{self.name()}\0icon\x1f{self.icon()}"
 
     def run(self, returncode: int = 0) -> None:
+        if "flatpak" in self.data.path.lower():
+            exec_cmd = ["flatpak", "run", self.data.app_id]
+        else:
+            exec_cmd = ["gtk-launch", self.data.app_id]
+
         if returncode == 0:
-            subprocess.Popen(["gtk-launch", self.data.app_id], stdout=subprocess.DEVNULL)
-        elif returncode == 10:
+            subprocess.Popen(exec_cmd, stdout=subprocess.DEVNULL)
+        elif returncode == 10:  # Shift+Return 逻辑
             from utils.sway_helper import get_first_empty_workspace
 
             target_ws = get_first_empty_workspace()
-            subprocess.Popen(["swaymsg", f"workspace {target_ws}; exec {self.data.exec}"])
+            subprocess.Popen(["swaymsg", f"workspace {target_ws}; exec {' '.join(exec_cmd)}"])

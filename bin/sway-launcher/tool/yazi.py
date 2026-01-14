@@ -1,8 +1,10 @@
 # Yazi File Manager
 import subprocess
 
+from .tool import Tool
 
-class Yazi:
+
+class Yazi(Tool):
     _name: str
 
     def __init__(self, name: str = "Yazi"):

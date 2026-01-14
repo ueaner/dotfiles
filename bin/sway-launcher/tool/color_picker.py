@@ -1,8 +1,10 @@
 # Color Picker
 import subprocess
 
+from .tool import Tool
 
-class ColorPicker:
+
+class ColorPicker(Tool):
     """取色器，依赖 grimpicker"""
 
     _name: str

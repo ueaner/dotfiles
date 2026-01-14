@@ -96,9 +96,9 @@ element selected {
     background-color: @bg3;
 }
 
-element selected.normal {
-    text-color:       @bg0;
-}
+// element selected.normal {
+//     text-color:       @bg0;
+// }
 
 element selected.active {
     text-color:       @bg1;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""基于 rofi -dmenu 的窗口切换、桌面应用与自定义工具启动器。
+"""基于 Rofi 的 Sway 窗口切换、桌面应用与自定义工具启动器。
 
 用法:
     python ~/bin/sway-launcher [选项]
@@ -19,13 +19,13 @@
     $ python ~/bin/sway-launcher -show window                 # 仅显示已打开窗口
     $ python ~/bin/sway-launcher -show "window,drun"          # 同时显示窗口和应用列表（默认）
     $ python ~/bin/sway-launcher -show drun -theme launchpad  # 以 Launchpad 样式显示应用列表
-    $ python ~/bin/sway-launcher -show tool -theme panel      # 以 Launchpad 样式显示工具列表
+    $ python ~/bin/sway-launcher -show tool -theme panel      # 以面板模式显示工具列表
 """
 
 import argparse
 import os
 import sys
-from cmd.cmd_launcher import cmd_launcher
+from cmd.start_launcher import start_launcher
 
 PROG = os.path.basename(sys.argv[0])
 
@@ -50,7 +50,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="menu",
         help="Layout theme: menu, panel or launchpad",
     )
-    root.set_defaults(func=cmd_launcher)
+    root.set_defaults(func=start_launcher)
 
     # # 子命令
     # sub = root.add_subparsers(dest="command", required=True, metavar="command", help="Subcommand Help")

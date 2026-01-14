@@ -85,12 +85,10 @@ def parse_desktop_file(path: Path, current_desktops: set[str]) -> dict[str, str]
     if (try_exec := entry.get("TryExec")) and not shutil.which(try_exec):
         return None
 
-    final_exec = f"flatpak run {path.stem}" if "flatpak" in str(path).lower() else f"gtk-launch {path.stem}"
-
     return {
         "app_id": path.stem,
         "name": entry.get("Name", path.stem),
         "icon": entry.get("Icon", ""),
         "generic": entry.get("GenericName", ""),
-        "exec": final_exec,
+        "path": str(path),
     }

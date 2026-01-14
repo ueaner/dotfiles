@@ -20,7 +20,7 @@ class App:
     icon: str
     # 已安装应用的独有字段
     generic: str = ""
-    exec: str = ""
+    path: str = ""
     # 运行中的窗口的独有字段
     con_id: int = -1
     shell: str = "unknown"
@@ -85,7 +85,7 @@ def get_all_apps(desktop_dirs: Iterable[Path]) -> list[App]:
                     name=parsed["name"],
                     icon=parsed["icon"],
                     generic=parsed["generic"],
-                    exec=parsed["exec"],
+                    path=parsed["path"],
                 )
             )
 

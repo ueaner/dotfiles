@@ -48,28 +48,30 @@ class Config:
 
 @runtime_checkable
 class Item(Protocol):
-    """通用项目协议，所有在 launcher 中显示的项目应遵循此协议"""
+    """通用条目协议，所有在 launcher 中显示的条目应遵循此协议"""
 
     def name(self) -> str:
-        """返回项目的显示名称"""
+        """显示名称"""
         ...
 
     def icon(self) -> str:
-        """返回项目的图标名称"""
+        """图标名称"""
         ...
 
     def format(self) -> str:
         """格式化显示字符串"""
         ...
 
+    def run(self, returncode: int = 0) -> None:
+        """执行条目"""
+        ...
+
 
 @runtime_checkable
-class RunnableItem(Item, Protocol):
-    """可执行项目协议，包含运行方法"""
+class ItemProvider[T: Item](Protocol):
+    """条目提供者接口"""
 
-    def run(self, returncode: int = 0) -> None:
-        """执行项目"""
-        ...
+    def items(self, config: Config) -> list[T]: ...
 
 
 @runtime_checkable
@@ -85,36 +87,34 @@ class Picker(Protocol):
         ...
 
 
-class Launcher[T: RunnableItem]:
+class Launcher[T: Item]:
     """Launcher 基础类，依赖于选择器接口"""
 
     config: Config
     picker: Picker
+    item_providers: list[ItemProvider[T]]
 
-    def __init__(self, config: Config, picker: Picker):
+    def __init__(self, config: Config, picker: Picker, item_providers: list[ItemProvider[T]]):
         self.config = config
         self.picker = picker
-
-    def items(self) -> list[T]:
-        """获取要显示的项目列表，由子类实现"""
-        raise NotImplementedError
+        self.item_providers = item_providers
 
     def format(self, item: T) -> str:
-        """格式化单个项目为显示字符串
+        """格式化单个条目为显示字符串
 
         子类可以覆盖此方法，对所有的 items 进行统一格式化
         """
         return item.format()
 
     def handle_selection(self, selected_item: T, returncode: int = 0) -> None:
-        """处理用户选择的项目
+        """处理用户选择的条目
 
         子类可以覆盖此方法，扩展选中后要执行的动作
         """
         selected_item.run(returncode)
 
     def match(self, item: T, selected_name: str) -> bool:
-        """匹配选中的项目，默认按名称匹配"""
+        """匹配选中的条目，默认按名称匹配"""
         # 清理空格进行匹配，处理可能的多行显示
         item_name = " ".join(item.name().split())
         selected_clean = " ".join(selected_name.split())
@@ -122,8 +122,10 @@ class Launcher[T: RunnableItem]:
 
     def launch(self) -> None:
         """启动 launcher 的主要流程"""
-        # 1. 获取项目
-        items = self.items()
+        # 1. 获取条目
+        items: list[T] = []
+        for provider in self.item_providers:
+            items.extend(provider.items(self.config))
 
         if not items:
             report_exception(
@@ -132,7 +134,7 @@ class Launcher[T: RunnableItem]:
             )
             return
 
-        # 2. 格式化项目为字符串列表
+        # 2. 格式化条目为字符串列表
         formatted_items = [self.format(item) for item in items]
 
         # 3. 通过选择器接口显示并获取用户选择

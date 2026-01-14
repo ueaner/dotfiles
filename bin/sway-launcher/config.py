@@ -34,15 +34,8 @@ ICON_DIRS = [
     Path.home() / ".local/share/flatpak/exports/share/icons/hicolor/256x256/apps",
 ]
 
-# --------------- utools ---------------
+# --------------- tools ---------------
 
 BACKGROUND_TOOLS = {"wl-copy", "xclip", "xsel"}
 
 FA_ICON_DIR: Path = Path.home() / ".local/share/fa-icons"
-
-TOOLS = [
-    ("tool.color_picker", "ColorPicker"),  # 无参数
-    ("tool.clipboard", "Clipboard"),  # 无参数
-    ("tool.yazi", "Yazi"),  # 无参数
-    # ("tool.example", "Example", ("Example\r(Extra info)",)),  # 单参数
-]

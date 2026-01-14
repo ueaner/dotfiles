@@ -1,8 +1,10 @@
 # Clipboard
 import subprocess
 
+from .tool import Tool
 
-class Clipboard:
+
+class Clipboard(Tool):
     _name: str
 
     def __init__(self, name: str = "Clipboard"):
