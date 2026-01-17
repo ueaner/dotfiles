@@ -3,6 +3,9 @@
 [options]
 # Suppress built-in key bindings, and specify them explicitly in this config file.
 suppress_default_binds = true
+# Ensure that the image is centered by default.
+initial_pan = 50 50
+scaling_mode = shrink
 
 [aliases]
 # Define aliases here. Any arguments passed to an alias are appended to the command.
