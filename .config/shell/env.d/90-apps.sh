@@ -1,6 +1,8 @@
 # Native Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1
 
+export AQUA_GLOBAL_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/aqua/aqua.yaml"
+
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus
 # export XMODIFIERS=@im=ibus

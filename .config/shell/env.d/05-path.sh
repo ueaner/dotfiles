@@ -67,6 +67,9 @@ fi
 if [[ -d ~/.local/share/nvim/mason/bin ]]; then
     PATH=~/.local/share/nvim/mason/bin:$PATH
 fi
+if [[ -d ~/.local/share/aquaproj-aqua/bin ]]; then
+    PATH=~/.local/share/aquaproj-aqua/bin:$PATH
+fi
 
 # Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)
 # Personal executable scripts: ~/bin
