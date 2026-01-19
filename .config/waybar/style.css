@@ -55,8 +55,7 @@ button:hover {
 
 #workspaces button {
     font-weight: bold; /* Font Awesome Solid */
-    /* padding: 0 5px; {name} */
-    padding: 0 8px; /* {icon} */
+    padding: 0 8px;
     background-color: transparent;
     color: @main-foreground;
 }
