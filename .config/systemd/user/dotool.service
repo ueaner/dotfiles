@@ -7,7 +7,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/dotoold
+ExecStart=-/usr/local/bin/dotoold
 StandardOutput=file:/tmp/dotool.stdout.log
 StandardError=file:/tmp/dotool.stderr.log
 Restart=always

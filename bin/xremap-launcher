@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Xremap launcher on Fedora
 
+# NOTE: 查看 systemctl --user show-environment 确保 xremap 命令在输出的 PATH 中
+
 # cat /sys/devices/virtual/dmi/id/product_name
 
-. /etc/os-release
-if [[ "${VARIANT_ID}" == "workstation" ]]; then
-    VARIANT_ID="gnome"
-fi
+desktop=$(echo -n "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')
 
-host_specific_config="$HOME/.config/xremap/$(hostnamectl hostname)-${VARIANT_ID}.yml"
+host_specific_config="$HOME/.config/xremap/$(hostnamectl hostname)-${desktop}.yml"
+echo "$host_specific_config" >/tmp/a.log
+type -a xremap >>/tmp/a.log
 
 # Running xremap without sudo
 if [ -f "$host_specific_config" ]; then
-    ~/.local/bin/xremap --watch=device "$host_specific_config" ~/.config/xremap/config.yml
+    xremap --watch=device "$host_specific_config" ~/.config/xremap/config.yml
 else
-    ~/.local/bin/xremap --watch=device ~/.config/xremap/config.yml
+    xremap --watch=device ~/.config/xremap/config.yml
 fi

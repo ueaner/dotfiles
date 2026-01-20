@@ -107,10 +107,6 @@ export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 #
 export NPM_CONFIG_USERCONFIG=$HOME/.config/npm/npmrc
 export PNPM_HOME=$XDG_DATA_HOME/pnpm
-case ":$PATH:" in
-*":$PNPM_HOME:"*) ;;
-*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
 
 # https://docs.deno.com/runtime/reference/env_variables/
 export DENO_DIR=$XDG_DATA_HOME/deno

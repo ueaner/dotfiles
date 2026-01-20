@@ -12,7 +12,7 @@ Documentation=https://github.com/xremap/xremap
 # sleep workaround from https://github.com/xremap/xremap/issues/105#issuecomment-1190994137
 ExecStartPre=/usr/bin/sleep 1
 # Running xremap without sudo
-ExecStart=%h/bin/xremap-launcher
+ExecStart=-%h/bin/xremap-launcher
 StandardOutput=file:/tmp/xremap.stdout.log
 StandardError=file:/tmp/xremap.stderr.log
 Restart=always

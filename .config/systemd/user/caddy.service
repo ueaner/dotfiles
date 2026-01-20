@@ -14,8 +14,8 @@ WantedBy=default.target
 
 [Service]
 Type=notify
-ExecStart=%h/.local/bin/caddy run --environ --config %h/.local/etc/Caddyfile
-ExecReload=%h/.local/bin/caddy reload --config %h/.local/etc/Caddyfile --force
+ExecStart=/usr/bin/env caddy run --environ --config %h/.local/etc/Caddyfile
+ExecReload=/usr/bin/env caddy reload --config %h/.local/etc/Caddyfile --force
 TimeoutStopSec=5s
 LimitNOFILE=1048576
 PrivateTmp=true

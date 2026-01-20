@@ -2,6 +2,8 @@
 # 0. cargo install shadowsocks-rust --features aead-cipher-extra
 # 1. Copy this to ~/.config/systemd/user/shadowsocks-rust-local.service
 # 2. systemctl --user enable --now shadowsocks-rust-local
+#
+# [x] PATH is in ~/.config/environment.d/60-paths.conf
 
 [Unit]
 Description=shadowsocks-rust ssservice local
@@ -13,7 +15,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/ssservice local --log-without-time -c %h/.local/etc/shadowsocks-rust-local.json
+ExecStart=/usr/bin/env ssservice local --log-without-time -c %h/.local/etc/shadowsocks-rust-local.json
 StandardOutput=file:/tmp/shadowsocks-rust.stdout.log
 StandardError=file:/tmp/shadowsocks-rust.stderr.log
 Restart=always

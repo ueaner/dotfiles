@@ -9,5 +9,5 @@ Description=Wayland clipboard manager
 # Listen for clipboard changes
 [Service]
 Type=simple
-ExecStart=wl-paste --watch %h/.local/bin/cliphist store
+ExecStart=/usr/bin/env wl-paste --watch cliphist store
 Restart=on-failure

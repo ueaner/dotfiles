@@ -13,7 +13,7 @@ WantedBy=default.target
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/ydotoold
+ExecStart=-/usr/bin/ydotoold
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillMode=process
 TimeoutSec=180

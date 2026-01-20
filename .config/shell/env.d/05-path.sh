@@ -57,7 +57,7 @@ if type uv &>/dev/null; then
         PATH="$python_bindir:$PATH"
     fi
 
-    if ls ~/.local/share/uv/tools/*/bin &>/dev/null; then
+    if /bin/ls ~/.local/share/uv/tools/*/bin &>/dev/null; then
         for p in ~/.local/share/uv/tools/*/bin; do
             PATH="$p:$PATH"
         done
@@ -69,6 +69,9 @@ if [[ -d ~/.local/share/nvim/mason/bin ]]; then
 fi
 if [[ -d ~/.local/share/aquaproj-aqua/bin ]]; then
     PATH=~/.local/share/aquaproj-aqua/bin:$PATH
+fi
+if [[ -d ~/.local/share/pnpm ]]; then
+    PATH=~/.local/share/pnpm:$PATH
 fi
 
 # Third-party executables: $HOME/.local/bin ($XDG_BIN_HOME)
@@ -83,5 +86,20 @@ fi
 #for p in ${paths[@]}; do
 #    PATH="$p:$PATH"
 #done
+
+if [[ "${OSTYPE}" == darwin* ]]; then
+    # 立即生效
+    launchctl setenv PATH "$PATH"
+    # 持久化, 重启生效, 自启动服务可以在重启后拿到
+    sudo launchctl config user path "$PATH"
+else
+    # NOTE: 配合 ExecStart=/usr/bin/env caddy ... 使用
+
+    # 立即生效
+    systemctl --user import-environment PATH
+    # 持久化, 重启生效, 自启动服务可以在重启后拿到
+    echo "PATH=$PATH" >~/.config/environment.d/60-paths.conf
+    systemctl --user daemon-reload
+fi
 
 export PATH

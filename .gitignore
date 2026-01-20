@@ -1,6 +1,7 @@
 .zshrc.local
 .bashrc.local
 .config/shell/.localrc
+.config/environment.d/60-paths.conf
 .local/etc/
 .ssh/
 .dotfiles/
