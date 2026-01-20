@@ -57,15 +57,17 @@ if [[ ! -x "$ANSIBLE_BIN_PATH/ansible" ]]; then
     uv python list --managed-python --only-installed
     uv python list --no-managed-python
 
-    if [[ -d ~/.ansible ]]; then
-        cd ~/.ansible
-        # ~/.ansible/.venv/bin/ansible --version
-        uv run ansible --version
+    uv tool install --upgrade ansible-core --force
 
-        ANSIBLE_BIN_PATH=~/.ansible/.venv/bin
-    else
-        uv tool install --upgrade ansible
-    fi
+    # if [[ -d ~/.ansible ]]; then
+    #     cd ~/.ansible
+    #     # ~/.ansible/.venv/bin/ansible --version
+    #     uv run ansible --version
+
+    #     ANSIBLE_BIN_PATH=~/.ansible/.venv/bin
+    # else
+    #     uv tool install --upgrade ansible-core
+    # fi
 fi
 
 $ANSIBLE_BIN_PATH/ansible --version
