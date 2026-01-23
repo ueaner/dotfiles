@@ -1,7 +1,39 @@
 # Native Wayland for Firefox
 export MOZ_ENABLE_WAYLAND=1
 
-export AQUA_GLOBAL_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/aqua/aqua.yaml"
+export AQUA_POLICY_CONFIG="$HOME/.config/aqua/policy.yaml"
+export AQUA_GLOBAL_CONFIG="$HOME/.config/aqua/aqua.yaml"
+
+aqua_specific_config() {
+    aqua_desktop_specific_config=
+
+    if [[ -n "$XDG_CURRENT_DESKTOP" ]]; then
+        desktop=$(tr '[:upper:]' '[:lower:]' <<<"$XDG_CURRENT_DESKTOP")
+        aqua_desktop_specific_config="$HOME/.config/aqua/${desktop}.yml"
+    else # ssh
+        compositor_proc=$(pgrep -ax 'gnome-shell|sway')
+        case "$compositor_proc" in
+        *gnome-shell*)
+            aqua_desktop_specific_config="$HOME/.config/aqua/gnome.yaml"
+            ;;
+        *sway*)
+            aqua_desktop_specific_config="$HOME/.config/aqua/sway.yaml"
+            ;;
+        esac
+    fi
+
+    if [[ -n "$aqua_desktop_specific_config" && -f "$aqua_desktop_specific_config" ]]; then
+        export AQUA_GLOBAL_CONFIG="$AQUA_GLOBAL_CONFIG:$aqua_desktop_specific_config"
+    fi
+
+    aqua_host_specific_config="$HOME/.config/aqua/$HOSTNAME.yaml"
+    if [[ -f "$aqua_host_specific_config" ]]; then
+        export AQUA_GLOBAL_CONFIG="$AQUA_GLOBAL_CONFIG:$aqua_host_specific_config"
+    fi
+}
+
+aqua_specific_config
+unset -f aqua_specific_config
 
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus

@@ -6,13 +6,26 @@
 # find          cat
 # fd/ripgrep    bat
 
-# Set up fzf key bindings and fuzzy completion
-# shellcheck source=/dev/null
-# shellcheck disable=SC2046,SC2086
-if type fzf &>/dev/null; then
-    # source <(fzf --$(basename $SHELL))
-    [[ -n "$BASH_VERSION" ]] && source <(fzf --bash)
-    [[ -n "$ZSH_VERSION" ]] && source <(fzf --zsh)
+# --- Set up fzf key bindings and fuzzy completion ---
+
+FZF_BIN=$(command -v fzf)
+
+if [[ -n "$FZF_BIN" ]]; then
+    [[ -n "$ZSH_VERSION" ]] &&
+        FZF_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/fzf_init.zsh" ||
+        FZF_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/fzf_init.bash"
+
+    # 1. 如果缓存不存在，或者二进制文件更新了，就同步生成一次
+    if [[ ! -f "$FZF_CACHE" || "$FZF_BIN" -nt "$FZF_CACHE" ]]; then
+        if [[ -n "$ZSH_VERSION" ]]; then
+            "$FZF_BIN" --zsh >"$FZF_CACHE"
+        else
+            "$FZF_BIN" --bash >"$FZF_CACHE"
+        fi
+    fi
+
+    # 2. 加载缓存
+    [[ -f "$FZF_CACHE" ]] && . "$FZF_CACHE"
 fi
 
 # > man fzf

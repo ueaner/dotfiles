@@ -90,10 +90,11 @@ stty start undef
 # Quick access to configuration files
 alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"
 
-printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
-    "$([[ ! -o interactive ]] && echo non-)" \
-    "$([[ ! -o login ]] && echo non-)"
+# printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
+#     "$([[ ! -o interactive ]] && echo non-)" \
+#     "$([[ ! -o login ]] && echo non-)"
 
+# time zsh -i -c exit
 # zsh 调试详细每个操作的执行时间, 开头加载 zmodload zsh/zprof 最后调用 zprof
 # 记录终端启动，和操作过程中的所有记录
 alias zshprof="ZSH_PROFILE_STARTUP=true zsh"

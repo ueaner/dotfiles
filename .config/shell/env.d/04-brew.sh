@@ -2,7 +2,7 @@ if [[ "${OSTYPE}" != darwin* ]]; then
     return
 fi
 
-if type brew &>/dev/null; then
+if [[ -e /opt/local/bin/brew ]]; then
     # Ensure there is only one Cellar, which is /opt/local/Cellar
     [[ -d /opt/local/Homebrew/Cellar ]] && rm -rf /opt/local/Homebrew/Cellar
     mkdir -p /opt/local/Cellar

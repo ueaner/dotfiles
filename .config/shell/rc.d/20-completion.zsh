@@ -1,78 +1,122 @@
-# Pretty print the fpath
-alias fpath='echo -e ${FPATH//:/\\n}'
-
-# PATH 可执行文件路径，FPATH 可执行文件对应补全定义文件的路径
-FPATH="/usr/share/zsh/${ZSH_VERSION}/functions" # zsh builtin command 补全提示路径
-
-compdirs=(
-    "/opt/local/share/zsh-completions"      # macOS by brew, brew install zsh-completions 包的路径
-    "/opt/local/share/zsh/site-functions"   # macOS by brew, 安装的软件包的补全提示路径
-    "/usr/share/zsh/site-functions"         # Fedora by dnf, 安装的软件包的补全提示路径
-    "$HOME/.local/share/zsh/site-functions" # 自定义补全提示路径
-)
-
-for dir in "${compdirs[@]}"; do
-  if [[ -d "${dir}" ]]; then
-    FPATH="$dir:$FPATH"
-  fi
-done
-
-# GNU utils
-if type brew &>/dev/null; then
-    # Defined in env.d/04-brew.sh
-    # HOMEBREW_PREFIX=$(brew --prefix)
-    if /bin/ls ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions &>/dev/null; then
-        for p in ${HOMEBREW_PREFIX}/opt/*/share/zsh/site-functions; do
-            FPATH="$p:$FPATH"
-        done
-    fi
-
-    # /usr/share/bash-completion
-    # brew install bash-completion@2
-    export BASH_COMPLETION_USER_FILE=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/bash_completion
-    export BASH_COMPLETION_DIR=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/completions
-fi
-
-unsetopt menu_complete   # Do not autoselect the first completion entry
-unsetopt flowcontrol     # Disable start/stop characters in shell editor
-setopt auto_menu         # Show completion menu on successive tab press
-setopt complete_in_word  # Complete from both ends of a word
-setopt always_to_end     # Move cursor to the end of a completed word
-setopt globdots          # Include hidden files. or: _comp_options+=(globdots)
-
-# ================== 自定义 start ===================
 # 参考：
 # https://thevaluable.dev/zsh-completion-guide-examples/
 # https://thevaluable.dev/zsh-install-configure-mouseless/
+# https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
 
-# 路径补全跳转使用 z 和 fzf
+# Pretty print the fpath
+alias fpath='printf "%s\n" $fpath'
 
+# --- 1. 路径与变量初始化 ---
+
+# fpath 可执行文件对应补全定义文件的路径
+typeset -U fpath
+
+compdirs=(
+    "/usr/share/zsh/${ZSH_VERSION}/functions"
+    "/usr/share/zsh/site-functions"
+    "$HOME/.local/share/zsh/site-functions" # 自定义补全提示路径
+)
+
+# GNU utils
+if [[ -n $HOMEBREW_PREFIX ]]; then
+    compdirs+=(
+        "$HOMEBREW_PREFIX/share/zsh-completions"
+        "$HOMEBREW_PREFIX/share/zsh/site-functions"
+    )
+
+    # HOMEBREW_PREFIX is defined in env.d/04-brew.sh
+    # setopt NULL_GLOB
+    local brew_opt_paths=($HOMEBREW_PREFIX/opt/*/share/zsh/site-functions)
+
+    if (( ${#brew_opt_paths} > 0 )); then
+        fpath=($brew_opt_paths $fpath)
+    fi
+
+    # brew install bash-completion@2
+    export BASH_COMPLETION_USER_FILE=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/bash_completion
+fi
+
+for dir in "${compdirs[@]}"; do
+    [[ -d "$dir" ]] && fpath=("$dir" $fpath)
+done
+
+# --- 2. 补全系统初始化 ---
+
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
+ZSH_COMPDUMP="$ZSH_CACHE_DIR/zcompdump"
+ZSH_COMPCACHE="$ZSH_CACHE_DIR/zcompcache"
+
+autoload -Uz compinit
+
+
+# 如果 zcompdump 存在且在 24 小时内没被动过（以临时目录时间为参照），则 -C 跳过安全审计
+if [[ -s "$ZSH_COMPDUMP" && (! "$ZSH_COMPDUMP" -nt "${TMPDIR:-/tmp}") ]]; then
+    compinit -C -d "$ZSH_COMPDUMP"
+else
+    compinit -i -d "$ZSH_COMPDUMP"
+fi
+
+# 如果二进制编译文件不存在或过期，则异步编译 zcompdump
+# 下次启动时 Zsh 会直接内存映射 .zwc 文件
+if [[ ! "$ZSH_COMPDUMP.zwc" -nt "$ZSH_COMPDUMP" ]]; then
+    zcompile "$ZSH_COMPDUMP" >/dev/null 2>&1 &!
+fi
+
+# automatically load bash completion functions
+autoload -Uz bashcompinit && bashcompinit
+
+# --- 3. 选项与 ZStyle 配置 ---
+
+setopt AUTO_MENU          # 连续 Tab 显示菜单
+setopt COMPLETE_IN_WORD   # 光标在单词中间也能补全
+setopt ALWAYS_TO_END      # 补全后光标移至末尾
+setopt GLOB_DOTS          # 补全包含隐藏文件
+unsetopt MENU_COMPLETE    # 不要直接选中第一个候选词
+unsetopt FLOW_CONTROL     # 禁用 Ctrl-S/Q 流控
+
+# LS_COLORS 缓存处理
+LS_COLORS_CACHE="$ZSH_CACHE_DIR/ls_colors"
+if [[ -f "$LS_COLORS_CACHE" ]]; then
+    source "$LS_COLORS_CACHE"
+elif (( $+commands[dircolors] )); then
+    dircolors -b > "$LS_COLORS_CACHE"
+    source "$LS_COLORS_CACHE"
+fi
+
+# 加载颜色列表
 zmodload -i zsh/complist
-# Use vim keys in tab complete menu:
+# 补全菜单使用 LS_COLORS 色彩
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Standard-Tags
+zstyle ':completion:*:*:*:*:*' menu yes select
+
+# 使用 Vim 键位进行菜单选择
 bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'j' vi-down-line-or-history
-bindkey -v '^?' backward-delete-char # DELETE
-
 bindkey -M menuselect '^P' vi-up-line-or-history
 bindkey -M menuselect '^N' vi-down-line-or-history
+bindkey -v '^?' backward-delete-char # DELETE
 
-zstyle ':completion:*:*:*:*:*' menu yes select
+# 匹配模式：大小写不敏感，且支持将 - 视为 _
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
-zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'
-
-# https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Standard-Tags
-# Group matches and describe.
+# 提示信息格式化
 zstyle ':completion:*' verbose yes # provide verbose completion information.
 zstyle ':completion:*:*:*:*:descriptions' format ' %F{green}-- %d --%f'
 zstyle ':completion:*:*:*:*:corrections'  format ' %F{yellow}!- %d (errors: %e) -!%f'
 zstyle ':completion:*:*:*:*:messages'     format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:*:*:*:warnings'     format ' %F{red}-- no matches found --%f'
+
+# 分组排序
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands
 
 # Fuzzy match mistyped completions.
+# 先尝试普通补全，再尝试子部分匹配，最后尝试近似匹配
 zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
@@ -90,34 +134,18 @@ zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w"
 # disable named-directories autocompletion
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 
-# https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
-# dircolors -p: view the default color settings
-source <({
-    if type dircolors &>/dev/null; then
-        dircolors -b # export LS_COLORS
-    fi
-})
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-
 # ... unless we really want to.
 zstyle '*' single-ignored show
 
-ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
-ZSH_COMPCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+# 缓存配置
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$ZSH_COMPCACHE"
 
-# Use caching to make completion for cammands such as dpkg and apt usable.
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$ZSH_COMPCACHE"
-
-autoload -Uz compinit
-compinit -i -C -d "$ZSH_COMPDUMP"
-
-# 有补全文件更新时，使用 update-zsh-compdump 同步更新
+# 刷新补全信息
 update-zsh-compdump() {
-    rm -f "$ZSH_COMPDUMP"
-    autoload -Uz compinit
-    compinit -i -C -d "$ZSH_COMPDUMP"
+    echo "Refining completion cache..."
+    rm -rf "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc" "$ZSH_COMPCACHE"
+    compinit -i -d "$ZSH_COMPDUMP"
+    zcompile "$ZSH_COMPDUMP"
+    echo "Done!"
 }
-
-# automatically load bash completion functions
-autoload -U +X bashcompinit && bashcompinit

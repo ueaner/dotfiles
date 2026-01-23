@@ -73,14 +73,14 @@ export GOENV=$XDG_CONFIG_HOME/go/env
 export GOBIN=$XDG_BIN_HOME
 export GOCACHE=$XDG_CACHE_HOME/go-build
 export GOMODCACHE=$XDG_CACHE_HOME/go-mod # $GOPATH/pkg/mod
-if type go &>/dev/null; then
-    # go version go1.23.3 linux/amd64
-    GOVERSION=$(go version | {
-        read -r _ _ v _
-        echo "${v#go}"
-    })
-    export GOVERSION
-fi
+# if command -v go &>/dev/null; then
+#     # go version go1.23.3 linux/amd64
+#     GOVERSION=$(go version | {
+#         read -r _ _ v _
+#         echo "${v#go}"
+#     })
+#     export GOVERSION
+# fi
 
 #
 # Rust

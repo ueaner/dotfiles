@@ -1,16 +1,14 @@
-# https://github.com/chrisduerr/dotfiles/blob/master/files/zsh/ps1.zsh
-autoload -U colors && colors  # prompt colors
-# https://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
-# 对 PROMPT 执行参数扩展，命令替换，算数计算
-setopt prompt_subst # prompt-expansion arguments
+# 开启 prompt 扩展
+setopt prompt_subst
 
-# And also a beam as the cursor
+# 初始光标样式 (beam)
 echo -ne '\e[6 q'
 
+# 定义符号
 export PROMPT_DEFAULT_SYMBOL=${PROMPT_DEFAULT_SYMBOL:-$} # ❯
 export PROMPT_VICMD_SYMBOL=${PROMPT_VICMD_SYMBOL:->}     # ❮
 
-typeset -gA prompt_symbol
+# 初始符号状态
 prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
 
 # +----------------+--------+-----------+----------+-----------+
@@ -20,40 +18,42 @@ prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
 # | %1~ path       | root   | %!        | white    | magenta   |
 # | $prompt_symbol | error  | %?        | magenta  | red       |
 # +----------------+--------+-----------+----------+-----------+
-#
-# SSH: 可通过 $SSH_TTY or $SSH_CONNECTION 判断是否登陆在远程机器
-# 但 sudo -s 后切换到其他用户就没有 $SSH_CONNECTION 环境变量了
-function prompt () {
-    # %(x.true.false)
-    if [[ ${SSH_TTY} ]] ; then
-        PS1='%F{magenta}[%M]%f %(!.%F{magenta}.%F{white})%1~%f %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+
+# 只在启动时计算一次固定部分
+if [[ -n ${SSH_TTY} ]]; then
+    _prompt_host='%F{magenta}[%M]%f '
+else
+    _prompt_host='[%M] '
+fi
+
+# PS1 保持静态引用，靠 prompt_subst 动态解析变量
+# %(?.A.B) 表示上一条命令成功显示 A，失败显示 B
+# %(!.A.B) 表示 root 用户显示 A，普通用户显示 B
+PS1='${_prompt_host}%(!.%F{magenta}.%F{white})%1~%f %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+
+function zle-line-init zle-keymap-select() {
+    # 切换光标：vicmd 为 block (2), 否则为 beam (6)
+    if [[ $KEYMAP == vicmd ]]; then
+        echo -ne '\e[2 q'
+        prompt_symbol="${PROMPT_VICMD_SYMBOL}"
     else
-        PS1='[%M] %(!.%F{magenta}.%F{white})%1~%f %(?.%F{magenta}.%F{red})${prompt_symbol}%f '
+        echo -ne '\e[6 q'
+        prompt_symbol="${PROMPT_DEFAULT_SYMBOL}"
     fi
+
+    # 只有在 zle 活跃时才重绘提示符
+    [[ -n $zle_bracketed_paste ]] && zle .reset-prompt
 }
 
-precmd_functions+=(prompt)
-
-# Callback for vim mode change ($TERM = xterm-256color)
-# 需要使用 zle-line-init，否则 NORMAL 模式下直接回车，实际上是 viins/main 模式，但依然记录的是 NORMAL 模式
-function zle-line-init zle-keymap-select () {
-    setopt localoptions noshwordsplit
-    # 1/2 block cursor, 5/6 beam cursor
-    [[ $KEYMAP = vicmd ]] && echo -ne '\e[2 q' || echo -ne '\e[6 q'
-    # PS1
-    prompt_symbol=${${KEYMAP/vicmd/${PROMPT_VICMD_SYMBOL}}/(main|viins)/${PROMPT_DEFAULT_SYMBOL}}
-
-    # Refresh prompt
-    zle && zle .reset-prompt
-}
-
-# 兜底 reset prompt symbol
 function zle-line-finish {
-    setopt localoptions noshwordsplit
-    prompt_symbol=${PROMPT_DEFAULT_SYMBOL}
+    prompt_symbol="${PROMPT_DEFAULT_SYMBOL}"
+    echo -ne '\e[6 q' # 确保回车执行命令后光标回到 beam 状态
 }
 
-# Bind the callback
 zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
+
+# 加载粘贴高亮增强功能
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
