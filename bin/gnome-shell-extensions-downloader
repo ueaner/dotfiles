@@ -141,32 +141,18 @@ fi
 
 echo "uuid=$uuid pk=$pk dir=$dir shell-version=$sv force=$force"
 
-# https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/latest/download/gestureImprovements@gestures.zip
-download-gesture-improvements() {
-    outputfile="$dir/gestureImprovements@gestures.shell-extension.zip"
-    case "$sv" in
-    48) # GNOME 48
-        curl -L "${GITHUB_PROXY}https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/download/32/gestureImprovements@gestures.zip" -o "$outputfile"
-        ;;
-    47) # GNOME 47
-        curl -L "${GITHUB_PROXY}https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/download/31/gestureImprovements@gestures.zip" -o "$outputfile"
-        ;;
-    46) # GNOME 46
-        curl -L "${GITHUB_PROXY}https://github.com/jamespo/gnome-gesture-improvements/releases/download/gnome46/gestureImprovements@gestures.zip" -o "$outputfile"
-        ;;
-    *) ;;
-    esac
-}
-
 if [[ "$uuid" == "gestureImprovements@gestures" || $pk -eq 4245 ]]; then
-    if [[ ! -f "$dir/gestureImprovements@gestures.shell-extension.zip" ]] || $force; then
-        download-gesture-improvements
-        if [[ $? != 0 || ! -f "$dir/gestureImprovements@gestures.shell-extension.zip" ]]; then
+    outputfile="$dir/gestureImprovements@gestures.shell-extension.zip"
+    if [[ ! -f "$outputfile" ]] || $force; then
+        curl -L "${GITHUB_PROXY}https://github.com/sidevesh/gnome-gesture-improvements--transpiled/releases/latest/download/gestureImprovements@gestures.zip" \
+            -o "$outputfile"
+
+        if [[ $? != 0 || ! -f "$outputfile" ]]; then
             echo "Download gestureImprovements@gestures failed"
             exit 1
         fi
     fi
-    echo "Downloaded $(unzip -p "$dir/gestureImprovements@gestures.shell-extension.zip" metadata.json | jq -r .uuid)"
+    echo "Downloaded $(unzip -p "$outputfile" metadata.json | jq -r .uuid)"
     exit 0
 fi
 
