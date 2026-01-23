@@ -1,5 +1,19 @@
 # Common custom shell function
 
+# Reload the shell (i.e. invoke as a login shell)
+reload() {
+    if [[ -n "$ZSH_VERSION" ]]; then
+        for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done
+        update-zsh-compdump
+        rm -f ~/.cache/*_init.zsh
+        echo "Zsh config reloaded."
+    elif [[ -n "$BASH_VERSION" ]]; then
+        . ~/.bashrc
+        rm -f ~/.cache/*_init.bash
+        echo "Bash config reloaded."
+    fi
+}
+
 # Duration of loading specified code under zsh
 # Usage: zsh-loadtime "$(zoxide init zsh)"
 zsh-loadtime() {

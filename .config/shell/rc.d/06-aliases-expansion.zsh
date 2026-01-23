@@ -1,6 +1,3 @@
-# Reload the shell (i.e. invoke as a login shell)
-alias reload='for f in ~/.config/zsh/.{zprofile,zshenv,zshrc}; do . $f; done; update-zsh-compdump'
-
 # More: https://www.thorsten-hans.com/5-types-of-zsh-aliases
 
 # curl http://httpbin.org/json JSON

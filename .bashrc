@@ -52,7 +52,6 @@ for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*.sh; do
     source $rcfile
 done
 
-alias reload='. ~/.bashrc'
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias dotlocal='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'
 

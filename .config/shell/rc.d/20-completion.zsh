@@ -143,9 +143,8 @@ zstyle ':completion:*' cache-path "$ZSH_COMPCACHE"
 
 # 刷新补全信息
 update-zsh-compdump() {
-    echo "Refining completion cache..."
     rm -rf "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc" "$ZSH_COMPCACHE"
     compinit -i -d "$ZSH_COMPDUMP"
     zcompile "$ZSH_COMPDUMP"
-    echo "Done!"
+    echo "Zsh completion cache refined."
 }
