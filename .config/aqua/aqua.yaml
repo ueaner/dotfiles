@@ -10,11 +10,17 @@
 registries:
   - type: standard
     ref: v4.454.0 # renovate: depName=aquaproj/aqua-registry
-packages:
-  - name: junegunn/fzf@v0.67.0
-  - name: sharkdp/fd@v10.3.0
-  - name: marcosnils/bin@v0.24.2
+  - name: local # aqua g -i local,terrastruct/d2
+    type: local
+    path: registry/local.yaml
+  - name: network # aqua g -i network,sentriz/cliphist
+    type: local
+    path: registry/network.yaml
+packages: # aqua install -a
   - name: astral-sh/uv@0.9.25
+  - name: junegunn/fzf@v0.67.0
+  - name: junegunn/fzf/fzf-tmux@v0.67.0
+  - name: sharkdp/fd@v10.3.0
   - name: ajeetdsouza/zoxide@v0.9.8
   - name: BurntSushi/ripgrep@15.1.0
   - name: sxyazi/yazi@v26.1.4
@@ -33,3 +39,26 @@ packages:
   - name: AlexanderGrooff/mermaid-ascii@1.1.0
   - name: charmbracelet/crush@v0.32.1
   - name: terrastruct/d2@v0.7.1
+  - name: sentriz/cliphist@v0.7.0
+    registry: local
+  - name: sentriz/cliphist/cliphist-rofi-img@v0.7.0
+    registry: local
+  - name: Code-Hex/Neo-cowsay@v2.0.4
+    registry: local
+  - name: tramhao/termusic@v0.12.1
+    registry: local
+  - name: shadowsocks/shadowsocks-rust@v1.24.0
+    registry: network
+  - name: corazawaf/coraza-caddy@v2.10.2
+    registry: network
+  - name: fatedier/frp@v0.66.0
+  - name: go-gost/gost@v3.2.6
+  - name: lima-vm/lima@v2.0.3
+  - name: tree-sitter/tree-sitter@v0.26.3
+  - name: neovim/neovim@v0.11.5
+  - name: arl/gitmux@v0.11.5
+  - name: jesseduffield/lazygit@v0.58.1
+  - name: golang/go@go1.25.6
+    registry: local
+  - name: nodejs/node@v25.4.0
+  - name: pnpm/pnpm@v10.28.1

@@ -1,0 +1,116 @@
+packages:
+  - type: github_release
+    repo_owner: xremap
+    repo_name: xremap
+    name: xremap/xremap/sway
+    description: Key remapper for X11 and Wayland (for Sway)
+    asset: xremap-{{.OS}}-{{.Arch}}-wlroots.{{.Format}}
+    format: zip
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+    supported_envs:
+      - linux
+    files:
+      - name: xremap
+    version_filter: 'Version != "v0.16.6"'
+
+  - type: github_release
+    repo_owner: sentriz
+    repo_name: cliphist
+    description: Wayland clipboard manager with support for multimedia
+    asset: "{{.Version}}-{{.OS}}-{{.Arch}}"
+    format: raw
+    replacements:
+      arm64: arm
+    supported_envs:
+      - linux
+
+  - type: github_content
+    repo_owner: sentriz
+    repo_name: cliphist
+    path: contrib/cliphist-rofi-img
+    name: sentriz/cliphist/cliphist-rofi-img
+    description: clipboard manager with rofi image support
+
+  - type: github_release
+    repo_owner: tramhao
+    repo_name: termusic
+    description: Music Player TUI written in Rust
+    asset: termusic-{{.Version}}-{{.Arch}}-{{.OS}}.{{.Format}}
+    format: tar.xz
+    rosetta2: true
+    windows_arm_emulation: true
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      darwin: macos
+      linux: linux
+    files:
+      - name: termusic
+        src: "{{.AssetWithoutExt}}/termusic"
+      - name: termusic-server
+        src: "{{.AssetWithoutExt}}/termusic-server"
+
+  - type: github_release
+    repo_owner: Code-Hex
+    repo_name: Neo-cowsay
+    description: cowsay is reborn. Neo Cowsay has written in Go
+    asset: cowsay_{{trimV .Version}}_{{.OS}}_{{.Arch}}.{{.Format}}
+    format: tar.gz
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+    checksum:
+      type: github_release
+      asset: cowsay_checksums.txt
+      algorithm: sha256
+    files:
+      - name: cowsay
+      - name: cowthink
+
+  - repo_owner: golang
+    repo_name: go
+    type: http
+    url: https://dl.google.com/go/go{{trimPrefix "go" .Version}}.{{.OS}}-{{.Arch}}.{{.Format}}
+    description: The Go programming language
+    format: tar.gz
+    version_source: github_tag
+    version_filter: Version startsWith "go" and not (Version contains "rc" or Version contains "beta")
+    files:
+      - name: go
+        src: go/bin/go
+      - name: gofmt
+        src: go/bin/gofmt
+    overrides:
+      - goos: windows
+        format: zip
+
+  - type: github_release
+    repo_owner: oven-sh
+    repo_name: bun
+    name: oven-sh/bun/baseline
+    description: Incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one
+    asset: bun-{{.OS}}-{{.Arch}}-baseline.{{.Format}}
+    format: zip
+    windows_arm_emulation: true
+    replacements:
+      amd64: x64
+      arm64: aarch64
+    checksum:
+      type: github_release
+      asset: SHASUMS256.txt
+      algorithm: sha256
+    files:
+      - name: bun
+        src: "{{.AssetWithoutExt}}/bun"
+      - name: bunx
+        src: "{{.AssetWithoutExt}}/bun"
+        link: bunx

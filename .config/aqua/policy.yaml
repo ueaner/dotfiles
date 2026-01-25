@@ -1,0 +1,18 @@
+---
+# aqua Policy
+# https://aquaproj.github.io/
+# Use AQUA_POLICY_CONFIG instead of `aqua policy allow ~/.config/aqua/policy.yaml`
+registries:
+  - name: local
+    type: local
+    path: registry/local.yaml
+
+  - name: network # aqua g -i local,sentriz/cliphist
+    type: local
+    path: registry/network.yaml
+
+  - type: standard
+packages:
+  - registry: local # allow all packages in the Registry
+  - registry: network # allow all packages in the Registry
+  - registry: standard
