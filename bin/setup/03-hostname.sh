@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Set the hostname in the LAN
+# Set the hostname in the LAN based on the hardware model
 # xremap and sway/config include host-specific configs
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
+
+module "Hostname Configuration"
 
 # ----------------------------------------------------------------
 # hostname

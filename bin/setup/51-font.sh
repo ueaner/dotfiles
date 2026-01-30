@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Install fonts including Nerd Fonts and Maple Mono
 # 字体安装脚本
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"

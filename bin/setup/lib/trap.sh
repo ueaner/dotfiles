@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Error and signal handling functions library
+# Provides functions for error handling, interruption handling, and exit handlers
 
 on_error() {
     local line="$1"

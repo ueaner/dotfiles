@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Color output functions library for consistent formatted output
+# Provides functions for colored text, titles, status messages, and progress indicators
 
 # --- 环境检测与颜色定义 ---
 # 仅在终端连接且未禁用颜色时启用 ANSI 转义序列

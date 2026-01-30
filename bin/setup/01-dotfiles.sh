@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
+# Configure dotfiles and dotlocal repositories using git bare repositories
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
+
+module "Dotfiles Setup"
 
 #----------------------------------------------------------------
 # dotfiles

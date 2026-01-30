@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
+# Configure system-level settings including sudo permissions, directory ownership,
+# input device access, inotify limits, and laptop lid behavior
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
+
+module "System Configuration"
 
 #----------------------------------------------------------------
 # sudo

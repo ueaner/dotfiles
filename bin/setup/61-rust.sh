@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Install and configure Rust programming language environment
+# Includes rustup, cargo, and related configurations
 # shellcheck disable=SC2086
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Install and configure documentation and manual pages (man pages and tldr)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"

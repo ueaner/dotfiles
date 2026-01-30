@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# Install applications for Fedora system using DNF and Flatpak package managers
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "DNF"
+module "Applications (Fedora)"
 
 #----------------------------------------------------------------
 # DNF
