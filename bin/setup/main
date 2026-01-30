@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# Setup Unix Workstation
+
+set -o pipefail
+set -e # errexit
+set -u # nounset
+# set -x # xtrace
+# set -n # noexec
+# 如果没匹配到文件，返回空而不是返回通配符本身
+# shopt -s nullglob
+
+# 切换到当前脚本目录
+MAIN_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+# cd "$SCRIPT_DIR" || exit
+. "$MAIN_SCRIPT_DIR/lib/init"
+
+ARCH=$(uname -m)
+KERNEL=$(uname -s | tr '[:upper:]' '[:lower:]') # darwin | linux
+SYSTEM=                                         # macos | fedora
+DESKTOP=                                        # aqua | sway | gnome
+
+if [[ "$KERNEL" == "darwin" ]]; then
+    SYSTEM=macos
+    DESKTOP=aqua
+else
+    # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+    if [[ -f /etc/os-release ]]; then
+        SYSTEM=$(. /etc/os-release && echo "$ID")
+    fi
+    DESKTOP=$(current_desktop)
+fi
+
+PLATFORM_PATTERN="@(${KERNEL}|${SYSTEM}|${DESKTOP})"
+
+ROLE_INDEX=
+
+roles=(
+    prelude  # 0
+    desktop  # 1, macOS-ish Desktop Environment
+    app      # 2
+    service  # 3
+    terminal # 4, Terminal Environment
+    font     # 5
+    lang     # 6, Programming languages
+)
+
+show_help() {
+    cat <<EOF
+Setup Unix Workstation - 系统配置自动化脚本
+
+用法:
+    $0 [选项] [角色]
+
+选项:
+    all         执行所有配置步骤
+    help        显示此帮助信息
+
+可用角色:
+    prelude     (0) 前置配置 (点文件、系统设置等)
+    desktop     (1) 桌面环境配置
+    app         (2) 应用程序安装
+    service     (3) 服务配置
+    terminal    (4) 终端环境配置
+    font        (5) 字体安装
+    lang        (6) 编程语言环境配置
+
+平台支持:
+    - Fedora Linux
+    - macOS
+    - 通过后缀 @fedora, @macos, @gnome, @sway 等实现平台特定配置
+
+示例:
+    $0 all           # 执行所有配置
+    $0 desktop       # 仅执行桌面环境配置
+    $0 app           # 仅执行应用程序安装
+    $0 service       # 仅执行服务配置
+
+EOF
+}
+
+role="${1:-}"
+
+if [[ "$role" == "help" ]] || [[ "$role" == "-h" ]] || [[ "$role" == "--help" ]]; then
+    show_help
+    exit 0
+fi
+
+if [[ -z "$role" ]]; then
+    # 检查是否安装了 fzf
+    if ! command -v fzf >/dev/null 2>&1; then
+        # 如果没有 fzf，则显示帮助
+        show_help
+        exit 0
+    fi
+
+    # 使用 fzf 进行交互式选择
+    selected=$(printf '%s\n%s\n%s\n' "help" "${roles[@]}" "all" | fzf --no-multi --bind "ctrl-z:ignore,tab:down,btab:up" --header '[TAB] / [Shift-TAB] to move focus') || true
+
+    if [[ -n "$selected" ]]; then
+        # 如果选择了 role，则执行
+        $0 "$selected"
+    else
+        # 没有选择，则显示帮助
+        show_help
+    fi
+    exit 0
+fi
+
+if [[ "$role" != "all" ]]; then
+    # 设置了 set -e 需要 `|| true` 临时屏蔽错误
+    ROLE_INDEX=$(array_index_of "$role" "${roles[@]}") || true
+
+    if [[ -z "$ROLE_INDEX" ]]; then
+        echo "Error: No matching role found: $role"
+        show_help
+        exit 1
+    fi
+fi
+
+title "Setup Unix Workstation: $PLATFORM_PATTERN $ARCH"
+item "BASH_VERSION: $BASH_VERSION"
+
+last_idx=
+
+# for f in "$HOME"/bin/setup/"$ROLE_INDEX"[0-9]-*.sh; do
+# for f in "$ROLE_INDEX"[0-9]-*.sh; do
+# for f in [0-9][0-9]-*.sh; do
+for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
+    [[ -e "$f" ]] || continue
+
+    # 剥离路径，获取文件名
+    filename="${f##*/}"
+    curr_idx="${filename:0:1}"
+
+    # 确保匹配指定的索引 [[ "$f" != "$MAIN_SCRIPT_DIR/$ROLE_INDEX"* ]]
+    if [[ -n "$ROLE_INDEX" ]] && [[ "$curr_idx" != "$ROLE_INDEX" ]]; then
+        continue
+    fi
+
+    # 如果文件名包含 @，则为互斥逻辑，需匹配当前的 KERNEL/SYSTEM/DESKTOP
+    if [[ "$f" == *"@"* ]] && [[ ! "$f" =~ $PLATFORM_PATTERN ]]; then
+        continue
+    fi
+
+    if [[ $last_idx != "$curr_idx" ]]; then
+        last_idx="$curr_idx"
+        heading "$role ($last_idx)"
+    fi
+
+    note "$f"
+    # shellcheck source=/dev/null
+    . "$f"
+done
+
+echo -e "\n${C_DIM}--- Done ---${C_RESET}"

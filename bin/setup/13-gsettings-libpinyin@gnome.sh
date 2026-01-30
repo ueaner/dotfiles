@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/lib/init"
+
+module "Configure libpinyin"
+
 #----------------------------------------------------------------
 # Keyboard - Input Method
 #----------------------------------------------------------------

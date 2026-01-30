@@ -7,7 +7,10 @@
 # - Power
 # - Appearance
 
-set -xe
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/lib/init"
+
+module "Configure the UI appearance of GTK applications"
 
 #----------------------------------------------------------------
 # Appearance

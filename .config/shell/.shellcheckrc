@@ -1,2 +1,2 @@
 source=/dev/null
-disable=SC2086,SC2155,SC2046
+disable=SC2086,SC2046

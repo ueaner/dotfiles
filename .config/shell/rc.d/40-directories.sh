@@ -22,4 +22,6 @@ if [[ -n "$Z_BIN" ]]; then
 
     # 2. 加载缓存
     [[ -f "$Z_CACHE" ]] && . "$Z_CACHE"
+    unset Z_CACHE
 fi
+unset Z_BIN

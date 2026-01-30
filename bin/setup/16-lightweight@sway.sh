@@ -6,13 +6,16 @@
 #   1. Remove unused packages
 #
 
-if ! pgrep --list-full sway | grep -q '/usr/bin/[s]way'; then
-    exit 0
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/lib/init"
+
+module "Make Sway more lightweight"
 
 #----------------------------------------------------------------
 # Power
 #----------------------------------------------------------------
+step "Configure Power"
+
 sudo systemctl disable --now bluetooth
 systemctl --user mask dbus-org.bluez.obex.service
 systemctl --user mask obex.service
@@ -21,8 +24,8 @@ systemctl --user mask org.bluez.obex.service
 #----------------------------------------------------------------
 # Unused packages
 #----------------------------------------------------------------
+step "Remove unused packages"
 
-echo "# Remove unused packages"
 # Use localectl instead of system-config-language
 sudo dnf remove -y system-config-language
 

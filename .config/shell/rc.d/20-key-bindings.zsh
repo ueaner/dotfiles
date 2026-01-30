@@ -49,7 +49,7 @@ bindkey -M viins "^Y" yank
 # Yank to the system clipboard
 function vi-yank-clipcopy {
   zle vi-yank
-  echo -n "$CUTBUFFER" | clipcopy
+  printf "$CUTBUFFER" | clipcopy
 }
 
 zle -N vi-yank-clipcopy

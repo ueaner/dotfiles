@@ -102,13 +102,14 @@ for pkg in "${packages[@]}"; do
 done
 
 if [[ -z "$dir" ]]; then
-    dir="./$kernel_target"
+    dir="${XDG_BACKUP_DIR:-$HOME/.cache}/archives/$kernel_target"
 fi
+
 mkdir -p "$dir"
-cd "$dir" || exit 1
 
 printf '%s\n' "${rpms[@]}"
-wget -c "${rpms[@]}"
+wget -c -P "$dir" "${rpms[@]}"
+# curl -O --output-dir "$dir" http://example.com/file.zip
 ret=$?
 
 echo "Download to $dir directory"

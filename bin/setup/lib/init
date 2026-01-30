@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# 避免重复 source
+[[ -n "${SETUP_LIB_SCRIPT_DIR:-}" ]] && return
+SETUP_LIB_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
+for f in "$SETUP_LIB_SCRIPT_DIR"/*.sh; do
+    # 避免引入测试文件
+    if [[ "$f" == *_test.sh ]]; then
+        continue
+    fi
+
+    # shellcheck source=/dev/null
+    . "$f"
+done

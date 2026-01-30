@@ -2,7 +2,10 @@
 export MOZ_ENABLE_WAYLAND=1
 
 export AQUA_POLICY_CONFIG="$HOME/.config/aqua/policy.yaml"
-export AQUA_GLOBAL_CONFIG="$HOME/.config/aqua/aqua.yaml"
+export AQUA_GLOBAL_CONFIG="" # 清空，避免重复追加
+if [[ -f "$HOME/.config/aqua/aqua.yaml" ]]; then
+    export AQUA_GLOBAL_CONFIG="$HOME/.config/aqua/aqua.yaml"
+fi
 
 aqua_specific_config() {
     local desktop=
@@ -22,14 +25,13 @@ aqua_specific_config() {
     fi
 
     local aqua_desktop_specific_config="$HOME/.config/aqua/${desktop}.yaml"
-
     if [[ -n "$desktop" && -f "$aqua_desktop_specific_config" ]]; then
-        export AQUA_GLOBAL_CONFIG="$AQUA_GLOBAL_CONFIG:$aqua_desktop_specific_config"
+        export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:+$AQUA_GLOBAL_CONFIG:}$aqua_desktop_specific_config"
     fi
 
     local aqua_host_specific_config="$HOME/.config/aqua/$HOSTNAME.yaml"
     if [[ -f "$aqua_host_specific_config" ]]; then
-        export AQUA_GLOBAL_CONFIG="$AQUA_GLOBAL_CONFIG:$aqua_host_specific_config"
+        export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:+$AQUA_GLOBAL_CONFIG:}$aqua_host_specific_config"
     fi
 }
 

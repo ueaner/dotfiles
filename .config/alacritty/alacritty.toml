@@ -35,10 +35,11 @@ draw_bold_text_with_bright_colors = true
 [colors.primary]
 background = "#07090c" # dark
 foreground = "#eaeaea"
+dim_foreground = "#4d5770"
 
 # Named ANSI colors [0-7]
 [colors.normal]
-black   = "#0d1117"
+black   = "#07090c" # black: #0d1117
 red     = "#df6566"
 green   = "#c5d15c"
 yellow  = "#ecce58"
@@ -49,7 +50,7 @@ white   = "#eaeaea"
 
 # Named ANSI colors [8-15]
 [colors.bright]
-black   = "#778899"
+black   = "#4d5770" # gray
 red     = "#d54e53"
 green   = "#b9ca4a"
 yellow  = "#e6c547"
@@ -59,14 +60,14 @@ cyan    = "#70c0ba"
 white   = "#ffffff"
 
 [colors.dim]
-black   = "#000000"
+black   = "#0d1117" # darkgray: #21252d #2e3440
 red     = "#8c3336"
 green   = "#7a8530"
 yellow  = "#97822e"
 blue    = "#506d8f"
 magenta = "#80638e"
 cyan    = "#497e7a"
-white   = "#9a9a9a"
+white   = "#778899"
 
 [font]
 # macOS: 12.25

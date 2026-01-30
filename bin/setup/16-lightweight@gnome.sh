@@ -10,13 +10,15 @@
 # https://forum.zorin.com/t/about-tips-to-make-gnome-lightweight/21146
 # https://www.reddit.com/r/gnome/comments/gn8rs4/how_to_disable_gnome_software_autostart/
 
-if ! pgrep gnome-session &>/dev/null; then
-    exit 0
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/lib/init"
+
+module "Make GNOME more lightweight"
 
 #----------------------------------------------------------------
 # Power
 #----------------------------------------------------------------
+step "Configure Power"
 
 # Power Mode: performance, balanced, power-saver
 gsettings set org.gnome.shell last-selected-power-profile 'power-saver' # 'power-saver'
@@ -67,6 +69,7 @@ gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 
 # sudo systemctl disable packagekit-offline-update.service
 # sudo systemctl mask packagekit-offline-update.service
 
+step "Remove gnome-software"
 sudo dnf remove -y gnome-software
 rm -f ~/.config/autostart/org.gnome.Software.desktop
 
@@ -75,7 +78,7 @@ rm -f ~/.config/autostart/org.gnome.Software.desktop
 #----------------------------------------------------------------
 
 # systemctl --user list-units --type=service
-echo "# Disable evolution* service"
+step "Disable evolution* service"
 systemctl --user mask evolution-addressbook-factory.service
 systemctl --user mask evolution-calendar-factory.service
 systemctl --user mask evolution-source-registry.service
@@ -86,7 +89,7 @@ systemctl --user mask evolution-user-prompter.service
 # Tracker fs
 #----------------------------------------------------------------
 
-echo "# Disable Tracker fs"
+step "Disable Tracker fs"
 cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
 echo -e "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
 # Tracker3: configuration reset after system upgrade
@@ -101,7 +104,7 @@ tracker3 reset --filesystem
 # Unused packages
 #----------------------------------------------------------------
 
-echo "# Remove unused packages"
+step "Remove unused packages"
 # Fedora 41+: Ptyxis as the new Terminal App
 # gnome-calculator gnome-calendar
 sudo dnf remove -y gnome-maps gnome-photos gnome-contacts gnome-weather gnome-terminal-nautilus gnome-terminal cheese rhythmbox \

@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# https://github.com/kovidgoyal/kitty/releases/download/v0.45.0/kitty-0.45.0.dmg
+# https://github.com/Hammerspoon/hammerspoon/releases/download/1.0.0/Hammerspoon-1.0.0.zip
+
+# 默认配置
+ALLOW_GLOBAL=false
+TARGET_DIR="$HOME/Applications"
+TMP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/dmg.XXXXXX")
+mkdir -p "$TMP_DIR"
+
+# # 0. 准备用户目录
+# MOUNT_POINT="$TMP_DIR/mount"
+# mkdir -p "$MOUNT_POINT"
+
+# 1. 参数解析
+usage() {
+    echo "用法: $0 [-g] <path_to_dmg>"
+    echo "  -g : 允许 .pkg 安装到系统根目录 (需要 sudo)"
+    exit 1
+}
+
+while getopts "g" opt; do
+    case $opt in
+    g) ALLOW_GLOBAL=true ;;
+    *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+DMG_URL="$1"
+DMG_PATH=
+# 1. 下载（如果是 URL）
+if [[ $DMG_URL =~ ^https?:// ]]; then
+    DMG_PATH="$TMP_DIR/$(basename "$DMG_URL")"
+    echo "↓ 下载 $DMG_URL"
+    curl -L -o "$DMG_PATH" "$DMG_URL"
+else
+    DMG_PATH="$DMG_URL"
+fi
+
+if [[ -z "$DMG_PATH" ]]; then usage; fi
+
+# echo "⏏️  挂载 $DMG_PATH"
+# hdiutil attach "$DMG_PATH" -nobrowse -mountpoint "$MOUNT_POINT"
+
+# 2. 挂载镜像
+echo "🔍 正在解析: $(basename "$DMG_PATH")..."
+MOUNT_INFO=$(hdiutil attach -nobrowse -noverify -accept-eula -plist "$DMG_PATH" 2>/dev/null)
+MOUNT_POINT=$(echo "$MOUNT_INFO" | grep -A 1 "mount-point" | grep string | sed 's/<[^>]*>//g' | xargs)
+# MOUNT_POINT=$(echo "$MOUNT_INFO" | plutil -extract 0."mount-point" raw -)
+
+if [[ -z "$MOUNT_POINT" ]]; then
+    echo "❌ 挂载失败"
+    exit 1
+fi
+
+# 3. 安装逻辑
+install_success=false
+APP_PATH=$(find "$MOUNT_POINT" -maxdepth 2 -name "*.app" -print -quit)
+PKG_PATH=$(find "$MOUNT_POINT" -maxdepth 2 -name "*.pkg" -print -quit)
+
+if [[ -n "$APP_PATH" ]]; then
+    # .app 始终安全地安装到 $HOME
+    APP_NAME=$(basename "$APP_PATH")
+    echo "📦 安装 APP 到 $TARGET_DIR..."
+
+    # 使用 rsync 确保权限和完整性
+    rm -rf "${TARGET_DIR:?}/$APP_NAME"
+    rsync -a "$APP_PATH/" "$TARGET_DIR/$APP_NAME/"
+
+    # 移除隔离位 (Gatekeeper 修复)
+    xattr -rd com.apple.quarantine "$TARGET_DIR/$APP_NAME" 2>/dev/null
+    install_success=true
+
+elif [[ -n "$PKG_PATH" ]]; then
+    echo "📦 检测到 PKG: $(basename "$PKG_PATH")"
+
+    # 检查是否支持用户目录
+    SUPPORT_USER=$(installer -query domaintargets -pkg "$PKG_PATH" 2>/dev/null | grep "CurrentUserHomeDirectory")
+
+    if [[ -n "$SUPPORT_USER" ]]; then
+        echo "✅ 包支持用户目录安装，正在安装至 $HOME..."
+        installer -pkg "$PKG_PATH" -target "$HOME"
+        install_success=true
+    elif [[ "$ALLOW_GLOBAL" = true ]]; then
+        echo "🚀 正在通过 -g 强制安装至系统目录 (/)，可能需要密码..."
+        sudo installer -pkg "$PKG_PATH" -target /
+        install_success=true
+    else
+        echo "❌ 错误: 该 PKG 无法安装到用户目录，且未指定 -g 参数允许全局安装。"
+        install_success=false
+    fi
+fi
+
+# 4. 强制卸载清理
+echo "⏏️  卸载镜像"
+hdiutil detach "$MOUNT_POINT" -force -quiet
+
+# 5. 结果反馈
+if [[ "$install_success" = true ]]; then
+    echo "✨ 安装成功！建议从 $TARGET_DIR 启动应用。"
+    exit 0
+else
+    echo "🚨 安装未能完成。"
+    exit 1
+fi

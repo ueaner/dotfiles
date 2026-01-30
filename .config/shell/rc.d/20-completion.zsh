@@ -108,7 +108,7 @@ zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}
 zstyle ':completion:*' verbose yes # provide verbose completion information.
 zstyle ':completion:*:*:*:*:descriptions' format ' %F{green}-- %d --%f'
 zstyle ':completion:*:*:*:*:corrections'  format ' %F{yellow}!- %d (errors: %e) -!%f'
-zstyle ':completion:*:*:*:*:messages'     format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:*:*:*:messages'     format ' %F{magenta} -- %d --%f'
 zstyle ':completion:*:*:*:*:warnings'     format ' %F{red}-- no matches found --%f'
 
 # 分组排序

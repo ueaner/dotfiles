@@ -160,7 +160,7 @@ keymap:
     exact_match: true
     application:
       # tmux shortcuts are defined with Alacritty
-      not: [Alacritty, term-float, Code]
+      not: [Alacritty, term-float, Code, kitty]
     remap:
 
       # Set window manager shortcuts in ~/bin/gnome-gsettings-macos-ish or ~/.config/sway/config

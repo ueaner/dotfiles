@@ -16,6 +16,11 @@
 
 # Alt/Option Shift Control Super Character
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/lib/init"
+
+module "Setup a macOS-ish desktop environment (Shortcuts, Gestures)"
+
 #----------------------------------------------------------------
 # RELEASE Keys
 #----------------------------------------------------------------
@@ -252,10 +257,8 @@ fi
 # Clipboard Indicator
 schemadir=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas
 if [[ -d $schemadir ]]; then
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>semicolon']"   # <Super>;
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator next-entry "['<Super>bracketright']" # <Super>]
-    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator prev-entry "['<Super>bracketleft']"  # <Super>[
+    gsettings --schemadir $schemadir set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>semicolon']" # <Super>;
 fi
 
 # Launch Terminal
-~/bin/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"
+"$SCRIPT_DIR"/libexec/gnome-custom-keybinding add -n "Alacritty Terminal" -c "alacritty" -b "<Super>Return"

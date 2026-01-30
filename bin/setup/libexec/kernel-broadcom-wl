@@ -1,0 +1,229 @@
+#!/usr/bin/env bash
+#
+# This script handles Broadcom wireless connectivity issues on a Macbook with Fedora 41+.
+#
+# Network:
+# 1. Wired network
+# 2. USB tethering (Settings -> Portable hotspot -> USB tethering)
+# 3. Bluetooth tethering (Settings -> Portable hotspot -> Bluetooth tethering)
+#
+# @depends
+# - ~/bin/kernel-rpm-downloader: https://github.com/ueaner/dotfiles/blob/main/bin/kernel-rpm-downloader
+# - jq
+#
+# Cases:
+#                    Fedora    kernel    kernel-headers
+#    system init       41      6.11.4      6.11.3
+#  packages upgrade    41      6.12.1      6.12.4
+#  packages upgrade    41      6.12.13     6.12.4
+#    system upgrade    42      6.13.1      6.12.4
+
+set -e # 遇到错误立即退出
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/../lib/init"
+
+# --- 配置区 ---
+K_DOWNLOADER="$HOME/bin/kernel-rpm-downloader"
+DNF_CONF_FILE="/etc/dnf/dnf.conf"
+UPDATES_CACHE=/tmp/kernel-headers-updates.json
+ARCH=$(uname -m)
+
+# 格式为 6.18
+K_TARGET_MINOR_DEFAULT=$(uname -r | grep -o -E '^[0-9]+\.[0-9]+')
+K_TARGET_MINOR=${1:-${K_TARGET_MINOR_DEFAULT}}
+
+# 格式为 kernel-6.x.x-xxx.fc41
+K_TARGET=
+H_TARGET=
+
+F_VER=$(. /etc/os-release && echo "$VERSION_ID")
+
+# 声明一个全局数组
+REPORT_QUEUE=()
+
+# 检查 Wi-Fi 硬件与连接状态
+check_wifi() {
+    # Check for Broadcom hardware
+    if ! lspci | grep -q 'Broadcom.*Wireless'; then
+        REPORT_QUEUE+=("$(success 'Non-Broadcom wireless adapter found. Exiting.')")
+        return 0
+    fi
+
+    if [[ "$K_TARGET_MINOR" != "$K_TARGET_MINOR_DEFAULT" ]]; then
+        REPORT_QUEUE+=("$(info "Kernel minor version set: ${K_TARGET_MINOR}")")
+        return 1
+    fi
+
+    # Check for Wi-Fi interface
+    if nmcli -t -f TYPE device | grep -q "wifi"; then
+        REPORT_QUEUE+=("$(success 'Wi-Fi interface detected; the driver is already initialized.')")
+        return 0
+    fi
+
+    # 环境正常，但未连接，需要继续后续检查
+    return 1
+}
+
+resolve_target_kernels() {
+    REPORT_QUEUE+=("$(module 'resolve_target_kernels')")
+    REPORT_QUEUE+=("$(info 'Fetching compatible kernel versions from Bodhi...')")
+
+    if [[ ! -f "$UPDATES_CACHE" ]]; then
+        curl -L "https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&releases=F${F_VER}" -o $UPDATES_CACHE
+    fi
+
+    # 获取与指定 kernel minor 版本，匹配的 kernel-headers 和 kernel
+    updates=$(cat $UPDATES_CACHE | jq -r '.updates[].builds[].nvr' | grep -Ew "$K_TARGET_MINOR\.[0-9]+-(100|200|300)" | sort)
+
+    [[ -z "$updates" ]] && {
+        REPORT_QUEUE+=("$(error "No matching kernel updates found for F${F_VER} and kernel ${K_TARGET_MINOR}")")
+        return 1
+    }
+
+    read -r k h <<<"$(echo "$updates" | xargs)"
+
+    # 提取目标版本名 (格式为 kernel-6.x.x-xxx.fc41)
+    K_TARGET="${k}.${ARCH}"
+    H_TARGET="${h}.${ARCH}"
+
+    REPORT_QUEUE+=("$(info "Target Kernel Minor: $K_TARGET_MINOR | Target Kernel: $K_TARGET | Target Headers: $H_TARGET")")
+}
+
+# 检查特定内核的驱动包状态
+check_driver() {
+    rpm --quiet -q "${K_TARGET//kernel/kmod-wl}"
+}
+
+manage_dnf_exclusion() {
+    local action=$1 # "unlock" or "lock"
+    if [[ "$action" == "unlock" ]]; then
+        # Allow install/update/downgrade of kernel* packages
+        sudo sed -i '/exclude=kernel/d' "$DNF_CONF_FILE"
+    else
+        # Ignore install/update/downgrade of kernel* packages
+        echo 'exclude=kernel*' | sudo tee -a "$DNF_CONF_FILE" >/dev/null
+    fi
+}
+
+install_driver() {
+    REPORT_QUEUE+=("$(module "install_driver")")
+    download_dir="${XDG_BACKUP_DIR:-$HOME/.cache}/archives/$K_TARGET"
+
+    mkdir -p "$download_dir" && cd "$download_dir"
+
+    REPORT_QUEUE+=("$(info "Downloading RPMs to $download_dir...")")
+    "$K_DOWNLOADER" "$K_TARGET" "$H_TARGET" --dir="$download_dir"
+
+    REPORT_QUEUE+=("$(info "Updating system (excluding kernels)...")")
+    sudo dnf upgrade -y --refresh --exclude=kernel\*
+
+    REPORT_QUEUE+=("$(info "Installing targeted kernel and headers...")")
+    manage_dnf_exclusion "unlock"
+    sudo dnf install -y ./kernel*."${ARCH}".rpm
+    manage_dnf_exclusion "lock"
+
+    REPORT_QUEUE+=("$(info "Installing Broadcom Wireless drivers...")")
+    sudo dnf install -y akmods akmod-wl broadcom-wl
+    sudo akmods # 触发本地模块编译
+}
+
+set_default_kernel() {
+    # 提取版本号（如从 kernel-6.17.4 提取 6.17.4）
+    local kver="${K_TARGET#kernel-}"
+    local kernel_image="/boot/vmlinuz-${kver}"
+
+    # 校验内核文件是否存在
+    if [[ ! -f "$kernel_image" ]]; then
+        REPORT_QUEUE+=("$(error "Error: Kernel image $kernel_image not found. Cannot set default.")")
+        return 1
+    fi
+
+    # 使用 [grubby](https://man7.org) 更新默认引导项
+    if sudo grubby --set-default "$kernel_image"; then
+        # 确认当前默认值（可选）
+        # sudo grubby --default-kernel
+        REPORT_QUEUE+=("$(success "Successfully updated GRUB default. Please reboot your Macbook.")")
+        return 0
+    else
+        REPORT_QUEUE+=("$(error "Failed to set default kernel with grubby.")")
+        return 1
+    fi
+}
+
+# Installation failed
+handle_install_failure() {
+
+    local kver="${K_TARGET#kernel-}"
+
+    cat <<EOF
+${K_TARGET//kernel/kmod-wl} installation failed.
+This usually happens when the driver hasn't been patched for the latest kernel.
+Check for updates or report issues here:
+- [Fedora Discussion]: https://discussion.fedoraproject.org/ (Tags: #broadcom #wifi #macbook #f${F_VER})
+- [RPM Fusion Bugzilla]: https://bugzilla.rpmfusion.org/buglist.cgi?bug_status=all&component=broadcom-wl&component=wl-kmod&order=bug_id%20DESC&product=Fedora&version=f${F_VER}
+- [RPM Fusion GitHub]: https://github.com/rpmfusion/wl-kmod
+
+EOF
+
+    if [[ "$(uname -r)" == "$kver" ]]; then
+        exit 1
+    fi
+
+    cat <<EOF
+If you wish to rollback, you can remove the incompatible kernel ($kver):
+(Current running kernel is $(uname -r))
+
+    # 1. Re-enable kernel updates in DNF config
+    sudo sed -i '/exclude=kernel/d' /etc/dnf/dnf.conf
+
+    # 2. Remove the specific kernel packages
+    sudo dnf remove "kernel*-$kver"
+
+    # 3. Verify remaining kernels
+    rpm -qa "kernel*" | sort
+
+    # 4. (Optional) Re-lock kernel updates to stay on a working version
+    echo 'exclude=kernel*' | sudo tee -a /etc/dnf/dnf.conf
+EOF
+}
+
+# --- 执行流程 ---
+
+main() {
+    local res=0
+    _logic() {
+        check_wifi && return 0
+        resolve_target_kernels || return 1
+        if check_driver; then
+            REPORT_QUEUE+=("$(success "${K_TARGET//kernel/kmod-wl} installed.")")
+            return 0
+        fi
+
+        if install_driver; then
+            REPORT_QUEUE+=("$(info "Broadcom Wireless driver successfully installed.")")
+        else
+            REPORT_QUEUE+=("$(error "Broadcom Wireless driver installation failed.")")
+            return 1
+        fi
+
+        if check_driver; then
+            REPORT_QUEUE+=("$(success "${K_TARGET//kernel/kmod-wl} successfully installed.")")
+        else
+            handle_install_failure
+            return 1
+        fi
+
+        set_default_kernel || return 1
+    }
+
+    _logic || res=$?
+    unset -f _logic
+
+    heading "Wireless driver installation"
+    printf "%s\n" "${REPORT_QUEUE[@]}"
+
+    return $res
+}
+
+main "$@"

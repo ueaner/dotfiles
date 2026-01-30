@@ -31,8 +31,8 @@ fi
 # Arrays in bash are 0-indexed;
 # Arrays in  zsh are 1-indexed.
 for ((i = 0; i < ${#arr[@]} / 2; i++)); do
-    k=$(echo ${arr[i * 2 + $index_offset]} | tr '[:lower:]' '[:upper:]')
+    k=$(tr '[:lower:]' '[:upper:]' <<<"${arr[i * 2 + $index_offset]}")
     v=${arr[i * 2 + 1 + $index_offset]}
     # printf "export COLOR_%s=%s\n" ${k} ${v}
-    export COLOR_$k=$v
+    export "COLOR_$k"="$v"
 done

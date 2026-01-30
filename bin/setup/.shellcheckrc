@@ -1,0 +1,5 @@
+shell=bash
+# source=/dev/null
+disable=SC2086,SC2046
+# SC2086: Double quote to prevent globbing and word splitting.
+# SC2046: Quote this to prevent word splitting.

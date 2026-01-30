@@ -12,10 +12,10 @@ registries:
     ref: v4.454.0 # renovate: depName=aquaproj/aqua-registry
   - name: local # aqua g -i local,terrastruct/d2
     type: local
-    path: registry/local.yaml
+    path: $HOME/.config/aqua/registry/local.yaml
   - name: network # aqua g -i network,sentriz/cliphist
     type: local
-    path: registry/network.yaml
+    path: $HOME/.config/aqua/registry/network.yaml
 packages: # aqua install -a
   - name: astral-sh/uv@0.9.25
   - name: junegunn/fzf@v0.67.0
@@ -61,4 +61,4 @@ packages: # aqua install -a
   - name: golang/go@go1.25.6
     registry: local
   - name: nodejs/node@v25.4.0
-  - name: pnpm/pnpm@v10.28.1
+  - name: pnpm/pnpm@v10.28.2

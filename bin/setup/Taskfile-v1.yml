@@ -1,0 +1,70 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task: ui
+
+  ui:
+    desc: "交互式任务运行"
+    internal: true # <--- 内部方法，不现在 task --list-all 列表中
+    interactive: true # <--- 交互式 task
+    silent: true # <--- 隐藏所有命令回显，只看结果
+    # POSIX 规范：被信号中断的进程返回码是 128 + 信号编号。由于 SIGINT 是 2，所以按下 Esc 后 fzf 退出并抛出 130
+    # ignore_error: true # <--- 防止 Esc 退出(130)时 Task 报错，或使用 fzf ... || true
+    cmds:
+      - |-
+        # 1. 提取任务和描述（按照任务定义顺序，不排序） 2. 排除不需要的任务 3. 模糊搜索 4. 截取任务名并执行
+        tasks=$(task --list-all --sort none | \
+          grep '^\* ' | \
+          sed 's/^\* //' | \
+          grep -vE '^default:|^ui:' | \
+          fzf --multi \
+            --with-nth=1.. \
+            --preview "task --summary {1}" || true)
+
+        if [[ -n "$tasks" ]]; then
+          echo "$tasks" | awk -F':' '{print $1}' | xargs task
+        fi
+
+  prelude:
+    desc: (0) 前置配置 (点文件、系统设置等)
+    silent: true
+    cmds:
+      - ./main prelude
+
+  desktop:
+    desc: (1) 桌面环境配置
+    silent: true
+    cmds:
+      - ./main desktop
+
+  app:
+    desc: (2) 应用程序安装
+    silent: true
+    cmds:
+      - ./main app
+
+  service:
+    desc: (3) 服务配置
+    silent: true
+    cmds:
+      - ./main service
+
+  terminal:
+    desc: (4) 终端环境配置
+    silent: true
+    cmds:
+      - ./main terminal
+
+  font:
+    desc: (5) 字体安装
+    silent: true
+    cmds:
+      - ./main font
+
+  lang:
+    desc: (6) 编程语言环境配置
+    silent: true
+    cmds:
+      - ./main lang
