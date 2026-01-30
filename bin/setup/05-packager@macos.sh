@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Package Manager (brew)"
+task "Package Manager (brew)"
 
 # ----------------------------------------------------------------
 # Package Manager (brew)

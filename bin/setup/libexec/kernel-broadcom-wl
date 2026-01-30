@@ -67,7 +67,7 @@ check_wifi() {
 
 # 解析目标内核版本
 resolve_target_kernels() {
-    REPORT_QUEUE+=("$(module 'resolve_target_kernels')")
+    REPORT_QUEUE+=("$(task 'resolve_target_kernels')")
     REPORT_QUEUE+=("$(info 'Fetching compatible kernel versions from Bodhi...')")
 
     if [[ ! -f "$UPDATES_CACHE" ]]; then
@@ -113,7 +113,7 @@ manage_dnf_exclusion() {
 
 # 安装目标内核的 Broadcom 无线驱动
 install_driver() {
-    REPORT_QUEUE+=("$(module "install_driver")")
+    REPORT_QUEUE+=("$(task "install_driver")")
     download_dir="${XDG_BACKUP_DIR:-$HOME/.cache}/archives/$K_TARGET"
 
     mkdir -p "$download_dir" && cd "$download_dir"
@@ -227,7 +227,7 @@ main() {
     _logic || res=$?
     unset -f _logic
 
-    heading "Wireless driver installation"
+    section "Wireless driver installation"
     printf "%s\n" "${REPORT_QUEUE[@]}"
 
     return $res

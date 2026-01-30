@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 # macOS basic desktop environment
 #----------------------------------------------------------------
 
-module "macOS basic desktop environment"
+task "macOS basic desktop environment"
 
 if [[ "${OSTYPE}" != darwin* ]]; then
     is_sourced && return 1 || exit 1
@@ -38,7 +38,7 @@ if [[ ! -f ~/Library/Preferences/com.apple.symbolichotkeys.plist ]]; then
 fi
 
 # Check the shortcut key settings:
-module "System Hotkeys Status (Before-Configuration)"
+task "System Hotkeys Status (Before-Configuration)"
 # defaults read com.apple.symbolichotkeys AppleSymbolicHotKeys | grep -Ew -A4 '64|65|160'
 # ~/bin/plview -json ~/Library/Preferences/com.apple.symbolichotkeys.plist | jq '.AppleSymbolicHotKeys | {"spotlight": ."64".enabled, "finder": ."65".enabled, "launchpad": ."160".enabled}'
 info "Spotlight hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:64:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
@@ -77,7 +77,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 160 "
 # /usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:160:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 
 # Check the shortcut key settings:
-module "System Hotkeys Status (Post-Configuration)"
+task "System Hotkeys Status (Post-Configuration)"
 info "Spotlight hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:64:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
 info "Finder hotkeys enabled   : $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:65:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
 info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:160:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"

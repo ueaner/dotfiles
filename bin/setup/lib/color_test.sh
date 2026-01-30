@@ -15,92 +15,142 @@ fi
 wait_briefly() { sleep 0.3; }
 
 # ==========================================
-# 场景1：自动化服务器环境检查与部署
+# 场景 1：自动化服务器环境检查与部署
 # ==========================================
-heading "场景1：自动化服务器环境检查与部署"
+title "自动化服务器环境检查与部署"
 
-# --- 模块展示 ---
-module "1. 系统预检阶段"
-wait_briefly
+section "自动化环境检查"
 
-info "正在探测硬件架构..."
+task "系统架构预检"
+step "正在探测硬件架构..."
 success "CPU 兼容性检查通过 (x86_64)"
 wait_briefly
 
-info "正在连接远程仓库..."
+step "正在连接远程仓库..."
 success "网络连接正常 (延迟: 15ms)"
+warn "当前剩余内存 < 2GB，构建过程可能较慢。"
 
-warn "检测到当前内存剩余不足 2GB，可能会影响构建速度。"
-
-paragraph "以下组件将被自动安装，请确保您有足够的磁盘空间。安装过程大约需要 5 分钟，具体取决于带宽。"
-item "Node.js 运行时 (v18.x)"
-item "Redis 缓存服务"
-item "Nginx 反向代理"
-
-note "默认安装路径为 /usr/local/bin，您可以通过修改 CONFIG_PATH 变量来更改。"
+task "依赖组件确认"
+paragraph "以下组件将被自动安装，请确保磁盘空间充足。安装过程大约需要 5 分钟。"
+items "Node.js 运行时 (v18.x)" "Redis 缓存服务" "Nginx 反向代理"
+note "默认安装路径为 /usr/local/bin，可修改 CONFIG_PATH 变量。"
 wait_briefly
 
-# --- 模块展示：第二阶段 ---
-module "2. 执行部署任务"
+task "生产环境数据库迁移"
 debug "当前进程 ID (PID): $$"
-debug "正在解析配置文件: /etc/app/config.yaml"
-
-notice "正在迁移生产环境数据库，请勿在此期间强制退出 (Ctrl+C)！"
+# Notice 与 Title 同级蓝色，提醒关键风险
+notice "正在迁移生产数据库，请勿强制退出 (Ctrl+C)！"
 wait_briefly
 
-# 模拟错误处理
-CHECK_DB=0
-if [ $CHECK_DB -eq 0 ]; then
-    error "数据库服务响应超时：无法验证用户表结构。"
-    note "请尝试运行 'systemctl status mariadb' 检查服务状态。"
-fi
+# 模拟错误处理逻辑
+step "校验用户表结构"
+error "数据库服务响应超时：无法验证结构。"
+note "建议运行 'systemctl status mariadb' 检查服务状态。"
 
-# --- 结尾总结 ---
-printf "\n"
-module "部署报告总结"
-paragraph "本次部署于 $(date '+%Y-%m-%d %H:%M:%S') 结束。"
+task "部署报告总结"
+paragraph "本次部署任务于 $(date '+%Y-%m-%d %H:%M:%S') 结束。"
 success "预检任务全部完成。"
 warn "系统稳定性评估：中等。"
 
 # ==========================================
 # 场景2：系统环境初始化 (更紧凑的流水线风格)
 # ==========================================
-heading "场景2：系统环境初始化"
+section "系统环境初始化"
 
-module "网络模块配置"
+task "网络模块配置"
 step "检查防火墙状态"
 success "防火墙已开启"
 step "配置代理服务器"
-info "跳过代理，使用直接连接"
+info "检测到内网环境，自动跳过代理"
 
-module "数据库模块配置"
+task "权限模块验证"
 step "验证 Root 权限"
-note "当前用户拥有管理员权限"
+note "当前用户已处于 sudoers 列表"
 success "验证通过"
 
 # ==========================================
-# 场景3：备份系统，带进度条
+# 场景 3：带进度条的备份系统
 # ==========================================
 title "BACKUP SYSTEM v2.0"
 
-heading "初始化环境"
-info "检测到生产环境..."
-notice "备份期间请勿关闭终端"
-module "数据打包"
-for i in $(seq 0 10 100); do
-    progress "$i" 100 "Compressing"
+# --- 第一阶段：初始化 ---
+section "1. 备份环境准备"
+
+task "初始化备份环境"
+step "探测生产节点状态"
+info "已识别节点: Node-01 (IP: 192.168.1.10)"
+
+# Notice 属于 Task 下的高级警示
+notice "备份期间请勿关闭终端，避免产生碎片文件！"
+
+step "检查本地磁盘空间"
+success "空间充足 (可用: 256GB)"
+
+# --- 第二阶段：本地处理 ---
+section "2. 数据打包阶段"
+
+task "本地数据压缩"
+step "执行数据打包压缩"
+# 进度条与 step 保持 4 格缩进对齐
+for i in $(seq 0 25 100); do
+    progress "$i" 100 "Compressing Data"
     sleep 0.2
 done
-success "数据压缩完成"
+success "镜像 [backup_v2.tar.gz] 已生成"
 
-heading "上传至云端"
-item "Server: AWS-S3"
-item "Region: us-east-1"
-for ((i = 0; i <= 100; i += 10)); do
-    progress "$i" 100 "Uploading"
-    sleep 0.3
+# --- 第三阶段：远程同步 ---
+section "3. 云端同步阶段"
+
+task "同步任务预检"
+step "同步任务已就绪，配置确认"
+# item 属于 step 后的详细补充，缩进 6 格
+items "Target: AWS-S3" "Region: us-east-1" "Bucket: prod-backup-bucket"
+
+task "执行远程数据推送"
+for i in $(seq 0 10 100); do
+    progress "$i" 100 "Uploading to S3"
+    sleep 0.1
 done
+success "所有远程同步任务已完成！"
 
-success "任务全部完成！"
+# --- 结束语 ---
+# note 作为结尾的补充说明
+note "备份日志已保存至 /var/log/backup.log，保留周期为 30 天。"
+
+# ==========================================
+# 场景 4: Infrastructure Deployer
+# ==========================================
+
+title "Infrastructure Deployer"
+
+echo
+notice "Critical: Remote production server will be modified."
+
+section "1. Pre-flight Check"
+task "Resource Validation"
+step "Checking disk space"
+success "1.2 TB available"
+step "Checking network latency"
+info "Latency to AWS-East: 15ms"
+
+section "2. Environment Setup"
+task "Installing Dependencies"
+paragraph "The following core libraries are required for the compilation of the microservices architecture."
+items "Docker CE" "Kubernetes CLI" "Helm v3"
+note "You can skip these if --fast-mode is enabled."
+
+section "3. Deployment"
+task "Uploading Assets"
+for i in {1..5}; do
+    progress $i 5 "Transferring chunk-$i"
+    sleep 0.2
+done
+success "All chunks uploaded"
+
+section "4. Finalization"
+task "Sanity Check"
+step "Verifying checksums"
+success "Checksum match"
+notice "Deployment finished. Check logs for details."
 
 echo -e "\n${C_DIM}--- 演示结束 ---${C_RESET}"

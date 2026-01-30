@@ -115,7 +115,7 @@ fi
 
 # --- 开始执行 ---
 if [[ -n "$mirror" ]]; then
-    heading "Configuring DNF (Fedora)"
+    section "Configuring DNF (Fedora)"
     info "Setting ${FG_MAGENTA}$repo${C_RESET} repositories mirror to ${FG_MAGENTA}$mirror${C_RESET}..."
 fi
 
@@ -125,7 +125,7 @@ if [[ "$repo" == "all" || "$repo" == "rpmfusion" ]]; then
         # https://rpmfusion.org/Configuration#Command_Line_Setup_using_rpm
         # https://rpmfusion.org/keys#Verify_GPG_signatures_on_install
         # preinstalled by fedora 41
-        module "Installing RPM Fusion"
+        task "Installing RPM Fusion"
         sudo dnf install -y distribution-gpg-keys
         sudo rpmkeys --import "/usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-$(rpm -E %fedora)"
         sudo rpmkeys --import "/usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-fedora-$(rpm -E %fedora)"
@@ -212,7 +212,7 @@ esac
 
 # --- DNF.conf 配置 ---
 if $config; then
-    module "Applying custom DNF policy"
+    task "Applying custom DNF policy"
     step "Locking kernel updates (exclude=kernel*)"
     echo "$defaults_dnfconf" | sudo tee /etc/dnf/dnf.conf >/dev/null
     success "Custom dnf.conf applied successfully."
@@ -220,7 +220,7 @@ fi
 
 # --- 清理无用 Repo ---
 if $clean; then
-    module "Cleaning up unused repositories"
+    task "Cleaning up unused repositories"
     chrome_repo=/etc/yum.repos.d/google-chrome.repo
     pycharm_repo=/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo
     nvidia_repo=/etc/yum.repos.d/rpmfusion-nonfree-nvidia-driver.repo
@@ -237,12 +237,12 @@ if ! $no_option; then
 fi
 
 # --- Summary 部分 ---
-heading "DNF System Summary"
+section "DNF System Summary"
 
-module "DNF Repolist"
+task "DNF Repolist"
 sudo dnf repolist
 
-module "Repository Status"
+task "Repository Status"
 if [[ -f "/etc/yum.repos.d/google-chrome.repo" ]]; then
     warn "Google Chrome repo is still active."
 else
@@ -265,7 +265,7 @@ else
     item "RPM Fusion: ${FG_RED}Not Installed${C_RESET}"
 fi
 
-module "Current dnf.conf Content"
+task "Current dnf.conf Content"
 paragraph "$(cat /etc/dnf/dnf.conf)"
 
 echo

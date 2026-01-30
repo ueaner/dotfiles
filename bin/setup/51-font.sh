@@ -5,7 +5,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Fonts"
+task "Fonts"
 
 # 字体目录
 if [[ "${OSTYPE}" == linux* ]]; then

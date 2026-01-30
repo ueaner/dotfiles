@@ -9,7 +9,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Configure GNOME Apps"
+task "Configure GNOME Apps"
 
 #----------------------------------------------------------------
 # Terminal

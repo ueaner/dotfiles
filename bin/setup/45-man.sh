@@ -4,7 +4,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Documents and Manuals"
+task "Documents and Manuals"
 
 #----------------------------------------------------------------
 # man-pages.zh

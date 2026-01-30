@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 # GNOME Shell Extensions
 #----------------------------------------------------------------
 
-module "Install GNOME shell extensions"
+task "Install GNOME shell extensions"
 
 #----------------------------------------------------------------
 # GNOME Shell Extensions

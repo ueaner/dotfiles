@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 # Use lima-vm whenever possible
 if [[ -x /opt/local/bin/brew ]]; then
-    module "Install packages via brew (macOS)"
+    task "Install packages via brew (macOS)"
     PACKAGES=(
         hammerspoon
         kitty

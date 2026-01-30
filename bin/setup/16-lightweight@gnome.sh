@@ -13,7 +13,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Make GNOME more lightweight"
+task "Make GNOME more lightweight"
 
 #----------------------------------------------------------------
 # Power

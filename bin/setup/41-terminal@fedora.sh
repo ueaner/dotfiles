@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Terminal Environment"
+task "Terminal Environment"
 
 # aqua g -i neovim/neovim
 if [[ ! -d ~/.config/nvim ]]; then

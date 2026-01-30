@@ -19,7 +19,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Setup a macOS-ish desktop environment (Shortcuts, Gestures)"
+task "Setup a macOS-ish desktop environment (Shortcuts, Gestures)"
 
 #----------------------------------------------------------------
 # RELEASE Keys

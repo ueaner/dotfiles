@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-module "Configure auto-start service (macOS)"
+task "Configure auto-start service (macOS)"
 
 #----------------------------------------------------------------
 # sshd
