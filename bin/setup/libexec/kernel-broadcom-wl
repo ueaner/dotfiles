@@ -65,6 +65,7 @@ check_wifi() {
     return 1
 }
 
+# 解析目标内核版本
 resolve_target_kernels() {
     REPORT_QUEUE+=("$(module 'resolve_target_kernels')")
     REPORT_QUEUE+=("$(info 'Fetching compatible kernel versions from Bodhi...')")
@@ -95,6 +96,10 @@ check_driver() {
     rpm --quiet -q "${K_TARGET//kernel/kmod-wl}"
 }
 
+# 管理 DNF 包排除设置以控制内核包更新
+# 移除或添加 'exclude=kernel*' 以允许或阻止内核更新
+# Parameters:
+#   $1 - 操作: "unlock" 允许内核更新，其他值锁定更新
 manage_dnf_exclusion() {
     local action=$1 # "unlock" or "lock"
     if [[ "$action" == "unlock" ]]; then
@@ -106,6 +111,7 @@ manage_dnf_exclusion() {
     fi
 }
 
+# 安装目标内核的 Broadcom 无线驱动
 install_driver() {
     REPORT_QUEUE+=("$(module "install_driver")")
     download_dir="${XDG_BACKUP_DIR:-$HOME/.cache}/archives/$K_TARGET"
@@ -128,6 +134,7 @@ install_driver() {
     sudo akmods # 触发本地模块编译
 }
 
+# 使用 grubby 设置默认启动内核
 set_default_kernel() {
     # 提取版本号（如从 kernel-6.17.4 提取 6.17.4）
     local kver="${K_TARGET#kernel-}"

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
+# 平台检测函数库
 
+# 检测当前桌面环境
+# Returns: gnome, sway, aqua (用于 macOS), 或无法检测时返回空值
+# Usage: current_desktop
 current_desktop() {
     # /usr/share/wayland-sessions/sway.desktop
     desktop=
@@ -22,7 +26,9 @@ current_desktop() {
     echo "$desktop"
 }
 
-# 判断当前脚本文件是否被 source
+# 检查当前脚本文件是否被导入 (sourced)
+# Returns: 如果被导入返回 0，如果直接执行返回 1
+# Usage: is_sourced
 is_sourced() {
     if [[ -n "$ZSH_VERSION" ]]; then
         [[ "${zsh_eval_context:-}" == *file* ]]

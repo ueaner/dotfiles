@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 # 查找数组中特定元素的索引（索引从 0 开始）
-# Usage Example:
+# Returns: 元素的 0-based 索引，如果未找到则返回 -1
+# Parameters:
+#   $1 - 要搜索的目标元素
+#   $@ - 要搜索的数组元素 (移除 $1 后)
+# Usage:
 #   fruits=("apple" "banana" "cherry")
 #   index=$(array_index_of "banana" "${fruits[@]}")
 array_index_of() {
@@ -44,8 +48,13 @@ array_index_of() {
     echo $((idx - index_offset))
 }
 
-# 获取数组中指定索引的元素，支持负数索引（-1 表示最后一个）
-# Usage Example:
+# 从数组中获取指定索引处的元素，支持负数索引 (-1 表示最后一个)
+# Parameters:
+#   $1 - 要检索的索引 (可以为负数)
+#   $@ - 要检索的数组元素 (移除 $1 后)
+# Returns:
+#   指定索引处的元素，如果索引超出范围则无输出
+# Usage:
 #   fruits=("apple" "banana" "cherry")
 #   item=$(array_get_at 1 "${fruits[@]}") # 输出 banana
 #   item=$(array_get_at -1 "${fruits[@]}") # 输出 cherry

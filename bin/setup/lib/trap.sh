@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Error and signal handling functions library
-# Provides functions for error handling, interruption handling, and exit handlers
+# 错误和信号处理函数库
+# 提供错误处理、中断处理和退出处理函数
 
+# 当命令失败时记录错误详情的错误处理函数
+# 由于 'set -e'，当命令失败时自动调用此函数
+# Parameters:
+#   $1 - 错误发生的行号
+#   $2 - 失败的命令
+#   $3 - 失败命令的退出码
 on_error() {
     local line="$1"
     local cmd="$2"
@@ -22,8 +28,10 @@ trap 'on_error $LINENO "$BASH_COMMAND" $?' ERR
 # 允许在函数内部也触发 ERR 信号（Bash 默认函数内不触发 trap）
 set -o errtrace
 
-# register_exit_handler "cleanup_a"
-# register_exit_handler "cleanup_b"
+# 注册一个在脚本退出时调用的函数
+# Usage: register_exit_handler "cleanup_function"
+# Parameters:
+#   $1 - 要注册为退出处理程序的函数名
 register_exit_handler() {
     local new_handler="$1"
     local raw_output
@@ -41,6 +49,10 @@ register_exit_handler() {
     trap "${old_trap}${old_trap:+; }${new_handler}" EXIT
 }
 
+# 注册一个在中断 (Ctrl+C) 或终止信号时调用的函数
+# Usage: register_interrupt_handler "interrupt_handler_function"
+# Parameters:
+#   $1 - 要注册为中断处理程序的函数名
 register_interrupt_handler() {
     local new_handler="$1"
     local raw_output
@@ -82,6 +94,10 @@ register_interrupt_handler() {
 # 初始化中断锁变量
 # INTERRUPT_HANDLED=0
 
+# SIGINT 和 SIGTERM 信号的默认中断处理程序
+# 显示中断消息并退出脚本
+# Parameters:
+#   无 (使用 $? 的退出码)
 default_interrupt_handler() {
     local exit_code=$?
     # [[ "$INTERRUPT_HANDLED" == "1" ]] && return

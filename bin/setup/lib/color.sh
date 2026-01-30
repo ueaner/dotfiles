@@ -39,6 +39,7 @@ fi
 # --- 1. 标题层级 (Hierarchy) ---
 
 # 超大标题：脚本入口或顶级阶段，使用全宽色块
+# Usage: title "Main Title"
 title() {
     local raw_text="  $1  "
     local width
@@ -52,6 +53,7 @@ title() {
 }
 
 # 主标题：逻辑大章节，带自适应底部分割线
+# Usage: heading "Section Title"
 heading() {
     local text="# $1"
     local width
@@ -64,11 +66,13 @@ heading() {
 }
 
 # 模块标题：功能分组标识
+# Usage: module "Module Name"
 module() {
     printf "\n${C_BOLD}${FG_BLUE}>> %s${C_RESET}\n" "$1"
 }
 
 # 步骤标题：原子操作描述
+# Usage: step "Operation Description"
 step() {
     printf "${C_BOLD}  ➜ %s${C_RESET}\n" "$1"
 }
@@ -83,16 +87,19 @@ debug() { printf "${FG_MAGENTA}${C_DIM}[DEBUG] %s${C_RESET}\n" "$1"; }
 # --- 3. 正文排版 (Content) ---
 
 # 自动换行段落，带左侧缩进
+# Usage: paragraph "Long text that needs to be wrapped and indented"
 paragraph() {
     printf "${C_DIM}%s${C_RESET}\n" "$1" | fold -s -w 60 | sed 's/^/  /'
 }
 
 # 列表项
+# Usage: item "List item text"
 item() {
     printf "  ${FG_CYAN}•${C_RESET} %s\n" "$1"
 }
 
 # 列表
+# Usage: items "Item 1" "Item 2" "Item 3"
 items() {
     for val in "$@"; do
         # 只有当参数不为空时才调用 item
@@ -102,10 +109,14 @@ items() {
 
 # --- 4. 强提示块 (Callouts) ---
 
+# 以高亮背景显示备注
+# Usage: note "Important note text"
 note() {
     printf "${BG_BLUE}${FG_WHITE}${C_BOLD} NOTE ${C_RESET} ${FG_BLUE}%s${C_RESET}\n" "$1"
 }
 
+# 以高亮背景显示提示
+# Usage: notice "Notice text"
 notice() {
     printf "${BG_CYAN}${FG_BLACK}${C_BOLD} NOTICE ${C_RESET} ${FG_CYAN}%s${C_RESET}\n" "$1"
 }
@@ -113,6 +124,7 @@ notice() {
 # --- 5. 任务进度 (Progress) ---
 
 # 进度条：原地刷新显示百分比。参数：$1=当前值, $2=最大值, $3=描述
+# Usage: progress $current $total "Description"
 progress() {
     local current=$1 total=$2 desc=${3:-"Processing"}
     local width=30
