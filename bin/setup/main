@@ -32,9 +32,9 @@ fi
 
 PLATFORM_PATTERN="@(${KERNEL}|${SYSTEM}|${DESKTOP})"
 
-ROLE_INDEX=
+SECTION_INDEX=
 
-roles=(
+sections=(
     prelude  # 0
     desktop  # 1, macOS-ish Desktop Environment
     app      # 2
@@ -78,14 +78,14 @@ Setup Unix Workstation - 系统配置自动化脚本
 EOF
 }
 
-role="${1:-}"
+section="${1:-}"
 
-if [[ "$role" == "help" ]] || [[ "$role" == "-h" ]] || [[ "$role" == "--help" ]]; then
+if [[ "$section" == "help" ]] || [[ "$section" == "-h" ]] || [[ "$section" == "--help" ]]; then
     show_help
     exit 0
 fi
 
-if [[ -z "$role" ]]; then
+if [[ -z "$section" ]]; then
     # 检查是否安装了 fzf
     if ! command -v fzf >/dev/null 2>&1; then
         # 如果没有 fzf，则显示帮助
@@ -94,10 +94,10 @@ if [[ -z "$role" ]]; then
     fi
 
     # 使用 fzf 进行交互式选择
-    selected=$(printf '%s\n%s\n%s\n' "help" "${roles[@]}" "all" | fzf --no-multi --bind "ctrl-z:ignore,tab:down,btab:up" --header '[TAB] / [Shift-TAB] to move focus') || true
+    selected=$(printf '%s\n%s\n%s\n' "help" "${sections[@]}" "all" | fzf --no-multi --bind "ctrl-z:ignore,tab:down,btab:up" --header '[TAB] / [Shift-TAB] to move focus') || true
 
     if [[ -n "$selected" ]]; then
-        # 如果选择了 role，则执行
+        # 如果选择了 section，则执行
         $0 "$selected"
     else
         # 没有选择，则显示帮助
@@ -106,12 +106,12 @@ if [[ -z "$role" ]]; then
     exit 0
 fi
 
-if [[ "$role" != "all" ]]; then
+if [[ "$section" != "all" ]]; then
     # 设置了 set -e 需要 `|| true` 临时屏蔽错误
-    ROLE_INDEX=$(array_index_of "$role" "${roles[@]}") || true
+    SECTION_INDEX=$(array_index_of "$section" "${sections[@]}") || true
 
-    if [[ -z "$ROLE_INDEX" ]]; then
-        echo "Error: No matching role found: $role"
+    if [[ -z "$SECTION_INDEX" ]]; then
+        echo "Error: No matching section found: $section"
         show_help
         exit 1
     fi
@@ -122,8 +122,8 @@ item "BASH_VERSION: $BASH_VERSION"
 
 last_idx=
 
-# for f in "$HOME"/bin/setup/"$ROLE_INDEX"[0-9]-*.sh; do
-# for f in "$ROLE_INDEX"[0-9]-*.sh; do
+# for f in "$HOME"/bin/setup/"$SECTION_INDEX"[0-9]-*.sh; do
+# for f in "$SECTION_INDEX"[0-9]-*.sh; do
 # for f in [0-9][0-9]-*.sh; do
 for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
     [[ -e "$f" ]] || continue
@@ -132,8 +132,8 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
     filename="${f##*/}"
     curr_idx="${filename:0:1}"
 
-    # 确保匹配指定的索引 [[ "$f" != "$MAIN_SCRIPT_DIR/$ROLE_INDEX"* ]]
-    if [[ -n "$ROLE_INDEX" ]] && [[ "$curr_idx" != "$ROLE_INDEX" ]]; then
+    # 确保匹配指定的索引 [[ "$f" != "$MAIN_SCRIPT_DIR/$SECTION_INDEX"* ]]
+    if [[ -n "$SECTION_INDEX" ]] && [[ "$curr_idx" != "$SECTION_INDEX" ]]; then
         continue
     fi
 
@@ -144,7 +144,7 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
 
     if [[ $last_idx != "$curr_idx" ]]; then
         last_idx="$curr_idx"
-        section "$role ($last_idx)"
+        section "$section ($last_idx)"
     fi
 
     note "$f"
@@ -153,3 +153,6 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
 done
 
 echo -e "\n${C_DIM}--- Done ---${C_RESET}"
+
+# 显式等待所有子任务
+wait

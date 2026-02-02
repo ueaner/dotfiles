@@ -103,10 +103,10 @@ wrap() {
     # touch "$TMP_WRAP_LOCK"
     mkdir -p "$TMP_WRAP_LOCK"
     if declare -F push_exit_handler >/dev/null; then
-        push_exit_handler "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK"
+        push_exit_handler "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK 2>/dev/null"
     else
         # shellcheck disable=SC2064
-        trap "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK" EXIT
+        trap "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK 2>/dev/null" EXIT
     fi
 
     # 顶部边框

@@ -32,4 +32,4 @@ ln -sf $XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo 
     ~/.local/share/zsh/site-functions/_cargo
 rustup completions zsh >~/.local/share/zsh/site-functions/_rustup
 
-info $($CARGO_HOME/bin/rustc --version)
+info "$($CARGO_HOME/bin/rustc --version)"

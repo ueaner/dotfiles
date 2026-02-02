@@ -2,15 +2,15 @@ version: "3"
 
 vars:
   # 定义 List[Map]
-  ROLES:
-    - { name: "prelude",  desc: "(0) 前置配置 (点文件、系统设置等)" }
-    - { name: "desktop",  desc: "(1) 桌面环境配置" }
-    - { name: "app",      desc: "(2) 应用程序安装" }
-    - { name: "service",  desc: "(3) 服务配置" }
+  SECTIONS:
+    - { name: "prelude", desc: "(0) 前置配置 (点文件、系统设置等)" }
+    - { name: "desktop", desc: "(1) 桌面环境配置" }
+    - { name: "app", desc: "(2) 应用程序安装" }
+    - { name: "service", desc: "(3) 服务配置" }
     - { name: "terminal", desc: "(4) 终端环境配置" }
-    - { name: "font",     desc: "(5) 字体安装" }
-    - { name: "lang",     desc: "(6) 编程语言环境配置" }
-    - { name: "all",      desc: "运行所有任务" }
+    - { name: "font", desc: "(5) 字体安装" }
+    - { name: "lang", desc: "(6) 编程语言环境配置" }
+    - { name: "all", desc: "运行所有任务" }
 
 tasks:
   default:
@@ -25,29 +25,29 @@ tasks:
     # POSIX 规范：被信号中断的进程返回码是 128 + 信号编号。由于 SIGINT 是 2，所以按下 Esc 后 fzf 退出并抛出 130
     # ignore_error: true # <--- 防止 Esc 退出(130)时 Task 报错，或使用 fzf ... || true
     vars:
-      # 格式化 ROLES 为: "name | desc" 形式供 fzf 展现
+      # 格式化 SECTIONS 为: "name | desc" 形式供 fzf 展现
       OPTIONS:
         sh: |
-          {{range .ROLES -}}
+          {{range .SECTIONS -}}
           echo "{{.name}} : {{.desc}}";
           {{- end}}
     cmds:
       - |-
-        # 1. 提取 role 和描述 2. 模糊搜索 3. 截取 role 名并执行
-        SELECTED_ROLES=$(echo "{{.OPTIONS}}" | column -t -s ':' | fzf --multi || true)
+        # 1. 提取 Section 和描述 2. 模糊搜索 3. 截取 Section 名并执行
+        SELECTED_SECTIONS=$(echo "{{.OPTIONS}}" | column -t -s ':' | fzf --multi || true)
 
-        if [[ -n "$SELECTED_ROLES" ]]; then
-          echo "$SELECTED_ROLES" | awk '{print $1}' | xargs task process --
+        if [[ -n "$SELECTED_SECTIONS" ]]; then
+          echo "$SELECTED_SECTIONS" | awk '{print $1}' | xargs task process --
         fi
 
   process:
-    desc: "一次执行多个 role，如: task process -- <role1> <role2>"
+    desc: "一次执行多个 Section，如: task process -- <section1> <section2>"
     cmds:
       - for: { var: CLI_ARGS }
-        task: run-role
+        task: run-section
         vars: { ITEM: "{{.ITEM}}" }
 
-  run-role:
+  run-section:
     silent: true
     internal: true
     cmds:
