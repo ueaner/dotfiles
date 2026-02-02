@@ -1,7 +1,5 @@
 # .bashrc
 
-shopt -s nullglob
-
 echo "[$$ .bashrc] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 
 # https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/

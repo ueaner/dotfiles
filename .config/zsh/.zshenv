@@ -3,9 +3,6 @@
 #     export ZDOTDIR=~/.config/zsh
 #     [[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv
 # fi
-
-setopt NULL_GLOB
-
 [[ "$ZSHENV_SOURCED" == "$$" ]] && return
 export ZSHENV_SOURCED=$$
 

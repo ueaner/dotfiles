@@ -1,8 +1,7 @@
 #---------------------------------------------------------------
 # 1. 基础环境配置
 #---------------------------------------------------------------
-setopt prompt_subst  # 允许在 PROMPT 中动态解析变量
-setopt extended_glob # 启用高级模式匹配（用于首尾空白清理）
+setopt prompt_subst # 允许在 PROMPT 中动态解析变量
 
 # 初始光标样式设置为垂直条 (beam)
 echo -ne '\e[6 q'
@@ -74,6 +73,7 @@ zle -N zle-line-finish
 
 # 拦截粘贴：强力移除粘贴内容前后的所有空白字符（含换行符）
 clean-bracketed-paste() {
+    setopt extended_glob # 启用高级模式匹配
     local content
     # 1. 获取原始粘贴内容
     zle .bracketed-paste content

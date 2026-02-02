@@ -25,12 +25,10 @@ if [[ -n $HOMEBREW_PREFIX ]]; then
     )
 
     # HOMEBREW_PREFIX is defined in env.d/04-brew.sh
-    # setopt NULL_GLOB
-    local brew_opt_paths=($HOMEBREW_PREFIX/opt/*/share/zsh/site-functions)
-
-    if (( ${#brew_opt_paths} > 0 )); then
-        fpath=($brew_opt_paths $fpath)
-    fi
+    for p in $HOMEBREW_PREFIX/opt/*/share/zsh/site-functions(N/); do
+        [[ -e "$p" ]] || continue
+        fpath=("$p" $fpath)
+    done
 
     # brew install bash-completion@2
     export BASH_COMPLETION_USER_FILE=${HOMEBREW_PREFIX}/opt/bash-completion@2/share/bash-completion/bash_completion
