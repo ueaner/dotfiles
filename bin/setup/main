@@ -37,11 +37,10 @@ SECTION_INDEX=
 sections=(
     prelude  # 0
     desktop  # 1, macOS-ish Desktop Environment
-    app      # 2
+    app      # 2, Applications
     service  # 3
     terminal # 4, Terminal Environment
-    font     # 5
-    lang     # 6, Programming languages
+    lang     # 5, Programming languages
 )
 
 show_help() {
@@ -49,20 +48,19 @@ show_help() {
 Setup Unix Workstation - 系统配置自动化脚本
 
 用法:
-    $0 [选项] [角色]
+    $0 [选项] [section]
 
 选项:
     all         执行所有配置步骤
     help        显示此帮助信息
 
-可用角色:
+可用 section:
     prelude     (0) 前置配置 (点文件、系统设置等)
     desktop     (1) 桌面环境配置
     app         (2) 应用程序安装
     service     (3) 服务配置
     terminal    (4) 终端环境配置
-    font        (5) 字体安装
-    lang        (6) 编程语言环境配置
+    lang        (5) 编程语言环境配置
 
 平台支持:
     - Fedora Linux
@@ -144,7 +142,9 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
 
     if [[ $last_idx != "$curr_idx" ]]; then
         last_idx="$curr_idx"
-        section "$section ($last_idx)"
+        name=$(array_get_at $last_idx "${sections[@]}")
+        section "$name ($last_idx)"
+        # section "$section ($last_idx)"
     fi
 
     note "$f"
@@ -152,7 +152,7 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
     . "$f"
 done
 
-echo -e "\n${C_DIM}--- Done ---${C_RESET}"
+echo -e "\n${C_DIM}--- $section done ---${C_RESET}"
 
 # 显式等待所有子任务
-wait
+# wait

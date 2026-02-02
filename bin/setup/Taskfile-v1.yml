@@ -24,7 +24,12 @@ tasks:
             --preview "task --summary {1}" || true)
 
         if [[ -n "$tasks" ]]; then
-          echo "$tasks" | awk -F':' '{print $1}' | xargs task
+          # 如果选择了 all，只执行 all，跳过其他 task
+          if echo "$tasks" | grep -q '^all:'; then
+            ./main all
+          else
+            echo "$tasks" | awk -F':' '{print $1}' | xargs task
+          fi
         fi
 
   prelude:
@@ -57,14 +62,14 @@ tasks:
     cmds:
       - ./main terminal
 
-  font:
-    desc: (5) 字体安装
-    silent: true
-    cmds:
-      - ./main font
-
   lang:
-    desc: (6) 编程语言环境配置
+    desc: (5) 编程语言环境配置
     silent: true
     cmds:
       - ./main lang
+
+  all:
+    desc: 运行所有 Section
+    silent: true
+    cmds:
+      - ./main all

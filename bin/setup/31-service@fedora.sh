@@ -49,6 +49,22 @@ step "Enable sshd.service"
 sudo systemctl enable --now sshd
 
 #----------------------------------------------------------------
+# ~/.config/autostart/xremap.desktop
+#----------------------------------------------------------------
+step "Start xremap.service via a desktop entry in ~/.config/autostart."
+if ! systemctl --user is-active --quiet xremap.service; then
+    systemctl --user start xremap.service
+fi
+
+#----------------------------------------------------------------
+# ~/.config/autostart/cliphist.desktop
+#----------------------------------------------------------------
+step "Start cliphist.service via a desktop entry in ~/.config/autostart."
+if ! systemctl --user is-active --quiet cliphist.service; then
+    systemctl --user start cliphist.service
+fi
+
+#----------------------------------------------------------------
 # shadowsocks (local)
 #----------------------------------------------------------------
 step "Enable shadowsocks-rust-local.service"

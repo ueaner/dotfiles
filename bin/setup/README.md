@@ -12,45 +12,41 @@
   - `01-dotfiles.sh` - 配置点文件
   - `02-system.sh` - 系统配置
   - `03-hostname.sh` - 主机名配置
-- `05` - 包管理器设置
   - `05-packager@fedora.sh` - Fedora 包管理器配置
   - `05-packager@macos.sh` - macOS 包管理器配置
-- `09` - 特定硬件配置
   - `09-intel-based-macbook@fedora.sh` - 针对 Intel Mac 的 Fedora 配置
 - `1x` - 桌面环境设置
-  - `11-desktop@gnome.sh` - GNOME 桌面配置
   - `11-desktop@macos.sh` - macOS 桌面配置
-  - `11-extensions@gnome.sh` - GNOME 扩展安装
-  - `12-gsettings-macos-ish@gnome.sh` - GNOME 模 macOS 设置
-  - `13-gsettings-libpinyin@gnome.sh` - GNOME 中文输入法配置
-  - `14-gsettings-ui@gnome.sh` - GNOME UI 设置
-  - `14-gsettings-ui@sway.sh` - Sway UI 设置
-  - `15-gsettings-apps@gnome.sh` - GNOME 应用设置
-  - `16-lightweight@gnome.sh` - GNOME 轻量化配置
-  - `16-lightweight@sway.sh` - Sway 轻量化配置
+  - `12-font.sh` - 字体安装配置
+  - `13-extensions@gnome.sh` - GNOME 扩展安装
+  - `14-gsettings-macos-ish@gnome.sh` - GNOME 模 macOS 设置
+  - `15-gsettings-libpinyin@gnome.sh` - GNOME 中文输入法配置
+  - `16-gsettings-ui@gnome.sh` - GNOME UI 设置
+  - `16-gsettings-ui@sway.sh` - Sway UI 设置
+  - `17-gsettings-apps@gnome.sh` - GNOME 应用设置
+  - `18-lightweight@gnome.sh` - GNOME 轻量化配置
+  - `18-lightweight@sway.sh` - Sway 轻量化配置
 - `2x` - 应用程序安装
   - `21-aqua.sh` - Aqua 包管理器和 CLI 工具安装
   - `22-app@fedora.sh` - Fedora 应用程序安装
   - `22-app@macos.sh` - macOS 应用程序安装
 - `3x` - 服务配置
-  - `31-lima.sh` - Lima 配置 (Linux 虚拟机)
   - `31-service@fedora.sh` - Fedora 服务配置
   - `31-service@macos.sh` - macOS 服务配置
+  - `32-lima.sh` - Lima 配置 (Linux 虚拟机)
 - `4x` - 终端环境设置
   - `41-terminal@fedora.sh` - Fedora 终端配置
   - `41-terminal@macos.sh` - macOS 终端配置
   - `45-man.sh` - 手册页配置
-- `5x` - 字体安装
-  - `51-font.sh` - 字体安装配置
-- `6x` - 编程语言/开发工具
-  - `60-lang.sh` - 特定语言辅助工具安装（用于安装如 gprof2dot 等性能分析工具）
-  - `61-rust.sh` - Rust 开发环境配置
+- `5x` - 编程语言/开发工具
+  - `50-lang.sh` - 特定语言辅助工具安装（用于安装如 gprof2dot 等性能分析工具）
+  - `51-rust.sh` - Rust 开发环境配置
 
 ### 任务执行架构
 
 项目通过 `main` 脚本统一管理任务执行，支持以下特性：
 
-- **角色系统**：将任务分组为 prelude、desktop、app、service、terminal、font、lang 等角色
+- **阶段系统**：将任务分组为 prelude、desktop、app、service、terminal、lang 等阶段
 - **平台检测**：自动检测当前系统（Fedora/macOS）、桌面环境（GNOME/Sway/Aqua）
 - **条件执行**：通过 `@platform` 后缀实现平台特定脚本的条件执行
 - **交互式选择**：集成 fzf 实现交互式任务选择
@@ -98,7 +94,7 @@
 # 执行所有配置
 ./main all
 
-# 执行特定角色 (例如：桌面环境配置)
+# 执行特定 section (例如：桌面环境配置)
 ./main desktop
 
 # 执行应用程序安装
@@ -107,19 +103,18 @@
 # 执行服务配置
 ./main service
 
-# 交互式选择角色 (如果安装了 fzf)
+# 交互式选择 section (如果安装了 fzf)
 ./main
 ```
 
-可用的角色包括：
+可用的 section 包括：
 
 - `prelude` (0) - 前置配置 (点文件、系统设置等)
 - `desktop` (1) - 桌面环境配置
 - `app` (2) - 应用程序安装
 - `service` (3) - 服务配置
 - `terminal` (4) - 终端环境配置
-- `font` (5) - 字体安装
-- `lang` (6) - 编程语言环境配置
+- `lang` (5) - 编程语言环境配置
 
 当不带参数运行 `./main` 时，如果系统安装了 fzf，将提供交互式选择界面。
 
@@ -128,11 +123,11 @@
 通过 Task 运行器执行任务：
 
 ```bash
-# 运行默认任务 (交互式 UI 选择要执行的角色，可多选)
+# 运行默认任务 (交互式 UI 选择要执行的 section，可多选)
 task
 ```
 
-Taskfile.yml 提供了更高级的交互式界面，使用 fzf 选择角色并可多选执行。
+Taskfile.yml 提供了更高级的交互式界面，使用 fzf 选择 section 并可多选执行。
 
 ## 配置文件
 

@@ -28,21 +28,20 @@ trap 'on_error $LINENO "$BASH_COMMAND" $?' ERR
 # 允许在函数内部也触发 ERR 信号（Bash 默认函数内不触发 trap）
 set -o errtrace
 
-# 初始化中断锁变量
-# INTERRUPT_HANDLED=0
+TRAP_EXIT_HANDLERS=()
+# 注册一个在脚本退出时调用的函数（避免在 handler 中使用 kill 0 和 exit）
+# Usage: push_exit_handler "exit_handler_function"
+push_exit_handler() {
+    [[ -n "${1:-}" ]] || return 1
+    TRAP_EXIT_HANDLERS+=("$1")
 
-# 默认显示 SIGINT 和 SIGTERM 信号的中断消息
-default_interrupt_handler() {
-    local exit_code=$?
-    # [[ "$INTERRUPT_HANDLED" == "1" ]] && return
-    # INTERRUPT_HANDLED=1
+    local full_handler
+    full_handler=$(printf "%s; " "${TRAP_EXIT_HANDLERS[@]}")
+    full_handler="trap - EXIT; { ${full_handler} }; kill 0; exit 1"
 
-    local errmsg="Interrupt signal detected. Exiting...(Exit code: ${exit_code})"
-    if declare -F warn >/dev/null; then
-        warn "${errmsg}"
-    else
-        echo -e "\n${errmsg}"
-    fi
+    # shellcheck disable=SC2064
+    # 捕获进程退出信号
+    trap "$full_handler" EXIT
 }
 
 TRAP_INTERRUPT_HANDLERS=()
@@ -81,21 +80,22 @@ push_interrupt_handler() {
     trap "$full_handler" INT TERM
 }
 
-# 使用 register_interrupt_handler 避免在 handler 内包含 kill 0 / exit
-push_interrupt_handler 'default_interrupt_handler'
+# 初始化中断锁变量
+# INTERRUPT_HANDLED=0
 
-TRAP_EXIT_HANDLERS=()
-# 注册一个在脚本退出时调用的函数（避免在 handler 中使用 kill 0 和 exit）
-# Usage: push_exit_handler "exit_handler_function"
-push_exit_handler() {
-    [[ -n "${1:-}" ]] || return 1
-    TRAP_EXIT_HANDLERS+=("$1")
+# 默认显示 SIGINT 和 SIGTERM 信号的中断消息
+default_interrupt_handler() {
+    local exit_code=$?
+    # [[ "$INTERRUPT_HANDLED" == "1" ]] && return
+    # INTERRUPT_HANDLED=1
 
-    local full_handler
-    full_handler=$(printf "%s; " "${TRAP_EXIT_HANDLERS[@]}")
-    full_handler="trap - EXIT; { ${full_handler} }; kill 0; exit 1"
-
-    # shellcheck disable=SC2064
-    # 捕获进程退出信号
-    trap "$full_handler" EXIT
+    local errmsg="Interrupt signal detected. Exiting...(Exit code: ${exit_code})"
+    if declare -F warn >/dev/null; then
+        warn "${errmsg}"
+    else
+        echo -e "\n${errmsg}"
+    fi
 }
+
+# 使用 register_interrupt_handler 避免在 handler 内包含 kill 0 / exit
+# push_interrupt_handler 'default_interrupt_handler'

@@ -8,9 +8,8 @@ vars:
     - { name: "app", desc: "(2) 应用程序安装" }
     - { name: "service", desc: "(3) 服务配置" }
     - { name: "terminal", desc: "(4) 终端环境配置" }
-    - { name: "font", desc: "(5) 字体安装" }
-    - { name: "lang", desc: "(6) 编程语言环境配置" }
-    - { name: "all", desc: "运行所有任务" }
+    - { name: "lang", desc: "(5) 编程语言环境配置" }
+    - { name: "all", desc: "运行所有 Section" }
 
 tasks:
   default:
@@ -37,7 +36,12 @@ tasks:
         SELECTED_SECTIONS=$(echo "{{.OPTIONS}}" | column -t -s ':' | fzf --multi || true)
 
         if [[ -n "$SELECTED_SECTIONS" ]]; then
-          echo "$SELECTED_SECTIONS" | awk '{print $1}' | xargs task process --
+          # 如果选择了 all，只执行 all，跳过其他 section
+          if echo "$SELECTED_SECTIONS" | grep -q '^all '; then
+            ./main all
+          else
+            echo "$SELECTED_SECTIONS" | awk '{print $1}' | xargs task process --
+          fi
         fi
 
   process:
