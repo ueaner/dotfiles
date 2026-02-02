@@ -17,10 +17,10 @@ on_error() {
 
     local errmsg="Error in [${filename}] function ${func_name}() at line ${line}. Command: '${cmd}' (Exit code: ${exit_code})"
 
-    if ! declare -F error >/dev/null; then
-        echo "${errmsg}"
-    else
+    if declare -F error >/dev/null; then
         error "${errmsg}"
+    else
+        echo "${errmsg}"
     fi
 }
 
@@ -28,42 +28,29 @@ trap 'on_error $LINENO "$BASH_COMMAND" $?' ERR
 # 允许在函数内部也触发 ERR 信号（Bash 默认函数内不触发 trap）
 set -o errtrace
 
-# 注册一个在脚本退出时调用的函数
-# Usage: register_exit_handler "cleanup_function"
-# Parameters:
-#   $1 - 要注册为退出处理程序的函数名
-register_exit_handler() {
-    local new_handler="$1"
-    local raw_output
-    raw_output=$(trap -p INT)
-    local old_trap=
+# 初始化中断锁变量
+# INTERRUPT_HANDLED=0
 
-    # 如果没有设置过 trap，raw_output 为空
-    if [ -n "$raw_output" ]; then
-        # 剥离前缀 trap -- ' 和后缀 ' INT/SIGINT/2
-        old_trap=$(sed "s/^[^']*'//; s/'[^']*$//" <<<"$raw_output")
+# 默认显示 SIGINT 和 SIGTERM 信号的中断消息
+default_interrupt_handler() {
+    local exit_code=$?
+    # [[ "$INTERRUPT_HANDLED" == "1" ]] && return
+    # INTERRUPT_HANDLED=1
+
+    local errmsg="Interrupt signal detected. Exiting...(Exit code: ${exit_code})"
+    if declare -F warn >/dev/null; then
+        warn "${errmsg}"
+    else
+        echo -e "\n${errmsg}"
     fi
-
-    # 组合新旧命令
-    # shellcheck disable=SC2064
-    trap "${old_trap}${old_trap:+; }${new_handler}" EXIT
 }
 
-# 注册一个在中断 (Ctrl+C) 或终止信号时调用的函数
-# Usage: register_interrupt_handler "interrupt_handler_function"
-# Parameters:
-#   $1 - 要注册为中断处理程序的函数名
-register_interrupt_handler() {
-    local new_handler="$1"
-    local raw_output
-    raw_output=$(trap -p INT)
-    local old_trap=
-
-    # 如果没有设置过 trap，raw_output 为空
-    if [ -n "$raw_output" ]; then
-        # 剥离前缀 trap -- ' 和后缀 ' INT/SIGINT/2
-        old_trap=$(sed "s/^[^']*'//; s/'[^']*$//" <<<"$raw_output")
-    fi
+TRAP_INTERRUPT_HANDLERS=()
+# 注册一个在中断 (Ctrl+C) 或终止信号时调用的函数（避免在 handler 中使用 kill 0 和 exit）
+# Usage: push_interrupt_handler "interrupt_handler_function"
+push_interrupt_handler() {
+    [[ -n "${1:-}" ]] || return 1
+    TRAP_INTERRUPT_HANDLERS+=("$1")
 
     # 按下 Ctrl+C
     #     ↓
@@ -75,47 +62,40 @@ register_interrupt_handler() {
     #        # 先删除 trap，防止递归！
     #        # 现在 INT 恢复默认行为（终止进程）
     #
-    #     2. { ${old_trap}${old_trap:+; }${new_handler}; }
+    #     2. $TRAP_INTERRUPT_HANDLERS
     #        # 执行清理代码（script1 的 + main.sh 的）
     #
     #     3. kill 0
-    #        # 向进程组发送默认信号（现在 INT 是默认处理）
+    #        # 向进程组发送默认信号（虽然现在 INT 是默认处理，但在 trap 捕获信号后，原本的“信号传播”会被拦截，需要显式调用 kill 0）
     #        # 这会终止脚本中启动的后台进程
     #
     #     4. exit 1
     #        # 最终退出
-    #
-    local full_handler="trap - INT TERM; { ${old_trap}${old_trap:+; }${new_handler}; }; kill 0; exit 1"
+
+    local full_handler
+    full_handler=$(printf "%s; " "${TRAP_INTERRUPT_HANDLERS[@]}")
+    full_handler="trap - INT TERM; { ${full_handler} }; kill 0; exit 1"
 
     # shellcheck disable=SC2064
+    # 捕获 SIGINT (Ctrl+C) 和 SIGTERM (终止信号)
     trap "$full_handler" INT TERM
 }
 
-# 初始化中断锁变量
-# INTERRUPT_HANDLED=0
+# 使用 register_interrupt_handler 避免在 handler 内包含 kill 0 / exit
+push_interrupt_handler 'default_interrupt_handler'
 
-# SIGINT 和 SIGTERM 信号的默认中断处理程序
-# 显示中断消息并退出脚本
-# Parameters:
-#   无 (使用 $? 的退出码)
-default_interrupt_handler() {
-    local exit_code=$?
-    # [[ "$INTERRUPT_HANDLED" == "1" ]] && return
-    # INTERRUPT_HANDLED=1
+TRAP_EXIT_HANDLERS=()
+# 注册一个在脚本退出时调用的函数（避免在 handler 中使用 kill 0 和 exit）
+# Usage: push_exit_handler "exit_handler_function"
+push_exit_handler() {
+    [[ -n "${1:-}" ]] || return 1
+    TRAP_EXIT_HANDLERS+=("$1")
 
-    local errmsg="Interrupt signal detected. Exiting...(Exit code: ${exit_code})"
-    if ! declare -F warn >/dev/null; then
-        echo -e "\n${errmsg}"
-    else
-        warn "${errmsg}"
-    fi
-    # 杀死所有子进程
-    # kill 0
-    # exit "$exit_code"
+    local full_handler
+    full_handler=$(printf "%s; " "${TRAP_EXIT_HANDLERS[@]}")
+    full_handler="trap - EXIT; { ${full_handler} }; kill 0; exit 1"
+
+    # shellcheck disable=SC2064
+    # 捕获进程退出信号
+    trap "$full_handler" EXIT
 }
-
-# 使用 register_interrupt_handler 避免在 handler 内包含 kill exit
-register_interrupt_handler 'default_interrupt_handler'
-
-# 捕获 SIGINT (Ctrl+C) 和 SIGTERM (终止信号)
-# trap on_interrupt INT TERM

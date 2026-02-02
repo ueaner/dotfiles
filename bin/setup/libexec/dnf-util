@@ -115,7 +115,7 @@ fi
 
 # --- 开始执行 ---
 if [[ -n "$mirror" ]]; then
-    section "Configuring DNF (Fedora)"
+    task "Configuring DNF (Fedora)"
     info "Setting ${FG_MAGENTA}$repo${C_RESET} repositories mirror to ${FG_MAGENTA}$mirror${C_RESET}..."
 fi
 

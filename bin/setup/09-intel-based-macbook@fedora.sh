@@ -16,7 +16,9 @@ if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
         # broadcom wireless driver for MacBook
         #----------------------------------------------------------------
         step "Install the broadcom wireless driver under MacBook (kernel-$(uname -r))"
-        "$SCRIPT_DIR"/libexec/kernel-broadcom-wl
+        wrap "Wireless driver installation" < <(
+            FORCE_COLOR=true "$SCRIPT_DIR"/libexec/kernel-broadcom-wl
+        )
 
         # ----------------------------------------------------------------
         # Intel no_turbo

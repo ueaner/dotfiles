@@ -23,34 +23,36 @@ section "自动化环境检查"
 
 task "系统架构预检"
 step "正在探测硬件架构..."
-success "CPU 兼容性检查通过 (x86_64)"
-wait_briefly
-
-step "正在连接远程仓库..."
-success "网络连接正常 (延迟: 15ms)"
-warn "当前剩余内存 < 2GB，构建过程可能较慢。"
+# Fedora 常用 x86_64 或 aarch64
+success "CPU 架构兼容性检查通过 (x86_64)"
 
 task "依赖组件确认"
-paragraph "以下组件将被自动安装，请确保磁盘空间充足。安装过程大约需要 5 分钟。"
-items "Node.js 运行时 (v18.x)" "Redis 缓存服务" "Nginx 反向代理"
-note "默认安装路径为 /usr/local/bin，可修改 CONFIG_PATH 变量。"
+paragraph "正在调用 DNF 包管理器安装必要组件，详细日志如下："
+# 使用 wrap 包装 DNF 的安装输出
+{
+    echo "Fedora 39 - x86_64 - Updates           1.2 MB/s |  28 MB     00:23"
+    echo "Dependencies resolved."
+    echo "===================================================================="
+    echo " Package             Arch       Version             Repo        Size"
+    echo "===================================================================="
+    echo "Installing:"
+    echo " nodejs              x86_64     1:18.14.2-1.fc39    fedora     14 M"
+    echo " redis               x86_64     7.0.10-1.fc39       fedora     1.2 M"
+    echo "Running transaction check..."
+    echo "Transaction successfully verified."
+} | wrap "DNF_PACKAGE_MANAGER"
+success "依赖组件安装成功 (Node.js, Redis)"
+
+task "数据库迁移任务"
+notice "正在执行 PostgreSQL 迁移，请勿中断进程！"
+{
+    echo "[2026-02-01 04:45] INFO: Applying migration: 001_init_schema"
+    echo "CREATE TABLE inventory (id SERIAL PRIMARY KEY, name TEXT);"
+    echo "[2026-02-01 04:45] INFO: Applying migration: 002_add_fedora_id"
+    echo "ALTER TABLE inventory ADD COLUMN dist_id TEXT DEFAULT 'fedora';"
+} | wrap "PG_MIGRATOR"
 wait_briefly
-
-task "生产环境数据库迁移"
-debug "当前进程 ID (PID): $$"
-# Notice 与 Title 同级蓝色，提醒关键风险
-notice "正在迁移生产数据库，请勿强制退出 (Ctrl+C)！"
-wait_briefly
-
-# 模拟错误处理逻辑
-step "校验用户表结构"
-error "数据库服务响应超时：无法验证结构。"
-note "建议运行 'systemctl status mariadb' 检查服务状态。"
-
-task "部署报告总结"
-paragraph "本次部署任务于 $(date '+%Y-%m-%d %H:%M:%S') 结束。"
-success "预检任务全部完成。"
-warn "系统稳定性评估：中等。"
+success "数据库表结构同步完成。"
 
 # ==========================================
 # 场景2：系统环境初始化 (更紧凑的流水线风格)
@@ -69,7 +71,34 @@ note "当前用户已处于 sudoers 列表"
 success "验证通过"
 
 # ==========================================
-# 场景 3：带进度条的备份系统
+# 场景 3：Podman 容器化服务部署
+# ==========================================
+section "4. 容器化服务部署 (Podman)"
+
+task "准备拉取生产镜像"
+# 使用 wrap 将整个容器部署逻辑包裹起来
+{
+    task "镜像同步阶段"
+    step "正在从 registry.fedoraproject.org 拉取镜像..."
+    success "镜像 fedora-apache:latest 下载完成"
+
+    task "容器运行环境初始化"
+    step "检查 Podman 运行根路径..."
+    info "存储驱动: overlay"
+
+    step "创建容器网络 [fedora-net]"
+    success "网络配置已就绪"
+
+    task "启动服务容器"
+    sleep 2 &
+    spinner "Podman 引擎初始化" $!
+    success "容器 ID: 88f2b3c4d5e6 状态: running"
+} | wrap "PODMAN_ENGINE"
+
+success "所有容器化服务已上线。"
+
+# ==========================================
+# 场景 4：带进度条的备份系统
 # ==========================================
 title "BACKUP SYSTEM v2.0"
 
@@ -118,7 +147,7 @@ success "所有远程同步任务已完成！"
 note "备份日志已保存至 /var/log/backup.log，保留周期为 30 天。"
 
 # ==========================================
-# 场景 4: Infrastructure Deployer
+# 场景 5: Infrastructure Deployer
 # ==========================================
 
 title "Infrastructure Deployer"

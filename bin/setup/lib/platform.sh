@@ -33,6 +33,6 @@ is_sourced() {
     if [[ -n "$ZSH_VERSION" ]]; then
         [[ "${zsh_eval_context:-}" == *file* ]]
     else
-        [[ "${BASH_SOURCE[0]}" != "${0}" ]]
+        [[ "${BASH_SOURCE[1]}" != "${0}" ]]
     fi
 }

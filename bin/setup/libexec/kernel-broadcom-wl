@@ -227,7 +227,6 @@ main() {
     _logic || res=$?
     unset -f _logic
 
-    section "Wireless driver installation"
     printf "%s\n" "${REPORT_QUEUE[@]}"
 
     return $res
