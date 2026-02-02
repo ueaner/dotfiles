@@ -34,7 +34,7 @@ sudo mdutil -a -i off
 if [[ ! -f ~/Library/Preferences/com.apple.symbolichotkeys.plist ]]; then
     warn "Please run: System Preferences -> Keyboard -> shortcuts -> Restore Defaults"
     warn "to rebuild the ~/Library/Preferences/com.apple.symbolichotkeys.plist file"
-    return 1
+    is_sourced && return 1 || exit 1
 fi
 
 # Check the shortcut key settings:
