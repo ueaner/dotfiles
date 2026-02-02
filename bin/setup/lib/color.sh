@@ -16,12 +16,6 @@
 # ======================================================================
 
 TMP_WRAP_LOCK="/tmp/shui_wrap_${$}.lock"
-if declare -F push_exit_handler >/dev/null; then
-    push_exit_handler "printf '\e[?25h'; rm -f $TMP_WRAP_LOCK"
-else
-    # shellcheck disable=SC2064
-    trap "printf '\e[?25h'; rm -f $TMP_WRAP_LOCK" EXIT
-fi
 
 in_wrap() {
     [[ -n "$IN_WRAP" ]] && return 0
@@ -108,6 +102,13 @@ step() {
 wrap() {
     # touch "$TMP_WRAP_LOCK"
     mkdir -p "$TMP_WRAP_LOCK"
+    if declare -F push_exit_handler >/dev/null; then
+        push_exit_handler "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK"
+    else
+        # shellcheck disable=SC2064
+        trap "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK" EXIT
+    fi
+
     # 顶部边框
     printf "  ${FG_CYAN}┌───[ ${C_BOLD}${FG_WHITE}%s${C_RESET}${FG_CYAN} ]${C_RESET}\n" "${1:-OUTPUT}"
 
