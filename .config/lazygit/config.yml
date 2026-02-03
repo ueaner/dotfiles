@@ -25,7 +25,7 @@ gui:
       - "#2d3f76"
     unstagedChangesColor:
       - "#c53b53"
-  skipDiscardChangeWarning: false
+  skipDiscardChangeWarning: true
   skipStashWarning: false
   sidePanelWidth: 0.3333
   expandFocusedSidePanel: false
