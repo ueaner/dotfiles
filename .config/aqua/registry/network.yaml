@@ -38,3 +38,25 @@ packages:
       arm64: arm64
     files:
       - name: caddy
+
+  - type: github_release
+    repo_owner: lima-vm
+    repo_name: socket_vmnet
+    description: vmnet.framework support for unmodified rootless QEMU (no dependency on VDE)
+    asset: socket_vmnet-{{trimV .Version}}-{{.Arch}}.{{.Format}}
+    format: tar.gz
+    replacements:
+      amd64: x86_64
+    checksum:
+      type: github_release
+      asset: SHA256SUMS
+      algorithm: sha256
+    github_artifact_attestations:
+      signer_workflow: lima-vm/socket_vmnet/.github/workflows/release.yml
+    supported_envs:
+      - darwin
+    files:
+      - name: socket_vmnet
+        src: opt/socket_vmnet/bin/socket_vmnet
+      - name: socket_vmnet_client
+        src: opt/socket_vmnet/bin/socket_vmnet_client

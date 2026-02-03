@@ -21,9 +21,11 @@ fi
 if [[ ! -O "/usr/local/bin" ]]; then
     if [[ "${OSTYPE}" == darwin* ]]; then
         step "Change the owner of the /usr/local/{bin,etc} directory to $USER:admin"
+        mkdir -p /opt/local/{bin,etc}
         sudo chown -R "${USER}:admin" /opt/local/{bin,etc}
     else
         step "Change the owner of the /usr/local/{bin,etc} directory to $USER:wheel"
+        mkdir -p /usr/local/{bin,etc}
         sudo chown -R "${USER}:wheel" /usr/local/{bin,etc}
     fi
 fi

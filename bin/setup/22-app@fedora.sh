@@ -21,7 +21,7 @@ NDF_PACKAGES=(
     fcitx5-chinese-addons
     fcitx5-autostart
     zsh
-    tmux
+    tmux # Use Kitty instead of Tmux on macOS.
     alacritty
     compat-lua-devel
     compat-lua

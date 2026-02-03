@@ -12,7 +12,7 @@ task "Aqua"
 step "Install aqua"
 
 install-aqua() {
-    if command -v uv >/dev/null 2>&1; then
+    if command -v aqua >/dev/null 2>&1; then
         info "aqua installed. $(aqua -v)"
         return
     fi
