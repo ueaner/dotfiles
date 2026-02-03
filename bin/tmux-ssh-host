@@ -1,50 +1,33 @@
 #!/usr/bin/env bash
 # 获取指定 tmux pane 中 ssh 目标主机名
 
-echo "[$$ tmux-ssh-host] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+log() { printf "[%s tmux-ssh-host] %s\n" "$(date +"%F %T.%6N")" "$*" >>/tmp/xreaker.log; }
 
-pane_pid=$1
+pane_pid=${1:-}
 
-# 找到前台进程
-fg_pid=$(ps -o pid= -t "$(ps -o tty= -p "$pane_pid" | tr -d ' ')" |
-    awk '$1 != '"$pane_pid"' {print $1; exit}')
+# 1. 找到该终端下的前台进程
+tty_dev=$(ps -o tty= -p "$pane_pid" | tr -d ' ')
+[[ -n "$tty_dev" ]] || exit 0
 
-# 没取到就退
-[[ -z "$fg_pid" ]] && exit 0
+fg_pid=$(ps -o pid= -t "$tty_dev" | awk '$1 != '"$pane_pid"' {print $1; exit}')
+[[ -n "$fg_pid" ]] || exit 0
 
-# 输出完整命令行
-# ps -o args= -p "$fg_pid"
+# 2. 获取完整命令行并校验
+cmdline=$(ps -o args= -p "$fg_pid")
+[[ $cmdline == "ssh "* ]] || exit 0
 
-# 给定 ssh 进程的 PID，输出它的目标 host
+# 3. 解析 SSH 目标
+# 使用 set 将 cmdline 拆解为位置参数，$1 为 'ssh'
+# shellcheck disable=SC2086
+set -- $cmdline
+# 使用 ssh -G 获取原始（即 ssh config 中）定义的 Host 别名
+host=$("$@" -G 2>/dev/null | grep '^host ' | awk '{print $2}')
 
-# 取出完整命令行（保留空格）
-# shellcheck disable=SC2046
-set -- $(ps -o args= -p "$fg_pid")
+log "pane_pid: $pane_pid, fg_pid: $fg_pid, host: $host"
 
-[[ "$1" = "ssh" ]] || exit 1 # 确保真的是 ssh
-shift                        # 去掉 "ssh"
-
-while [ $# -gt 0 ]; do
-    case $1 in
-    -[1246AaCfGgKkMNnqsTtVvXxYy]) shift 2 ;; # 带 1 个参数的短选项
-    -[bDEeFIiJLlmOopQRSWw]) shift 2 ;;       # 同上
-    -F* | --config=*) shift ;;               # 长格式 -F<file>
-    -i*) shift ;;                            # -i<identity> 或 -i <identity>
-    -o*) shift ;;                            # -oKey=Val
-    -p*) shift ;;                            # -p<port> / -p <port>
-    -J*) shift ;;                            # -J[user@]host[:port]
-    --)
-        shift
-        break
-        ;;            # 显式结束选项
-    -* | "") shift ;; # 未知或空
-    *)
-        host=$1
-        break
-        ;; # 第一个非选项就是 host
-    esac
-done
-
-echo "[$$ tmux-ssh-host] pane_pid: $pane_pid, fg_pid: $fg_pid, host: $host" >>/tmp/xreaker.log
-
-[ -n "$host" ] && printf '%s\n' "${host##*@}" # 去掉 user@
+# 4. 输出并处理（去掉可能存在的 user@）
+if [[ -n "$host" ]]; then
+    echo "${host##*@}"
+else
+    echo "ssh"
+fi
