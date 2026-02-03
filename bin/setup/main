@@ -14,6 +14,9 @@ MAIN_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 # cd "$SCRIPT_DIR" || exit
 . "$MAIN_SCRIPT_DIR/lib/init"
 
+# 退出前终止当前 Shell 管理的所有后台作业 (Jobs)
+push_exit_handler kill_bg_jobs
+
 ARCH=$(uname -m)
 KERNEL=$(uname -s | tr '[:upper:]' '[:lower:]') # darwin | linux
 SYSTEM=                                         # macos | fedora

@@ -17,19 +17,25 @@ step "Install Rust"
 export CARGO_HOME=$XDG_DATA_HOME/cargo
 export RUSTUP_HOME=$XDG_DATA_HOME/rustup
 
-if [[ ! -x $CARGO_HOME/bin/rustc ]]; then
-    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
-    $CARGO_HOME/bin/rustup default stable
-else
-    rustup self update
-    rustup update
-fi
+{
+    # 设置环境变量，强制 rustup 输出颜色
+    export RUSTUP_TERM_COLOR=always
+    export CARGO_TERM_COLOR=always
 
-# error: no default toolchain is configured
-LATEST=$(rustup default | cut -d ' ' -f1)
-ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
-ln -sf $XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo \
-    ~/.local/share/zsh/site-functions/_cargo
-rustup completions zsh >~/.local/share/zsh/site-functions/_rustup
+    if [[ ! -x $CARGO_HOME/bin/rustc ]]; then
+        curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path -y
+        $CARGO_HOME/bin/rustup default stable
+    else
+        rustup self update
+        rustup update
+    fi
+
+    # error: no default toolchain is configured
+    LATEST=$(rustup default | cut -d ' ' -f1)
+    ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
+    ln -sf $XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo \
+        ~/.local/share/zsh/site-functions/_cargo
+    rustup completions zsh >~/.local/share/zsh/site-functions/_rustup
+} 2>&1 | wrap # 将 stderr (2) 合并到 stdout (1)，确保 stderr 的内容也包含在 wrap 的范围内
 
 info "$($CARGO_HOME/bin/rustc --version)"

@@ -20,12 +20,9 @@ fi
 # tldr
 #----------------------------------------------------------------
 step "Install tldr client"
-if command -v uv >/dev/null 2>&1; then
-    uv tool install --upgrade tldr
-else
-    python3 -m ensurepip --upgrade --user
-    python3 -m pip install --upgrade --user tldr
-fi
+# uv 已通过 aqua 安装
+uv tool install -q --upgrade tldr --force
+info "$(tldr --version)"
 
 if [[ ! -f ~/.cache/tldr/done ]]; then
     step "Install tldr-pages"

@@ -34,7 +34,9 @@ NDF_PACKAGES=(
     qcachegrind
 )
 
-sudo dnf install -y "${NDF_PACKAGES[@]}"
+{
+    sudo dnf install -y "${NDF_PACKAGES[@]}"
+} 2>&1 | wrap
 
 #----------------------------------------------------------------
 # Flatpak
@@ -70,7 +72,9 @@ FLATPAK_PACKAGES=(
     # org.freedesktop.Bustle
     # org.gnome.Sudoku
 )
-flatpak install --user "${FLATPAK_PACKAGES[@]}"
+{
+    flatpak install --user "${FLATPAK_PACKAGES[@]}"
+} 2>&1 | wrap
 
 # See: chrome://version -> Command Line
 if flatpak info com.google.Chrome >/dev/null 2>&1; then

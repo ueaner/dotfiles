@@ -47,7 +47,7 @@ target_hostname() {
 }
 
 if ! hostname_t=$(target_hostname); then
-    exit 1
+    is_sourced && return 1 || exit 1
 fi
 
 if [[ "${OSTYPE}" == darwin* ]]; then

@@ -25,12 +25,13 @@ systemctl --user mask org.bluez.obex.service
 # Unused packages
 #----------------------------------------------------------------
 step "Remove unused packages"
+{
+    # Use localectl instead of system-config-language
+    sudo dnf remove -y system-config-language
 
-# Use localectl instead of system-config-language
-sudo dnf remove -y system-config-language
-
-sudo dnf list --autoremove
-sudo dnf autoremove -y
+    sudo dnf list --autoremove
+    sudo dnf autoremove -y
+} 2>&1 | wrap
 
 #----------------------------------------------------------------
 # Manually confirmed packages

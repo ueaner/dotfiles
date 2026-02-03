@@ -97,16 +97,20 @@ step() {
     printf "  ${C_BOLD}· %s${C_RESET}\n" "$1"
 }
 
+cleanup_wrap_lock() {
+    printf '\e[?25h'
+    rm -rf $TMP_WRAP_LOCK 2>/dev/null
+}
+
 # L4: 将命令或脚本的输出“框”起来
 # 参数 $1: 标题（可选）
 wrap() {
     # touch "$TMP_WRAP_LOCK"
     mkdir -p "$TMP_WRAP_LOCK"
     if declare -F push_exit_handler >/dev/null; then
-        push_exit_handler "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK 2>/dev/null"
+        push_exit_handler cleanup_wrap_lock
     else
-        # shellcheck disable=SC2064
-        trap "printf '\e[?25h'; rm -rf $TMP_WRAP_LOCK 2>/dev/null" EXIT
+        trap cleanup_wrap_lock EXIT
     fi
 
     # 顶部边框

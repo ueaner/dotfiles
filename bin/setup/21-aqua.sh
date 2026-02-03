@@ -80,5 +80,4 @@ else
     python3 -m ensurepip --upgrade --user
     python3 -m pip install -q --upgrade --user edir
 fi
-
 info "edir: $(edir --version)"
