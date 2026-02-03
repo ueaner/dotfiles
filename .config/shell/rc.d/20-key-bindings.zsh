@@ -1,5 +1,7 @@
 # Zsh 使用自带的 zle 代替 readline，并且不会读取 /etc/inputrc 或者 ~/.inputrc。
 export KEYTIMEOUT=1
+# 避免空行时按下 Ctrl+D 退出 Tmux window
+setopt ignore_eof
 #
 # Use emacs key bindings
 #bindkey -e
@@ -24,7 +26,7 @@ zle -N down-line-or-beginning-search
 # CTRL 组合不区分大小写，单独使用区分大小写
 bindkey "^A" beginning-of-line
 bindkey "^B" backward-char
-bindkey "^D" delete-char-or-list
+bindkey "^D" delete-char
 bindkey "^E" end-of-line
 bindkey "^F" forward-char
 bindkey "^H" backward-delete-char
