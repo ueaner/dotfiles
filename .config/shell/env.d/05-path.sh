@@ -67,8 +67,8 @@ if [[ -n "${HOMEBREW_PREFIX}" ]]; then
 fi
 
 # 3. 个人工具路径
-path_prepend "$HOME"/.local/share/{pnpm,nvim/mason/bin,aquaproj-aqua/bin}
-path_prepend "$HOME/.local/bin" "$HOME/bin"
+path_prepend "$HOME"/.local/share/{pnpm,nvim/mason/bin}
+PATH="$HOME/.local/share/aquaproj-aqua/bin:$HOME/.local/bin:$HOME/bin:$PATH"
 
 export PATH
 
