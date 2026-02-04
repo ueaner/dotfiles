@@ -130,3 +130,23 @@ packages:
       - name: bunx
         src: "{{.AssetWithoutExt}}/bun"
         link: bunx
+
+  - type: github_release
+    repo_owner: devmatteini
+    repo_name: dra
+    description: A command line tool to download release assets from GitHub
+    asset: dra-{{.Version}}-{{.Arch}}-{{.OS}}.{{.Format}}
+    format: tar.gz
+    windows_arm_emulation: true
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+      darwin: apple-darwin
+      linux: unknown-linux-gnu
+      windows: pc-windows-msvc
+    files:
+      - name: dra
+        src: "{{.AssetWithoutExt}}/dra"
