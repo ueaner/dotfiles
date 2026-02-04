@@ -1,0 +1,75 @@
+---
+
+- name: Install frps server
+  tags:
+    - frps
+  block:
+    - name: Check if frps is installed
+      ansible.builtin.stat:
+        path: "/usr/local/bin/frps"
+      register: frps_bin_check
+
+    - name: Get frps download URL
+      when: not frps_bin_check.stat.exists
+      ansible.builtin.shell: |
+        set -o pipefail
+        URL=$(
+            curl -s https://api.github.com/repos/fatedier/frp/releases/latest |
+                grep browser_download_url |
+                grep 'linux_amd64.tar.gz"' |
+                cut -d '"' -f 4
+        )
+        printf "$URL"
+      changed_when: false
+      register: frps_url
+
+    - name: Install frps
+      when: not frps_bin_check.stat.exists
+      ansible.builtin.unarchive:
+        src: "{{ GITHUB_PROXY }}{{ frps_url.stdout }}"
+        dest: /usr/local/bin/
+        remote_src: true
+        mode: '0755'
+        extra_opts:
+          - --strip-components=1
+          - --wildcards
+          - "*/frps"
+
+    - name: Copy frps.service file
+      ansible.builtin.copy:
+        src: ~/.config/systemd/system/frps.service
+        dest: /etc/systemd/system/frps.service
+        mode: "0644"
+      register: frps_service_copy_result  # Register the result to a variable
+
+    - name: Copy frps.toml file
+      ansible.builtin.copy:
+        src: ~/.local/etc/frps.toml
+        dest: /usr/local/etc/frps.toml
+        mode: "0644"
+      register: frps_toml_copy_result  # Register the result to a variable
+
+    - name: Ensure frps service is running and enabled
+      ansible.builtin.systemd_service:
+        name: frps
+        state: started
+        enabled: true
+
+    - name: Reload frps
+      ansible.builtin.systemd_service:
+        name: frps
+        state: reloaded
+        daemon_reload: true
+      when: (frps_service_copy_result.changed) or (frps_toml_copy_result.changed)
+
+      # - name: Copy frpc-tunnel.service file
+      #   ansible.builtin.copy:
+      #     src: ~/.config/systemd/system/frpc-tunnel.service
+      #     dest: /etc/systemd/system/frpc-tunnel.service
+      #     mode: "0644"
+
+      # - name: Copy frpc-tunnel.toml file
+      #   ansible.builtin.copy:
+      #     src: ~/.local/etc/frpc-tunnel.toml
+      #     dest: /usr/local/etc/frpc-tunnel.toml
+      #     mode: "0644"

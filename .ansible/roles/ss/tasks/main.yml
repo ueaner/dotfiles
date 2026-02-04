@@ -1,0 +1,6 @@
+---
+
+- name: Deploy shadowsocks-rust
+  ansible.builtin.include_tasks: shadowsocks.yml
+  tags:
+    - ssserver

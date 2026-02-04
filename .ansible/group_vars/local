@@ -1,6 +1,0 @@
-# vim: set filetype=yaml.ansible:
-
-# The `desktop` variable for the `lan` group is predefined in ~/.ansible/inventory.
-desktop: "{{ lookup('pipe', desktop_command) }}"
-
-gnome_shell_version: "{{ lookup('pipe', gnome_shell_version_command) }}"

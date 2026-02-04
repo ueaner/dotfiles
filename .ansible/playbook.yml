@@ -1,0 +1,14 @@
+# vim: set filetype=yaml.ansible:
+---
+
+# ansible-playbook ~/.ansible/playbook.yml --tags frps -vvv
+
+- name: Deploy ss
+  hosts: ss
+  roles:
+    - role: ss
+
+- name: Deploy sp
+  hosts: sp
+  roles:
+    - role: sp

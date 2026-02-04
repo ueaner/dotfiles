@@ -1,0 +1,78 @@
+---
+
+# Server Only
+
+- name: Deploy shadowsocks-rust server
+  tags:
+    - ssserver
+  block:
+    - name: Prepare to install shadowsocks-rust server
+      ansible.builtin.shell: |
+        set -o pipefail
+        # Installation on localhost to the user directory
+        # @see https://github.com/ueaner/dotfiles/blob/main/.config/systemd/user/shadowsocks-rust-local.service
+        # mkdir -p $HOME/.local/{bin,etc}
+        # mkdir -p $HOME/.config/systemd/user
+
+        # Installation on server to the system directory
+        # @see https://github.com/ueaner/dotfiles/blob/main/.config/systemd/system/shadowsocks-rust-server.service
+        mkdir -p /usr/local/{bin,etc}
+        mkdir -p /etc/systemd/system
+      changed_when: false
+
+    - name: Check if shadowsocks-rust server is installed
+      ansible.builtin.stat:
+        path: "/usr/local/bin/ssmanager"
+      register: ss_server_check
+
+    - name: Get shadowsocks-rust download URL
+      when: not ss_server_check.stat.exists
+      ansible.builtin.shell: |
+        set -o pipefail
+        URL=$(
+            curl -s https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest |
+                grep browser_download_url |
+                grep 'x86_64-unknown-linux-gnu.tar.xz"' |
+                cut -d '"' -f 4
+        )
+        printf "$URL"
+      changed_when: false
+      register: ss_server_url
+
+    - name: Install shadowsocks-rust server
+      when: not ss_server_check.stat.exists
+      ansible.builtin.unarchive:
+        src: "{{ ss_server_url.stdout }}"
+        # dest: "~/.local/bin/"
+        dest: /usr/local/bin/
+        remote_src: true
+        mode: '0755'
+
+    - name: Copy shadowsocks-rust-server.service file
+      ansible.builtin.copy:
+        src: ~/.config/systemd/system/shadowsocks-rust-server.service
+        # dest: ~/.config/systemd/user/shadowsocks-rust-server.service
+        dest: /etc/systemd/system/shadowsocks-rust-server.service
+        mode: "0644"
+      register: ss_service_copy_result  # Register the result to a variable
+
+    - name: Copy shadowsocks-rust-server.json file
+      ansible.builtin.copy:
+        src: ~/.local/etc/shadowsocks-rust-server.json
+        # dest: ~/.local/etc/shadowsocks-rust-server.json
+        dest: /usr/local/etc/shadowsocks-rust-server.json
+        mode: "0644"
+      register: ss_json_copy_result  # Register the result to a variable
+
+    - name: Ensure shadowsocks-rust-server service is running and enabled
+      ansible.builtin.systemd_service:
+        name: shadowsocks-rust-server
+        state: started
+        enabled: true
+
+    - name: Reload shadowsocks-rust-server
+      ansible.builtin.systemd_service:
+        name: shadowsocks-rust-server
+        state: reloaded
+        daemon_reload: true
+      when: (ss_service_copy_result.changed) or (ss_json_copy_result.changed)

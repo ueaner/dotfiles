@@ -1,0 +1,21 @@
+---
+
+- name: Deploy ss nginx proxy
+  ansible.builtin.include_tasks: ss-nginx-proxy.yml
+  tags:
+    - ssproxy
+
+- name: Deploy ss ssh tunnel
+  ansible.builtin.include_tasks: ss-ssh-tunnel.yml
+  tags:
+    - sstunnel
+
+- name: Deploy frps
+  ansible.builtin.include_tasks: frps.yml
+  tags:
+    - frps
+
+- name: Deploy caddy server
+  ansible.builtin.include_tasks: caddy.yml
+  tags:
+    - caddy

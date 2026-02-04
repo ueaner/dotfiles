@@ -20,6 +20,8 @@ mac14hot desktop=GNOME
 mi11
 mi11hot
 
-[srv]
+[ssserver]
 ss
+
+[spserver]
 sp

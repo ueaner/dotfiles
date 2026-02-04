@@ -1,0 +1,38 @@
+---
+
+- name: Install ssh tunnel
+  tags:
+    - sstunnel
+  block:
+    - name: Auto-login to ss via ssh
+      ansible.builtin.copy:
+        src: ~/.ssh/boxkey/id_rsa
+        dest: ~/.ssh/id_rsa
+        mode: "0600"
+
+    - name: Copy EnvironmentFile file
+      ansible.builtin.copy:
+        src: ~/.local/etc/EnvironmentFile
+        dest: /usr/local/etc/EnvironmentFile
+        mode: "0644"
+      register: envfile_copy_result  # Register the result to a variable
+
+    - name: Copy ss-ssh-tunnel.service file
+      ansible.builtin.copy:
+        src: ~/.local/etc/ss-ssh-tunnel.service
+        dest: /etc/systemd/system/ss-ssh-tunnel.service
+        mode: "0644"
+      register: sstunnel_service_copy_result  # Register the result to a variable
+
+    - name: Ensure ss-ssh-tunnel service is running and enabled
+      ansible.builtin.systemd_service:
+        name: ss-ssh-tunnel
+        state: started
+        enabled: true
+
+    - name: Reload ss-ssh-tunnel
+      ansible.builtin.systemd_service:
+        name: ss-ssh-tunnel
+        state: reloaded
+        daemon_reload: true
+      when: (sstunnel_service_copy_result.changed) or (envfile_copy_result.changed)

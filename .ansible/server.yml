@@ -1,9 +1,0 @@
-# vim: set filetype=yaml.ansible:
----
-
-# ansible-playbook ~/.ansible/server.yml --tags frps -vvv
-
-- name: Setup Linux Server
-  hosts: sp
-  roles:
-    - role: server
