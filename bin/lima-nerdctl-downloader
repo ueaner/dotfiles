@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Download nerdctl-full to Lima's cache directory
 
-command -v sha256sum >/dev/null || alias sha1sum="shasum"
-
 if ! command -v sha256sum >/dev/null 2>&1; then
     sha256sum() {
         shasum -a 256
