@@ -11,9 +11,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Make Sway more lightweight"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Power
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Configure Power"
 
 sudo systemctl disable --now bluetooth
@@ -21,9 +21,9 @@ systemctl --user mask dbus-org.bluez.obex.service
 systemctl --user mask obex.service
 systemctl --user mask org.bluez.obex.service
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Unused packages
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Remove unused packages"
 {
     # Use localectl instead of system-config-language
@@ -33,9 +33,9 @@ step "Remove unused packages"
     sudo dnf autoremove -y
 } 2>&1 | wrap
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Manually confirmed packages
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # sudo dnf install symlinks
 # sudo symlinks -r /usr | grep dangling

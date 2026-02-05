@@ -15,9 +15,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Make GNOME more lightweight"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Power
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Configure Power"
 
 # Power Mode: performance, balanced, power-saver
@@ -34,9 +34,9 @@ gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 
 # Whether to hibernate, suspend or do nothing when inactive
 # > gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # org.gnome.Software
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # echo "# Disable gnome-software provider"
 # gsettings set org.gnome.desktop.search-providers disabled "['org.gnome.Software.desktop']"
@@ -73,9 +73,9 @@ step "Remove gnome-software"
 sudo dnf remove -y gnome-software
 rm -f ~/.config/autostart/org.gnome.Software.desktop
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # org.gnome.Evolution
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # systemctl --user list-units --type=service
 step "Disable evolution* service"
@@ -85,13 +85,13 @@ systemctl --user mask evolution-source-registry.service
 systemctl --user mask evolution-user-prompter.service
 # sudo dnf remove evolution\*
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Tracker fs
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 step "Disable Tracker fs"
 cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
-echo -e "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
+echo "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
 # Tracker3: configuration reset after system upgrade
 gsettings set org.freedesktop.Tracker3.Miner.Files crawling-interval -2  # -1
 gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false # true
@@ -100,9 +100,9 @@ gsettings set org.freedesktop.Tracker3.Miner.Files index-on-battery true # true
 # Cleanup the Tracker database: tracker3 reset --filesystem --rss
 tracker3 reset --filesystem
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Unused packages
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 step "Remove unused packages"
 # Fedora 41+: Ptyxis as the new Terminal App
@@ -117,9 +117,9 @@ sudo dnf remove -y hplip\*
 sudo dnf list --autoremove
 sudo dnf autoremove -y
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Manually confirmed packages
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # sudo dnf install remove-retired-packages
 # remove-retired-packages

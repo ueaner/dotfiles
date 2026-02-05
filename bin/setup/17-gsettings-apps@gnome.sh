@@ -11,9 +11,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure GNOME Apps"
 
-#----------------------------------------------------------------
-# Terminal
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
+# Terminal emulator
+# ---------------------------------------------------------------
 # gsettings list-relocatable-schemas | grep keybind
 
 # See: ~/.config/xremap/mac14-gnome.yml
@@ -22,9 +22,9 @@ task "Configure GNOME Apps"
 # GNOME 48+ Global Shortcuts in Applications
 # https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/blob/master/data/org.gnome.settings-daemon.global-shortcuts.gschema.xml.in
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Applications
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 gsettings set org.gnome.TextEditor keybindings vim       # 'default'
 gsettings set org.gnome.TextEditor use-system-font false # true
 
@@ -36,9 +36,9 @@ if [[ -n $(fc-list 'SauceCodePro Nerd Font') ]]; then
     gsettings set org.gnome.Ptyxis font-name 'SauceCodePro Nerd Font 12'       # 'Monospace 10'
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # GNOME Shell Extensions
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Hide Top Bar
 schemadir=~/.local/share/gnome-shell/extensions/hidetopbar@mathieu.bidon.ca/schemas
 if [[ -d $schemadir ]]; then

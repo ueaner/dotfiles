@@ -18,7 +18,7 @@
 TMP_WRAP_LOCK="/tmp/shui_wrap_${$}.lock"
 
 in_wrap() {
-    [[ -n "$IN_WRAP" ]] && return 0
+    [[ -n "${IN_WRAP:-}" ]] && return 0
     local retry=0
     while [[ $retry -lt 3 ]]; do
         [[ -d "$TMP_WRAP_LOCK" ]] && return 0
@@ -30,7 +30,7 @@ in_wrap() {
 
 # --- 环境检测与颜色定义 ---
 # 仅在终端连接且未禁用颜色时启用 ANSI 转义序列
-if [[ -t 1 ]] || [[ -n "${FORCE_COLOR}" ]] && [[ -z "${NO_COLOR:-}" ]]; then
+if [[ -t 1 ]] || [[ -n "${FORCE_COLOR:-}" ]] && [[ -z "${NO_COLOR:-}" ]]; then
     C_RESET=$(tput sgr0)
     C_BOLD=$(tput bold)
     C_DIM=$(tput dim)
@@ -87,12 +87,12 @@ section() {
     printf "\n"
 }
 
-# L3: 功能任务 (任务流 - 蓝色前景色)
+# L3: 功能任务 (任务流 - 蓝色前景色, 2格缩进)
 task() {
     printf "${C_BOLD}${FG_BLUE}▶ %s${C_RESET}\n" "$1"
 }
 
-# L4: 原子步骤 (最底层 - 无特殊色)
+# L4: 原子步骤 (最底层 - 无特殊色, 4格缩进)
 step() {
     printf "  ${C_BOLD}· %s${C_RESET}\n" "$1"
 }
@@ -166,11 +166,11 @@ progress() {
 }
 
 # L4-Dynamic: 加载动画 (缩进对齐 step)
-# 参数: $1=任务描述, $2=后台进程PID
-# Usage: spinner "Description" $!
+# 参数: $1=后台进程PID, $2=任务描述
+# Usage: spinner $! "Description"
 spinner() {
-    local desc=$1
-    local pid=$2
+    local pid=$1
+    local desc=${2:-"Processing"}
     local frames=("|" "/" "-" "\\")
     local i=0
     local prefix=""
@@ -188,11 +188,17 @@ spinner() {
         sleep 0.1 || true
     done
 
-    # 任务完成后清行并显示成功状态
-    printf "\r  ${prefix}${C_BOLD}· %s${C_RESET} [${FG_GREEN}✔${C_RESET}]\n" "$desc"
+    # 捕获后台进程的退出状态
+    if wait "$pid"; then
+        # 成功：显示绿色勾选
+        printf "\r  ${prefix}${C_BOLD}· %s${C_RESET} [${FG_GREEN}✔${C_RESET}]\e[K\n" "$desc"
+    else
+        # 失败：整行变红，并显示红叉
+        printf "\r  ${prefix}${FG_RED}${C_BOLD}· %s${C_RESET} [${FG_RED}✘${C_RESET}]\e[K\n" "$desc"
+    fi
 }
 
-# --- 2. 强提示块 (Callouts - 颜色与标题层级对齐) ---
+# --- 2. 强提示块 (Callouts - 2格缩进) ---
 
 # Notice: 高优先级须知 (蓝色背景 - 对齐 Title)
 notice() {

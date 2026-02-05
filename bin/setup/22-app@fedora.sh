@@ -6,9 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Applications (Fedora)"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # DNF
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Install packages via DNF"
 NDF_PACKAGES=(
     wl-clipboard
@@ -21,8 +21,9 @@ NDF_PACKAGES=(
     fcitx5-chinese-addons
     fcitx5-autostart
     zsh
-    tmux # Use Kitty instead of Tmux on macOS.
-    alacritty
+    tmux      # Use Kitty instead of Tmux on macOS.
+    alacritty # Image preview not working in Yazi with Alacritty
+    foot      # Use Foot instead of Alacritty on Fedora.
     compat-lua-devel
     compat-lua
     luarocks
@@ -38,9 +39,9 @@ NDF_PACKAGES=(
     sudo dnf install -y "${NDF_PACKAGES[@]}"
 } 2>&1 | wrap
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Flatpak
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Install packages via flatpak"
 FLATPAK_PACKAGES=(
     com.github.tchx84.Flatseal

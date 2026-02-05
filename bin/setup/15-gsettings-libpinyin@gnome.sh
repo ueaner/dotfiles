@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure libpinyin"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Keyboard - Input Method
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Settings -> Keyboard -> Input Sources -> [+] -> Chinese (China) -> Chinese (Intelligent Pinyin)
 gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'libpinyin'), ('xkb', 'us')]" # []

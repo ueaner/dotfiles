@@ -5,6 +5,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Terminal Environment"
 
+# ---------------------------------------------------------------
+# Neovim
+# ---------------------------------------------------------------
+
 # aqua g -i neovim/neovim
 if [[ ! -d ~/.config/nvim ]]; then
     step "Clone Neovim configuration."

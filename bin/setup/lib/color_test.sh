@@ -91,7 +91,7 @@ task "准备拉取生产镜像"
 
     task "启动服务容器"
     sleep 2 &
-    spinner "Podman 引擎初始化" $!
+    spinner $! "Podman 引擎初始化"
     success "容器 ID: 88f2b3c4d5e6 状态: running"
 } | wrap "PODMAN_ENGINE"
 

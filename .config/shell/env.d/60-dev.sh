@@ -144,7 +144,7 @@ alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Si
 export PHP_CS_FIXER_IGNORE_ENV=1
 
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file
-export ANSIBLE_CONFIG=~/.ansible/ansible.cfg
+export ANSIBLE_CONFIG=~/.local/ansible/ansible.cfg
 
 [[ -f $XDG_DATA_HOME/emsdk/emsdk_env.sh ]] && source $XDG_DATA_HOME/emsdk/emsdk_env.sh &>/dev/null
 

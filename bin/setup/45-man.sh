@@ -6,9 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Documents and Manuals"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # man-pages.zh
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 if [[ ! -d ~/.local/share/man/zh_CN ]]; then
     step "Install man-pages.zh"
     ~/bin/git-sparse-checkout -r https://github.com/man-pages-zh/manpages-zh -l /tmp/zhman /src/man{1,2,3,4,5,6,7,8,n}
@@ -16,9 +16,9 @@ if [[ ! -d ~/.local/share/man/zh_CN ]]; then
     cp -r /tmp/zhman/src/* ~/.local/share/man/zh_CN
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # tldr
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Install tldr client"
 # uv 已通过 aqua 安装
 uv tool install -q --upgrade tldr --force
@@ -36,8 +36,8 @@ if [[ ! -f ~/.cache/tldr/done ]]; then
     touch ~/.cache/tldr/done
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Completion files
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # NOTE: See ~/.local/share/zsh/site-functions/README.md
 ~/.local/bin/tldr --print-completion zsh >~/.local/share/zsh/site-functions/_tldr

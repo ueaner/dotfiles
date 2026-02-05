@@ -21,9 +21,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Setup a macOS-ish desktop environment (Shortcuts, Gestures)"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # RELEASE Keys
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # [RELEASE] `<Super>n` for `New window`
 gsettings set org.gnome.shell.keybindings focus-active-notification "[]" # ['<Super>n']
@@ -76,16 +76,16 @@ gsettings set org.gnome.desktop.wm.keybindings maximize "[]" # ['<Super>Up']
 # [RELEASE] `<Super>Down` for move-to-center
 gsettings set org.gnome.desktop.wm.keybindings unmaximize "[]" # ['<Super>Down', '<Alt>F5']
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Logout & Lock screen
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 gsettings set org.gnome.settings-daemon.plugins.media-keys logout "['<Shift><Super>q']"
 gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Control><Super>q']"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Screenshot
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Take a screenshot
 gsettings set org.gnome.shell.keybindings screenshot "['<Shift><Super>3']"
@@ -96,9 +96,9 @@ gsettings set org.gnome.shell.keybindings show-screen-recording-ui "['<Shift><Su
 # Take a screenshot of a window
 gsettings set org.gnome.shell.keybindings screenshot-window "['<Control><Super>a']"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Window Manager
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Touch the top-left corner to open the Activities Overview
 # Settings -> Multitasking -> Hot Corner
@@ -160,9 +160,9 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Super>1']"    # ['<Shift><Super>Home']
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-last "['<Shift><Super>9']" # ['<Shift><Super>End']
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Window Manager for Monitor
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # [RELEASE] `<Super>p` for Print
 gsettings set org.gnome.mutter.keybindings switch-monitor "['<Control><Super>Tab']" # ['<Super>p', 'XF86Display']
@@ -173,9 +173,9 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right "['<Control
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up "['<Control><Super>Up']"
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down "['<Control><Super>Down']"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Touchpad Gestures
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Touchpad enabled
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true                  # false
@@ -217,9 +217,9 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true #
 # The default is to have a 1, 2 and 3 finger tap to map to the left, right and middle button ("lrm"), respectively.
 # > gsettings set org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # GNOME Shell Extensions for Gestures and Shortcuts
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # NOTE: Execute this block only after installing the extension
 
 # 0. schema name:

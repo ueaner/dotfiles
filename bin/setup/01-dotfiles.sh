@@ -6,9 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Dotfiles Setup"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # dotfiles
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 if [[ ! -d "$HOME/.dotfiles" ]]; then
     step "git clone dotfiles"
     # git config --global http.version HTTP/1.1
@@ -17,9 +17,9 @@ if [[ ! -d "$HOME/.dotfiles" ]]; then
     git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # dotlocal
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 if [[ ! -d "$HOME/.dotlocal" ]]; then
     step "git clone dotlocal"
     # git config --global http.version HTTP/1.1

@@ -3,6 +3,10 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
+# ---------------------------------------------------------------
+# brew
+# ---------------------------------------------------------------
+
 # Use lima-vm whenever possible
 if [[ -x /opt/local/bin/brew ]]; then
     task "Install packages via brew (macOS)"

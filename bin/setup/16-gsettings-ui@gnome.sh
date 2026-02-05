@@ -12,9 +12,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure the UI appearance of GTK applications"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Appearance
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Emacs Input: browser location bar, input box, etc.
 # NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669
@@ -51,18 +51,18 @@ elif [[ -f $HOME/.local/share/backgrounds/f37-01-day.webp ]]; then
     gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # AccountsService
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # for GNOME AccountsService
 # Settings -> System -> Users (Face, Name, etc.)
 [[ -d /var/lib/AccountsService/icons && -f ~/.local/share/icons/faces/flathat.png ]] &&
     sudo cp ~/.local/share/icons/faces/flathat.png "/var/lib/AccountsService/icons/$USER"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # If needed, set the following manually
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Settings -> Network -> Proxy -> Network Proxy (ON) -> Configuration (Manual)
 # gsettings get org.gnome.system.proxy mode       # 'manual'

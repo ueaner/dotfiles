@@ -30,10 +30,8 @@ fi
 - Building a macOS-ish Linux Workstation Environment
 
 ```bash
-~/.ansible/install
+~/bin/setup/main
 ```
-
-- See the [ansible] directory for more features
 
 ## 📂 Directory Structure
 
@@ -85,12 +83,7 @@ plantuml.jar
 [Dotfiles: Best Way to Store in a Bare Git Repository](https://www.atlassian.com/git/tutorials/dotfiles)
 
 [XDG]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-[ansible]: https://github.com/ueaner/dotfiles/tree/main/.ansible#features
 [Sway]: ./.config/sway
-[macOS-ish Desktop Environment]: ./.ansible/roles/desktop/tasks/desktop-environment.yml
-[Programming Languages Environment]: ./.ansible/roles/lang/tasks
-[Terminal Environment]: ./.ansible/roles/terminal/tasks
-[packages]: ./.ansible/roles/terminal/tasks/cmdline-tools.yml
 [~/bin]: ./bin
 [zsh]: ./.config/zsh
 [Alacritty]: ./.config/alacritty

@@ -7,9 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "System Configuration"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # sudo
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 if ! sudo -n true 2>/dev/null; then
     step "Allow user to use sudo without password"
     echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER"

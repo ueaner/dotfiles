@@ -4,15 +4,15 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # GNOME Shell Extensions
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 task "Install GNOME shell extensions"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # GNOME Shell Extensions
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 extensions=(
     gestureImprovements@gestures                                      # NOTE: Depends on gnome-shell-extensions-downloader
     gnome-shell-go-to-last-workspace@github.com                       # Quickly toggle between two workspaces with one key

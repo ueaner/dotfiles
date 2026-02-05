@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
 
 # 避免重复 source
 [[ -n "${SETUP_LIB_SCRIPT_DIR:-}" ]] && return
@@ -13,3 +14,23 @@ for f in "$SETUP_LIB_SCRIPT_DIR"/*.sh; do
     # shellcheck source=/dev/null
     . "$f"
 done
+
+# ---------------------------------------------------------------
+# 平台信息
+# ---------------------------------------------------------------
+
+ARCH=$(uname -m)
+KERNEL=$(uname -s | tr '[:upper:]' '[:lower:]') # darwin | linux
+SYSTEM=                                         # macos | fedora
+DESKTOP=                                        # aqua | sway | gnome
+
+if [[ "$KERNEL" == "darwin" ]]; then
+    SYSTEM=macos
+    DESKTOP=aqua
+else
+    # https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+    if [[ -f /etc/os-release ]]; then
+        SYSTEM=$(. /etc/os-release && echo "$ID")
+    fi
+    DESKTOP=$(current_desktop)
+fi

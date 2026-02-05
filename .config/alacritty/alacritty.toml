@@ -70,6 +70,7 @@ cyan    = "#497e7a"
 white   = "#778899"
 
 [font]
+normal = { family = "SauceCodePro Nerd Font", style = "Regular" }
 # macOS: 12.25
 # GNOME:
 #   - Displays Scale 150 % -> 12.25
@@ -78,13 +79,8 @@ white   = "#778899"
 #   - Displays Scale 175 % -> 10.50
 size = 11.25
 
-[font.normal]
-family = "SauceCodePro Nerd Font"
-style = "Regular"
-
-[font.offset]
-x = 0
-y = 6
+offset = { x = 0, y = 6 }
+glyph_offset = { x = 0, y = 0 }
 
 [keyboard]
 bindings = [

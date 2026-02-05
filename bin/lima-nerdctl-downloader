@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 # Download nerdctl-full to Lima's cache directory
 
+command -v sha256sum >/dev/null || alias sha1sum="shasum"
+
+if ! command -v sha256sum >/dev/null 2>&1; then
+    sha256sum() {
+        shasum -a 256
+    }
+fi
+
 # https://lima-vm.io/docs/dev/internals/#lima-cache-directory-librarycacheslima
 if [[ $(uname -s) == 'Darwin' ]]; then
     export LIMA_CACHE_HOME=~/Library/Caches/lima
@@ -14,7 +22,7 @@ if [[ $(uname -m) =~ ^(arm64|aarch64)$ ]]; then
 fi
 
 NERDCTL_URL=$(limactl info | jq -r --arg arch "$ARCH" '.defaultTemplate.containerd.archives | .[] | select(.arch == $arch) | .location')
-NERDCTL_URL_SHA256=$(echo -n "$NERDCTL_URL" | shasum -a 256 | awk '{print $1}')
+NERDCTL_URL_SHA256=$(echo -n "$NERDCTL_URL" | sha256sum | awk '{print $1}')
 LIMA_NERDCTL_CACHE_DIR=$LIMA_CACHE_HOME/download/by-url-sha256/$NERDCTL_URL_SHA256
 mkdir -p "$LIMA_NERDCTL_CACHE_DIR"
 

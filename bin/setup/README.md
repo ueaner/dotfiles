@@ -1,172 +1,99 @@
-# Setup Unix Workstation
+# 💻 Setup Unix Workstation
 
 一个用于 Unix 工作站配置与维护的自动化脚本集合。
-秉持着没报错即成功，有报错即修正，非防御式编程，任务最终验证的渐进式部署理念😄。
-旨在快速配置和持续维护 Unix 工作站，包含点文件、系统设置、桌面环境、应用程序、服务、终端环境等的自动化配置。
 
-## 主要功能
+## ✨ 主要功能
 
-### 系统配置与维护
+### ⚙️ 系统配置与维护
 
-支持新系统一键配置，也支持日常使用中的持续维护和更新。
+支持一键配置与持续滚动更新。
 
-### 跨平台统一
+### 🍏 跨平台统一
 
-支持 Fedora Linux (GNOME, Sway) 和 macOS，通过 `@platform` 后缀自动适配平台差异。
+适配 Fedora (GNOME/Sway) 与 macOS，自动处理 `@platform` 差异。
 
-### 配置版本控制
+### 🌿 配置版本控制
 
-通过 git bare repository 管理配置文件，支持跨设备同步和历史回溯。
+基于 Git Bare Repository，实现配置的"时光机"功能。
 
-### 依赖管理
+### 📦 依赖管理
 
-集成 Aqua 声明式 CLI 版本管理器，统一管理开发工具依赖。
+集成 Aqua 声明式 CLI 管理器，告别手动安装。
 
-## 项目结构
+## 🏗️ 项目结构
 
-本项目采用模块化设计，脚本按数字前缀分为不同阶段：
+### 🔢 阶段式递进
 
-- `0x` - 系统初始化
-  - `01-dotfiles.sh` - 配置点文件
-  - `02-system.sh` - 系统配置
-  - `03-hostname.sh` - 主机名配置
-  - `05-packager@fedora.sh` - Fedora 包管理器配置
-  - `05-packager@macos.sh` - macOS 包管理器配置
-  - `09-intel-based-macbook@fedora.sh` - 针对 Intel Mac 的 Fedora 配置
-- `1x` - 桌面环境设置
-  - `11-desktop@macos.sh` - macOS 桌面配置
-  - `12-font.sh` - 字体安装配置
-  - `13-extensions@gnome.sh` - GNOME 扩展安装
-  - `14-gsettings-macos-ish@gnome.sh` - GNOME 模 macOS 设置
-  - `15-gsettings-libpinyin@gnome.sh` - GNOME 中文输入法配置
-  - `16-gsettings-ui@gnome.sh` - GNOME UI 设置
-  - `16-gsettings-ui@sway.sh` - Sway UI 设置
-  - `17-gsettings-apps@gnome.sh` - GNOME 应用设置
-  - `18-lightweight@gnome.sh` - GNOME 轻量化配置
-  - `18-lightweight@sway.sh` - Sway 轻量化配置
-- `2x` - 应用程序安装
-  - `21-aqua.sh` - Aqua 包管理器和 CLI 工具安装
-  - `22-app@fedora.sh` - Fedora 应用程序安装
-  - `22-app@macos.sh` - macOS 应用程序安装
-- `3x` - 服务配置
-  - `31-service@fedora.sh` - Fedora 服务配置
-  - `31-service@macos.sh` - macOS 服务配置
-  - `32-lima.sh` - Lima 配置 (Linux 虚拟机)
-- `4x` - 终端环境设置
-  - `41-terminal@fedora.sh` - Fedora 终端配置
-  - `41-terminal@macos.sh` - macOS 终端配置
-  - `45-man.sh` - 手册页配置
-- `5x` - 编程语言/开发工具
-  - `50-lang.sh` - 特定语言辅助工具安装（用于安装如 gprof2dot 等性能分析工具）
-  - `51-rust.sh` - Rust 开发环境配置
+- `0x` 🧱 **系统初始化**：点文件、主机名及包管理器底座。
+- `1x` 🖥️ **桌面环境**：字体、快捷键、手势及 UI 细节微调。
+- `2x` 💿 **应用程序**：通过 Aqua 和系统包管理器安装生产力工具。
+- `3x` 🔋 **服务配置**：后台 Daemon 及虚拟化（Lima）环境。
+- `4x` 🐚 **终端环境**：Shell、Man Pages 及交互体验优化。
+- `5x` 🛠️ **开发工具**：特定语言辅助工具。
 
-### 递进关系
+### 📈 递进逻辑
 
-各阶段从底层到上层、从基础到应用递进：
+`系统基础 → 界面交互 → 用户应用 → 后台服务 → 开发环境`
 
-```
-系统基础 → 界面交互 → 用户应用 → 后台服务 → 开发环境
-  ↓          ↓          ↓          ↓          ↓
-  0x         1x         2x         3x         4x→5x
+### 🧬 任务执行架构
+
+- 🗂️ 阶段系统：按 Prelude、Desktop 等逻辑分组。
+- 🔍 平台检测：自动识别系统环境与桌面合成器。
+- ⚡ 条件执行：精确匹配 `@platform` 脚本。
+- 🎯 交互选择：集成 FZF 实现极速任务过滤。
+
+## ⌨️ 使用方法
+
+### 1. 🚀 主脚本执行
+
+```sh
+./main            # 交互式选择 section (如果安装了 fzf)
+
+./main <section>  # 执行特定阶段任务
+
+./main all        # 执行全部
 ```
 
-### 任务执行架构
+### 📝 2. 使用 Taskfile
 
-项目通过 `main` 脚本统一管理任务执行，支持以下特性：
+通过 Task 运行器享受更高级的交互式多选 UI。
 
-- **阶段系统**：将任务分组为 prelude、desktop、app、service、terminal、lang 等阶段
-- **平台检测**：自动检测当前系统（Fedora/macOS）、桌面环境（GNOME/Sway/Aqua）
-- **条件执行**：通过 `@platform` 后缀实现平台特定脚本的条件执行
-- **交互式选择**：集成 fzf 实现交互式任务选择
+## 📂 配置文件
 
-## 使用方法
+- `Taskfile.yml`：交互式任务定义。
+- `files/`：包含浏览器 Flags 及 DNF 默认配置。
 
-### 1. 主脚本执行
+## 🚩 环境准备
 
-使用 `main` 脚本执行特定任务：
+1. 依赖清单
 
-```bash
-# 执行所有配置
-./main all
+- ✅ Bash (系统自带)
+- ✅ Aqua (自动引导)
+- 💡 Task / FZF (可选增强)
 
-# 执行特定 section (例如：桌面环境配置)
-./main desktop
+2. 网络排障
 
-# 执行应用程序安装
-./main app
+针对 `Intel Mac + Fedora` 的无线网卡驱动一键修复。
 
-# 执行服务配置
-./main service
+## 🧰 专用工具集
 
-# 交互式选择 section (如果安装了 fzf)
-./main
-```
+### 🔌 libexec 工具
 
-可用的 section 包括：
+- `dnf-util / install-dmg`：增强型安装器。
+- `kernel-broadcom-wl`: 一键修复 `Intel Mac + Fedora` 的无线网卡驱动
 
-- `prelude` (0) - 前置配置 (点文件、系统设置等)
-- `desktop` (1) - 桌面环境配置
-- `app` (2) - 应用程序安装
-- `service` (3) - 服务配置
-- `terminal` (4) - 终端环境配置
-- `lang` (5) - 编程语言环境配置
+### 📚 库文件功能
 
-不带参数运行时提供交互式选择（需安装 fzf）。
+- `color.sh / platform.sh`：为脚本提供感知与表现力。
+- `trap.sh`: 提供异常处理能力。
 
-### 2. 使用 Taskfile
+## 🧩 扩展性
 
-通过 Task 运行器执行任务：
+- 遵循约定优于配置（Convention over Configuration）。
+  - 命名约定：`XX-purpose[@platform].sh`
+- 模块化设计，轻松添加自定义脚本。
 
-```bash
-# 运行默认任务 (交互式 UI 选择要执行的 section，可多选)
-task
-```
+## ⚠️ 注意事项
 
-Taskfile.yml 提供了更高级的交互式界面，使用 fzf 选择 section 并可多选执行。
-
-## 配置文件
-
-- `Taskfile.yml` - Task 运行器配置文件，提供交互式 UI
-- `files/` - 静态配置文件目录，包含：
-  - `chrome-flags.conf` - Chrome 浏览器启动参数配置
-  - `dnf.conf` - DNF 包管理器配置文件
-
-## 核心依赖
-
-项目依赖以下核心工具和语言：
-
-- **Bash** - 脚本执行环境
-- **Task** - 任务运行器 (通过 `Taskfile.yml` 配置)
-- **Aqua** - 声明式 CLI 版本管理器
-- **FZF** - 模糊查找工具 (用于交互式选择)
-
-## 专用工具集
-
-### libexec 工具
-
-- `dnf-util`: DNF 包管理器增强工具，支持镜像切换和仓库管理
-- `gnome-shell-extensions-downloader`: GNOME 扩展下载工具
-- `gnome-custom-keybinding`: GNOME 自定义键盘快捷键管理工具
-- `install-dmg`: macOS DMG/PKG 文件安装脚本
-- `kernel-broadcom-wl`: 为 MacBook 安装 Broadcom 无线网卡驱动
-
-### 库文件功能
-
-- `color.sh`: 提供彩色输出和格式化函数
-- `array.sh`: 提供数组操作函数
-- `platform.sh`: 提供平台检测功能
-- `trap.sh`: 提供错误和中断处理功能
-
-## 扩展性
-
-- 脚本遵循 `XX-purpose[@platform].sh` 的命名约定，便于扩展
-- 通过 `lib/` 提供的函数实现脚本间共享功能
-- 平台特定的逻辑通过 `@` 后缀实现
-- 使用模块化设计，每个脚本专注于特定任务
-
-## 注意事项
-
-- 执行前请仔细阅读以上内容，了解脚本功能
-- 建议在虚拟机或测试环境中先验证脚本行为
-- 部分脚本需管理员权限
-- 使用严格错误处理（set -e），命令失败即终止
+- 权限须知：部分操作需 sudo。
+- 非防御式警告：脚本遵循“报错即停止”原则，建议先在虚拟机验证。

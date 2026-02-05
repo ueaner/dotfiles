@@ -14,9 +14,9 @@ else
     FONT_DIR=~/Library/Fonts
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Nerd Fonts
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 NERD_FONT_DIR="$FONT_DIR/SourceCodePro"
 if [[ ! -f "$NERD_FONT_DIR/done" ]]; then
     step "Install Nerd Fonts: SourceCodePro"
@@ -29,9 +29,9 @@ if [[ ! -f "$NERD_FONT_DIR/done" ]]; then
     touch "$NERD_FONT_DIR/done"
 fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Maple Mono
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 MAPLE_FONT_DIR="$FONT_DIR/MapleMono"
 if [[ ! -f "$MAPLE_FONT_DIR/done" ]]; then
     step "Install Maple Mono Font"
@@ -42,6 +42,20 @@ if [[ ! -f "$MAPLE_FONT_DIR/done" ]]; then
     unzip -q -o /tmp/MapleMono-NF-CN-unhinted.zip -d "$MAPLE_FONT_DIR"
 
     touch "$MAPLE_FONT_DIR/done"
+fi
+
+# ---------------------------------------------------------------
+# Noto Color Emoji
+# ---------------------------------------------------------------
+# Alacritty / Foot 终端暂不支持 Noto-COLRv1.ttf, Foot 终端支持 NotoColorEmoji.ttf
+NOTO_EMOJI_FONT_DIR="$FONT_DIR/noto-emoji"
+if [[ ! -f "$NOTO_EMOJI_FONT_DIR/done" ]]; then
+    step "Install Noto Color Emoji Font"
+
+    FONT_URL="${GITHUB_PROXY}https://github.com/googlefonts/noto-emoji/blob/main/fonts/NotoColorEmoji.ttf"
+    curl --create-dirs --output-dir "$NOTO_EMOJI_FONT_DIR" -C - -sSL -O "${FONT_URL}"
+
+    touch "$NOTO_EMOJI_FONT_DIR/done"
 fi
 
 # 更新字体缓存（仅 Linux）

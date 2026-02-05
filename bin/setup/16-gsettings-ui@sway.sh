@@ -11,9 +11,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure the UI appearance of GTK applications"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Appearance UI of GTK applications
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 
 # Emacs Input: browser location bar, input box, etc.
 # NOTE: Keyboard themes removed since gtk 4.0: https://gitlab.gnome.org/GNOME/gtk/-/issues/1669

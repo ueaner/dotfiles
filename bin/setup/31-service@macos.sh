@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure auto-start service (macOS)"
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # sshd
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # Remote Login, sudo systemsetup -getremotelogin
 step "Enable sshd.service"
 sudo systemsetup -setremotelogin on
@@ -17,9 +17,9 @@ sudo systemsetup -setremotelogin on
 #     -> Share your connection from: Thunderbolt Ethernet
 #     -> To computers using: Wi-Fi
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # shadowsocks (local)
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # launchctl list | grep shadowsocks
 # launchctl list org.shadowsocks.shadowsocks-rust
 # launchctl print gui/501/org.shadowsocks.shadowsocks-rust | awk '/state =/ { print $3 }'
@@ -45,9 +45,9 @@ if launchctl print "gui/$(id -u)/org.shadowsocks.shadowsocks-rust" >/dev/null 2>
 fi
 launchctl load ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # caddy
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Configure and enable caddy.service"
 
 if [[ -x ~/.local/bin/caddy ]]; then
@@ -67,9 +67,9 @@ if launchctl print "gui/$(id -u)/com.caddyserver.web" >/dev/null 2>&1; then
 fi
 launchctl load ~/Library/LaunchAgents/com.caddyserver.web.plist
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # gost
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Configure and enable gost.service"
 
 if [[ -x ~/.local/bin/gost ]]; then
@@ -84,9 +84,9 @@ if launchctl print "gui/$(id -u)/run.gost.tunnel" >/dev/null 2>&1; then
 fi
 launchctl load ~/Library/LaunchAgents/run.gost.tunnel.plist
 
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 # frpc
-#----------------------------------------------------------------
+# ---------------------------------------------------------------
 step "Configure and enable frpc.service"
 
 if [[ -x ~/.local/bin/frpc ]]; then
