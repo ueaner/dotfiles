@@ -3,6 +3,8 @@
 # Includes rustup, cargo, and related configurations
 # shellcheck disable=SC2086
 
+# NOTE: Rust 工具链的更新通常通过官方维护的 rustup，aqua 不支持直接安装 Rust
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 

@@ -3,13 +3,13 @@ version: "3"
 vars:
   # 定义 List[Map]
   SECTIONS:
-    - { name: "prelude", desc: "(0) 前置配置 (点文件、系统设置等)" }
-    - { name: "desktop", desc: "(1) 桌面环境配置" }
-    - { name: "app", desc: "(2) 应用程序安装" }
+    - { name: "prelude", desc: "(0) 系统初始化 (点文件、主机名及包管理器底座)" }
+    - { name: "desktop", desc: "(1) 桌面环境" }
+    - { name: "app", desc: "(2) 应用程序" }
     - { name: "service", desc: "(3) 服务配置" }
-    - { name: "terminal", desc: "(4) 终端环境配置" }
-    - { name: "lang", desc: "(5) 编程语言环境配置" }
-    - { name: "all", desc: "运行所有 Section" }
+    - { name: "terminal", desc: "(4) 终端环境" }
+    - { name: "lang", desc: "(5) 开发工具" }
+    - { name: "all", desc: "以上全部 Section" }
 
 tasks:
   default:

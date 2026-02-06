@@ -47,11 +47,11 @@
 ### 1. 🚀 主脚本执行
 
 ```sh
-./main            # 交互式选择 section (如果安装了 fzf)
+./main            # 交互式选择 Section (如果安装了 fzf)
 
 ./main <section>  # 执行特定阶段任务
 
-./main all        # 执行全部
+./main all        # 按顺序执行全部 Section
 ```
 
 ### 📝 2. 使用 Taskfile

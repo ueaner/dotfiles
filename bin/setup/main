@@ -6,8 +6,6 @@ set -e # errexit
 set -u # nounset
 # set -x # xtrace
 # set -n # noexec
-# 如果没匹配到文件，返回空而不是返回通配符本身
-# shopt -s nullglob
 
 # 切换到当前脚本目录
 MAIN_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
@@ -39,16 +37,16 @@ Setup Unix Workstation - 系统配置自动化脚本
     $0 [选项] [section]
 
 选项:
-    all         执行所有配置步骤
+    all         按顺序执行全部 Section
     help        显示此帮助信息
 
 可用 section:
-    prelude     (0) 前置配置 (点文件、系统设置等)
-    desktop     (1) 桌面环境配置
-    app         (2) 应用程序安装
+    prelude     (0) 系统初始化 (点文件、主机名及包管理器底座)
+    desktop     (1) 桌面环境
+    app         (2) 应用程序
     service     (3) 服务配置
-    terminal    (4) 终端环境配置
-    lang        (5) 编程语言环境配置
+    terminal    (4) 终端环境
+    lang        (5) 开发工具
 
 平台支持:
     - Fedora Linux
@@ -56,7 +54,8 @@ Setup Unix Workstation - 系统配置自动化脚本
     - 通过后缀 @fedora, @macos, @gnome, @sway 等实现平台特定配置
 
 示例:
-    $0 all           # 执行所有配置
+    $0               # 交互式选择 Section (如果安装了 fzf)
+    $0 all           # 按顺序执行全部 Section
     $0 desktop       # 仅执行桌面环境配置
     $0 app           # 仅执行应用程序安装
     $0 service       # 仅执行服务配置
@@ -80,7 +79,10 @@ if [[ -z "$section" ]]; then
     fi
 
     # 使用 fzf 进行交互式选择
-    selected=$(printf '%s\n%s\n%s\n' "help" "${sections[@]}" "all" | fzf --no-multi --bind "ctrl-z:ignore,tab:down,btab:up" --header '[TAB] / [Shift-TAB] to move focus') || true
+    selected=$(
+        printf '%s\n%s\n%s\n' "help" "${sections[@]}" "all" |
+            fzf --no-multi --bind "ctrl-z:ignore,tab:down,btab:up" --header '[TAB] / [Shift-TAB] to move focus'
+    ) || true
 
     if [[ -n "$selected" ]]; then
         # 如果选择了 section，则执行
