@@ -68,3 +68,20 @@ alias unproxy='unset all_proxy; unset https_proxy; unset http_proxy'
 alias dnf='sudo dnf'
 
 alias music='termusic --disable-cover'
+
+alias simulator='open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+
+# Pretty print the path
+alias path='echo -e ${PATH//:/\\n}'
+
+alias vimrc="vim +'e \$MYVIMRC'"
+
+if [[ "$EDITOR" == "nvim" ]]; then
+    alias vim="nvim"
+    alias vimdiff="nvim -d" # diff mode
+    alias view="nvim -R"    # readonly mode
+elif [[ "$EDITOR" == "vi" ]]; then
+    alias vim="vi"
+fi
+
+alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs $EDITOR'

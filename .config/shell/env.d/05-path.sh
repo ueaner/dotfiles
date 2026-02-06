@@ -1,6 +1,3 @@
-# Pretty print the path
-alias path='echo -e ${PATH//:/\\n}'
-
 # path_helper 是 macOS 下初始化 $PATH 环境变量的一个工具，
 # 在 /etc/zprofile /etc/profile 中被引入执行，会先加载 /etc/paths /etc/paths.d/* 中的路径信息
 

@@ -14,31 +14,18 @@ keymap:
     remap:
       KEY_ENTER:                   KEY_F2                         # Rename
 
-  - name: Ptyxis
+  - name: Ghostty
     exact_match: true
     application:
-      only: org.gnome.Ptyxis
+      only: com.mitchellh.ghostty
     remap:
       Super-n:                     Shift-Ctrl-n                   # Window: New
-      Super-t:                     Shift-Ctrl-t                   # Tab: new
-      Super-w:                     Shift-Ctrl-w                   # Tab: close
-      Shift-Super-t:               Alt-Shift-Ctrl-t               # Tab: Reopen closed tab
-      Shift-Super-KEY_DOT:         Ctrl-KEY_PAGEDOWN              # Tab: > Next
-      Shift-Super-KEY_COMMA:       Ctrl-KEY_PAGEUP                # Tab: < Previous
-      Shift-Super-KEY_RIGHTBRACE:  Shift-Ctrl-KEY_PAGEDOWN        # Tab: } Move Tab Right
-      Shift-Super-KEY_LEFTBRACE:   Shift-Ctrl-KEY_PAGEUP          # Tab: { Move Tab Left
-      Super-KEY_BACKSLASH:         Shift-Ctrl-o                   # Tab: \ Overview
-      Super-f:                     Shift-Ctrl-f                   # Search
-      Super-a:                     Shift-Ctrl-a                   # Select All
-      Super-c:                     Shift-Ctrl-c                   # Copy
-      Super-v:                     Shift-Ctrl-v                   # Paste
 
   - name: Terminal
     exact_match: true
     application:
       only: [foot, footclient, com.mitchellh.ghostty]
     remap:
-      Super-n:                     Shift-Ctrl-n                   # Window: New
       Super-c:                     Shift-Ctrl-c                   # Copy
       Super-v:                     Shift-Ctrl-v                   # Paste
       Super-f:                     Shift-Ctrl-f                   # Find
@@ -58,7 +45,7 @@ keymap:
       Super-i:                     [Alt-s, i]                     # Window: Info
       Super-t:                     [Alt-s, t]                     # Window: New
       Super-w:                     [Alt-s, w]                     # Window: Close
-      Shift-Super-w:               [Alt-s, W]                     # Window: Close other windows
+      Shift-Super-w:               [Alt-s, Shift-w]               # Window: Close other windows
       Ctrl-KEY_TAB:                [Alt-s, KEY_RIGHTBRACE]        # Window: Next
       Shift-Ctrl-KEY_TAB:          [Alt-s, KEY_LEFTBRACE]         # Window: Previous
       Shift-Super-KEY_DOT:         [Alt-s, KEY_RIGHTBRACE]        # Window: > Next
@@ -72,7 +59,7 @@ keymap:
       Shift-Super-KEY_APOSTROPHE:  [Alt-s, Shift-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
       Super-z:                     [Alt-s, z]                     # Pane: Zoom
       Super-x:                     [Alt-s, x]                     # Pane: Close
-      Shift-Super-x:               [Alt-s, X]                     # Pane: Close other panes
+      Shift-Super-x:               [Alt-s, Shift-x]                     # Pane: Close other panes
       Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Pane: Evenly Layout
       # Under Sway, ~/bin/sway-tmux-layout handles both the Sway containers and the Tmux panes uniformly.
       # Super-KEY_BACKSLASH:         [Alt-s, KEY_BACKSLASH]         # Pane: Next Layout

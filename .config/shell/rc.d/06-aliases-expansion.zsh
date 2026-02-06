@@ -34,3 +34,6 @@ alias dotlocal='/usr/bin/git LOCAL'
 
 # rq coreutils util-linux
 alias rq='(){ sudo dnf repoquery -l $@ | rg "/bin/"; }'
+
+# Pretty print the fpath
+alias fpath='printf "%s\n" $fpath'

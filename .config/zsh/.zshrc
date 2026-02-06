@@ -87,13 +87,6 @@ stty -ixoff
 stty stop undef
 stty start undef
 
-# Quick access to configuration files
-alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"
-
-# printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
-#     "$([[ ! -o interactive ]] && echo non-)" \
-#     "$([[ ! -o login ]] && echo non-)"
-
 # time zsh -i -c exit
 # zsh 调试详细每个操作的执行时间, 开头加载 zmodload zsh/zprof 最后调用 zprof
 # 记录终端启动，和操作过程中的所有记录
@@ -107,6 +100,15 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
+. ~/.config/shell/env
+
+# Quick access to configuration files
+alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"
+
+# printf "[.zshrc:$$] %sinteractive %slogin shell\n" \
+#     "$([[ ! -o interactive ]] && echo non-)" \
+#     "$([[ ! -o login ]] && echo non-)"
+
 for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*sh; do
     if [[ "$rcfile" == *"autosuggestions"* ]]; then
         if [[ "$COLORTERM" == "truecolor" ]]; then
@@ -119,10 +121,10 @@ for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*sh; do
     fi
 
     # echo $rcfile
-    source $rcfile
+    . $rcfile
 done
 
-[[ -f $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+[[ -f $HOME/.zshrc.local ]] && . $HOME/.zshrc.local
 
 if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     printf "ending profile in %s mode\n" \

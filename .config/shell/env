@@ -1,0 +1,20 @@
+# vim: set filetype=sh:
+
+# 每次获取当前实际 tty 值
+# shellcheck disable=SC2155
+export GPG_TTY=$(tty)
+
+[[ -n "${SHELL_ENV_SOURCED:-}" ]] && return
+export SHELL_ENV_SOURCED=1
+
+echo "[$$ env] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
+
+for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
+    # shellcheck disable=SC2086
+    # shellcheck source=/dev/null
+    . $envfile
+done
+
+# SYSTEMD_LOG_LEVEL=debug /usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator
+# export $(/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+# Set up the envvars file in $HOME/.config/environment.d/envvars.conf

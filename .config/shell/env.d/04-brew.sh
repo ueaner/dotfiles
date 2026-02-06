@@ -12,6 +12,7 @@ fi
 
 # 安装相关编译工具: xcode-select —install
 # 10.15 定义 CPATH 代替软链 /usr/include
+# shellcheck disable=SC2155
 export CPATH=$(xcrun --show-sdk-path)/usr/include
 
 # 下载安装包的源

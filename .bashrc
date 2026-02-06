@@ -39,20 +39,17 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# shellcheck source=.config/shell/env
+. ~/.config/shell/env
+
 # Quick access to configuration files
 # shellcheck disable=SC2139
 alias shrc="${EDITOR} ~/.bashrc"
 
-for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do
-    # shellcheck disable=SC2086
-    # shellcheck source=/dev/null
-    source $envfile
-done
-
 for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
     # shellcheck source=/dev/null
-    source $rcfile
+    . $rcfile
 done
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
@@ -85,4 +82,4 @@ if [[ -n "$HISTFILE" && "$HISTFILE" == *.zsh_history ]]; then
 fi
 
 # shellcheck source=/dev/null
-[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local
+[[ -f ~/.bashrc.local ]] && . ~/.bashrc.local

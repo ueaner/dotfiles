@@ -3,9 +3,6 @@
 # https://thevaluable.dev/zsh-install-configure-mouseless/
 # https://github.com/ogham/exa/blob/master/man/exa_colors.5.md#list-of-codes
 
-# Pretty print the fpath
-alias fpath='printf "%s\n" $fpath'
-
 # --- 1. 路径与变量初始化 ---
 
 # fpath 可执行文件对应补全定义文件的路径
@@ -76,10 +73,10 @@ unsetopt FLOW_CONTROL     # 禁用 Ctrl-S/Q 流控
 # LS_COLORS 缓存处理
 LS_COLORS_CACHE="$ZSH_CACHE_DIR/ls_colors"
 if [[ -f "$LS_COLORS_CACHE" ]]; then
-    source "$LS_COLORS_CACHE"
+    . "$LS_COLORS_CACHE"
 elif (( $+commands[dircolors] )); then
     dircolors -b > "$LS_COLORS_CACHE"
-    source "$LS_COLORS_CACHE"
+    . "$LS_COLORS_CACHE"
 fi
 
 # 加载颜色列表
