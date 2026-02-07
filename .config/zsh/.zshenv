@@ -1,5 +1,4 @@
 # .zshenv
-[[ -n "${ZSHENV_SOURCED:-}" ]] && return
-export ZSHENV_SOURCED=1
-
-echo "[$$ .zshenv] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
+# setopt SOURCE_TRACE
+log() { printf "[%s $$] %s\n" "$(date +"%F %T.%6N")" "$*" >>/tmp/shell.log; }
+log ".zshenv"
