@@ -1,3 +1,3 @@
-# setopt SOURCE_TRACE
-echo "[$$ ~/.zshenv] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
 export ZDOTDIR=~/.config/zsh
+[[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv
+log "~/.zshenv"

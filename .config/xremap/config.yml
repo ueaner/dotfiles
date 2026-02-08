@@ -59,7 +59,7 @@ keymap:
       Shift-Super-KEY_APOSTROPHE:  [Alt-s, Shift-KEY_APOSTROPHE]  # Pane: " Synchronize Toggle
       Super-z:                     [Alt-s, z]                     # Pane: Zoom
       Super-x:                     [Alt-s, x]                     # Pane: Close
-      Shift-Super-x:               [Alt-s, Shift-x]                     # Pane: Close other panes
+      Shift-Super-x:               [Alt-s, Shift-x]               # Pane: Close other panes
       Shift-Super-KEY_BACKSLASH:   [Alt-s, Shift-KEY_BACKSLASH]   # Pane: Evenly Layout
       # Under Sway, ~/bin/sway-tmux-layout handles both the Sway containers and the Tmux panes uniformly.
       # Super-KEY_BACKSLASH:         [Alt-s, KEY_BACKSLASH]         # Pane: Next Layout

@@ -72,8 +72,6 @@
 # 6. zsh 内置函数，如 zmv 批量修改文件名
 # $ zmv '(*).txt' '$1.html'
 
-echo "[$$ .zshrc] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
-
 # 关闭 XON/XOFF flow control
 # Disable Ctrl-S and Ctrl-Q on terminal, stty -a 查看
 # stty -ixon -ixoff
@@ -102,6 +100,8 @@ fi
 
 . ~/.config/shell/env
 
+log
+
 # Quick access to configuration files
 alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"
 
@@ -109,10 +109,12 @@ alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"
 #     "$([[ ! -o interactive ]] && echo non-)" \
 #     "$([[ ! -o login ]] && echo non-)"
 
+log "sourcing ~/.config/shell/rc.d/[0-9][0-9]*sh"
+
 for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*sh; do
     if [[ "$rcfile" == *"autosuggestions"* ]]; then
         if [[ "$COLORTERM" == "truecolor" ]]; then
-            ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$COLOR_GRAY"
+            ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=${COLOR_GRAY:-"#778899"}"
         else
             ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=240"
         fi
@@ -123,6 +125,8 @@ for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*sh; do
     # echo $rcfile
     . $rcfile
 done
+
+log "sourced"
 
 [[ -f $HOME/.zshrc.local ]] && . $HOME/.zshrc.local
 
