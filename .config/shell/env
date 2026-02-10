@@ -4,11 +4,6 @@
 # shellcheck disable=SC2155
 export GPG_TTY=$(tty)
 
-log "SHELL_ENV_SOURCED: ${SHELL_ENV_SOURCED:-0}"
-
-[[ -n "${SHELL_ENV_SOURCED:-}" ]] && return
-export SHELL_ENV_SOURCED=1
-
 log "sourcing ~/.config/shell/env.d/[0-9][0-9]*.sh"
 
 for envfile in ~/.config/shell/env.d/[0-9][0-9]*.sh; do

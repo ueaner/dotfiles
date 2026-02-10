@@ -98,8 +98,6 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-. ~/.config/shell/env
-
 log
 
 # Quick access to configuration files
