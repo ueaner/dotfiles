@@ -26,8 +26,8 @@ gg = goto 1
 <Shift+G> = goto -1
 
 # Panning
-j = pan 0 -50
-k = pan 0 50
+j = pan 0 50
+k = pan 0 -50
 l = pan 50 0
 h = pan -50 0
 
