@@ -48,6 +48,7 @@ FLATPAK_PACKAGES=(
     com.google.Chrome
     com.tencent.WeChat
     com.github.gmg137.netease-cloud-music-gtk
+    org.gnome.Loupe
     # com.dingtalk.DingTalk
     # cn.feishu.Feishu
     # com.baidu.NetDisk

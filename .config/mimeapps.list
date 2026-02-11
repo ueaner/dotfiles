@@ -1,16 +1,18 @@
 [Added Associations]
-image/png=imv-dir.desktop;swayimg.desktop;imv.desktop;
-image/svg+xml=imv-dir.desktop;swayimg.desktop;imv.desktop;
-image/jpeg=imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/png=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/svg+xml=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/jpeg=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/gif=org.gnome.Loupe.desktop;
+image/webp=org.gnome.Loupe.desktop;
+image/jxl=org.gnome.Loupe.desktop;
 
 [Default Applications]
-# xdg-mime default imv.desktop image/jpeg
-image/tiff=imv.desktop
-image/png=imv.desktop
-image/jpeg=imv.desktop
-image/svg+xml=imv.desktop
-image/gif=imv.desktop
-image/heif=imv.desktop
-image/jxl=imv.desktop
-image/webp=imv.desktop
-image/qoi=imv.desktop
+image/tiff=org.gnome.Loupe.desktop
+image/png=org.gnome.Loupe.desktop
+image/jpeg=org.gnome.Loupe.desktop
+image/svg+xml=org.gnome.Loupe.desktop
+image/gif=org.gnome.Loupe.desktop
+image/heif=org.gnome.Loupe.desktop
+image/jxl=org.gnome.Loupe.desktop
+image/webp=org.gnome.Loupe.desktop
+image/qoi=org.gnome.Loupe.desktop
