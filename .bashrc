@@ -1,6 +1,9 @@
 # .bashrc
 
-echo "[$$ .bashrc] $(date +"%Y-%m-%d %T.%6N")" >>/tmp/shell.log
+log() {
+    local file="${BASH_SOURCE[1]:-${BASH_SOURCE[0]}}"
+    printf "[%s %s] [%s] %s\n" "$(date +"%F %T.%6N")" "$$" "${file##*/}" "$*" >>/tmp/shell.log
+}
 
 # https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
 #
@@ -46,11 +49,15 @@ fi
 # shellcheck disable=SC2139
 alias shrc="${EDITOR} ~/.bashrc"
 
+log "sourcing ~/.config/shell/rc.d/[0-9][0-9]*.sh"
+
 for rcfile in ~/.config/shell/rc.d/[0-9][0-9]*.sh; do
     # shellcheck disable=SC2086
     # shellcheck source=/dev/null
     . $rcfile
 done
+
+log "sourced"
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias dotlocal='git --git-dir=$HOME/.dotlocal --work-tree=$HOME/.local'

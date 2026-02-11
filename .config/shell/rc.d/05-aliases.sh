@@ -6,6 +6,7 @@ command -v hd >/dev/null || alias hd="hexdump -C"
 command -v md5sum >/dev/null || alias md5sum="md5"
 # macOS has no `sha1sum`, so use `shasum` as a fallback
 command -v sha1sum >/dev/null || alias sha1sum="shasum"
+command -v sha256sum >/dev/null || alias sha256sum="shasum -a 256"
 
 # Linux has no `say`, so use `spd-say` as a fallback
 command -v say >/dev/null || alias say="spd-say"

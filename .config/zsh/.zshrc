@@ -98,12 +98,7 @@ if [[ $ZSH_PROFILE_STARTUP == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-# 确保在 non-login (Alacritty/Kitty) 模式下，环境变量一定被加载
-if [[ ! -o login && ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    . ~/.config/shell/env
-fi
-
-log
+. ~/.config/shell/env
 
 # Quick access to configuration files
 alias shrc="${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc"

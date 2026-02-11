@@ -150,3 +150,22 @@ packages:
     files:
       - name: dra
         src: "{{.AssetWithoutExt}}/dra"
+
+  - type: github_release
+    repo_owner: uutils
+    repo_name: coreutils
+    description: Cross-platform Rust rewrite of the GNU coreutils
+    asset: coreutils-{{.Version}}-{{.Arch}}-{{.OS}}.{{.Format}}
+    format: tar.gz
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+      darwin: apple-darwin
+      linux: unknown-linux-gnu
+      windows: pc-windows-msvc
+    files:
+      - name: coreutils
+        src: "coreutils-{{.Arch}}-{{.OS}}/coreutils"

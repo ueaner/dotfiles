@@ -1,6 +1,16 @@
 alias ls="ls --color=auto -h"
 alias ll="ls --color=always -AlF -h -v"
-alias l="ls -lh"
+alias la="ls --color=always -AlF -h -v -i"
+
+if command -v eza >/dev/null; then
+    # alias ls='eza --group-directories-first'
+    # alias ll='eza -lah --icons --git'
+    alias la='eza -lbhHigUmuSa --time-style=long-iso --git --icons --group-directories-first'
+
+    alias tree='eza --tree'
+elif ! command -v tree >/dev/null; then
+    alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
+fi
 
 # zi: interactive selection (using fzf)
 # z foo<SPACE><TAB>  # show interactive completions (zoxide v0.8.0+, bash/fish/zsh only)

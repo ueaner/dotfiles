@@ -1,8 +1,10 @@
 # vim: set filetype=sh:
 
-# 每次获取当前实际 tty 值
-# shellcheck disable=SC2155
-export GPG_TTY=$(tty)
+# 确保在 non-login 模式下，环境变量一定被加载
+if [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
+    log
+    return
+fi
 
 log "sourcing ~/.config/shell/env.d/[0-9][0-9]*.sh"
 

@@ -20,26 +20,4 @@ if [[ ! -x /opt/local/bin/brew ]]; then
 
     NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
     success "Brew installed $(brew --version)"
-
-    # 对齐 Linux 基础命令
-    # brew install \
-    #     bash-completion@2 \
-    #     zsh-completions \
-    #     bash \
-    #     gnu-getopt \
-    #     grep \
-    #     gnu-tar \
-    #     gnu-sed \
-    #     gnu-time \
-    #     gnu-which \
-    #     binutils \
-    #     coreutils \
-    #     diffutils \
-    #     findutils \
-    #     inetutils \
-    #     gawk \
-    #     pstree \
-    #     tree \
-    #     less \
-    #     wget
 fi

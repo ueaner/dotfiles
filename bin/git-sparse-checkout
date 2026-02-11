@@ -67,6 +67,7 @@ if [[ -z "$ldir" ]]; then
     exit 1
 fi
 
+ldir=$(realpath "$ldir")
 mkdir -p "$ldir"
 cd "$ldir" || (
     echo "No permission to create $ldir directory"
