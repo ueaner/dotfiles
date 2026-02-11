@@ -1,10 +1,10 @@
 # Yazi File Manager
 import subprocess
 
-from .tool import Tool
+from utils.launcher import Item
 
 
-class Yazi(Tool):
+class Yazi(Item):
     _name: str
 
     def __init__(self, name: str = "Yazi"):
@@ -17,7 +17,7 @@ class Yazi(Tool):
         return "yazi"
 
     # swaymsg '[app_id="yazi"] focus' || foot --app-id=yazi -e yazi
-    def run(self) -> None:
+    def run(self, returncode: int = 0) -> None:
         # 1. 尝试执行聚焦命令
         # capture_output=True 用于隐藏控制台输出
         result = subprocess.run(["swaymsg", '[app_id="yazi"] focus'], capture_output=True)

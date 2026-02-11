@@ -1,10 +1,10 @@
 # Clipboard
 import subprocess
 
-from .tool import Tool
+from utils.launcher import Item
 
 
-class Clipboard(Tool):
+class Clipboard(Item):
     _name: str
 
     def __init__(self, name: str = "Clipboard"):
@@ -16,7 +16,7 @@ class Clipboard(Tool):
     def icon(self) -> str:
         return "clipboard"
 
-    def run(self) -> None:
+    def run(self, returncode: int = 0) -> None:
         subprocess.run(
             ["rofi", "-show", "clipboard", "-modes", "clipboard:~/.local/bin/cliphist-rofi-img", "-show-icons"]
         )

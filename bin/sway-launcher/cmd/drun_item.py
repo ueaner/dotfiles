@@ -5,12 +5,6 @@ from utils.launcher import Config, Item, ItemProvider
 from utils.sway_helper import App, get_all_apps
 
 
-class AppItemProvider(ItemProvider[Item]):
-    def items(self, config: Config) -> list[Item]:
-        apps = get_all_apps(DESKTOP_DIRS)
-        return [AppItem(app) for app in apps]
-
-
 class AppItem(Item):
     """应用条目的具体实现"""
 
@@ -25,13 +19,6 @@ class AppItem(Item):
     def name(self) -> str:
         return self.data.name
 
-    def format(self) -> str:
-        if self.data.generic:
-            # 传递搜索关键词，将 generic 信息填入 meta 字段，Rofi 会搜索它但不会显示它
-            return f"{self.name()}\0icon\x1f{self.icon()}\x1fmeta\x1f{self.data.generic}"
-        else:
-            return f"{self.name()}\0icon\x1f{self.icon()}"
-
     def run(self, returncode: int = 0) -> None:
         if "flatpak" in self.data.path.lower():
             exec_cmd = ["flatpak", "run", self.data.app_id]
@@ -45,3 +32,16 @@ class AppItem(Item):
 
             target_ws = get_first_empty_workspace()
             subprocess.Popen(["swaymsg", f"workspace {target_ws}; exec {' '.join(exec_cmd)}"])
+
+
+class AppItemProvider(ItemProvider[AppItem]):
+    def items(self, config: Config) -> list[AppItem]:
+        apps = get_all_apps(DESKTOP_DIRS)
+        return [AppItem(app) for app in apps]
+
+    def format(self, item: AppItem) -> str:
+        if item.data.generic:
+            # 传递搜索关键词，将 generic 信息填入 meta 字段，Rofi 会搜索它但不会显示它
+            return f"{item.name()}\0icon\x1f{item.icon()}\x1fmeta\x1f{item.data.generic}"
+        else:
+            return f"{item.name()}\0icon\x1f{item.icon()}"

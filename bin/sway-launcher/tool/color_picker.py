@@ -1,10 +1,10 @@
 # Color Picker
 import subprocess
 
-from .tool import Tool
+from utils.launcher import Item
 
 
-class ColorPicker(Tool):
+class ColorPicker(Item):
     """取色器，依赖 grimpicker"""
 
     _name: str
@@ -18,5 +18,5 @@ class ColorPicker(Tool):
     def icon(self) -> str:
         return "eye-dropper"
 
-    def run(self) -> None:
+    def run(self, returncode: int = 0) -> None:
         subprocess.run(["grimpicker", "--copy"])

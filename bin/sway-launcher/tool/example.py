@@ -1,11 +1,12 @@
 import subprocess
 
+from utils.launcher import Item
+
 from .run_commands import run_commands
-from .tool import Tool
 
 
 # grim -g "$(slurp -p)" -t ppm - | magick - -format "%[pixel:p{0,0}]" txt:- | tail -n 1 | cut -d " " -f 4 | wl-copy
-class Example(Tool):
+class Example(Item):
     _name: str
 
     def __init__(self, name: str = "Color Picker"):
@@ -17,7 +18,7 @@ class Example(Tool):
     def icon(self) -> str:
         return "eye-dropper"
 
-    def run(self) -> None:
+    def run(self, returncode: int = 0) -> None:
         # 获取坐标
         proc = subprocess.run(["slurp", "-p"], capture_output=True, text=True)
         if proc.returncode != 0:

@@ -12,15 +12,6 @@ MARKER_WINDOW = "\u200c"
 ALIGN_MAX_LEN = 25
 
 
-class WindowItemProvider(ItemProvider[Item]):
-    def items(self, config: Config) -> list[Item]:
-        windows = get_running_windows()
-        # 对齐 app_id 字段右补全空格或截断，便于在 Rofi 上整齐显示
-        max_len = max((len(w.app_id) for w in windows), default=0)
-        align_len = min(max_len, ALIGN_MAX_LEN)
-        return [WindowItem(w, config.theme, align_len) for w in windows]
-
-
 class WindowItem(Item):
     """窗口条目的具体实现"""
 
@@ -54,8 +45,17 @@ class WindowItem(Item):
         # 添加零宽字符标记
         return f"{MARKER_WINDOW}{display_name}"
 
-    def format(self) -> str:
-        return f"{self.name()}\0icon\x1f{self.icon()}\x1factive\x1ftrue"
-
     def run(self, returncode: int = 0) -> None:
         subprocess.run(["swaymsg", f"[con_id={self.data.con_id}] focus"])
+
+
+class WindowItemProvider(ItemProvider[Item]):
+    def items(self, config: Config) -> list[Item]:
+        windows = get_running_windows()
+        # 对齐 app_id 字段右补全空格或截断，便于在 Rofi 上整齐显示
+        max_len = max((len(w.app_id) for w in windows), default=0)
+        align_len = min(max_len, ALIGN_MAX_LEN)
+        return [WindowItem(w, config.theme, align_len) for w in windows]
+
+    def format(self, item: Item) -> str:
+        return f"{item.name()}\0icon\x1f{item.icon()}\x1factive\x1ftrue"

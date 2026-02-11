@@ -58,10 +58,6 @@ class Item(Protocol):
         """图标名称"""
         ...
 
-    def format(self) -> str:
-        """格式化显示字符串"""
-        ...
-
     def run(self, returncode: int = 0) -> None:
         """执行条目"""
         ...
@@ -72,6 +68,10 @@ class ItemProvider[T: Item](Protocol):
     """条目提供者接口"""
 
     def items(self, config: Config) -> list[T]: ...
+
+    def format(self, item: T) -> str:
+        """格式化显示字符串"""
+        ...
 
 
 @runtime_checkable
@@ -99,13 +99,6 @@ class Launcher[T: Item]:
         self.picker = picker
         self.item_providers = item_providers
 
-    def format(self, item: T) -> str:
-        """格式化单个条目为显示字符串
-
-        子类可以覆盖此方法，对所有的 items 进行统一格式化
-        """
-        return item.format()
-
     def handle_selection(self, selected_item: T, returncode: int = 0) -> None:
         """处理用户选择的条目
 
@@ -122,10 +115,15 @@ class Launcher[T: Item]:
 
     def launch(self) -> None:
         """启动 launcher 的主要流程"""
-        # 1. 获取条目
+        # 1. 原始条目
         items: list[T] = []
+        # 2. 用于选择器显示的字符串列表
+        formatted_items: list[str] = []
+
         for provider in self.item_providers:
-            items.extend(provider.items(self.config))
+            raw_items = provider.items(self.config)
+            items.extend(raw_items)
+            formatted_items.extend([provider.format(item) for item in raw_items])
 
         if not items:
             report_exception(
@@ -133,9 +131,6 @@ class Launcher[T: Item]:
                 notify=True,
             )
             return
-
-        # 2. 格式化条目为字符串列表
-        formatted_items = [self.format(item) for item in items]
 
         # 3. 通过选择器接口显示并获取用户选择
         result = self.picker.show(formatted_items, self.config)
