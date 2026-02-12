@@ -1,6 +1,6 @@
 import subprocess
 
-from utils.launcher import Item
+from core.contract import Item
 
 from .run_commands import run_commands
 

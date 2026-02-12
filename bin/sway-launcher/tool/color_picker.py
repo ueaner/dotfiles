@@ -1,7 +1,7 @@
 # Color Picker
 import subprocess
 
-from utils.launcher import Item
+from core.contract import Item
 
 
 class ColorPicker(Item):

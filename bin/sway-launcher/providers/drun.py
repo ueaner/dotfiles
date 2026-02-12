@@ -1,7 +1,7 @@
 import subprocess
 
 from config import DESKTOP_DIRS
-from utils.launcher import Config, Entry, Item, ItemProvider
+from core.contract import Config, Entry, Item, ItemProvider
 from utils.sway_helper import App, get_all_apps
 
 

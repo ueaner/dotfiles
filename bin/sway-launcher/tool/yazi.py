@@ -1,7 +1,7 @@
 # Yazi File Manager
 import subprocess
 
-from utils.launcher import Item
+from core.contract import Item
 
 
 class Yazi(Item):

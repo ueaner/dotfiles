@@ -1,7 +1,7 @@
 # Clipboard
 import subprocess
 
-from utils.launcher import Item
+from core.contract import Item
 
 
 class Clipboard(Item):

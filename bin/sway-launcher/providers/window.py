@@ -2,7 +2,7 @@
 
 import subprocess
 
-from utils.launcher import Config, Entry, Item, ItemProvider, Theme
+from core.contract import Config, Entry, Item, ItemProvider, Theme
 from utils.sway_helper import App, get_running_windows
 
 # 常用的零宽字符有: "\u200b" "\u200c" "\u200d" "\ufeff"

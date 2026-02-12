@@ -3,8 +3,8 @@
 import math
 import subprocess
 
+from core.contract import Config, Entry, Picker, Theme
 from utils.exception_handler import report_exception
-from utils.launcher import Config, Entry, Picker, Theme
 
 
 def calculate_window_size(count: int, max_cols: int = 5, max_lines: int = 3) -> tuple[int, int, str, str]:
