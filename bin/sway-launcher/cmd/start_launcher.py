@@ -5,27 +5,12 @@
 """
 
 import argparse
-from typing import Any
 
-from core.contract import Config, Item, ItemProvider, Theme
+from core.contract import Config, Item, Theme
 from core.launcher import Launcher
 from picker.rofi import RofiPicker
-from providers.drun import AppItemProvider
-from providers.tool import ToolItemProvider
-from providers.window import WindowItemProvider
+from providers import create_providers
 from utils.exception_handler import report_exception
-
-
-def create_providers(config: Config) -> list[ItemProvider[Item]]:
-    """根据配置动态创建提供者"""
-    # fmt: off
-    mapping: dict[str, type[ItemProvider[Any]]] = {
-        "window": WindowItemProvider,  # 运行中的窗口
-        "drun":   AppItemProvider,     # 已安装的应用
-        "tool":   ToolItemProvider,    # 自定义工具
-    }
-    # fmt: on
-    return [mapping[t]() for t in config.show_types if t in mapping]
 
 
 def start_launcher(args: argparse.Namespace) -> None:
