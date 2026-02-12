@@ -2,7 +2,7 @@
 
 import subprocess
 
-from utils.launcher import Config, Item, ItemProvider, Theme
+from utils.launcher import Config, Entry, Item, ItemProvider, Theme
 from utils.sway_helper import App, get_running_windows
 
 # 常用的零宽字符有: "\u200b" "\u200c" "\u200d" "\ufeff"
@@ -35,12 +35,13 @@ class WindowItem(Item):
             # 追加一个 · ● 🔘 标记
             display_name = f"{self.data.app_id}"
         else:
+            dot = "<span color='black'>·</span>"
             if len(self.data.app_id) > self.align_len:
                 # 截断并添加3个点
-                display_name = f"{self.data.app_id[: self.prefix_len]}... · {self.data.name}"
+                display_name = f"{self.data.app_id[: self.prefix_len]}... {dot} {self.data.name}"
             else:
                 # 右侧补空格
-                display_name = f"{self.data.app_id.ljust(self.align_len)} · {self.data.name}"
+                display_name = f"{self.data.app_id.ljust(self.align_len)} {dot} {self.data.name}"
 
         # 添加零宽字符标记
         return f"{MARKER_WINDOW}{display_name}"
@@ -57,5 +58,6 @@ class WindowItemProvider(ItemProvider[Item]):
         align_len = min(max_len, ALIGN_MAX_LEN)
         return [WindowItem(w, config.theme, align_len) for w in windows]
 
-    def format(self, item: Item) -> str:
-        return f"{item.name()}\0icon\x1f{item.icon()}\x1factive\x1ftrue"
+    def to_entry(self, item: Item) -> Entry:
+        """将 WindowItem 转换为结构化的 Entry"""
+        return Entry(text=item.name(), icon=item.icon(), active=True, markup=True)

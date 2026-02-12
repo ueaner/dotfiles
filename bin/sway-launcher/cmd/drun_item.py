@@ -1,7 +1,7 @@
 import subprocess
 
 from config import DESKTOP_DIRS
-from utils.launcher import Config, Item, ItemProvider
+from utils.launcher import Config, Entry, Item, ItemProvider
 from utils.sway_helper import App, get_all_apps
 
 
@@ -39,9 +39,11 @@ class AppItemProvider(ItemProvider[AppItem]):
         apps = get_all_apps(DESKTOP_DIRS)
         return [AppItem(app) for app in apps]
 
-    def format(self, item: AppItem) -> str:
-        if item.data.generic:
-            # 传递搜索关键词，将 generic 信息填入 meta 字段，Rofi 会搜索它但不会显示它
-            return f"{item.name()}\0icon\x1f{item.icon()}\x1fmeta\x1f{item.data.generic}"
-        else:
-            return f"{item.name()}\0icon\x1f{item.icon()}"
+    def to_entry(self, item: AppItem) -> Entry:
+        """将 AppItem 转换为结构化的 Entry"""
+        return Entry(
+            text=item.name(),
+            icon=item.icon(),
+            # 传递隐藏的搜索关键词
+            meta=item.data.generic if item.data.generic else "",
+        )

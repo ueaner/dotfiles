@@ -63,14 +63,29 @@ class Item(Protocol):
         ...
 
 
+@dataclass(frozen=True)
+class Entry:
+    """视觉表现层：定义 Picker 界面上这一行长什么样"""
+
+    # 核心显示内容
+    text: str  # 这一行显示的文本内容
+    # 基础元数据 (Row Options)
+    icon: str = ""  # 图标名称或路径
+    meta: str = ""  # 隐藏的搜索关键词
+    # 状态控制
+    urgent: bool = False  # 是否标记为紧急红色 (urgent)
+    active: bool = False  # 是否标记为活动蓝色 (active)
+    markup: bool = False  # 是否允许 Pango Markup 标签
+
+
 @runtime_checkable
 class ItemProvider[T: Item](Protocol):
     """条目提供者接口"""
 
     def items(self, config: Config) -> list[T]: ...
 
-    def format(self, item: T) -> str:
-        """格式化显示字符串"""
+    def to_entry(self, item: T) -> Entry:
+        """将业务对象转换为 Picker 上的 Entry (一行数据)"""
         ...
 
 
@@ -78,7 +93,7 @@ class ItemProvider[T: Item](Protocol):
 class Picker(Protocol):
     """选择器协议，如 Rofi, dmenu, wofi, fuzzel 等"""
 
-    def show(self, items: list[str], config: Config) -> tuple[str, int]:
+    def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
         """显示选择器并返回用户选择的结果"""
         ...
 
@@ -106,52 +121,46 @@ class Launcher[T: Item]:
         """
         selected_item.run(returncode)
 
-    def match(self, item: T, selected_name: str) -> bool:
-        """匹配选中的条目，默认按名称匹配"""
-        # 清理空格进行匹配，处理可能的多行显示
-        item_name = " ".join(item.name().split())
-        selected_clean = " ".join(selected_name.split())
-        return item_name == selected_clean
-
     def launch(self) -> None:
         """启动 launcher 的主要流程"""
-        # 1. 原始条目
-        items: list[T] = []
-        # 2. 用于选择器显示的字符串列表
-        formatted_items: list[str] = []
+
+        # 1. 存储 (Item, Entry) 的对应关系
+        contexts: list[tuple[T, Entry]] = []
 
         for provider in self.item_providers:
             raw_items = provider.items(self.config)
-            items.extend(raw_items)
-            formatted_items.extend([provider.format(item) for item in raw_items])
+            contexts.extend([(item, provider.to_entry(item)) for item in raw_items])
 
-        if not items:
+        if not contexts:
             report_exception(
                 error=Exception(f"The items data is empty. (-show {','.join(self.config.show_types)})"),
                 notify=True,
             )
             return
 
-        # 3. 通过选择器接口显示并获取用户选择
-        result = self.picker.show(formatted_items, self.config)
+        # 2. 提取用于给 Picker 显示的 Entry 列表
+        entries = [ctx[1] for ctx in contexts]
+
+        # 3. 显示并获取选择结果
+        result = self.picker.show(entries, self.config)
 
         if not result:
             return
 
-        selected_name, returncode = result
+        selected_text, returncode = result
 
         # 用户是否取消
         if self.picker.is_cancelled(returncode):
             return
 
         # 4. 匹配选中项并处理
-        for item in items:
-            if self.match(item, selected_name):
+        for item, entry in contexts:
+            if entry.text == selected_text:
                 self.handle_selection(item, returncode)
                 return
 
         # 如果没有找到匹配项，进行错误处理
         report_exception(
-            error=Exception(f"No match item: {selected_name}"),
+            error=Exception(f"No match item: {selected_text}"),
             notify=True,
         )

@@ -3,7 +3,7 @@ from tool.clipboard import Clipboard
 from tool.color_picker import ColorPicker
 from tool.yazi import Yazi
 from utils.icon_finder import find_fa_icon
-from utils.launcher import Config, Item, ItemProvider
+from utils.launcher import Config, Entry, Item, ItemProvider
 
 
 def create_tools() -> list[Item]:
@@ -36,7 +36,7 @@ class ToolItemProvider(ItemProvider[Item]):
         tools: list[Item] = create_tools()
         return tools
 
-    def format(self, item: Item) -> str:
-        """格式化显示字符串"""
+    def to_entry(self, item: Item) -> Entry:
+        """将 Item 转换为结构化的 Entry"""
         icon_path = find_fa_icon(item.icon(), FA_ICON_DIR)
-        return f"{item.name()}\0icon\x1f{icon_path}"
+        return Entry(text=item.name(), icon=icon_path)
