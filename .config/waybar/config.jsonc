@@ -139,7 +139,7 @@
             "format": {
                 "today": "<span color='#c397d8'><b>{}</b></span>",
                 "weekdays": "<span color='#ecce58'><b>{}</b></span>",
-                "months": "<span color='#8cb6e1'><b>{}</b></span>"
+                "months": "<span color='#a8c7fa'><b>{}</b></span>"
             }
         }
     },

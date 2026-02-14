@@ -12,7 +12,7 @@ arr=(
     red       "#df6566"
     green     "#c5d15c"
     yellow    "#ecce58"
-    blue      "#8cb6e1"
+    blue      "#a8c7fa"
     magenta   "#cfabe0"
     cyan      "#81cabf"
     white     "#eaeaea"

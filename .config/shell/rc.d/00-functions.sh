@@ -70,7 +70,7 @@ open() {
     elif [[ -x /usr/bin/xdg-open ]]; then
         # $XDG_CONFIG_HOME/mimeapps.list
         # /usr/share/applications/mimeapps.list
-        /usr/bin/xdg-open "$@"
+        setsid /usr/bin/xdg-open "$@" >/dev/null 2>&1
     else
         echo '"open" or "xdg-open" executable not found'
         return 1
