@@ -1,9 +1,7 @@
-from config import FA_ICON_DIR
-from core.contract import Config, Entry, Item, ItemProvider
+from core.contract import Config, Item, ItemProvider
 from tool.clipboard import Clipboard
 from tool.color_picker import ColorPicker
 from tool.yazi import Yazi
-from utils.icon_finder import find_fa_icon
 
 
 def create_tools() -> list[Item]:
@@ -33,10 +31,4 @@ def create_tools() -> list[Item]:
 
 class ToolItemProvider(ItemProvider[Item]):
     def items(self, config: Config) -> list[Item]:
-        tools: list[Item] = create_tools()
-        return tools
-
-    def to_entry(self, item: Item) -> Entry:
-        """将 Item 转换为结构化的 Entry"""
-        icon_path = find_fa_icon(item.icon(), FA_ICON_DIR)
-        return Entry(text=item.name(), icon=icon_path)
+        return create_tools()

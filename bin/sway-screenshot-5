@@ -2,7 +2,7 @@
 # 截图和录屏操作菜单
 
 # --- Rofi 菜单选项, 使用 Font Awesome SVG 文件 ---
-FA_ICON_DIR=~/.local/share/fa-icons
+# Full Screen Shot\0icon\x1f$HOME/.local/share/fa-icons/camera.svg
 # 截图： (U+F030, camera)
 # 录制： (U+F03D, video)
 # 有声： (U+F130, microphone)
@@ -10,14 +10,14 @@ FA_ICON_DIR=~/.local/share/fa-icons
 
 options=$(
     cat <<EOF
-Full Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
-Window Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
-Area Screen Shot\0icon\x1f$FA_ICON_DIR/camera.svg
-Full Screen Record (No Audio)\0icon\x1f$FA_ICON_DIR/video.svg
-Full Screen Record (With Audio)\0icon\x1f$FA_ICON_DIR/microphone.svg
-Area Record (No Audio)\0icon\x1f$FA_ICON_DIR/video.svg
-Area Record (With Audio)\0icon\x1f$FA_ICON_DIR/microphone.svg
-Stop Recording\0icon\x1f$FA_ICON_DIR/stop.svg
+Full Screen Shot\0icon\x1ffa-camera
+Window Screen Shot\0icon\x1ffa-camera
+Area Screen Shot\0icon\x1ffa-camera
+Full Screen Record (No Audio)\0icon\x1ffa-video
+Full Screen Record (With Audio)\0icon\x1ffa-microphone
+Area Record (No Audio)\0icon\x1ffa-video
+Area Record (With Audio)\0icon\x1ffa-microphone
+Stop Recording\0icon\x1ffa-stop
 EOF
 )
 

@@ -1,8 +1,15 @@
 import subprocess
+from pathlib import Path
 
-from config import DESKTOP_DIRS
 from core.contract import Config, Entry, Item, ItemProvider
 from utils.sway_helper import App, get_all_apps
+
+# 高优先级目录在前
+DESKTOP_DIRS = [
+    Path.home() / ".local/share/applications",
+    Path.home() / ".local/share/flatpak/exports/share/applications",
+    Path("/usr/share/applications"),
+]
 
 
 class AppItem(Item):

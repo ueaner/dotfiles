@@ -4,7 +4,7 @@
 
 echo "[$$ sway-recording] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
-ICON=~/.local/share/fa-icons/video.svg
+ICON=~/.local/share/icons/hicolor/scalable/apps/fa-video.svg
 
 # --- Dependency Check ---
 if ! command -v wf-recorder >/dev/null; then

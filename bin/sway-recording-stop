@@ -6,7 +6,7 @@ echo "[$$ sway-recording-stop] ---------- $(date +"%Y-%m-%d %T.%6N") ----------"
 
 echo "[$$ sway-recording-stop] Recording Process Details: $(pgrep --list-full wf-recorder)." >>/tmp/xreaker.log
 
-ICON=~/.local/share/fa-icons/video.svg
+ICON=~/.local/share/icons/hicolor/scalable/apps/fa-video.svg
 
 # --- Dependency Check ---
 if ! command -v dunstify >/dev/null; then

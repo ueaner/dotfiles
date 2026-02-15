@@ -7,7 +7,7 @@
 
 echo "[$$ sway-screenshot] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
 
-ICON=~/.local/share/fa-icons/camera.svg
+ICON=~/.local/share/icons/hicolor/scalable/apps/fa-camera.svg
 
 # --- Dependency Check ---
 if ! command -v dunstify >/dev/null; then

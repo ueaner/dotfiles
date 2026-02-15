@@ -34,7 +34,7 @@ def find_fa_icon(icon_name: str, icon_dir: Path) -> str:
     查找 Font Awesome 图标路径
 
     Args:
-        icon_name: 图标名称 (来自 icon_dirs 的文件名，不带扩展名)
+        icon_name: 图标名称 (来自 icon_dir 的文件名，不带扩展名)
         icon_dir:  搜索目录 (来自调用者注入)
     """
     icon_path = icon_dir / f"{icon_name}.svg"

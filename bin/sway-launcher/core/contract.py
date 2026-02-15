@@ -79,8 +79,11 @@ class ItemProvider[T: Item](Protocol):
     def items(self, config: Config) -> list[T]: ...
 
     def to_entry(self, item: T) -> Entry:
-        """将业务对象转换为 Picker 上的 Entry (一行数据)"""
-        ...
+        """将业务对象转换为 Picker 上的 Entry 的默认实现"""
+        return Entry(
+            text=item.name(),
+            icon=item.icon(),
+        )
 
 
 @runtime_checkable

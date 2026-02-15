@@ -16,7 +16,7 @@ class ColorPicker(Item):
         return self._name
 
     def icon(self) -> str:
-        return "eye-dropper"
+        return "fa-eye-dropper"
 
     def run(self, returncode: int = 0) -> None:
         subprocess.run(["grimpicker", "--copy"])

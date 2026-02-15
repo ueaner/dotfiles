@@ -14,7 +14,7 @@ class Clipboard(Item):
         return self._name
 
     def icon(self) -> str:
-        return "clipboard"
+        return "fa-clipboard"
 
     def run(self, returncode: int = 0) -> None:
         subprocess.run(
