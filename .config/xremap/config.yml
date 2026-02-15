@@ -6,12 +6,12 @@
 keypress_delay_ms: 20
 
 keymap:
-  - name: Quit with q
+  - name: Close with q
     exact_match: true
     application:
       only: [org.gnome.Loupe]
     remap:
-      q:                           Ctrl-q                         # Quit
+      q:                           Ctrl-w                         # Window: Close
 
   - name: Files
     exact_match: true

@@ -67,10 +67,20 @@ strace-all() {
 open() {
     if [[ -x /usr/bin/open ]]; then
         /usr/bin/open "$@"
+    elif [[ -x /usr/bin/gio ]]; then
+        /usr/bin/gio open "$@"
     elif [[ -x /usr/bin/xdg-open ]]; then
         # $XDG_CONFIG_HOME/mimeapps.list
         # /usr/share/applications/mimeapps.list
-        setsid /usr/bin/xdg-open "$@" >/dev/null 2>&1
+        # 确保可以打开非当前用户目录下的文件
+        local abs_path
+        for f in "$@"; do
+            [[ -e "$f" ]] || continue
+            abs_path=$(realpath "$f")
+            setsid /usr/bin/xdg-open "$abs_path" >/dev/null 2>&1
+            # 给 D-Bus 和桌面服务一点响应时间，防止丢单
+            sleep 0.1
+        done
     else
         echo '"open" or "xdg-open" executable not found'
         return 1
