@@ -1,88 +1,76 @@
 #!/usr/bin/env bash
 # Smart arrow-key navigation across tmux panes, browser address bar, and Sway containers.
-# @depends: jq, libnotify, wtype
+# Depends: jq, libnotify, wtype
 
-echo "[$$ sway-tmux-navigation] ---------- $(date +"%Y-%m-%d %T.%6N") ----------" >>/tmp/xreaker.log
+log() { printf "[$$ sway-tmux-navigation] %s\n" "$*" >>/tmp/xreaker.log; }
+log "$(date +"%F %T.%6N")"
 
-# arrows="left | down | up | right"
-# if ! echo "| $arrows |" | grep -F -q "| $1 |"; then
-#     notify-send "sway-tmux-navigation: argument must be one of \"$arrows\""
-#     exit 1
-# fi
-
-arrow="$1"
-at_arrow_cmd=
-tmux_cmd=
-sway_cmd=
-
-case "$arrow" in
-left)
-    at_arrow_cmd="tmux display-message -p '#{pane_at_left}'"
-    tmux_cmd="tmux select-pane -L"
-    sway_cmd="swaymsg focus left"
-    ;;
-down)
-    at_arrow_cmd="tmux display-message -p '#{pane_at_bottom}'"
-    tmux_cmd="tmux select-pane -D"
-    sway_cmd="swaymsg focus down"
-    ;;
-up)
-    at_arrow_cmd="tmux display-message -p '#{pane_at_top}'"
-    tmux_cmd="tmux select-pane -U"
-    sway_cmd="swaymsg focus up"
-    ;;
-right)
-    at_arrow_cmd="tmux display-message -p '#{pane_at_right}'"
-    tmux_cmd="tmux select-pane -R"
-    sway_cmd="swaymsg focus right"
-    ;;
-*)
-    notify-send "[$$ sway-tmux-navigation] argument must be one of \"left | down | up | right\""
-    exit 1
-    ;;
+DIRECTION="$1"
+case "$DIRECTION" in
+    left)  TMUX_EDGE="pane_at_left"   ; TMUX_DIR="L"; KITTY_DIR="left"  ; SWAY_DIR="left"  ;;
+    down)  TMUX_EDGE="pane_at_bottom" ; TMUX_DIR="D"; KITTY_DIR="bottom"; SWAY_DIR="down"  ;;
+    up)    TMUX_EDGE="pane_at_top"    ; TMUX_DIR="U"; KITTY_DIR="top"   ; SWAY_DIR="up"    ;;
+    right) TMUX_EDGE="pane_at_right"  ; TMUX_DIR="R"; KITTY_DIR="right" ; SWAY_DIR="right" ;;
+    *)
+        notify-send "sway-tmux-navigation: invalid direction \"$DIRECTION\""
+        exit 1
+        ;;
 esac
 
-# swaymsg -t get_tree -r | jq '.. | select(.type?) | select(.focused==true) | {name, app_id, id, pid}'
-# app_id=$(swaymsg -t get_tree -r | jq -r '.. | select(.type?) | select(.focused==true) | .app_id')
-read -r app_id pid < <(swaymsg -t get_tree | jq -r '
-    .. | select(.type?) | select(.focused==true) | [.app_id, .pid] | join(" ")
-')
+read -r APP_ID PID < <(swaymsg -t get_tree | jq -r '.. | select(.type? and .focused==true) | "\(.app_id) \(.pid)"')
 
-echo "[$$ sway-tmux-navigation] sway focused app_id: $app_id, pid: $pid, tmux list-panes count: $(tmux list-panes | wc -l)" >>/tmp/xreaker.log
+log "sway focused app_id: $APP_ID, pid: $PID"
 
-if [[ "$app_id" =~ ^(Alacritty|foot|footclient)$ ]] &&      # 当前聚焦窗口是一个终端应用
-    pgrep -P "$pid" | xargs ps -o comm= | grep -q "tmux" && # 这个终端应用中运行了 tmux
-    [[ "$(tmux list-panes | wc -l)" -gt "1" ]]; then        # tmux 打开了多个 panes
-    at_arrow=$(eval "$at_arrow_cmd")
-    echo "[$$ sway-tmux-navigation] at_arrow: $at_arrow" >>/tmp/xreaker.log
-    if [[ "$at_arrow" == "0" ]]; then
-        echo "[$$ sway-tmux-navigation] switch tmux pane" >>/tmp/xreaker.log
-        eval "$tmux_cmd" &>/dev/null
+# 1. 在终端中使用 Tmux
+if [[ "$APP_ID" =~ ^(Alacritty|foot|footclient)$ ]] && pgrep -P "$PID" | xargs ps -o comm= | grep -q "tmux"; then
+    # 获取 tmux 状态：是否在边缘，以及 pane 数量
+    read -r IS_AT_EDGE PANE_COUNT < <(tmux display-message -p "#{${TMUX_EDGE}} #{window_panes}")
+
+    if [[ "$PANE_COUNT" -gt 1 && "$IS_AT_EDGE" == "0" ]]; then
+        log "Switching tmux pane: $DIRECTION"
+        tmux select-pane -"$TMUX_DIR"
         exit $?
     fi
-elif [[ "$app_id" =~ ^(org.mozilla.firefox|google-chrome)$ ]] && # 当前聚焦窗口是一个浏览器应用
-    [[ "$arrow" == "right" ]]; then                              # 键盘输入 $mod+l
-    # 判断浏览器右侧是否有窗口
-    has_right_container=$(swaymsg -t get_tree | jq -r '
-  . as $tree
-  | ($tree | ..|objects|select(.focused==true)) as $c
-  | ($tree | ..|objects|select(.type=="workspace")|select(any(.nodes[]?;.id==$c.id))) as $ws
-  | if ($ws.layout=="splith" and $ws.nodes[-1].id!=$c.id) then "yes" else "no" end
-  // "no"
-')
-    # 如果浏览器右侧没有其他窗口
-    if [[ "$has_right_container" == "no" ]]; then
-        # 模拟按下 Ctrl+L 来聚焦地址栏
-        echo "[$$ sway-tmux-navigation] $app_id focuses the address bar" >>/tmp/xreaker.log
-        if type -p wtype &>/dev/null; then
-            wtype -M ctrl -P l -m ctrl -p l # Ctrl+L
-        else
-            notify-send "[$$ sway-tmux-navigation] command not found: wtype"
+
+# 2. Kitty 原生分屏
+elif [[ "$APP_ID" == "kitty" ]]; then
+    socket="/tmp/mykitty-$PID"
+    [[ ! -S "$socket" ]] && socket=$(ls -t /tmp/mykitty-* 2>/dev/null | head -n1)
+    # 确保 kitty socket 存在
+    if [[ -S $socket ]]; then
+    kitty_cmd="kitty @ --to unix:$socket"
+        # 获取当前 tab 的布局和窗口数量
+        read -r KITTY_LAYOUT WINDOW_COUNT < <($kitty_cmd ls | jq -r '
+            .[].tabs[] | select(.is_focused==true) | "\(.layout) \( .windows | length )"
+        ')
+
+        # 非 stack 布局，多个窗口
+        if [[ "$KITTY_LAYOUT" != "stack" && "$WINDOW_COUNT" -gt 1 ]]; then
+            # 尝试移动，如果成功则退出脚本
+            if $kitty_cmd focus-window --match "neighbor:$KITTY_DIR" 2>/dev/null; then
+                log "Kitty move: $DIRECTION"
+                exit 0
+            fi
         fi
+        log "Kitty at edge (Layout: $KITTY_LAYOUT, Windows: $WINDOW_COUNT), falling back to Sway"
+    fi
+
+# 3. 浏览器聚焦地址栏
+elif [[ "$APP_ID" =~ ^(org.mozilla.firefox|google-chrome)$ && "$DIRECTION" == "right" ]]; then
+    HAS_RIGHT=$(swaymsg -t get_tree | jq -r '
+        . as $tree | (..|select(.focused?==true)) as $f
+        | .. | select(.type?=="workspace" and any(.nodes[]?; .id==$f.id))
+        | if .layout=="splith" and .nodes[-1].id != $f.id then "yes" else "no" end
+    ')
+
+    if [[ "$HAS_RIGHT" == "no" ]]; then
+        log "Focusing browser address bar"
+        # 模拟按下 Ctrl+L 聚焦地址栏
+        wtype -M ctrl -P l -m ctrl -p l || notify-send "sway-tmux-navigation: wtype failed"
         exit $?
     fi
 fi
 
-echo "[$$ sway-tmux-navigation] switch sway container" >>/tmp/xreaker.log
-eval "$sway_cmd" &>/dev/null
-exit $?
+# 4. 默认切换 Sway 容器
+log "Switching sway container: $DIRECTION"
+swaymsg focus "$SWAY_DIR" >/dev/null

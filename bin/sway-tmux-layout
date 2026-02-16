@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 智能切换当前聚焦的 tmux/kitty 布局，否则切 Sway 容器分屏方向。
 
-log() { printf "[%s sway-tmux-layout] %s\n" "$(date +"%F %T.%6N")" "$*" >>/tmp/xreaker.log; }
+log() { printf "[$$ sway-tmux-layout] %s\n" "$*" >>/tmp/xreaker.log; }
+log "$(date +"%F %T.%6N")"
 
 # ---------- tmux ----------
 tmux_switch_layout() {
@@ -24,9 +25,10 @@ kitty_switch_layout() {
     [[ "$1" == "kitty" ]] || return 1 # app_id 检查
 
     local socket
-    socket=$(ls -t /tmp/mykitty-* 2>/dev/null | head -n1)
+    socket="/tmp/mykitty-$PID"
+    [[ ! -S "$socket" ]] && socket=$(ls -t /tmp/mykitty-* 2>/dev/null | head -n1)
     # 确保 kitty socket 存在
-    [[ -n $socket ]] || return 1
+    [[ -S $socket ]] || return 1
     local kitty_cmd="kitty @ --to unix:$socket"
 
     # 打开了多个 windows
