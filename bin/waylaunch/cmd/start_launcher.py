@@ -6,14 +6,15 @@
 
 import argparse
 
-from core.contract import Config, Item, Theme
+from compositor import detector
 from core.launcher import Launcher
+from core.protocols import Config, Item, Theme
 from picker.rofi import RofiPicker
 from providers import create_providers
 from utils.exception_handler import report_exception
 
 
-def start_launcher(args: argparse.Namespace) -> None:
+async def start_launcher(args: argparse.Namespace) -> None:
     # 参数验证
     theme = args.theme
     if not Theme.is_valid(theme):
@@ -30,11 +31,15 @@ def start_launcher(args: argparse.Namespace) -> None:
         show_types=args.show.split(",") if args.show else ["window", "drun"],  # 默认显示类型
     )
 
+    compositor = await detector.detect()
+
     launcher = Launcher[Item](
         config=config,
         picker=RofiPicker(),
         item_providers=create_providers(config),
+        compositor=compositor,
     )
 
     # 启动 launcher
-    launcher.launch()
+    async with launcher:
+        await launcher.launch()

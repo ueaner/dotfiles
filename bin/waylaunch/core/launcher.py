@@ -3,7 +3,10 @@
 提供统一的模板抽象层。
 """
 
-from core.contract import Config, Entry, Item, ItemProvider, Picker
+from typing import Self
+
+from compositor import Compositor
+from core.protocols import Config, Entry, Item, ItemProvider, Picker
 from utils.exception_handler import report_exception
 
 
@@ -13,27 +16,36 @@ class Launcher[T: Item]:
     config: Config
     picker: Picker
     item_providers: list[ItemProvider[T]]
+    compositor: Compositor
 
-    def __init__(self, config: Config, picker: Picker, item_providers: list[ItemProvider[T]]):
+    def __init__(self, config: Config, picker: Picker, item_providers: list[ItemProvider[T]], compositor: Compositor):
         self.config = config
         self.picker = picker
         self.item_providers = item_providers
+        self.compositor = compositor
 
-    def handle_selection(self, selected_item: T, returncode: int = 0) -> None:
+    async def __aenter__(self) -> Self:
+        await self.compositor.start()
+        return self
+
+    async def __aexit__(self, *_) -> None:
+        await self.compositor.stop()
+
+    async def handle_selection(self, selected_item: T, returncode: int = 0) -> None:
         """处理用户选择的条目
 
         子类可以覆盖此方法，扩展选中后要执行的动作
         """
-        selected_item.run(returncode)
+        await selected_item.run(self.compositor, returncode)
 
-    def launch(self) -> None:
+    async def launch(self) -> None:
         """启动 launcher 的主要流程"""
 
         # 1. 存储 (Item, Entry) 的对应关系
         contexts: list[tuple[T, Entry]] = []
 
         for provider in self.item_providers:
-            raw_items = provider.items(self.config)
+            raw_items = await provider.items(self.config, self.compositor)
             contexts.extend([(item, provider.to_entry(item)) for item in raw_items])
 
         if not contexts:
@@ -47,7 +59,7 @@ class Launcher[T: Item]:
         entries = [ctx[1] for ctx in contexts]
 
         # 3. 显示并获取选择结果
-        result = self.picker.show(entries, self.config)
+        result = await self.picker.show(entries, self.config)
 
         if not result:
             return
@@ -61,7 +73,7 @@ class Launcher[T: Item]:
         # 4. 匹配选中项并处理
         for item, entry in contexts:
             if entry.text == selected_text:
-                self.handle_selection(item, returncode)
+                await self.handle_selection(item, returncode)
                 return
 
         # 如果没有找到匹配项，进行错误处理

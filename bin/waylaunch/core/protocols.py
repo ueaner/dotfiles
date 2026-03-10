@@ -1,8 +1,12 @@
 """核心协议"""
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Protocol, runtime_checkable
+
+from compositor import Compositor
 
 
 class Theme(StrEnum):
@@ -13,11 +17,11 @@ class Theme(StrEnum):
     @classmethod
     def is_valid(cls, value: str) -> bool:
         # 检查值是否在枚举的值集合中
-        return value in cls._value2member_map_
+        return value in cls
 
     @classmethod
     def default(cls) -> Theme:
-        return Theme.MENU
+        return cls.MENU
 
 
 @dataclass(frozen=True)
@@ -52,7 +56,7 @@ class Item(Protocol):
         """图标名称"""
         ...
 
-    def run(self, returncode: int = 0) -> None:
+    async def run(self, compositor: Compositor, returncode: int = 0) -> None:
         """执行条目"""
         ...
 
@@ -76,7 +80,7 @@ class Entry:
 class ItemProvider[T: Item](Protocol):
     """条目提供者接口"""
 
-    def items(self, config: Config) -> list[T]: ...
+    async def items(self, config: Config, compositor: Compositor) -> list[T]: ...
 
     def to_entry(self, item: T) -> Entry:
         """将业务对象转换为 Picker 上的 Entry 的默认实现"""
@@ -90,7 +94,7 @@ class ItemProvider[T: Item](Protocol):
 class Picker(Protocol):
     """选择器协议，如 Rofi, dmenu, wofi, fuzzel 等"""
 
-    def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
+    async def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
         """显示选择器并返回用户选择的结果"""
         ...
 

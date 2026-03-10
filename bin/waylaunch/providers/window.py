@@ -1,9 +1,7 @@
 """Launcher Item 的具体实现。"""
 
-import subprocess
-
-from core.contract import Config, Entry, Item, ItemProvider, Theme
-from utils.sway_helper import App, get_running_windows
+from compositor import Compositor, Window
+from core.protocols import Config, Entry, Item, ItemProvider, Theme
 
 # 常用的零宽字符有: "\u200b" "\u200c" "\u200d" "\ufeff"
 
@@ -15,12 +13,12 @@ ALIGN_MAX_LEN = 25
 class WindowItem(Item):
     """窗口条目的具体实现"""
 
-    data: App
+    data: Window
     theme: Theme
     align_len: int
     prefix_len: int
 
-    def __init__(self, data: App, theme: Theme, align_len: int):
+    def __init__(self, data: Window, theme: Theme, align_len: int):
         self.data = data
         self.theme = theme
         self.align_len = align_len
@@ -46,13 +44,13 @@ class WindowItem(Item):
         # 添加零宽字符标记
         return f"{MARKER_WINDOW}{display_name}"
 
-    def run(self, returncode: int = 0) -> None:
-        subprocess.run(["swaymsg", f"[con_id={self.data.con_id}] focus"])
+    async def run(self, compositor: Compositor, returncode: int = 0) -> None:
+        await compositor.focus_window(str(self.data.id))
 
 
 class WindowItemProvider(ItemProvider[Item]):
-    def items(self, config: Config) -> list[Item]:
-        windows = get_running_windows()
+    async def items(self, config: Config, compositor: Compositor) -> list[Item]:
+        windows = await compositor.windows()
         # 对齐 app_id 字段右补全空格或截断，便于在 Rofi 上整齐显示
         max_len = max((len(w.app_id) for w in windows), default=0)
         align_len = min(max_len, ALIGN_MAX_LEN)

@@ -1,6 +1,6 @@
 from typing import Any
 
-from core.contract import Config, Item, ItemProvider
+from core.protocols import Config, Item, ItemProvider
 from providers.drun import AppItemProvider
 from providers.tool import ToolItemProvider
 from providers.window import WindowItemProvider

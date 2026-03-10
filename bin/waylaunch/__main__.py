@@ -3,7 +3,7 @@ import sys
 
 from main import main
 
-DEBUG_LOG = "/tmp/sway-launcher-debug.log"
+DEBUG_LOG = "/tmp/waylaunch-debug.log"
 
 # 日志配置，如果已经有其他地方配置过了，这里只会获取 logger
 logging.basicConfig(

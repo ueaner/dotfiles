@@ -1,9 +1,10 @@
 """Rofi 选择器实现"""
 
+import asyncio
 import math
-import subprocess
+from asyncio.subprocess import PIPE
 
-from core.contract import Config, Entry, Picker, Theme
+from core.protocols import Config, Entry, Picker, Theme
 from utils.exception_handler import report_exception
 
 
@@ -81,7 +82,7 @@ class RofiPicker(Picker):
 
         return "".join(parts) + "\x1f".join(options)
 
-    def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
+    async def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
         """显示 Rofi 并返回用户选择的结果"""
         if not entries:
             return "", 0
@@ -96,7 +97,7 @@ class RofiPicker(Picker):
         input_str = "\n".join(rows)
 
         # 执行命令
-        selected_name, proc_returncode = self.execute_command(rofi_cmd, input_str)
+        selected_name, proc_returncode = await self.execute_command(rofi_cmd, input_str)
 
         return selected_name, proc_returncode
 
@@ -156,14 +157,19 @@ class RofiPicker(Picker):
             case Theme.MENU:
                 return ["-theme", "menu"]
 
-    def execute_command(self, cmd: list[str], input_str: str) -> tuple[str, int]:
-        """执行命令并获取结果"""
-        proc = subprocess.Popen(
-            cmd,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            text=True,
+    async def execute_command(self, cmd: list[str], input_str: str) -> tuple[str, int]:
+        """异步执行命令并获取结果"""
+        # 使用 *cmd 解构列表，以匹配 create_subprocess_exec 的参数要求
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdin=PIPE,
+            stdout=PIPE,
+            stderr=PIPE,  # 同时也捕获 stderr 防止阻塞
         )
-        stdout, _ = proc.communicate(input=input_str)
+
+        stdout, _ = await proc.communicate(input=input_str.encode())
+
+        returncode = proc.returncode if proc.returncode is not None else -1
+
         # 获取用户选择和返回码
-        return stdout.strip(), proc.returncode
+        return stdout.decode().strip(), returncode

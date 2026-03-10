@@ -1,7 +1,9 @@
-# utils/xdg_parser.py
+# utils/xdg_desktop_entry.py
 import logging
 import os
 import shutil
+from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
 
 from .exception_handler import handle_exception
@@ -23,10 +25,58 @@ DESKTOP_FIELDS: set[str] = {
 }
 
 
+@dataclass(slots=True)
+class App:
+    app_id: str
+    name: str
+    icon: str
+    generic: str = ""
+    path: str = ""
+
+
+def get_all_apps(desktop_dirs: Iterable[Path]) -> list[App]:
+    """扫描 desktop_dirs 目录并按规则去重、解析"""
+    # 扫描并去重 .desktop 应用
+    id_to_path: dict[str, Path] = {}
+    for d in desktop_dirs:
+        if not d.is_dir():
+            continue
+
+        for entry in d.iterdir():
+            if not entry.name.endswith(".desktop") or not entry.is_file():
+                continue
+
+            # stem 获取文件名（不含扩展名），作为 App ID
+            app_id = entry.stem
+            if app_id not in id_to_path:
+                id_to_path[app_id] = entry
+
+    apps: list[App] = []
+    current_desktops = get_current_desktops()
+
+    for path in id_to_path.values():
+        parsed = parse_desktop_file(path, current_desktops)
+        if parsed:
+            # 将字典解包或手动映射到 dataclass
+            apps.append(
+                App(
+                    app_id=parsed["app_id"],
+                    name=parsed["name"],
+                    icon=parsed["icon"],
+                    generic=parsed["generic"],
+                    path=parsed["path"],
+                )
+            )
+
+    apps.sort(key=lambda x: x.name.lower())
+
+    return apps
+
+
 def get_current_desktops() -> set[str]:
     """获取当前桌面环境列表，转为大写集合"""
     raw = os.getenv("XDG_CURRENT_DESKTOP", "").upper()
-    # 使用集合推导式：处理可能的冒号分隔、过滤空值、去除空格，并最终转为 set
+    # 处理可能的冒号分隔、过滤空值、去除空格，并最终转为 set
     return {d.strip() for d in raw.split(":") if d.strip()}
 
 

@@ -1,27 +1,31 @@
 [project]
-name = "sway-launcher"
+name = "waylaunch"
 version = "0.1.0"
 description = "Personalized desktop environment (DE) scripts"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = []
+
+# 注册适配器，这样 detector.py 就能自动找到它们
+# [project.entry-points."waylaunch.compositor.adapters"]
+# sway = "compositor.sway:SwayAdapter"
 
 [tool.mypy]
 # ~/.local/share/nvim/mason/bin/mypy .
-python_version = 3.14
+python_version = 3.12
 strict = true
 show_error_codes = true
 pretty = true
 
 [tool.basedpyright]
 # ~/.local/share/nvim/mason/bin/basedpyright
-pythonVersion = "3.14"
+pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportUnusedCallResult = false
 
 [tool.ruff]
 # ~/.local/share/nvim/mason/bin/ruff check
-target-version = "py314"
+target-version = "py312"
 line-length = 120
 exclude = [
     ".git",

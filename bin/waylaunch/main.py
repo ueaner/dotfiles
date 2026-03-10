@@ -2,7 +2,7 @@
 """基于 Rofi 的 Sway 窗口切换、桌面应用与自定义工具启动器。
 
 用法:
-    python ~/bin/sway-launcher [选项]
+    python ~/bin/waylaunch [选项]
 
 参数说明:
     -show: 指定菜单显示内容，可选单个类型，或使用逗号分隔组合多个类型。
@@ -16,13 +16,14 @@
         - launchpad: 全屏启动板模式（适合高密度图标展示）。
 
 示例:
-    $ python ~/bin/sway-launcher -show window                 # 仅显示已打开窗口
-    $ python ~/bin/sway-launcher -show "window,drun"          # 同时显示窗口和应用列表（默认）
-    $ python ~/bin/sway-launcher -show drun -theme launchpad  # 以 Launchpad 样式显示应用列表
-    $ python ~/bin/sway-launcher -show tool -theme panel      # 以面板模式显示工具列表
+    $ python ~/bin/waylaunch -show window                 # 仅显示已打开窗口
+    $ python ~/bin/waylaunch -show "window,drun"          # 同时显示窗口和应用列表（默认）
+    $ python ~/bin/waylaunch -show drun -theme launchpad  # 以 Launchpad 样式显示应用列表
+    $ python ~/bin/waylaunch -show tool -theme panel      # 以面板模式显示工具列表
 """
 
 import argparse
+import asyncio
 import os
 import sys
 from cmd.start_launcher import start_launcher
@@ -67,7 +68,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
     # 执行子命令
-    args.func(args)
+    asyncio.run(args.func(args))
 
 
 if __name__ == "__main__":
