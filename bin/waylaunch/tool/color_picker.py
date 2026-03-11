@@ -1,5 +1,4 @@
 # Color Picker
-import subprocess
 
 from compositor import Compositor
 from core.protocols import Item
@@ -20,4 +19,4 @@ class ColorPicker(Item):
         return "fa-eye-dropper"
 
     async def run(self, compositor: Compositor, returncode: int = 0) -> None:
-        subprocess.run(["grimpicker", "--copy"])
+        await compositor.exec(["grimpicker --copy"])

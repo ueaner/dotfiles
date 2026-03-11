@@ -1,5 +1,4 @@
 # Clipboard
-import subprocess
 
 from compositor import Compositor
 from core.protocols import Item
@@ -18,6 +17,4 @@ class Clipboard(Item):
         return "fa-clipboard"
 
     async def run(self, compositor: Compositor, returncode: int = 0) -> None:
-        subprocess.run(
-            ["rofi", "-show", "clipboard", "-modes", "clipboard:~/.local/bin/cliphist-rofi-img", "-show-icons"]
-        )
+        await compositor.exec(["rofi -show clipboard -modes clipboard:~/.local/bin/cliphist-rofi-img -show-icons"])

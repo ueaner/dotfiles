@@ -7,6 +7,10 @@ from typing import Protocol, runtime_checkable
 class WindowOps(Protocol):
     """窗口操作协议接口定义"""
 
+    async def focus_application(self, app_id: str) -> bool:
+        """聚焦特定应用"""
+        ...
+
     async def focus_window(self, window_id: str) -> bool:
         """聚焦特定窗口"""
         ...

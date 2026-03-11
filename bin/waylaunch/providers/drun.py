@@ -1,5 +1,3 @@
-import asyncio
-from asyncio.subprocess import DEVNULL
 from pathlib import Path
 
 from compositor import Compositor
@@ -30,23 +28,16 @@ class AppItem(Item):
 
     async def run(self, compositor: Compositor, returncode: int = 0) -> None:
         if "flatpak" in self.data.path.lower():
-            exec_cmd = ["flatpak", "run", self.data.app_id]
+            cmd = f"flatpak run {self.data.app_id}"
         else:
-            exec_cmd = ["gtk-launch", self.data.app_id]
+            # cmd = f"gtk-launch {self.data.app_id}"
+            cmd = f"gio launch {self.data.path}"
 
         if returncode == 0:
-            await asyncio.create_subprocess_exec(
-                *exec_cmd,
-                # 脱离终端交互
-                stdout=DEVNULL,
-                stderr=DEVNULL,
-                stdin=DEVNULL,
-                # 让应用在新的会话中运行，不受 Python 退出影响
-                start_new_session=True,
-            )
+            await compositor.exec([cmd])
         elif returncode == 10:  # Shift+Return 逻辑
             target_ws = await compositor.first_empty_workspace()
-            await compositor.exec([" ".join(exec_cmd)], str(target_ws))
+            await compositor.exec([cmd], str(target_ws))
 
 
 class AppItemProvider(ItemProvider[AppItem]):

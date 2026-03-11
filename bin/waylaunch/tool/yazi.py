@@ -1,5 +1,4 @@
 # Yazi File Manager
-import subprocess
 
 from compositor import Compositor
 from core.protocols import Item
@@ -19,11 +18,11 @@ class Yazi(Item):
 
     # swaymsg '[app_id="yazi"] focus' || foot --app-id=yazi -e yazi
     async def run(self, compositor: Compositor, returncode: int = 0) -> None:
-        # 1. 尝试执行聚焦命令
-        # capture_output=True 用于隐藏控制台输出
-        result = subprocess.run(["swaymsg", '[app_id="yazi"] focus'], capture_output=True)
+        await compositor.exec(["swaymsg '[app_id=yazi] focus' || foot --app-id=yazi -e yazi"])
 
-        # 2. 如果返回码不为 0 (表示没找到窗口)，则启动程序
-        if result.returncode != 0:
-            # 使用 Popen 启动后台进程，这样 Python 脚本不会被阻塞
-            subprocess.Popen(["foot", "--app-id=yazi", "-e", "yazi"])
+        # # 1. 尝试聚焦应用
+        # ok = await compositor.focus_application("yazi")
+
+        # # 2. 聚焦失败 (表示应用未启动)，则启动程序
+        # if not ok:
+        #     await compositor.exec(["foot --app-id=yazi -e yazi"])

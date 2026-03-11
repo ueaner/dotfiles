@@ -36,6 +36,9 @@ class NullAdapter(Compositor):
 
     # --- 窗口操作 (Window Management) ---
 
+    async def focus_application(self, app_id: str) -> bool:
+        return True
+
     async def focus_window(self, window_id: str) -> bool:
         return True
 

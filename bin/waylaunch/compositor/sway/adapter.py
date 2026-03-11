@@ -338,6 +338,12 @@ class SwayAdapter(Compositor):
         res: list[CommandResult] = await self.client.send_command(IpcMessageType.RUN_COMMAND, full_cmd)
         return res[0].get("success", False)
 
+    async def focus_application(self, app_id: str) -> bool:
+        """聚焦特定应用"""
+        cmd = f"[app_id={app_id}] focus"
+        res: list[CommandResult] = await self.client.send_command(IpcMessageType.RUN_COMMAND, cmd)
+        return res[0].get("success", False)
+
     async def focus_window(self, window_id: str) -> bool:
         """聚焦特定窗口"""
         cmd = f"[con_id={window_id}] focus"
