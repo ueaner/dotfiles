@@ -82,7 +82,7 @@ class Node(TypedDict, total=False):
     # 基础识别
     id: Required[int]
     name: Required[str]
-    # type: NodeType
+    # _type: NodeType
 
     # 层级与递归
     # nodes: list[SwayNode]

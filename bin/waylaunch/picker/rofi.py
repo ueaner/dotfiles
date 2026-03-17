@@ -4,11 +4,13 @@ import asyncio
 import math
 from asyncio.subprocess import PIPE
 
-from core.protocols import Config, Entry, Picker, Theme
-from utils.exception_handler import report_exception
+from core.logging import logger
+from core.protocols import Config, Entry, Layout, Picker
 
 
-def calculate_window_size(count: int, max_cols: int = 5, max_lines: int = 3) -> tuple[int, int, str, str]:
+def calculate_window_size(
+    count: int, max_cols: int = 5, max_lines: int = 3
+) -> tuple[int, int, str, str]:
     """
     计算 Rofi 布局。每列最多 max_cols 个，最多 max_lines 行。
 
@@ -42,12 +44,12 @@ class RofiPicker(Picker):
         self,
         command: str = "rofi",
         prompt: str = "Launcher",
-        theme: Theme | None = None,
+        layout: Layout | None = None,
         extra_args: list[str] | None = None,
     ):
         self.command = command
         self.prompt = prompt
-        self.theme = theme or Theme.default()
+        self.layout = layout
         self.extra_args = extra_args or []
 
     def is_cancelled(self, returncode: int) -> bool:
@@ -82,10 +84,10 @@ class RofiPicker(Picker):
 
         return "".join(parts) + "\x1f".join(options)
 
-    async def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
+    async def show(self, entries: list[Entry], config: Config) -> tuple[int, str, int]:
         """显示 Rofi 并返回用户选择的结果"""
         if not entries:
-            return "", 0
+            return -1, "", 0
 
         # 将 Entry 列表序列化为 Rofi 识别的字符串列表
         rows = [self._serialize_entry(e) for e in entries]
@@ -97,14 +99,18 @@ class RofiPicker(Picker):
         input_str = "\n".join(rows)
 
         # 执行命令
-        selected_name, proc_returncode = await self.execute_command(rofi_cmd, input_str)
+        output, returncode = await self.execute_command(rofi_cmd, input_str)
+        logger.info(f"rofi output: {output}, returncode: {returncode}")
+        if not output:
+            return -1, "", returncode
 
-        return selected_name, proc_returncode
+        idx, text = output.split(maxsplit=1)
+        return int(idx), text, returncode
 
     def build_command(self, config: Config, rows: list[str]) -> list[str]:
         """构建 Rofi 命令"""
         # 从配置中获取参数
-        theme = config.theme if config.theme else self.theme
+        theme = config.layout if config.layout else self.layout
         prompt = config.prompt if config.prompt else self.prompt
         extra_args = config.extra_args if config.extra_args else self.extra_args
 
@@ -117,6 +123,8 @@ class RofiPicker(Picker):
             "-matching",
             "fuzzy",
             "-markup-rows",  # 支持 Pango Markup
+            "-format",
+            "i s",  # 返回索引和选中条目内容
         ]
 
         # 检查是否需要支持多行显示
@@ -131,31 +139,32 @@ class RofiPicker(Picker):
         # 根据主题添加特定选项
         cmd.extend(self.add_theme_options(theme, rows))
 
+        logger.info(" ".join(cmd))
+
         return cmd
 
-    def add_theme_options(self, theme: Theme, rows: list[str]) -> list[str]:
+    def add_theme_options(self, layout: Layout | None, rows: list[str]) -> list[str]:
         """根据主题添加选项"""
-        if not Theme.is_valid(theme):
-            report_exception(
-                error=Exception(f"Unknown theme '{theme}', falling back to {Theme.default()} (default) theme."),
-                notify=True,
-            )
-            return []
 
-        # 菜单 menu, 面板 panel, 全屏 launchpad
-        match theme:
-            case Theme.PANEL:
+        # 菜单 menu, 面板 board, 全屏 launchpad
+        match layout:
+            case Layout.BOARD:
                 # 计算 Rofi 布局
                 cols, lines, width, _ = calculate_window_size(len(rows))
                 # 设置 window width 确保单个工具的显示不会太宽
-                theme_str = f"listview {{ columns: {cols}; lines: {lines}; }} window {{ width: {width}; }}"
-                return ["-theme", "panel", "-theme-str", theme_str]
+                theme_str = (
+                    f"listview {{ columns: {cols}; lines: {lines}; }} window {{ width: {width}; }}"
+                )
+                return ["-theme", "board", "-theme-str", theme_str]
 
-            case Theme.LAUNCHPAD:
+            case Layout.LAUNCHPAD:
                 return ["-theme", "launchpad"]
 
-            case Theme.MENU:
+            case Layout.MENU:
                 return ["-theme", "menu"]
+
+            case _:
+                return []
 
     async def execute_command(self, cmd: list[str], input_str: str) -> tuple[str, int]:
         """异步执行命令并获取结果"""

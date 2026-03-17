@@ -1,0 +1,14 @@
+[[tool]]
+name = "Clipboard"
+icon = "fa-clipboard"
+run = "rofi -show clipboard -modes clipboard:~/.local/bin/cliphist-rofi-img -show-icons"
+
+[[tool]]
+name = "Color Picker"
+icon = "fa-eye-dropper"
+run = "grimpicker --copy"
+
+[[tool]]
+name = "Yazi"
+icon = "yazi"
+run = "swaymsg '[app_id=yazi] focus' || foot --app-id=yazi -e yazi"

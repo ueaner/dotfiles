@@ -1,14 +1,11 @@
-# utils/xdg_desktop_entry.py
-import logging
 import os
 import shutil
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from .exception_handler import handle_exception
-
-logger = logging.getLogger(__name__)
+from core.exception_handler import handle_exception
+from core.logging import logger
 
 DESKTOP_FIELDS: set[str] = {
     "Name",
@@ -87,8 +84,8 @@ def parse_list_field(field_value: str) -> set[str]:
     return {item.strip() for item in field_value.upper().split(";") if item.strip()}
 
 
-@handle_exception({})
-def parse_desktop_entry(path: Path) -> dict[str, str]:
+@handle_exception
+def parse_desktop_entry(path: Path) -> dict[str, str] | None:
     """解析 .desktop 文件的 Desktop Entry 部分"""
     entry: dict[str, str] = {}
     with open(path, encoding="utf-8") as f:
@@ -114,7 +111,7 @@ def parse_desktop_entry(path: Path) -> dict[str, str]:
 
 def parse_desktop_file(path: Path, current_desktops: set[str]) -> dict[str, str] | None:
     """解析单个 .desktop 文件"""
-    entry: dict[str, str] = parse_desktop_entry(path)
+    entry = parse_desktop_entry(path)
     if not entry:
         logger.warning(f"Parse desktop file ({path}) failed")
         return None
@@ -124,12 +121,10 @@ def parse_desktop_file(path: Path, current_desktops: set[str]) -> dict[str, str]
         return None
 
     # 2. XDG 桌面过滤
-    if only_in := entry.get("OnlyShowIn"):
-        if not (parse_list_field(only_in) & current_desktops):
-            return None
-    if not_in := entry.get("NotShowIn"):
-        if parse_list_field(not_in) & current_desktops:
-            return None
+    if (only_in := entry.get("OnlyShowIn")) and not (parse_list_field(only_in) & current_desktops):
+        return None
+    if (not_in := entry.get("NotShowIn")) and (parse_list_field(not_in) & current_desktops):
+        return None
 
     # 3. 检查 TryExec (如果 TryExec 指定的程序不可执行，则忽略)
     if (try_exec := entry.get("TryExec")) and not shutil.which(try_exec):

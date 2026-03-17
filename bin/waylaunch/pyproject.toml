@@ -6,6 +6,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
 
+# [dependency-groups]
+# test = ["pytest"]
+# dev = [
+#     { include-group = "test" }, # 开发环境自动包含测试工具
+#     "ipython"
+# ]
+
 # 注册适配器，这样 detector.py 就能自动找到它们
 # [project.entry-points."waylaunch.compositor.adapters"]
 # sway = "compositor.sway:SwayAdapter"
@@ -17,7 +24,7 @@ strict = true
 show_error_codes = true
 pretty = true
 
-[tool.basedpyright]
+[tool.pyright]
 # ~/.local/share/nvim/mason/bin/basedpyright
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
@@ -26,7 +33,7 @@ reportUnusedCallResult = false
 [tool.ruff]
 # ~/.local/share/nvim/mason/bin/ruff check
 target-version = "py312"
-line-length = 120
+line-length = 100
 exclude = [
     ".git",
     ".venv",
@@ -38,11 +45,35 @@ exclude = [
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    "UP",  # pyupgrade
+    # Style
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    # "TID",  # flake8-tidy-imports
+    # Quality
+    "C90",  # mccabe
+    "B",    # flake8-bugbear
+    "PIE",  # flake8-pie
+    "RUF",  # ruff-specific rules
+    "C4",   # flake8-comprehensions
+    # Performance
+    "PERF", # perflint
+    "FLY",  # flynt
+    # Security
+    "S",    # flake8-bandit
 ]
+ignore = ["E501"]  # 行长度由 formatter 处理
+allowed-confusables = ["，", "（", "）", "：", "；", "？", "！"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+# [tool.ruff.lint.flake8-tidy-imports]
+# ban-relative-imports = "all"

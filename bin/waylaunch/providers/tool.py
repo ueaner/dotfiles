@@ -1,35 +1,59 @@
+#!/usr/bin/env python3
+import asyncio
+import tomllib
+from pathlib import Path
+
 from compositor import Compositor
-from core.protocols import Config, Item, ItemProvider
-from tool.clipboard import Clipboard
-from tool.color_picker import ColorPicker
-from tool.yazi import Yazi
+from core.protocols import Config, Item, ItemProvider, Layout
+
+TOOLS_FILE = Path.home() / ".config/waylaunch/tools.toml"
+
+
+async def exec(cmd: str) -> None:
+    """启动脱离进程，立即返回不等待。"""
+    if not cmd:
+        return
+
+    await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.DEVNULL,
+        stdin=asyncio.subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+
+class Tool:
+    def __init__(self, name: str, icon: str, cmd: str) -> None:
+        self.name = name
+        self.icon = icon
+        self.cmd = cmd
+
+    async def run(self, compositor: Compositor, returncode: int = 0) -> None:
+        await compositor.exec([self.cmd])
+        # await exec(self.cmd)
 
 
 def create_tools() -> list[Item]:
     """自定义工具列表"""
-    # 方式1：工具类有改动时（如换目录、改名称等），无法实时捕获到明确的问题
-    # tools: list[Tool] = load_instances(TOOLS_REGISTRY)
+    with open(TOOLS_FILE, "rb") as f:
+        data = tomllib.load(f)
 
-    # 方式2：可在配置参数中，通过 key 指定要加载的工具
-    #        实现类似: python ~/bin/waylaunch -run color_picker 的效果
-    # # fmt: off
-    # tool_classes: dict[str, type[Tool]] = {
-    #     "color_picker": ColorPicker,  # 取色器
-    #     "clipboard":    Clipboard,    # 剪切板
-    #     "yazi":         Yazi,         # 文件管理
-    # }
-    # # fmt: on
-    # tools = [cls() for cls in tool_classes.values()]
-
-    # 方式3：
     tools: list[Item] = [
-        ColorPicker(),  # 取色器
-        Clipboard(),  # 剪切板
-        Yazi(),  # 文件管理
+        Tool(
+            name=t.get("name", t.get("icon")),
+            icon=t.get("icon", ""),
+            cmd=t.get("run", ""),
+        )
+        for t in data.get("tool", [])
+        if t.get("name") or t.get("icon")
     ]
+
     return tools
 
 
 class ToolItemProvider(ItemProvider[Item]):
+    layout = Layout.BOARD  # pyright: ignore
+
     async def items(self, config: Config, compositor: Compositor) -> list[Item]:
         return create_tools()

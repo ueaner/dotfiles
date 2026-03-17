@@ -8,25 +8,24 @@ import argparse
 
 from compositor import detector
 from core.launcher import Launcher
-from core.protocols import Config, Item, Theme
+from core.protocols import Config, Item, Layout
 from picker.rofi import RofiPicker
 from providers import create_providers
-from utils.exception_handler import report_exception
 
 
 async def start_launcher(args: argparse.Namespace) -> None:
-    # 参数验证
-    theme = args.theme
-    if not Theme.is_valid(theme):
-        report_exception(
-            error=Exception(f"Unknown theme '{theme}', falling back to {Theme.default()} (default) theme."),
-            notify=True,
-        )
-        theme = Theme.default()
+    layout = Layout(args.layout) if Layout.is_valid(args.layout) else None
+    show_types: list[str] = args.show.split(",") if args.show else ["window", "drun"]
+
+    providers = create_providers(show_types)
+
+    if not layout:
+        layouts = {p.layout for p in providers}
+        layout = layouts.pop() if len(layouts) == 1 else Layout.default()
 
     config = Config(
         prompt="Launcher",
-        theme=theme,
+        layout=layout,
         extra_args=["-kb-accept-alt", "", "-kb-custom-1", "Shift+Return"],
         show_types=args.show.split(",") if args.show else ["window", "drun"],  # 默认显示类型
     )
@@ -36,7 +35,7 @@ async def start_launcher(args: argparse.Namespace) -> None:
     launcher = Launcher[Item](
         config=config,
         picker=RofiPicker(),
-        item_providers=create_providers(config),
+        item_providers=providers,
         compositor=compositor,
     )
 

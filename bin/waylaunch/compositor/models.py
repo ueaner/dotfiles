@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from enum import IntFlag, auto
 
@@ -101,5 +99,5 @@ class Workspace:
     name: str
     state: WorkspaceState = WorkspaceState.NONE
     num: int = -1  # 数字编号（如果有）
-    window_ids: list[str] = field(default_factory=list)
+    window_ids: list[str] = field(default_factory=list[str])
     output: str = ""  # 所在显示器

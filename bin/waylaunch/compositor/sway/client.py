@@ -23,6 +23,7 @@ from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
 from enum import IntEnum
 from pathlib import Path
+from types import TracebackType
 from typing import Any, NotRequired, Self, TypedDict, final
 
 # ============================================================================
@@ -180,7 +181,7 @@ class SwayClient:
     负责维护底层的 Unix Domain Socket 连接、多路复用命令/响应、以及并行分发事件。
     """
 
-    __slots__ = (
+    __slots__ = (  # noqa: RUF023
         "_path",  # Socket 路径
         "_reader",  # 异步读取流
         "_writer",  # 异步写入流
@@ -231,7 +232,12 @@ class SwayClient:
         await self.start()
         return self
 
-    async def __aexit__(self, *_) -> None:
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         await self.stop()
 
     async def start(self) -> None:
@@ -376,7 +382,7 @@ class SwayClient:
                 self._pending.remove(fut)
             raise
 
-    async def get_event(self) -> dict[str, Any]:
+    async def get_event(self) -> Any:
         """直接从内部队列获取下一个事件（若不使用 @on 装饰器，可使用此方法进行同步式消费）"""
         return (await self._events.get()).decode()
 
@@ -416,7 +422,7 @@ class SwayClient:
                 self._conn_ready.clear()
                 if self._is_running:
                     # 指数退避算法并添加抖动，防止重连风暴
-                    sleep_time = backoff + random.uniform(0, 0.5)
+                    sleep_time = backoff + random.uniform(0, 0.5)  # noqa: S311
                     logger.warning(f"IPC Link broken ({e}). Reconnecting in {sleep_time:.2f}s...")
                     await self._cleanup()
                     await asyncio.sleep(sleep_time)
@@ -481,12 +487,11 @@ class SwayClient:
         while self._is_running:
             try:
                 msg = await self._events.get()
-                if name := msg.event_name:
-                    if handlers := self._handlers.get(name):
-                        # 仅解码一次，分发给所有注册者
-                        data = msg.decode()
-                        for handler in handlers:
-                            self._start_handler_task(handler, data)
+                if (name := msg.event_name) and (handlers := self._handlers.get(name)):
+                    # 仅解码一次，分发给所有注册者
+                    data = msg.decode()
+                    for handler in handlers:
+                        self._start_handler_task(handler, data)
                 self._events.task_done()
             except asyncio.CancelledError:
                 break
@@ -521,8 +526,8 @@ class SwayClient:
                 return p.encode()
             case bytes():
                 return p
-            case _:  # type: ignore
-                raise TypeError(f"Invalid payload type: {type(p)}")
+
+        raise TypeError(f"Invalid payload type: {type(p)}")
 
     @staticmethod
     def _resolve_path(p: str | Path | None) -> Path:
@@ -533,7 +538,9 @@ class SwayClient:
             return Path(p)
         if s := os.environ.get("SWAYSOCK"):
             return Path(s)
-        if x := os.environ.get("XDG_RUNTIME_DIR"):
+        if x := os.environ.get("XDG_RUNTIME_DIR"):  # noqa: SIM102
             if sock := next(Path(x).glob("sway-ipc.*.sock"), None):
                 return sock
-        raise ConnectionError("Could not locate Sway IPC socket automatically. Are you running Sway?")
+        raise ConnectionError(
+            "Could not locate Sway IPC socket automatically. Are you running Sway?"
+        )

@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from compositor import Compositor
-from core.protocols import Config, Entry, Item, ItemProvider
-from utils.xdg_desktop_entry import App, get_all_apps
+from core.protocols import Config, Entry, Item, ItemProvider, Layout
+from providers.xdg_desktop_entry import App, get_all_apps
 
 # 高优先级目录在前
 DESKTOP_DIRS = [
@@ -20,9 +20,11 @@ class AppItem(Item):
     def __init__(self, data: App):
         self.data = data
 
+    @property
     def icon(self) -> str:
         return self.data.icon
 
+    @property
     def name(self) -> str:
         return self.data.name
 
@@ -41,6 +43,8 @@ class AppItem(Item):
 
 
 class AppItemProvider(ItemProvider[AppItem]):
+    layout = Layout.LAUNCHPAD  # pyright: ignore
+
     async def items(self, config: Config, compositor: Compositor) -> list[AppItem]:
         apps = get_all_apps(DESKTOP_DIRS)
         return [AppItem(app) for app in apps]
@@ -48,8 +52,8 @@ class AppItemProvider(ItemProvider[AppItem]):
     def to_entry(self, item: AppItem) -> Entry:
         """将 AppItem 转换为结构化的 Entry"""
         return Entry(
-            text=item.name(),
-            icon=item.icon(),
+            text=item.name,
+            icon=item.icon,
             # 传递隐藏的搜索关键词
             meta=item.data.generic if item.data.generic else "",
         )

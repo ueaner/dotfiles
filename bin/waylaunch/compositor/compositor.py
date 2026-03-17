@@ -1,10 +1,7 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
 from compositor.models import Window, Workspace
-from compositor.ops import WindowOps, WorkspaceOps
 
 
 @dataclass(frozen=True, slots=True)
@@ -19,18 +16,18 @@ class DiscoveryMeta:
     """
 
     desktop_names: list[str]
-    proc_names: list[str] = field(default_factory=list)
-    env_vars: list[str] = field(default_factory=list)
+    proc_names: list[str] = field(default_factory=list[str])
+    env_vars: list[str] = field(default_factory=list[str])
 
 
 @runtime_checkable
-class Compositor(WindowOps, WorkspaceOps, Protocol):
+class Compositor(Protocol):
     """Compositor 协议接口定义"""
 
     async def start(self) -> None: ...
     async def stop(self) -> None: ...
 
-    # --- 状态查询 ---
+    # 状态查询 (Queries)
 
     @classmethod
     def metadata(cls) -> DiscoveryMeta:
@@ -57,11 +54,26 @@ class Compositor(WindowOps, WorkspaceOps, Protocol):
         """获取首个空闲工作区编号 (num)"""
         ...
 
-    # --- 执行命令 ---
+    # 命令操作 (Actions)
 
     async def exec(self, command: list[str], workspace: str = "") -> bool:
         """
         执行命令。
-        当工作区参数不为空时，在指定工作区执行命令。
+
+        Args:
+            command: 命令及其参数列表
+            workspace: 可选，指定执行的工作区
         """
+        ...
+
+    async def focus_application(self, app_id: str) -> bool:
+        """聚焦特定应用"""
+        ...
+
+    async def focus_window(self, window_id: str) -> bool:
+        """聚焦特定窗口"""
+        ...
+
+    async def focus_workspace(self, workspace: str) -> bool:
+        """切换到指定工作区"""
         ...

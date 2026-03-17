@@ -9,10 +9,10 @@ from typing import Protocol, runtime_checkable
 from compositor import Compositor
 
 
-class Theme(StrEnum):
-    MENU = "menu"
-    PANEL = "panel"
-    LAUNCHPAD = "launchpad"
+class Layout(StrEnum):
+    MENU = "menu"  # 浮动菜单
+    BOARD = "board"  # 浮动网格
+    LAUNCHPAD = "launchpad"  # 全屏网格
 
     @classmethod
     def is_valid(cls, value: str) -> bool:
@@ -20,7 +20,7 @@ class Theme(StrEnum):
         return value in cls
 
     @classmethod
-    def default(cls) -> Theme:
+    def default(cls) -> Layout:
         return cls.MENU
 
 
@@ -30,17 +30,17 @@ class Config:
 
     Args:
         prompt: 提示文字（可选，默认为 "Launcher"）
-        theme: 主题配置（可选，默认为 "menu"）
+        layout: 选择器布局（可选，默认为 "menu"）
         extra_args: 额外参数列表（可选，默认为空列表）
         show_types: 显示类型（可选，默认为 ["window", "drun"]）
     """
 
     # For Picker
     prompt: str = "Launcher"
-    theme: Theme = Theme.default()
-    extra_args: list[str] = field(default_factory=list)
+    layout: Layout | None = None
+    extra_args: list[str] = field(default_factory=list[str])
     # For Items
-    show_types: list[str] = field(default_factory=list)
+    show_types: list[str] = field(default_factory=list[str])
     # show_types: list[str] = field(default_factory=lambda: ["window", "drun"])
 
 
@@ -48,10 +48,12 @@ class Config:
 class Item(Protocol):
     """通用条目协议，所有在 launcher 中显示的条目应遵循此协议"""
 
+    @property
     def name(self) -> str:
         """显示名称"""
         ...
 
+    @property
     def icon(self) -> str:
         """图标名称"""
         ...
@@ -80,13 +82,18 @@ class Entry:
 class ItemProvider[T: Item](Protocol):
     """条目提供者接口"""
 
+    @property
+    def layout(self) -> Layout:
+        """布局"""
+        return Layout.MENU
+
     async def items(self, config: Config, compositor: Compositor) -> list[T]: ...
 
     def to_entry(self, item: T) -> Entry:
         """将业务对象转换为 Picker 上的 Entry 的默认实现"""
         return Entry(
-            text=item.name(),
-            icon=item.icon(),
+            text=item.name,
+            icon=item.icon,
         )
 
 
@@ -94,8 +101,19 @@ class ItemProvider[T: Item](Protocol):
 class Picker(Protocol):
     """选择器协议，如 Rofi, dmenu, wofi, fuzzel 等"""
 
-    async def show(self, entries: list[Entry], config: Config) -> tuple[str, int]:
-        """显示选择器并返回用户选择的结果"""
+    async def show(self, entries: list[Entry], config: Config) -> tuple[int, str, int]:
+        """显示选择器并返回用户选择的结果。
+
+        Args:
+            entries: 待展示的条目列表。
+            config: 配置参数。
+
+        Returns:
+            一个元组，包含：
+                - 选中条目的索引（从 0 开始；若未获取到或不支持获取则为 -1）。
+                - 选中条目的文本内容。
+                - 进程返回码（用于判断用户是正常选择、按下 Esc 还是其他异常退出）。
+        """
         ...
 
     def is_cancelled(self, returncode: int) -> bool:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""基于 Rofi 的 Sway 窗口切换、桌面应用与自定义工具启动器。
+"""基于 Wayland 的窗口切换、桌面应用与自定义工具启动器。
 
 用法:
     python ~/bin/waylaunch [选项]
@@ -10,16 +10,16 @@
         drun   桌面应用
         tool   自定义工具
         默认为 "window,drun" 即展示已打开窗口和桌面应用列表。
-    -theme: 指定显示的布局主题。
-        - menu: 标准的列表菜单展示（默认）。
-        - panel: 面板模式。
-        - launchpad: 全屏启动板模式（适合高密度图标展示）。
+    -layout: 指定选择器显示的布局主题。
+        - menu: 标准的列表菜单展示 (默认)。
+        - board: 面板模式。
+        - launchpad: 全屏启动板模式 (适合高密度图标展示)。
 
 示例:
     $ python ~/bin/waylaunch -show window                 # 仅显示已打开窗口
-    $ python ~/bin/waylaunch -show "window,drun"          # 同时显示窗口和应用列表（默认）
-    $ python ~/bin/waylaunch -show drun -theme launchpad  # 以 Launchpad 样式显示应用列表
-    $ python ~/bin/waylaunch -show tool -theme panel      # 以面板模式显示工具列表
+    $ python ~/bin/waylaunch -show "window,drun"          # 同时显示窗口和应用列表 (默认)
+    $ python ~/bin/waylaunch -show drun -layout launchpad  # 以 Launchpad 样式显示应用列表
+    $ python ~/bin/waylaunch -show tool -layout board      # 以面板模式显示工具列表
 """
 
 import argparse
@@ -28,14 +28,15 @@ import os
 import sys
 from cmd.start_launcher import start_launcher
 
+from core.logging import setup_logging
+
 PROG = os.path.basename(sys.argv[0])
 
 
 def build_parser() -> argparse.ArgumentParser:
-    # 全局解析器
     root = argparse.ArgumentParser(
         prog=PROG,
-        description="Sway Launcher",
+        description="Waylaunch",
         formatter_class=argparse.RawTextHelpFormatter,
     )
 
@@ -46,28 +47,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Show types: window, drun, tool, window,drun,tool, or window,drun",
     )
     root.add_argument(
-        "-theme",
-        dest="theme",
-        default="menu",
-        help="Layout theme: menu, panel or launchpad",
+        "-layout",
+        dest="layout",
+        # default="menu",
+        help="Layout theme: menu, board or launchpad",
     )
+
     root.set_defaults(func=start_launcher)
-
-    # # 子命令
-    # sub = root.add_subparsers(dest="command", required=True, metavar="command", help="Subcommand Help")
-
-    # p = sub.add_parser("tool", help="Tool Launcher")
-    # p.add_argument("-theme", dest="theme", default="menu", help="Layout theme: menu, panel or launchpad")
-    # p.set_defaults(func=cmd_tool)
 
     return root
 
 
-# ---------- main ----------
 def main(argv: list[str] | None = None) -> None:
+    setup_logging()
+
     parser = build_parser()
     args = parser.parse_args(argv)
-    # 执行子命令
     asyncio.run(args.func(args))
 
 
