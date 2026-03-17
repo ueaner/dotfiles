@@ -5,9 +5,9 @@
 
 from types import TracebackType
 from typing import Self
-from venv import logger
 
 from compositor import Compositor
+from core.logging import logger
 from core.protocols import Config, Entry, Item, ItemProvider, Picker
 
 
