@@ -1,8 +1,11 @@
 from pathlib import Path
 
-from compositor import Compositor
-from core.protocols import Config, Entry, Item, ItemProvider, Layout
-from providers.xdg_desktop_entry import App, get_all_apps
+from waylaunch.compositor import Compositor
+from waylaunch.core.config import Config
+from waylaunch.core.protocols import Entry, Item, ItemProvider
+from waylaunch.core.registry import registry
+
+from .xdg_desktop_entry import App, get_all_apps
 
 # 高优先级目录在前
 DESKTOP_DIRS = [
@@ -37,14 +40,13 @@ class AppItem(Item):
 
         if returncode == 0:
             await compositor.exec([cmd])
-        elif returncode == 10:  # Shift+Return 逻辑
+        elif returncode == 10:
             target_ws = await compositor.first_empty_workspace()
             await compositor.exec([cmd], str(target_ws))
 
 
+@registry.register("drun")
 class AppItemProvider(ItemProvider[AppItem]):
-    layout = Layout.LAUNCHPAD  # pyright: ignore
-
     async def items(self, config: Config, compositor: Compositor) -> list[AppItem]:
         apps = get_all_apps(DESKTOP_DIRS)
         return [AppItem(app) for app in apps]
@@ -52,7 +54,7 @@ class AppItemProvider(ItemProvider[AppItem]):
     def to_entry(self, item: AppItem) -> Entry:
         """将 AppItem 转换为结构化的 Entry"""
         return Entry(
-            text=item.name,
+            title=item.name,
             icon=item.icon,
             # 传递隐藏的搜索关键词
             meta=item.data.generic if item.data.generic else "",

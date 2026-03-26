@@ -1,5 +1,5 @@
-from compositor.compositor import Compositor, DiscoveryMeta
-from compositor.models import Window, Workspace
+from waylaunch.compositor.compositor import Compositor
+from waylaunch.compositor.models import DiscoveryMeta, Window, Workspace
 
 
 class NullAdapter(Compositor):

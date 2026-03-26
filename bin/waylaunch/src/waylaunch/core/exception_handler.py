@@ -11,7 +11,7 @@ import warnings
 from collections.abc import Callable
 from typing import overload
 
-from core.logging import logger
+from waylaunch.core.logger import logger
 
 type Factory[T] = Callable[[], T]
 

@@ -4,7 +4,25 @@ version = "0.1.0"
 description = "Personalized desktop environment (DE) scripts"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pydantic>=2.12.5",
+]
+
+[project.scripts]
+# 注册命令行快捷命令：
+# 运行：uv run waylaunch
+# 安装：uv tool install -e .
+waylaunch = "waylaunch.cli:main"
+
+[build-system]
+# 构建后端，uv 会自动在后台安装它们，无需手动干预
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# 核心配置：明确告诉构建后端源码在 src 目录下
+packages = ["src/waylaunch"]
+
 
 # [dependency-groups]
 # test = ["pytest"]
@@ -23,6 +41,7 @@ python_version = 3.12
 strict = true
 show_error_codes = true
 pretty = true
+plugins = ["pydantic.mypy"]
 
 [tool.pyright]
 # ~/.local/share/nvim/mason/bin/basedpyright
@@ -74,6 +93,11 @@ convention = "google"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+]
 
 # [tool.ruff.lint.flake8-tidy-imports]
 # ban-relative-imports = "all"

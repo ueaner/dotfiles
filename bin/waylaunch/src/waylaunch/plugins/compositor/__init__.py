@@ -1,5 +1,5 @@
 """Compositor abstraction layer for Wayland compositors."""
 
-from .adapter import SwayAdapter
+from .sway.adapter import SwayAdapter
 
 __all__ = ["SwayAdapter"]

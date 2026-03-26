@@ -2,6 +2,22 @@ from dataclasses import dataclass, field
 from enum import IntFlag, auto
 
 
+@dataclass(frozen=True, slots=True)
+class DiscoveryMeta:
+    """
+    Wayland 合成器探测元数据。
+
+    Attributes:
+        desktop_names: 匹配 XDG_CURRENT_DESKTOP 环境变量的字符串列表 (不区分大小写)。
+        proc_names: 该合成器主进程的二进制文件名称列表（用于进程表快照匹配）。
+        env_vars: 该合成器特有的环境变量名列表（如 'SWAYSOCK'）。
+    """
+
+    desktop_names: list[str]
+    proc_names: list[str] = field(default_factory=list[str])
+    env_vars: list[str] = field(default_factory=list[str])
+
+
 class WindowState(IntFlag):
     """窗口状态标志"""
 

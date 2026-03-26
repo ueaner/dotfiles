@@ -1,6 +1,6 @@
 import sys
 
-from main import main
+from waylaunch.cli import main
 
 if __name__ == "__main__":
     try:

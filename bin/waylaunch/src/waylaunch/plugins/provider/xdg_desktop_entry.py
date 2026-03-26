@@ -4,8 +4,8 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from core.exception_handler import handle_exception
-from core.logging import logger
+from waylaunch.core.exception_handler import handle_exception
+from waylaunch.core.logger import logger
 
 DESKTOP_FIELDS: set[str] = {
     "Name",

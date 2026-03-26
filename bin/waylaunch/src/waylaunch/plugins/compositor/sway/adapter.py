@@ -2,10 +2,17 @@ import asyncio
 from types import TracebackType
 from typing import Self
 
-from compositor.compositor import Compositor, DiscoveryMeta
-from compositor.models import Window, WindowState, Workspace, WorkspaceState
-from compositor.sway.client import CommandResult, IpcMessageType, SwayClient
+from waylaunch.compositor import (
+    Compositor,
+    DiscoveryMeta,
+    Window,
+    WindowState,
+    Workspace,
+    WorkspaceState,
+)
+from waylaunch.core.registry import registry
 
+from .client import CommandResult, IpcMessageType, SwayClient
 from .types import (
     ContainerNode,
     FullscreenMode,
@@ -23,6 +30,7 @@ from .types import (
 )
 
 
+@registry.register("sway")
 class SwayAdapter(Compositor):
     """Adapter for Sway window manager.
 

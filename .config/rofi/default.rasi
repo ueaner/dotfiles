@@ -25,6 +25,10 @@ configuration {
     kb-row-down: "Down";
     kb-element-next: "Tab,Control+n";
     kb-element-prev: "Shift+Tab,Control+p";
+
+    /* kb-accept-alt: Shift+Return */
+    /* 1. rofi -show run: Shift+Return 打开终端运行选中的命令 */
+    /* 2. rofi -dmenu -multi-select: Shift+Return 选中/取消选中当前项 */
 }
 
 //

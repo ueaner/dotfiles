@@ -6,9 +6,10 @@
 from types import TracebackType
 from typing import Self
 
-from compositor import Compositor
-from core.logging import logger
-from core.protocols import Config, Entry, Item, ItemProvider, Picker
+from waylaunch.compositor import Compositor
+from waylaunch.core.config import Config
+from waylaunch.core.logger import logger
+from waylaunch.core.protocols import Entry, Item, ItemProvider, Picker
 
 
 class Launcher[T: Item]:
@@ -61,7 +62,9 @@ class Launcher[T: Item]:
             contexts.extend([(item, provider.to_entry(item)) for item in raw_items])
 
         if not contexts:
-            logger.error(f"The items data is empty. (-show {','.join(self.config.show_types)})")
+            logger.error(
+                f"The items data is empty. (--provider {','.join(self.config.provider.plugins)})"
+            )
             return
 
         # 2. 提取用于给 Picker 显示的 Entry 列表
@@ -73,22 +76,23 @@ class Launcher[T: Item]:
         if not result:
             return
 
-        idx, selected_text, returncode = result
+        selected_idx, selected_text, returncode = result
 
         # 用户是否取消
         if self.picker.is_cancelled(returncode):
             return
 
         # 4. 匹配选中项并处理（优先匹配索引，然后匹配文本）
-        if 0 <= idx < len(contexts):
-            item, entry = contexts[idx]
+        if 0 <= selected_idx < len(contexts):
+            item, entry = contexts[selected_idx]
             await self.handle_selection(item, returncode)
             return
 
-        for item, entry in contexts:
-            if entry.text == selected_text:
-                await self.handle_selection(item, returncode)
-                return
+        if not selected_text:
+            for item, entry in contexts:
+                if selected_text in (entry.title, f"{entry.title}{entry.subtitle}"):
+                    await self.handle_selection(item, returncode)
+                    return
 
         # 如果没有找到匹配项，进行错误处理
-        logger.error(f"No match item: {selected_text}")
+        logger.error(f"No match for index ({selected_idx}) and text ({selected_text})")
