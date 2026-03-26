@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from waylaunch.compositor import Compositor
 from waylaunch.core.config import Config
+from waylaunch.core.logger import logger
 from waylaunch.core.protocols import Entry, Item, ItemProvider
 from waylaunch.core.registry import registry
 
@@ -41,8 +42,8 @@ class ToolConfig(BaseModel):
             with path.open("rb") as f:
                 data = tomllib.load(f)
             return cls.model_validate(data)
-        except (tomllib.TOMLDecodeError, Exception) as e:
-            print(f"Error loading config: {e}")
+        except (tomllib.TOMLDecodeError, Exception):
+            logger.exception(f"Error loading config file: {path}")
             return cls()
 
 

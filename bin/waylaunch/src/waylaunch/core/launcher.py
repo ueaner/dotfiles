@@ -90,7 +90,11 @@ class Launcher[T: Item]:
 
         if not selected_text:
             for item, entry in contexts:
-                if selected_text in (entry.title, f"{entry.title}{entry.subtitle}"):
+                texts = {entry.title}
+                if entry.subtitle:
+                    texts.add(f"{entry.title} {entry.subtitle}")
+
+                if selected_text in texts:
                     await self.handle_selection(item, returncode)
                     return
 
