@@ -247,7 +247,8 @@ class SwayAdapter(Compositor):
                 """递归遍历树节点"""
                 node_id = str(node.get("id"))
 
-                if is_container(node):
+                # container 类型下 name = null 时，是 container 嵌套的情况
+                if is_container(node) and node.get("name"):
                     self._update_window_cache(node, node_id)
                     win_ids.add(node_id)
 
@@ -422,4 +423,4 @@ class SwayAdapter(Compositor):
     @staticmethod
     def _clean_name(raw_name: str) -> str:
         """清洗窗口名称：移除 BOM 和特殊前缀"""
-        return raw_name.lstrip("\ufeff").removeprefix(" - ")
+        return raw_name.lstrip("\ufeff").removeprefix(" - ") if raw_name else raw_name

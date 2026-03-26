@@ -161,7 +161,7 @@ class RofiPicker(Picker):
         cmd += self._get_keybinding_args(config)
 
         # 自动检测是否需要多行支持 (如果标题包含换行符)
-        if any(ROFI_NULL in r.partition(ROFI_NULL)[0] for r in rows):
+        if any("\r" in r.partition(ROFI_NULL)[0] for r in rows):
             cmd += ["-eh", "2"]
 
         # 添加主题相关参数
