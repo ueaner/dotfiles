@@ -60,3 +60,25 @@ packages:
         src: opt/socket_vmnet/bin/socket_vmnet
       - name: socket_vmnet_client
         src: opt/socket_vmnet/bin/socket_vmnet_client
+
+  # psql: sudo dnf install postgresql
+  - type: github_release
+    repo_owner: riii111
+    repo_name: sabiql
+    description: A fast PostgreSQL TUI written in Rust — driver-less, vim-first, with ER diagrams. No database drivers, no setup, just psql
+    asset: sabiql-{{.Arch}}-{{.OS}}.{{.Format}}
+    format: tar.gz
+    windows_arm_emulation: true
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+      darwin: apple-darwin
+      linux: unknown-linux-gnu
+      windows: pc-windows-msvc
+    checksum:
+      type: github_release
+      asset: "{{.Asset}}.sha256"
+      algorithm: sha256

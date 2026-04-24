@@ -9,4 +9,4 @@ registries:
     type: local
     path: registry/network.yaml
 packages: # aqua install -a
-  - name: oven-sh/bun@bun-v1.3.6
+  - name: oven-sh/bun@bun-v1.3.13

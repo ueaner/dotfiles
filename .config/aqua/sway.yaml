@@ -11,3 +11,5 @@ registries:
 packages: # aqua install -a
   - name: xremap/xremap/sway@v0.14.9
     registry: local
+  - name: Satty-org/Satty@v0.20.1
+    registry: local
