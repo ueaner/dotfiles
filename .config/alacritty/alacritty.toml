@@ -146,6 +146,7 @@ bindings = [
     { key = "7",           mods = "Super",         chars = "\u001Bs7"          }, # Window: 7
     { key = "8",           mods = "Super",         chars = "\u001Bs8"          }, # Window: 8
     { key = "9",           mods = "Super",         chars = "\u001Bs9"          }, # Window: Rightmost
+    { key = "Return",      mods = "Shift",         chars = "\u001B\r"          }, # for Claude Code
     # <<< tmux shortcuts: prefix Alt-s \u001Bs
 
     # fixed: CTRL-Q needs to be pressed twice to register in macOS
