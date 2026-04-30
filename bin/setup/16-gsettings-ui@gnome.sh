@@ -41,10 +41,10 @@ gsettings set org.gnome.mutter locate-pointer-key 'Control_L' # 'Control_L'
 gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true            # false
 gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true # true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3700        # 2700
-if [[ -f $HOME/.local/share/backgrounds/f42-01-day.jxl ]]; then
-    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f42-01-day.jxl"
-    gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f42-01-night.jxl"
-    gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/f42-01-day.jxl"
+if [[ -f $HOME/.local/share/backgrounds/default.jxl ]]; then
+    gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/default.jxl"
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/default-night.jxl"
+    gsettings set org.gnome.desktop.screensaver picture-uri "file://$HOME/.local/share/backgrounds/default.jxl"
 elif [[ -f $HOME/.local/share/backgrounds/f37-01-day.webp ]]; then
     gsettings set org.gnome.desktop.background picture-uri "file://$HOME/.local/share/backgrounds/f37-01-day.webp"
     gsettings set org.gnome.desktop.background picture-uri-dark "file://$HOME/.local/share/backgrounds/f37-01-night.webp"

@@ -1,69 +1,70 @@
 # vim: set filetype=dosini:
-image=~/.local/share/backgrounds/f42-01-night.jxl
+image=~/.local/share/backgrounds/default.jxl
 scaling=fill
 
 # https://github.com/swaywm/swaylock/blob/master/main.c@set_default_colors
 
 # background
-color=#21252d
+color=#0e1f38
 # backspace highlight
-bs-hl-color=#db3300
+bs-hl-color=#e85c3a
 # key highlight
-key-hl-color=#33db00
+key-hl-color=#4db8ff
 # caps lock backspace highlight
-caps-lock-bs-hl-color=#db3300
+caps-lock-bs-hl-color=#e85c3a
 # caps lock key highlight
-caps-lock-key-hl-color=#33db00
-# separator
-separator-color=#0d1117
+caps-lock-key-hl-color=#e8c44a
+
+# separator (transparent for clean glass look)
+separator-color=#ffffff00
 
 # layout background
-layout-bg-color=#0d1117c0
+layout-bg-color=#0e1f38e0
 # layout border
-layout-border-color=#0d111700
+layout-border-color=#4480ba30
 # layout text
-layout-text-color=#eaeaea
+layout-text-color=#c0ddf5
 
 # input
-inside-color=#0d1117c0
+inside-color=#0e1f38c0
 # cleared
-inside-clear-color=#e5a445c0
+inside-clear-color=#e8c44a20
 # caps lock
-inside-caps-lock-color=#0d1117c0
+inside-caps-lock-color=#0e1f38c0
 # verifying
-inside-ver-color=#0072ffc0
+inside-ver-color=#4db8ff20
 # wrong
-inside-wrong-color=#fa0000c0
+inside-wrong-color=#e85c3a20
+
+# line (transparent — ring meets inside seamlessly)
+line-color=#ffffff00
+# cleared
+line-clear-color=#ffffff00
+# caps lock
+line-caps-lock-color=#ffffff00
+# verifying
+line-ver-color=#ffffff00
+# wrong
+line-wrong-color=#ffffff00
 
 # input
-line-color=#0d1117
+ring-color=#2060a0
 # cleared
-line-clear-color=#0d1117
+ring-clear-color=#e8c44a
 # caps lock
-line-caps-lock-color=#0d1117
+ring-caps-lock-color=#e8c44a
 # verifying
-line-ver-color=#0d1117
+ring-ver-color=#4db8ff
 # wrong
-line-wrong-color=#0d1117
+ring-wrong-color=#e85c3a
 
 # input
-ring-color=#337d00
+text-color=#c0ddf5
 # cleared
-ring-clear-color=#e5a445
+text-clear-color=#e8c44a
 # caps lock
-ring-caps-lock-color=#e5a445
+text-caps-lock-color=#e8c44a
 # verifying
-ring-ver-color=#3300ff
+text-ver-color=#4db8ff
 # wrong
-ring-wrong-color=#7d3300
-
-# input
-text-color=#e5a445
-# cleared
-text-clear-color=#0d1117
-# caps lock
-text-caps-lock-color=#e5a445
-# verifying
-text-ver-color=#0d1117
-# wrong
-text-wrong-color=#0d1117
+text-wrong-color=#e85c3a
