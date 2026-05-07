@@ -63,8 +63,12 @@ case "$SCREENSHOT_ACTION" in
     # --- 处理返回的 Action ---
     case "$ACTION_RESULT" in
     "$ACTION_KEY")
-        # 点击通知，打开预览
-        /usr/bin/xdg-open "$FILEPATH"
+        # 点击通知，打开编辑或预览
+        if command -v satty >/dev/null; then
+            satty --filename "$FILEPATH" --output-filename "$FILEPATH" --save-after-copy --early-exit
+        else
+            /usr/bin/xdg-open "$FILEPATH"
+        fi
         ;;
     esac
 
