@@ -17,6 +17,14 @@
 #  packages upgrade    41      6.12.1      6.12.4
 #  packages upgrade    41      6.12.13     6.12.4
 #    system upgrade    42      6.13.1      6.12.4
+#
+# Usage Example:
+#
+#     # 自动匹配并安装当前运行内核 Minor 版本的 header。
+#     kernel-broadcom-wl
+#
+#     # 指定安装内核 Minor 版本的 header。
+#     kernel-broadcom-wl 6.19
 
 set -e # 遇到错误立即退出
 
@@ -71,7 +79,7 @@ resolve_target_kernels() {
     REPORT_QUEUE+=("$(info 'Fetching compatible kernel versions from Bodhi...')")
 
     if [[ ! -f "$UPDATES_CACHE" ]]; then
-        curl -L "https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&releases=F${F_VER}" -o $UPDATES_CACHE
+        curl -L "https://bodhi.fedoraproject.org/updates/?packages=kernel-headers&status=stable&type=enhancement&releases=F${F_VER}" -o $UPDATES_CACHE
     fi
 
     # 获取与指定 kernel minor 版本，匹配的 kernel-headers 和 kernel

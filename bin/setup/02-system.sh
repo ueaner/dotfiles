@@ -66,4 +66,8 @@ if [[ "${OSTYPE}" == linux* ]]; then
             sudo tee /etc/systemd/logind.conf.d/99-lid-power.conf
         sudo systemctl restart systemd-logind.service
     fi
+
+    # 在内存耗尽前主动射死最高占用进程
+    sudo dnf install earlyoom
+    sudo systemctl enable --now earlyoom
 fi

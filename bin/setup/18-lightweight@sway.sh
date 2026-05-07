@@ -20,6 +20,10 @@ sudo systemctl disable --now bluetooth
 systemctl --user mask dbus-org.bluez.obex.service
 systemctl --user mask obex.service
 systemctl --user mask org.bluez.obex.service
+systemctl --user mask app-blueman@autostart.service
+
+# 关闭 geo agent, Redshift 会失效
+systemctl --user mask 'app-geoclue\x2ddemo\x2dagent@autostart.service'
 
 # ---------------------------------------------------------------
 # Unused packages

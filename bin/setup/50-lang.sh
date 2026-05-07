@@ -4,3 +4,5 @@
 # uv tool install --upgrade gprof2dot
 # uv tool install --upgrade pyprof2calltree
 # uv tool install --upgrade line_profiler
+# uv tool install --upgrade posting
+# uv tool install --upgrade harlequin

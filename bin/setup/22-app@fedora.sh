@@ -49,13 +49,11 @@ FLATPAK_PACKAGES=(
     com.tencent.WeChat
     com.github.gmg137.netease-cloud-music-gtk
     org.gnome.Loupe
-    # com.dingtalk.DingTalk
     # cn.feishu.Feishu
-    # com.baidu.NetDisk
     # ca.desrt.dconf-editor # desktop: GNOME
     # io.gitlab.news_flash.NewsFlash
     # io.podman_desktop.PodmanDesktop # gtk4: com.github.marhkb.Pods
-    # com.wps.Office
+    # cn.wps.wps_365
     # com.tencent.wemeet
     # dev.zed.Zed
     # io.github.mhogomchungu.media-downloader
