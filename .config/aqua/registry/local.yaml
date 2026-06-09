@@ -209,7 +209,7 @@ packages:
     repo_owner: pnpm
     repo_name: pnpm
     description: Fast, disk space efficient package manager
-    asset: pnpm-{{.OS}}-{{.Arch}}-musl.{{.Format}}
+    asset: pnpm-{{.OS}}-{{.Arch}}.{{.Format}}
     format: tar.gz
     overrides:
       - goos: darwin
