@@ -184,3 +184,45 @@ packages:
       - linux/amd64
     files:
       - name: satty
+
+  - type: github_release
+    repo_owner: chmln
+    repo_name: sd
+    description: Intuitive find & replace CLI (sed alternative)
+    asset: sd-{{.Version}}-{{.Arch}}-{{.OS}}.{{.Format}}
+    format: tar.gz
+    windows_arm_emulation: true
+    overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+      darwin: apple-darwin
+      linux: unknown-linux-gnu
+      windows: pc-windows-msvc
+    files:
+      - name: sd
+        src: "{{.AssetWithoutExt}}/sd"
+
+  - type: github_release
+    repo_owner: pnpm
+    repo_name: pnpm
+    description: Fast, disk space efficient package manager
+    asset: pnpm-{{.OS}}-{{.Arch}}-musl.{{.Format}}
+    format: tar.gz
+    overrides:
+      - goos: darwin
+        asset: pnpm-{{.OS}}-{{.Arch}}.{{.Format}}
+        replacements:
+          amd64: amd64
+      - goos: windows
+        format: zip
+        asset: pnpm-{{.OS}}-{{.Arch}}.{{.Format}}
+    replacements:
+      amd64: x64
+      windows: win32
+    supported_envs:
+      - linux
+      - darwin/arm64
+      - windows
