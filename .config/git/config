@@ -227,11 +227,15 @@
     # Support mergetool editor
     # git mergetool --tool-help
 
-    tool = vimdiff
+    # tool = vimdiff
     conflictstyle = diff3
+	tool = nvim
 
-[mergetool]
-    prompt = false
+[mergetool "nvim"]
+	cmd = nvim -d $LOCAL $REMOTE $BASE $MERGED
+	trustExitCode = true
+
+    # prompt = false
 
 [mergetool "vscode"]
 
