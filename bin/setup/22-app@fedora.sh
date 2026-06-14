@@ -48,8 +48,8 @@ FLATPAK_PACKAGES=(
     com.github.tchx84.Flatseal
     com.google.Chrome
     com.tencent.WeChat
-    com.github.gmg137.netease-cloud-music-gtk
     org.gnome.Loupe
+    # com.github.gmg137.netease-cloud-music-gtk
     # cn.feishu.Feishu
     # ca.desrt.dconf-editor # desktop: GNOME
     # io.gitlab.news_flash.NewsFlash
@@ -74,7 +74,7 @@ FLATPAK_PACKAGES=(
     # org.gnome.Sudoku
 )
 {
-    flatpak install --user "${FLATPAK_PACKAGES[@]}"
+    flatpak install --user -y "${FLATPAK_PACKAGES[@]}"
 } 2>&1 | wrap
 
 # See: chrome://version -> Command Line
