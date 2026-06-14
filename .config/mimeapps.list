@@ -1,10 +1,11 @@
 [Added Associations]
-image/png=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
-image/svg+xml=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
-image/jpeg=org.gnome.Loupe.desktop;imv-dir.desktop;swayimg.desktop;imv.desktop;
+image/png=org.gnome.Loupe.desktop;
+image/svg+xml=org.gnome.Loupe.desktop;
+image/jpeg=org.gnome.Loupe.desktop;
 image/gif=org.gnome.Loupe.desktop;
 image/webp=org.gnome.Loupe.desktop;
 image/jxl=org.gnome.Loupe.desktop;
+application/pdf=com.google.Chrome.desktop;
 
 [Default Applications]
 image/tiff=org.gnome.Loupe.desktop

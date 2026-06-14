@@ -86,3 +86,6 @@ elif [[ "$EDITOR" == "vi" ]]; then
 fi
 
 alias v='fd --type f --hidden --exclude .git | fzf-tmux -p --reverse | xargs $EDITOR'
+
+alias pd='posting --collection ./posting --env ./posting/shared.env --env ./posting/dev.env'
+alias pp='posting --collection ./posting --env ./posting/shared.env --env ./posting/prod.env'

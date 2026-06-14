@@ -65,7 +65,7 @@ fi
 
 # 3. 个人工具路径
 path_prepend "$HOME"/.local/share/{pnpm,nvim/mason/bin,uutils/bin}
-PATH="$HOME/.local/share/aquaproj-aqua/bin:$HOME/.local/bin:$HOME/bin:$PATH"
+PATH="$HOME/.local/share/aquaproj-aqua/bin:$HOME/.local/bin:$HOME/bin:$HOME/.kimi-code/bin:$PATH"
 
 export PATH
 

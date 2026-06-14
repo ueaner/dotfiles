@@ -15,5 +15,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/ssmanager --manager-address 127.0.0.1:8899 -u -c /usr/local/etc/shadowsocks-rust-server.json
+DynamicUser=yes
+LimitNOFILE=16384
+ExecStart=/usr/local/bin/ssservice manager --manager-addr 127.0.0.1:8899 -u -c /usr/local/etc/shadowsocks-rust-server.json
 Restart=always

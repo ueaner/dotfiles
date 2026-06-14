@@ -1,14 +1,71 @@
-[[tool]]
+# ~/.local/share/icons/hicolor/scalable/apps/fa-*.svg
+
+[[tool.misc]]
 name = "Clipboard"
 icon = "fa-clipboard"
 run = "rofi -show clipboard -modes clipboard:~/.local/bin/cliphist-rofi-img -show-icons"
 
-[[tool]]
+[[tool.misc]]
 name = "Color Picker"
 icon = "fa-eye-dropper"
 run = "grimpicker --copy"
 
-[[tool]]
+[[tool.misc]]
 name = "Yazi"
 icon = "yazi"
 run = "swaymsg '[app_id=yazi] focus' || foot --app-id=yazi -e yazi"
+
+[[tool.screenshot]]
+name = "Full Screen Shot"
+icon = "fa-camera"
+run = "~/bin/sway-screenshot output"
+
+[[tool.screenshot]]
+name = "Window Screen Shot"
+icon = "fa-camera"
+run  = "~/bin/sway-screenshot window"
+
+[[tool.screenshot]]
+name = "Area Screen Shot"
+icon = "fa-camera"
+run  = "~/bin/sway-screenshot area"
+
+[[tool.record]]
+name = "Full Screen Record (No Audio)"
+icon = "fa-video"
+run  = "~/bin/sway-recording output_noaudio"
+
+[[tool.record]]
+name = "Full Screen Record (With Audio)"
+icon = "fa-microphone"
+run  = "~/bin/sway-recording output_audio"
+
+[[tool.record]]
+name = "Area Record (No Audio)"
+icon = "fa-video"
+run  = "~/bin/sway-recording area_noaudio"
+
+[[tool.record]]
+name = "Area Record (With Audio)"
+icon = "fa-microphone"
+run  = "~/bin/sway-recording area_audio"
+
+[[tool.record]]
+name = "Stop Recording"
+icon = "fa-stop"
+run  = "~/bin/sway-recording-stop"
+
+[[tool.power]]
+name = "Lock"
+icon = "fa-lock"
+run  = "swaylock -f"
+
+[[tool.power]]
+name = "Shutdown"
+icon = "fa-power-off"
+run  = "systemctl poweroff"
+
+[[tool.power]]
+name = "Reboot"
+icon = "fa-arrow-rotate-right"
+run  = "systemctl reboot"

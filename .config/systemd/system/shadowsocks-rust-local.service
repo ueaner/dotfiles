@@ -1,0 +1,19 @@
+# https://github.com/shadowsocks/shadowsocks-rust/blob/master/debian/shadowsocks-rust-local%40.service
+# 0. cargo install shadowsocks-rust --features aead-cipher-extra
+# 1. Copy this to /etc/systemd/system/shadowsocks-rust-local.service
+# 2. systemctl enable --now shadowsocks-rust-local
+
+[Unit]
+Description=shadowsocks-rust ssservice local
+Documentation=https://github.com/shadowsocks/shadowsocks-rust
+After=network.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+LimitNOFILE=16384
+ExecStart=/usr/bin/env ssservice local --log-without-time -c /usr/local/etc/shadowsocks-rust-local.json
+Restart=always

@@ -109,3 +109,27 @@ if frpc_file=$(aqua which frpc 2>/dev/null); then
 else
     error "frpc is not found"
 fi
+
+# ---------------------------------------------------------------
+# nginx
+# ---------------------------------------------------------------
+
+# sudo dnf install nginx
+
+# SELINUX 切换到 Permissive 宽容模式:
+# sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
+#
+# 允许 nginx 转发本地端口:
+# sudo setsebool -P httpd_can_network_connect 1
+
+# 1. 为非标准路径添加 Nginx 日志文件的安全上下文标签
+# sudo semanage fcontext -a -t httpd_log_t "/usr/local/var/log/nginx(/.*)?"
+# 2. 刷新并应用新策略到该目录
+# sudo restorecon -R -v /usr/local/var/log/nginx
+
+# 允许 Nginx 穿透读取家目录（必须开启此布尔值）
+# sudo setsebool -P httpd_enable_homedirs 1
+
+# 为项目目录打上标准的 Web 静态资源标签
+# sudo semanage fcontext -a -t httpd_sys_content_t "/usr/local/var/www(/.*)?"
+# sudo restorecon -R -v /usr/local/var/www

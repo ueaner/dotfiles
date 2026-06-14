@@ -16,3 +16,7 @@ ExecStart=-%h/bin/xremap-launcher
 StandardOutput=file:/tmp/xremap.stdout.log
 StandardError=file:/tmp/xremap.stderr.log
 Restart=always
+
+MemoryHigh=8M
+MemoryMax=16M
+IPAddressDeny=any

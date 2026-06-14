@@ -33,6 +33,7 @@ NDF_PACKAGES=(
     fortune-mod
     graphviz
     qcachegrind
+    smem
 )
 
 {
