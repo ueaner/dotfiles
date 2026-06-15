@@ -9,6 +9,6 @@ registries:
     type: local
     path: registry/network.yaml
 packages: # aqua install -a
-  - name: oven-sh/bun@bun-v1.3.13
+  - name: oven-sh/bun@bun-v1.3.14
   # - name: lima-vm/socket_vmnet@v1.2.2
   #   registry: network

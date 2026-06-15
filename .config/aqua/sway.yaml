@@ -9,7 +9,7 @@ registries:
     type: local
     path: registry/network.yaml
 packages: # aqua install -a
-  - name: xremap/xremap/sway@v0.14.9
+  - name: xremap/xremap/sway@v0.15.8
     registry: local
   - name: Satty-org/Satty@v0.20.1
     registry: local

@@ -56,7 +56,7 @@ packages: # aqua install -a
   - name: go-gost/gost@v3.2.6
   - name: lima-vm/lima@v2.0.3
   - name: tree-sitter/tree-sitter@v0.26.3
-  - name: neovim/neovim@v0.11.6
+  - name: neovim/neovim@v0.12.3
   - name: arl/gitmux@v0.11.5
   - name: jesseduffield/lazygit@v0.58.1
   - name: golang/go@go1.26.1

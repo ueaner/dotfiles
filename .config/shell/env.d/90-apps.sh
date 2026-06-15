@@ -7,6 +7,11 @@ if [[ -f "$HOME/.config/aqua/aqua.yaml" ]]; then
     export AQUA_GLOBAL_CONFIG="$HOME/.config/aqua/aqua.yaml"
 fi
 
+sync_aqua_to_user_environment() {
+    sync_vars_to_user_environment 90-aqua.conf AQUA_GLOBAL_CONFIG AQUA_POLICY_CONFIG
+    return 0
+}
+
 aqua_specific_config() {
     local desktop=
 
@@ -36,7 +41,10 @@ aqua_specific_config() {
 }
 
 aqua_specific_config
+sync_aqua_to_user_environment
 unset -f aqua_specific_config
+unset -f sync_aqua_to_user_environment
+unset -f sync_vars_to_user_environment
 
 # export GTK_IM_MODULE=xim
 # export QT_IM_MODULE=ibus

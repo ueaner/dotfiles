@@ -10,38 +10,17 @@ path_prepend() {
     done
 }
 
-sync_path_to_systemd() {
-    # 仅在交互式 Shell 中运行
-    [[ $- != *i* ]] && return
-
-    local PATH_ENV_DIR="$HOME/.config/environment.d"
-    local PATH_ENV_FILE="$PATH_ENV_DIR/60-paths.conf"
-    local NEW_CONTENT="PATH=$PATH"
-
-    # 确保配置目录存在
-    [[ ! -d "$PATH_ENV_DIR" ]] && mkdir -p "$PATH_ENV_DIR"
-
-    # 获取旧内容（如果文件不存在则为空）
-    local OLD_CONTENT=""
-    [[ -f "$PATH_ENV_FILE" ]] && OLD_CONTENT=$(<"$PATH_ENV_FILE")
-
-    # 只有当 PATH 发生变化时才执行更新
-    if [[ "$OLD_CONTENT" == "$NEW_CONTENT" ]]; then
-        return
-    fi
-
-    echo "Syncing PATH to system environment..."
-    echo "$NEW_CONTENT" >"$PATH_ENV_FILE"
+sync_path_to_user_environment() {
+    # NOTE: 若 ExecStart 主程序依赖该 PATH 查找，可使用 /usr/bin/env <cmd>
+    sync_vars_to_user_environment 60-paths.conf PATH
+    local synced=$?
 
     if [[ "${OSTYPE}" == darwin* ]]; then
-        # macOS: 立即生效 + 持久化
-        launchctl setenv PATH "$PATH"
-        sudo launchctl config user path "$PATH"
-    else
-        # Linux/systemd: 立即同步到用户实例环境块
-        # NOTE: 配合 ExecStart=/usr/bin/env 使用
-        systemctl --user import-environment PATH
+        # macOS: 持久化 PATH；普通变量已由 sync_vars_to_user_environment setenv
+        [[ $synced -eq 0 ]] && sudo launchctl config user path "$PATH"
     fi
+
+    return 0
 }
 
 # 1. 基础路径
@@ -70,7 +49,7 @@ PATH="$HOME/.local/share/aquaproj-aqua/bin:$HOME/.local/bin:$HOME/bin:$HOME/.kim
 export PATH
 
 # 同步更新 environment.d，确保下次重启电脑后，自启动服务也能拿到 PATH
-sync_path_to_systemd
+sync_path_to_user_environment
 
 unset -f path_prepend
-unset -f sync_path_to_systemd
+unset -f sync_path_to_user_environment

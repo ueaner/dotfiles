@@ -11,6 +11,9 @@ Documentation=https://github.com/xremap/xremap
 [Service]
 # sleep workaround from https://github.com/xremap/xremap/issues/105#issuecomment-1190994137
 ExecStartPre=/usr/bin/sleep 1
+# ~/.config/environment.d/90-aqua.conf
+# Environment=AQUA_GLOBAL_CONFIG=%h/.config/aqua/aqua.yaml:%h/.config/aqua/sway.yaml:%h/.config/aqua/%H.yaml
+# Environment=AQUA_POLICY_CONFIG=%h/.config/aqua/policy.yaml
 # Running xremap without sudo
 ExecStart=-%h/bin/xremap-launcher
 StandardOutput=file:/tmp/xremap.stdout.log
