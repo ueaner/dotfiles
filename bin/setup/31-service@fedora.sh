@@ -92,7 +92,7 @@ if frpc_file=$(aqua which frpc 2>/dev/null); then
     sync_file "$frpc_file" /usr/local/bin/frpc
 
     # 配置文件更新
-    sync_file "$HOME/.local/etc/frpc-$HOSTNAME.toml" /usr/local/etc/frpc.toml
+    sync_file "$HOME/.local/etc/frp/frpc-$HOSTNAME.toml" /usr/local/etc/frpc.toml
 
     # 服务文件更新
     if ! cmp -s ~/.config/systemd/system/frpc.service /etc/systemd/system/frpc.service 2>/dev/null; then

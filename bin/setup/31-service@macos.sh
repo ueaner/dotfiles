@@ -92,8 +92,8 @@ step "Configure and enable frpc.service"
 if [[ -x ~/.local/bin/frpc ]]; then
     ln -sf ~/.local/bin/frpc /opt/local/bin/frpc
 fi
-if [[ -f ~/.local/etc/frpc-mac15.toml ]]; then
-    ln -sf ~/.local/etc/frpc-mac15.toml /opt/local/etc/frpc-mac15.toml
+if [[ -f ~/.local/etc/frp/frpc-mac26.toml ]]; then
+    ln -sf ~/.local/etc/frp/frpc-mac26.toml /opt/local/etc/frpc-mac15.toml
 fi
 if [[ -f ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ]]; then
     ln -sf ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ~/Library/LaunchAgents/org.gofrp.frpc.plist
