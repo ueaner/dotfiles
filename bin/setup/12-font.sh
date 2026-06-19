@@ -52,7 +52,7 @@ NOTO_EMOJI_FONT_DIR="$FONT_DIR/noto-emoji"
 if [[ ! -f "$NOTO_EMOJI_FONT_DIR/done" ]]; then
     step "Install Noto Color Emoji Font"
 
-    FONT_URL="${GITHUB_PROXY}https://github.com/googlefonts/noto-emoji/blob/main/fonts/NotoColorEmoji.ttf"
+    FONT_URL="${GITHUB_PROXY}https://raw.githubusercontent.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf"
     curl --create-dirs --output-dir "$NOTO_EMOJI_FONT_DIR" -C - -sSL -O "${FONT_URL}"
 
     touch "$NOTO_EMOJI_FONT_DIR/done"

@@ -91,6 +91,7 @@ kill_bg_jobs() {
     pids=$(jobs -p)
     if [ -n "$pids" ]; then
         # 发送 SIGTERM 给指定子进程，忽略已经退出的子进程产生的报错
+        # shellcheck disable=SC2086
         kill $pids 2>/dev/null
         echo "Terminated background jobs: $pids"
     fi

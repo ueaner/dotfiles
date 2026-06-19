@@ -9,10 +9,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 # bash tar grep sed awk less findutils iputils diffutils
 if uubin=$(command -v coreutils 2>/dev/null); then
     mkdir -p ~/.local/share/uutils/bin
-    cd ~/.local/share/uutils/bin || return
     # 批量建立软链接，指向 coreutils 原始文件
     for cmd in $(coreutils --list); do
-        ln -sf "$uubin" "$cmd"
+        ln -sf "$uubin" "$HOME/.local/share/uutils/bin/$cmd"
     done
 fi
 

@@ -83,7 +83,7 @@ section() {
     [[ $width -gt $line_width ]] && line_width=$width
 
     printf "\n${C_BOLD}${FG_CYAN}%s${C_RESET}\n" "$text"
-    printf "${FG_CYAN}%.0s-${C_RESET}" $(seq 1 $line_width)
+    printf "${FG_CYAN}%.0s-${C_RESET}" $(seq 1 "$line_width")
     printf "\n"
 }
 

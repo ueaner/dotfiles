@@ -25,7 +25,7 @@ if vmnet_bin=$(command -v socket_vmnet 2>/dev/null); then
     info "$(socket_vmnet --version)"
     step "Configure socket_vmnet launch daemon"
 
-    ln -sf $vmnet_bin /opt/local/bin/socket_vmnet
+    ln -sf "$vmnet_bin" /opt/local/bin/socket_vmnet
 
     if [[ ! -f /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
         sudo cp ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist \

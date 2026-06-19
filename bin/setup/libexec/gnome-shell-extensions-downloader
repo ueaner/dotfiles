@@ -163,9 +163,11 @@ if [[ -n "$uuid" ]]; then
 elif [[ $pk -gt 0 ]]; then
     info=$(curl -s --get "$EXTENSIONS_SITE/extension-info/" --data-urlencode "shell_version=$sv" --data-urlencode "pk=$pk")
     uuid=$(echo -n "$info" | jq -r .uuid)
-    # uuid and p are both empty
-    help
-    exit 1
+    if [[ -z "$uuid" || "$uuid" == "null" ]]; then
+        echo "Failed to resolve extension by pk=$pk"
+        help
+        exit 1
+    fi
 fi
 
 echo "uuid=$uuid pk=$pk dir=$dir force=$force"
@@ -188,12 +190,9 @@ else
     exit 1
 fi
 
-# Download extension package
-# curl --create-dirs -L "$EXTENSIONS_SITE$download_url" -o "$dir/$uuid.shell-extension.zip"
-cd "$dir" || return
-
 remote_url="$EXTENSIONS_SITE$download_url"
 # local_file=$(basename "$remote_url")
+local_file="$dir/$uuid.shell-extension.zip"
 
 echo "Download $remote_url to $local_file"
 
@@ -216,7 +215,7 @@ if [[ -f "${local_file}" ]]; then
 fi
 
 # Download
-curl -C - -L -O "$remote_url"
+curl -C - -L -o "$local_file" "$remote_url"
 ret=$?
 if [[ $ret -eq 0 ]]; then
     # Remove backup file when download succeeds

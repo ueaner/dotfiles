@@ -47,7 +47,8 @@ target_hostname() {
 }
 
 if ! hostname_t=$(target_hostname); then
-    is_sourced && return 1 || exit 1
+    warn "Unknown hardware model, skipping hostname configuration"
+    is_sourced && return 0 || exit 0
 fi
 
 if [[ "${OSTYPE}" == darwin* ]]; then

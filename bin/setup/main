@@ -132,7 +132,7 @@ for f in "$MAIN_SCRIPT_DIR"/[0-9][0-9]-*.sh; do
 
     if [[ $last_idx != "$curr_idx" ]]; then
         last_idx="$curr_idx"
-        name=$(array_get_at $last_idx "${sections[@]}")
+        name=$(array_get_at "$last_idx" "${sections[@]}")
         section "$name ($last_idx)"
         # section "$section ($last_idx)"
     fi

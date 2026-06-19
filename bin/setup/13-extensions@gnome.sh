@@ -25,7 +25,6 @@ extensions=(
 )
 
 mkdir -p ~/.cache/archives
-cd ~/.cache/archives || return
 
 notice "Install the extension, then re-login and enable the extension using 'gnome-extensions enable <uuid>'."
 
@@ -33,7 +32,7 @@ for uuid in "${extensions[@]}"; do
     "$SCRIPT_DIR"/libexec/gnome-shell-extensions-downloader "$uuid"
 
     # unzip -q $uuid.shell-extension.zip -d $HOME/.local/share/gnome-shell/extensions/$uuid
-    gnome-extensions install --force "$uuid.shell-extension.zip"
+    gnome-extensions install --force "$HOME/.cache/archives/$uuid.shell-extension.zip"
     gnome-extensions enable "$uuid" >/dev/null 2>&1
 
     info "$uuid installed."

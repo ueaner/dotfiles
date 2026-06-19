@@ -103,7 +103,7 @@ task "Human-readable task name"
 - Target Bash 3.2+ unless a script explicitly needs newer features. Avoid arrays where plain variables suffice if strict compatibility matters.
 - Always start with `#!/usr/bin/env bash`.
 - Scripts executed directly should use `set -euo pipefail` (or the equivalent in `main`). Scripts intended only for sourcing may skip this.
-- Quote variables. `.shellcheckrc` globally disables `SC2086` and `SC2046`, but that is a project-wide convenience for the existing DNF/system commands; new code should still quote defensively where it does not break intended word splitting.
+- Quote variables. `.shellcheckrc` does not globally disable any checks; if a specific line needs intentional word splitting, add a local `# shellcheck disable=SC2086` directive instead.
 - Prefer `[[ ]]` over `[ ]`.
 - Prefer `"$SCRIPT_DIR/lib/init"` rather than relative paths.
 - Avoid `cd` into other directories; if you must, push/pop and guard with `|| exit`.
@@ -129,12 +129,13 @@ shellcheck -x main lib/*.sh libexec/* [0-9][0-9]-*.sh
 ## Important Gotchas
 
 - **Scripts are sourced, not executed.** `main` runs `. "$f"` for each matching section script. That means global state (variables, traps, functions, `cd`) persists between scripts. Be careful not to leak variables or change the working directory.
+- **Avoid `cd` in sourced scripts.** Because scripts are sourced into the same shell, an unguarded `cd` affects every subsequent script. Use absolute paths or wrap temporary directory changes in a subshell.
 - **Strict mode is on.** `set -euo pipefail` means missing variables, failing commands, and failing pipes abort the run. Use `|| true` for commands whose failure is acceptable.
 - **Section index is the first digit only.** `main` extracts `curr_idx="${filename:0:1}"`, so scripts like `09-intel-based-macbook@fedora.sh` belong to section 0 (prelude). Keep numbering consistent with the section map in `main`.
 - **Platform variants are mutually exclusive.** If a filename contains `@`, it must match one of `${KERNEL}`, `${SYSTEM}`, or `${DESKTOP}`. If none match, the script is skipped. This means a generic `16-gsettings-ui.sh` would run on all platforms; if you only want it on GNOME, name it `16-gsettings-ui@gnome.sh`.
-- **`srouce` typo.** `05-packager@macos.sh` contains `srouce` (a misspelling of `source`) on lines 14 and 15. Do not copy this pattern.
+- **Idempotency is preferred for install-once steps.** Use existence checks, `done` marker files, or `rpm -q` to avoid re-running expensive or stateful operations on every `./main all`.
+- **ShellCheck disables should be local.** `.shellcheckrc` no longer globally disables any checks. If a specific line needs intentional word splitting, add `# shellcheck disable=SC2086` on that line only.
 - **No CI or deploy pipeline.** This is host-local provisioning code. The only "deploy" is running `main` or `task` on a target machine.
-- **DNF/Fedora specifics.** `02-system.sh` expects `sudo` access and modifies `/etc/systemd/logind.conf.d`, udev rules, sysctl, and installs `earlyoom`. Many commands are destructive or system-wide; run in a VM first.
 - **macOS brew path.** The project installs Homebrew to `/opt/local` rather than the default `/opt/homebrew` or `/usr/local`. The install script is patched via `sed` during `05-packager@macos.sh`.
 - **Aqua tools.** `21-aqua.sh` installs the custom `aqa` binary from `ueaner/aqua` releases (not the upstream aquaproj). It then runs `aqua install --all`, relying on `AQUA_GLOBAL_CONFIG` for globally available tools.
 - **Git bare repos for dotfiles.** `01-dotfiles.sh` clones `ueaner/dotfiles` and `ueaner/local` as bare repositories into `$HOME/.dotfiles` and `$HOME/.dotlocal`, then checks them out into `$HOME` and `$HOME/.local` respectively.

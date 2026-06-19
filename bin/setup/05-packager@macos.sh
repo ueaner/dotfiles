@@ -11,8 +11,10 @@ task "Package Manager (brew)"
 # Ensure brew is installed (for macOS)
 if [[ ! -x /opt/local/bin/brew ]]; then
     step "Install brew (macOS)"
-    [[ -f ~/.config/shell/env.d/04-brew.sh ]] && srouce ~/.config/shell/env.d/04-brew.sh
-    [[ -f ~/.local/etc/token.sh ]] && srouce ~/.local/etc/token.sh
+    # shellcheck source=/dev/null
+    [[ -f ~/.config/shell/env.d/04-brew.sh ]] && source ~/.config/shell/env.d/04-brew.sh
+    # shellcheck source=/dev/null
+    [[ -f ~/.local/etc/token.sh ]] && source ~/.local/etc/token.sh
 
     curl -L "${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh" -o /tmp/brew-install.sh
     sed -i 's|HOMEBREW_PREFIX="/opt/homebrew"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh

@@ -33,11 +33,11 @@ install-aqua() {
     # 3. 执行下载与安装
     info "Downloading ${FILENAME}..."
 
-    [[ -f ~/.cache/archives/$FILENAME ]] && rm -f ~/.cache/archives/$FILENAME
+    [[ -f ~/.cache/archives/$FILENAME ]] && rm -f ~/.cache/archives/"$FILENAME"
 
     curl --create-dirs --output-dir ~/.cache/archives -C - -sSL -O "${URL}"
 
-    tar xf ~/.cache/archives/$FILENAME -C ~/.local/bin aqua
+    tar xf ~/.cache/archives/"$FILENAME" -C ~/.local/bin aqua
 
     success "aqua successfully installed. $(aqua -v)"
 }
@@ -55,7 +55,7 @@ if [[ -z "$AQUA_GLOBAL_CONFIG" ]]; then
     info "global: \$AQUA_GLOBAL_CONFIG: (none set)"
 else
     info "global: \$AQUA_GLOBAL_CONFIG:"
-    items ${AQUA_GLOBAL_CONFIG//:/ }
+    items "${AQUA_GLOBAL_CONFIG//:/ }"
 fi
 
 # 全局可用的工具（不受项目目录限制）需要配置在 $AQUA_GLOBAL_CONFIG 中

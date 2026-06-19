@@ -90,15 +90,17 @@ systemctl --user mask evolution-user-prompter.service
 # ---------------------------------------------------------------
 
 step "Disable Tracker fs"
-cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
-echo "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
-# Tracker3: configuration reset after system upgrade
-gsettings set org.freedesktop.Tracker3.Miner.Files crawling-interval -2  # -1
-gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false # true
-# Tracker3: index when running on battery
-gsettings set org.freedesktop.Tracker3.Miner.Files index-on-battery true # true
-# Cleanup the Tracker database: tracker3 reset --filesystem --rss
-tracker3 reset --filesystem
+if [[ -f /etc/xdg/autostart/tracker-miner-fs-3.desktop ]] && [[ ! -f ~/.config/autostart/tracker-miner-fs-3.desktop ]]; then
+    cp /etc/xdg/autostart/tracker-miner-fs-3.desktop ~/.config/autostart
+    echo "Hidden=true" | tee --append ~/.config/autostart/tracker-miner-fs-3.desktop
+    # Tracker3: configuration reset after system upgrade
+    gsettings set org.freedesktop.Tracker3.Miner.Files crawling-interval -2  # -1
+    gsettings set org.freedesktop.Tracker3.Miner.Files enable-monitors false # true
+    # Tracker3: index when running on battery
+    gsettings set org.freedesktop.Tracker3.Miner.Files index-on-battery true # true
+    # Cleanup the Tracker database: tracker3 reset --filesystem --rss
+    tracker3 reset --filesystem
+fi
 
 # ---------------------------------------------------------------
 # Unused packages

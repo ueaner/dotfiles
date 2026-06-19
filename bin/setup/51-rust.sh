@@ -16,8 +16,11 @@ task "Rust"
 
 step "Install Rust"
 
-export CARGO_HOME=$XDG_DATA_HOME/cargo
-export RUSTUP_HOME=$XDG_DATA_HOME/rustup
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 
 {
     # 设置环境变量，强制 rustup 输出颜色
@@ -34,8 +37,8 @@ export RUSTUP_HOME=$XDG_DATA_HOME/rustup
 
     # error: no default toolchain is configured
     LATEST=$(rustup default | cut -d ' ' -f1)
-    ln -sf $XDG_DATA_HOME/cargo/bin/* $XDG_BIN_HOME
-    ln -sf $XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo \
+    ln -sf "$XDG_DATA_HOME"/cargo/bin/* "$XDG_BIN_HOME"
+    ln -sf "$XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo" \
         ~/.local/share/zsh/site-functions/_cargo
     rustup completions zsh >~/.local/share/zsh/site-functions/_rustup
 } 2>&1 | wrap # 将 stderr (2) 合并到 stdout (1)，确保 stderr 的内容也包含在 wrap 的范围内

@@ -124,7 +124,7 @@ install_driver() {
     REPORT_QUEUE+=("$(task "install_driver")")
     download_dir="${XDG_BACKUP_DIR:-$HOME/.cache}/archives/$K_TARGET"
 
-    mkdir -p "$download_dir" && cd "$download_dir"
+    mkdir -p "$download_dir"
 
     REPORT_QUEUE+=("$(info "Downloading RPMs to $download_dir...")")
     "$K_DOWNLOADER" "$K_TARGET" "$H_TARGET" --dir="$download_dir"
@@ -134,7 +134,7 @@ install_driver() {
 
     REPORT_QUEUE+=("$(info "Installing targeted kernel and headers...")")
     manage_dnf_exclusion "unlock"
-    sudo dnf install -y ./kernel*."${ARCH}".rpm
+    sudo dnf install -y "$download_dir"/kernel*."${ARCH}".rpm
     manage_dnf_exclusion "lock"
 
     REPORT_QUEUE+=("$(info "Installing Broadcom Wireless drivers...")")

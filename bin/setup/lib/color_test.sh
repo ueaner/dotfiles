@@ -171,7 +171,7 @@ note "You can skip these if --fast-mode is enabled."
 section "3. Deployment"
 task "Uploading Assets"
 for i in {1..5}; do
-    progress $i 5 "Transferring chunk-$i"
+    progress "$i" 5 "Transferring chunk-$i"
     sleep 0.2
 done
 success "All chunks uploaded"

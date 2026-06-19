@@ -10,7 +10,7 @@ task "Applications (Fedora)"
 # DNF
 # ---------------------------------------------------------------
 step "Install packages via DNF"
-NDF_PACKAGES=(
+DNF_PACKAGES=(
     wl-clipboard
     wtype
     xlsclients
@@ -37,7 +37,7 @@ NDF_PACKAGES=(
 )
 
 {
-    sudo dnf install -y "${NDF_PACKAGES[@]}"
+    sudo dnf install -y "${DNF_PACKAGES[@]}"
 } 2>&1 | wrap
 
 # ---------------------------------------------------------------

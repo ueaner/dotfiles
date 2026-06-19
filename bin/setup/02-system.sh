@@ -68,6 +68,9 @@ if [[ "${OSTYPE}" == linux* ]]; then
     fi
 
     # 在内存耗尽前主动射死最高占用进程
-    sudo dnf install earlyoom
+    if ! rpm --quiet -q earlyoom; then
+        step "Install earlyoom"
+        sudo dnf install -y earlyoom
+    fi
     sudo systemctl enable --now earlyoom
 fi
