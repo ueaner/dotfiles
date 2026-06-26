@@ -78,9 +78,13 @@ FLATPAK_PACKAGES=(
 } 2>&1 | wrap
 
 # See: chrome://version -> Command Line
-if flatpak info com.google.Chrome >/dev/null 2>&1; then
-    if [[ ! -f ~/.var/app/com.google.Chrome/config/chrome-flags.conf ]]; then
-        echo "Native Wayland for chrome-flags.conf"
-        cp files/chrome-flags.conf ~/.var/app/com.google.Chrome/config/chrome-flags.conf
-    fi
+# if flatpak info com.google.Chrome >/dev/null 2>&1; then
+#     if [[ ! -f ~/.var/app/com.google.Chrome/config/chrome-flags.conf ]]; then
+#         echo "Native Wayland for chrome-flags.conf"
+#         cp files/chrome-flags.conf ~/.var/app/com.google.Chrome/config/chrome-flags.conf
+#     fi
+# fi
+
+if flatpak info com.tencent.WeChat >/dev/null 2>&1; then
+    flatpak --user override --filesystem=xdg-download:rw com.tencent.WeChat
 fi
