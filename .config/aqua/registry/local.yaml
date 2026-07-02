@@ -168,7 +168,7 @@ packages:
       windows: pc-windows-msvc
     files:
       - name: coreutils
-        src: "coreutils-{{.Arch}}-{{.OS}}/coreutils"
+        src: "{{.AssetWithoutExt}}/coreutils"
 
   # aqua gr -l 1 'Satty-org/Satty'
   - type: github_release
