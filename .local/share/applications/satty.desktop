@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+TryExec=satty
+# %f 代表传递单个本地图片路径给 satty
+Exec=satty --filename %f
+Icon=satty
+Terminal=false
+Categories=Graphics;Utility;
+
+Name=Satty Image Annotator
+GenericName=Image Annotator
+Comment=Modern screenshot annotation tool
+MimeType=image/png;image/jpeg;image/webp;
+StartupNotify=true
