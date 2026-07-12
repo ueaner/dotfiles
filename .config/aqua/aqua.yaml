@@ -38,7 +38,7 @@ packages: # aqua install -a
   - name: dandavison/delta@0.19.2
   - name: go-task/task@v3.51.1
   - name: AlexanderGrooff/mermaid-ascii@1.2.0
-  - name: charmbracelet/crush@v0.81.0
+  - name: charmbracelet/crush@v0.84.1
   - name: terrastruct/d2@v0.7.1
   - name: sentriz/cliphist@v0.7.0
     registry: local

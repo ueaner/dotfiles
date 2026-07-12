@@ -72,6 +72,8 @@ FLATPAK_PACKAGES=(
     # eu.nokun.MirrorHall # Use Linux devices as second screens
     # org.freedesktop.Bustle
     # org.gnome.Sudoku
+    # re.sonny.OhMySVG
+    # io.missioncenter.MissionCenter
 )
 {
     flatpak install --user -y "${FLATPAK_PACKAGES[@]}"
