@@ -1,10 +1,11 @@
 # vim: set filetype=sh:
 
-# 确保在 non-login 模式下，环境变量一定被加载
-if [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
+# 避免同一 Shell 进程中重复加载环境变量
+if [[ -n "${SHELL_ENV_LOADED:-}" ]]; then
     log
     return
 fi
+SHELL_ENV_LOADED=1
 
 log "sourcing ~/.config/shell/env.d/[0-9][0-9]*.sh"
 

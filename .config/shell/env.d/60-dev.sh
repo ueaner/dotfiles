@@ -124,6 +124,8 @@ if [[ -d "$ANDROID_HOME/ndk" ]]; then
     # for tauri only
     # https://tauri.app/start/prerequisites/#android
     export NDK_HOME=$ANDROID_NDK_HOME
+
+    export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 fi
 
 # /opt/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
