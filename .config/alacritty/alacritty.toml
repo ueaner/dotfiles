@@ -10,6 +10,9 @@ TERM = "xterm-256color"
 # PATH = "/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 # ZSH_PROFILE_STARTUP = "true"
 
+[terminal]
+osc52 = "CopyPaste"
+
 [terminal.shell]
 program = "tmux"
 args = ["new-session", "-A", "-s", "TERM"]

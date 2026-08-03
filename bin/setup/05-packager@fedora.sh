@@ -32,4 +32,6 @@ fi
 # curl -L https://dl.flathub.org/repo/flathub.gpg -o /tmp/flathub.gpg
 # flatpak remote-modify --user --gpg-import=/tmp/flathub.gpg --url=https://dl.flathub.org/repo flathub
 
+flatpak remote-add --user --if-not-exists flatpark https://dl.flatpark.org/flatpark.flatpakrepo
+
 info "$(flatpak --user remotes --columns=name,url)"

@@ -92,14 +92,18 @@ export CARGO_INSTALL_ROOT=~/.local # ~/.local/bin
 # export CARGO_BUILD_TARGET_DIR=~/.target
 export CARGO_BUILD_TARGET_DIR=$XDG_CACHE_HOME/cargo-build
 
-# https://mirrors.tuna.tsinghua.edu.cn/help/rustup/
-export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-# export RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup
-# export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
-# https://mirrors.sjtug.sjtu.edu.cn/docs/rust-static
-# export RUSTUP_DIST_SERVER=https://mirrors.sjtug.sjtu.edu.cn/rust-static/
 # https://mirrors.ustc.edu.cn/help/rust-static.html
 export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+# # https://mirrors.tuna.tsinghua.edu.cn/help/rustup/
+# export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+# export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+# # https://developer.aliyun.com/mirror/rustup/
+# export RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
+# export RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
+# # https://help.mirrors.cernet.edu.cn/rustup/
+# export RUSTUP_UPDATE_ROOT=https://mirrors.cernet.edu.cn/rustup/rustup
+# export RUSTUP_DIST_SERVER=https://mirrors.cernet.edu.cn/rustup
 
 #
 # JavaScript
@@ -110,6 +114,10 @@ export PNPM_HOME=$XDG_DATA_HOME/pnpm
 # https://docs.deno.com/runtime/reference/env_variables/
 export DENO_DIR=$XDG_DATA_HOME/deno
 export DENO_INSTALL_ROOT=$XDG_BIN_HOME
+
+# https://bun.com/docs/runtime/bunfig
+export BUN_INSTALL_GLOBAL_DIR="$HOME/.local/share/bun"
+export BUN_INSTALL_BIN=$XDG_BIN_HOME
 
 #
 # Android
