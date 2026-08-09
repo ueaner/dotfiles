@@ -8,7 +8,7 @@ subcmd="$1"
 empty_id=
 nodes_count=
 
-read -r focused_id max_id holes nums_str <<<"$(
+read -r focused_id max_id gap_count nums_str <<<"$(
     swaymsg -t get_workspaces |
         jq -r '
             (map(.num) | sort) as $nums
@@ -46,7 +46,7 @@ if [[ -z "$empty_id" ]]; then
     [[ -z "$empty_id" ]] && empty_id=$((max_id + 1))
 fi
 
-echo "[$$ sway-workspace] subcmd: $subcmd, focused_id: $focused_id, max_id: $max_id, nums: $nums_str, empty_id: $empty_id" >>/tmp/xreaker.log
+echo "[$$ sway-workspace] subcmd: $subcmd, focused_id: $focused_id, max_id: $max_id, nums: $nums_str, empty_id: $empty_id, $*" >>/tmp/xreaker.log
 
 case "$subcmd" in
 # for workspace
@@ -55,6 +55,16 @@ switch-to-rightmost)
     ;;
 switch-to-empty)
     swaymsg workspace "$empty_id"
+    ;;
+switch-to-empty-and-run)
+    shift
+    swaymsg workspace "$empty_id"
+    "$@" &
+    app_pid=$!
+    disown
+    # 应用启动较慢时, rofi 关闭会把焦点抢回原工作区, 所以不能只依赖"提前切工作区"这一步,
+    # 需要针对这个 pid 即将开出的窗口单独下规则, 保证它最终落到目标工作区
+    swaymsg "for_window [pid=$app_pid] move container to workspace $empty_id, focus"
     ;;
 
 # for container
@@ -68,14 +78,14 @@ move-to-rightmost)
     ;;
 move-to-empty)
     # 无间断, 最后一个 workspace 单窗口, 不新建不必要的 workspace
-    if [[ "$holes" -eq 0 && "$max_id" == "$focused_id" && "$nodes_count" -eq 1 ]]; then
+    if [[ "$gap_count" -eq 0 && "$max_id" == "$focused_id" && "$nodes_count" -eq 1 ]]; then
         exit 0
     fi
 
     swaymsg "move container to workspace $empty_id; workspace $empty_id"
     ;;
 *)
-    notify-send "[$$ sway-workspace] argument must be one of 'switch-to-rightmost | switch-to-empty | move-to-rightmost | move-to-empty'"
+    notify-send "[$$ sway-workspace] argument must be one of 'switch-to-rightmost | switch-to-empty | switch-to-empty-and-run | move-to-rightmost | move-to-empty'"
     exit 1
     ;;
 esac

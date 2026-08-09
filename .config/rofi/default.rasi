@@ -12,6 +12,11 @@ configuration {
     drun-display-format: "{name}";
     drun-match-fields: "name,generic";
 
+    /* 关闭 DBusActivatable, 强制走 -run-command 启动流程, 否则 D-Bus 直接激活的应用会绕过 -run-command */
+    drun {
+        DBusActivatable: false;
+    }
+
     kb-row-select: "Control+y";
     kb-secondary-paste: "Super+v";
     kb-secondary-copy: "Super+c"; /* It can't work under Wayland. */
