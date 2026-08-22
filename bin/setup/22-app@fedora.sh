@@ -15,6 +15,8 @@ DNF_PACKAGES=(
     wtype
     xlsclients
     android-tools
+    gvfs-mtp # Thunar mounts Android devices
+    libmtp   # Same as above
     grimpicker
     wf-recorder
     fcitx5

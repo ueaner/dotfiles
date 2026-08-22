@@ -17,7 +17,7 @@ registries:
     type: local
     path: $HOME/.config/aqua/registry/network.yaml
 packages: # aqua install -a
-  - name: astral-sh/uv@0.11.24
+  - name: astral-sh/uv@0.12.3
   - name: junegunn/fzf@v0.74.2
   - name: junegunn/fzf/fzf-tmux@v0.74.2
   - name: sharkdp/fd@v10.4.2
@@ -38,7 +38,7 @@ packages: # aqua install -a
   - name: dandavison/delta@0.19.2
   - name: go-task/task@v3.51.1
   - name: AlexanderGrooff/mermaid-ascii@1.2.0
-  - name: charmbracelet/crush@v0.88.0
+  - name: charmbracelet/crush@v0.90.0
   - name: terrastruct/d2@v0.7.1
   - name: sentriz/cliphist@v0.7.0
     registry: local

@@ -34,8 +34,10 @@
         "custom/power"
     ],
     "sway/window": {
-        // "icon": true,
-        "format": "{app_id} - {shell}",
+        "icon": true,
+        "icon-size": 16,
+        "format": "{app_id}",
+        // "format": "{app_id} - {shell}",
         // "format": "{title}",
         "max-length": 35,
         "rewrite": {
@@ -43,8 +45,10 @@
             "^ - xwayland$": "XWayland",
             "(.*) - xdg_shell$": "$1",
             // Remove UTF-8 BOM from {title}
-            "\uFEFF - (.*)": "$1"
+            "\uFEFF - (.*)": "$1",
             // "(.*) - (.*)": "$2" // {title}
+            // For {app_id}
+            "google-chrome": "Chrome"
         }
     },
     "wlr/taskbar": {
@@ -59,17 +63,17 @@
         "disable-scroll": true,
         "all-outputs": true,
         "warp-on-scroll": false,
-        "format": "{icon}",
-        "format-icons": {
-            // "1": "",
-            // "2": "",
-            // "3": "", // 
-            // "4": "",
-            // "5": "",
-            "urgent": "",
-            "focused": "",
-            "default": ""
-        }
+        "format": "{icon}"
+        // "format-icons": {
+        //     // "1": "",
+        //     // "2": "",
+        //     // "3": "", // 
+        //     // "4": "",
+        //     // "5": "",
+        //     "urgent": "",
+        //     "focused": "",
+        //     "default": ""
+        // }
     },
     "keyboard-state": {
         "numlock": true,

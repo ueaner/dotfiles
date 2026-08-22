@@ -23,7 +23,7 @@ fi
 # 从 App Store 具体的包详情页面，查看最低系统兼容版本
 if [[ -x /opt/local/bin/brew ]]; then
     task "Install packages via brew (macOS)"
-    PACKAGES=(
+    CASK_PACKAGES=(
         hammerspoon
         kitty
         baidunetdisk
@@ -50,9 +50,13 @@ if [[ -x /opt/local/bin/brew ]]; then
         # tableplus
         # qq
     )
-    brew install --cask "${PACKAGES[@]}"
+    brew install --cask "${CASK_PACKAGES[@]}"
 
     # notify:
     #   - Disable netdisk_service automatic startup
 
+    PACKAGES=(
+        iproute2mac # ip, ss
+    )
+    brew install "${PACKAGES[@]}"
 fi
