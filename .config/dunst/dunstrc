@@ -16,12 +16,24 @@
     format = "<span line_height='1.5'><span size='large'><b>%a</b> · %s</span>\n%b</span>"
 
     mouse_left_click = do_action, close_current
-    mouse_right_click = close_all
+    mouse_right_click = close_current
+    # mouse_right_click = close_all
 
     frame_width = 2
     frame_color = "#2e3440"
     separator_color= frame
     highlight = "#a8c7fa"
+
+    # 屏幕上同时显示的最大通知数（超过的会进入等待队列）
+    max_number = 1
+
+    # 新通知的堆叠方向
+    origin = top-right # down
+    stack_duplicates = true
+
+    # 是否将完全相同的通知合并为一条（比如连续按音量加）
+    # 设为 true 时，新通知不会新开一行，而是直接更新原有通知
+    hide_duplicate_count = true # 设为 false 会在通知旁显示类似 "(3)" 的计数器
 
 [urgency_low]
     background = "#21252d"
