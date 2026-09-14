@@ -65,7 +65,7 @@ case "$SCREENSHOT_ACTION" in
     "$ACTION_KEY")
         # 点击通知，打开编辑或预览
         if command -v satty >/dev/null; then
-            satty --filename "$FILEPATH" --output-filename "$FILEPATH" --save-after-copy --early-exit
+            satty --filename "$FILEPATH" --output-filename "$FILEPATH" --save-after-copy --early-exit --copy-command wl-copy
         else
             /usr/bin/xdg-open "$FILEPATH"
         fi
