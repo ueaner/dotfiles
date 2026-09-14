@@ -6,12 +6,14 @@
 keypress_delay_ms: 20
 
 keymap:
-  - name: Close with q
+  - name: Loupe
     exact_match: true
     application:
       only: [org.gnome.Loupe]
     remap:
       q:                           Ctrl-w                         # Window: Close
+      Super-r:                     Ctrl-r                         # Rotate Clockwise
+      Shift-Super-r:               Shift-Ctrl-r                   # Rotate Counterclockwise
 
   - name: Files
     exact_match: true
@@ -19,6 +21,14 @@ keymap:
       only: [org.gnome.Nautilus, thunar]
     remap:
       KEY_ENTER:                   KEY_F2                         # Rename
+      Super-a:                     Ctrl-a                         # [Overrides Basic] Select all
+      Super-KEY_LEFTBRACE:         Alt-Left                       # Back
+      Super-KEY_RIGHTBRACE:        Alt-Right                      # Forward
+      Super-KEY_UP:                Alt-Up                         # Go to parent directory
+      Shift-Super-h:               Alt-Home                       # Go to home directory
+      Shift-Super-g:               Ctrl-l                         # [Overrides Basic] Go to specific location
+      Shift-Super-KEY_DOT:         Ctrl-h                         # [Overrides Basic] Show hidden files
+      Super-r:                     Ctrl-r                         # Reload
 
   - name: Ghostty
     exact_match: true
