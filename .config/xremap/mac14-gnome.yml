@@ -23,7 +23,7 @@ keymap:
   - name: Browser
     exact_match: true
     application:
-      only: [Google-chrome, google-chrome, firefox]
+      only: [Google-chrome, google-chrome, org.mozilla.firefox]
     remap:
       # NOTE: Switching containers in Sway
       Super-l: [Esc, Ctrl-l] # Location bar / Select line
