@@ -59,12 +59,33 @@ switch-to-empty)
 switch-to-empty-and-run)
     shift
     swaymsg workspace "$empty_id"
+
+    # 启动前先记下已存在窗口的 con_id, 用于后面识别"新出现的窗口"
+    before_ids=$(swaymsg -t get_tree | jq -c '[.. | objects | select(.pid != null) | .id]')
+
     "$@" &
     app_pid=$!
     disown
     # 应用启动较慢时, rofi 关闭会把焦点抢回原工作区, 所以不能只依赖"提前切工作区"这一步,
     # 需要针对这个 pid 即将开出的窗口单独下规则, 保证它最终落到目标工作区
     swaymsg "for_window [pid=$app_pid] move container to workspace $empty_id, focus"
+
+    # 兜底: flatpak/snap 等沙箱应用启动进程的 pid 和最终窗口的 pid 不是同一个
+    # (bwrap 会 fork 到独立的 pid namespace), 上面基于 pid 的规则永远不会命中,
+    # 这里改为轮询查找相对启动前"新出现的窗口", 找到后直接按 con_id 强制归位
+    (
+        for _ in $(seq 1 25); do
+            sleep 0.2
+            new_id=$(swaymsg -t get_tree | jq -r --argjson before "$before_ids" '
+                [.. | objects | select(.pid != null) | .id] - $before | first // empty
+            ')
+            if [[ -n "$new_id" ]]; then
+                swaymsg "[con_id=$new_id] move container to workspace $empty_id, focus"
+                break
+            fi
+        done
+    ) &
+    disown
     ;;
 
 # for container
