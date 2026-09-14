@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# fcitx5 内置 Pinyin 引擎词库导入工具
+#
+# 将搜狗细胞词库 (.scel) 或已转换的文本词库 (.txt) 转换为 fcitx5 pinyin
+# 可识别的 .dict 格式，并安装到 ~/.local/share/fcitx5/pinyin/dictionaries/
+#
+# 依赖 fcitx5-chinese-addons 提供的 scel2org5 / libime_pinyindict
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+. "$SCRIPT_DIR/../lib/init"
+
+DICT_DIR="$HOME/.local/share/fcitx5/pinyin/dictionaries"
+
+help() {
+    cat <<EOF
+fcitx5 内置 Pinyin 引擎词库导入工具
+
+Usage: pinyin-dict-import [-r] <file.scel|file.txt> ...
+
+    -r    转换完成后重启 fcitx5 使其生效
+    -h    显示此帮助信息
+
+Example:
+    pinyin-dict-import ~/Downloads/网络流行语.scel
+    pinyin-dict-import -r ~/Downloads/*.scel
+
+安装目录:
+    $DICT_DIR
+EOF
+}
+
+restart=false
+while getopts ":rh" opt; do
+    case $opt in
+    r) restart=true ;;
+    h)
+        help
+        exit 0
+        ;;
+    :)
+        error "Option -${OPTARG} requires an argument."
+        exit 1
+        ;;
+    ?)
+        error "Invalid option: -${OPTARG}."
+        exit 1
+        ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -eq 0 ]]; then
+    help
+    exit 1
+fi
+
+for tool in scel2org5 libime_pinyindict; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        error "未找到 $tool，请确认已安装 fcitx5-chinese-addons。"
+        exit 1
+    fi
+done
+
+mkdir -p "$DICT_DIR"
+
+task "导入词库到 fcitx5 pinyin"
+
+count=0
+for src in "$@"; do
+    if [[ ! -f "$src" ]]; then
+        warn "跳过不存在的文件: $src"
+        continue
+    fi
+
+    base="$(basename "$src")"
+    name="${base%.*}"
+    ext="${base##*.}"
+    tmp_txt="$(mktemp "${TMPDIR:-/tmp}/pinyin-dict-import.XXXXXX")"
+    dest_dict="$DICT_DIR/$name.dict"
+
+    case "${ext,,}" in
+    scel)
+        step "转换 $base -> 文本"
+        if ! scel2org5 -o "$tmp_txt" "$src"; then
+            error "转换失败: $base"
+            rm -f "$tmp_txt"
+            continue
+        fi
+        ;;
+    txt)
+        step "使用文本词库 $base"
+        cp "$src" "$tmp_txt"
+        ;;
+    *)
+        warn "跳过不支持的格式: $base (仅支持 .scel / .txt)"
+        rm -f "$tmp_txt"
+        continue
+        ;;
+    esac
+
+    step "生成 $name.dict"
+    if libime_pinyindict "$tmp_txt" "$dest_dict"; then
+        success "已安装: $dest_dict"
+        count=$((count + 1))
+    else
+        error "转换失败: $base"
+    fi
+    rm -f "$tmp_txt"
+done
+
+if [[ $count -eq 0 ]]; then
+    error "没有成功导入的词库。"
+    exit 1
+fi
+
+success "共导入 $count 个词库到 $DICT_DIR"
+
+if $restart; then
+    step "重启 fcitx5"
+    (fcitx5 -r >/dev/null 2>&1 &)
+    success "fcitx5 已重启"
+else
+    note "运行 fcitx5-configtool，在 Pinyin 设置的「词典」标签页启用新词库，或执行 fcitx5 -r 重启生效。"
+fi
