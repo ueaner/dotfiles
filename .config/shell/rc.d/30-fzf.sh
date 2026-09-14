@@ -128,6 +128,22 @@ _fzf_complete_task_post() {
     awk -F':' '{print $1}'
 }
 
+# make <tab>
+# 数据源没有用 grep 匹配 `##` 之类的注释约定（这份仓库的 Makefile 就没有
+# 遵循这种写法），而是用 `make -Rrpn :` 打印内部数据库，取出 "# File" 到
+# "# Finished Make data base" 之间、不以 # 或 . 开头的行的冒号前半部分，
+# 这样能拿到当前目录 Makefile 里所有真实定义的 target（.PHONY 等特殊
+# target 和注释行都被过滤掉），不依赖任何注释书写风格。
+_fzf_complete_make() {
+    _fzf_complete -m --preview 'make -n {1} 2>&1 | head -100' -- "$@" < <(
+        LC_ALL=C make -Rrpn : 2>/dev/null | awk -v RS= -F: '
+            /^# File/,/^# Finished Make data base/ {
+                if ($1 !~ "^[#.]") { print $1 }
+            }
+        ' | sort -u
+    )
+}
+
 # A simple widget for dictionary words
 # fzf-dict-widget() {
 #   LBUFFER="$LBUFFER$(cat /usr/share/dict/words | fzf-tmux -m | paste -sd" " -) "
