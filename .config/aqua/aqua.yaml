@@ -79,3 +79,4 @@ packages: # aqua install -a
   - name: mr-karan/doggo@v1.2.0
   # - name: chmln/sd@v1.1.0
   #   registry: local
+  - name: YS-L/csvlens@v0.15.1
