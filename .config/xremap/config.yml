@@ -109,7 +109,7 @@ keymap:
   - name: Go to specific tab via Alt-number
     exact_match: true
     application:
-      only: [org.mozilla.firefox, org.gnome.Ptyxis]
+      only: org.mozilla.firefox
     remap:
       Super-1:        Alt-1          # Go to specific tab
       Super-2:        Alt-2          # Go to specific tab
@@ -127,6 +127,9 @@ keymap:
     application:
       only: [Google-chrome, google-chrome]
     remap:
+      # Ctrl-KEY_SLASH (Basic's trick) only works in native GTK widgets: Chrome's own fields
+      # (omnibox, web <input>/<textarea>) don't honor it. With gtk-key-theme=Emacs, Ctrl-a
+      # moves to line start inside those fields instead of selecting all.
       Super-a:        Ctrl-a         # [Overrides Basic] Select all
       Super-2:        Ctrl-2         # Go to specific tab
       Super-3:        Ctrl-3         # Go to specific tab
@@ -150,7 +153,7 @@ keymap:
       Super-w:        Ctrl-F4        # [Overrides Basic] Tab: Close
       Super-i:        Ctrl-i         # [Overrides Basic] Page info
       Super-r:        Ctrl-r         # Reload page
-      Super-Shift-r:  Shift-Ctrl-r   # Reload page, ignoring cached content
+      Shift-Super-r:  Shift-Ctrl-r   # Reload page, ignoring cached content
       Shift-Super-h:  Alt-Home       # Home page
       Super-y:        Ctrl-h         # History page
       Shift-Super-j:  Ctrl-j         # Downloads page
