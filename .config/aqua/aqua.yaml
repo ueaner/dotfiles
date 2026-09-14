@@ -36,9 +36,9 @@ packages: # aqua install -a
   - name: fastfetch-cli/fastfetch@2.65.1
   - name: Wilfred/difftastic@0.69.0
   - name: dandavison/delta@0.19.2
-  - name: go-task/task@v3.51.1
+  - name: go-task/task@v3.53.1
   - name: AlexanderGrooff/mermaid-ascii@1.2.0
-  - name: charmbracelet/crush@v0.90.0
+  - name: charmbracelet/crush@v0.94.1
   - name: terrastruct/d2@v0.7.1
   - name: sentriz/cliphist@v0.7.0
     registry: local
@@ -56,10 +56,10 @@ packages: # aqua install -a
   - name: go-gost/gost@v3.2.6
   - name: lima-vm/lima@v2.0.3
   - name: tree-sitter/tree-sitter@v0.26.9
-  - name: neovim/neovim@v0.12.3
+  - name: neovim/neovim@v0.12.5
   - name: arl/gitmux@v0.11.5
   - name: jesseduffield/lazygit@v0.62.2
-  - name: golang/go@go1.26.5
+  - name: golang/go@go1.27.1
     registry: local
   - name: nodejs/node@v24.16.0
   - name: pnpm/pnpm@v11.5.2
