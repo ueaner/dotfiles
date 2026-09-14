@@ -81,6 +81,7 @@
 
 - `dnf-util / install-dmg`：增强型安装器。
 - `kernel-broadcom-wl`: 一键修复 `Intel Mac + Fedora` 的无线网卡驱动
+- `pinyin-dict-import`: 将搜狗词库 (.scel) 转换并导入 fcitx5 内置 pinyin 引擎
 
 ### 📚 库文件功能
 

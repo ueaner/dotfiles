@@ -52,6 +52,7 @@ FLATPAK_PACKAGES=(
     com.tencent.WeChat
     org.gnome.Loupe
     # com.github.gmg137.netease-cloud-music-gtk
+    # io.github.waylyrics.Waylyrics
     # cn.feishu.Feishu
     # ca.desrt.dconf-editor # desktop: GNOME
     # io.gitlab.news_flash.NewsFlash

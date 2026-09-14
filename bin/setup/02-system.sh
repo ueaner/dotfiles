@@ -67,6 +67,7 @@ if [[ "${OSTYPE}" == linux* ]]; then
         sudo systemctl restart systemd-logind.service
     fi
 
+    # 可同时使用 systemd-oomd 十秒级, earlyoom 100 毫秒级
     # 在内存耗尽前主动射死最高占用进程
     if ! rpm --quiet -q earlyoom; then
         step "Install earlyoom"
