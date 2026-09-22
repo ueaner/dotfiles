@@ -1,6 +1,6 @@
 # Zsh 补全文件
 
-手工生成
+手工生成, 生成补全文件后，使用 `update-zsh-compdump` 更新补全缓存:
 
 ```bash
 curl --create-dirs -L -o ~/.local/share/zsh/site-functions/_zig \
@@ -19,6 +19,7 @@ tldr --print-completion zsh > ~/.local/share/zsh/site-functions/_tldr
 yq shell-completion zsh > ~/.local/share/zsh/site-functions/_yq
 python3 -m pip completion --zsh > ~/.local/share/zsh/site-functions/_pip
 limactl completion zsh > ~/.local/share/zsh/site-functions/_limactl
+aqua completion zsh > ~/.local/share/zsh/site-functions/_aqua
 ```
 
 其他示例
