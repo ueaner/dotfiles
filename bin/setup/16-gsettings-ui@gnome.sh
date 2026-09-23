@@ -22,7 +22,7 @@ gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs' # 'Default'
 
 # Color scheme
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' # 'default'
-gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'   # 'Adwaita'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'        # 'Adwaita'
 gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'       # 'Adwaita'
 
 # Show date/weekday in clock
