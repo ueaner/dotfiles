@@ -93,3 +93,7 @@ FLATPAK_PACKAGES=(
 if flatpak info com.tencent.WeChat >/dev/null 2>&1; then
     flatpak --user override --filesystem=xdg-download:rw com.tencent.WeChat
 fi
+
+if flatpak info com.google.Chrome >/dev/null 2>&1; then
+    xdg-settings set default-web-browser com.google.Chrome.desktop
+fi
