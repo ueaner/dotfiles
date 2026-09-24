@@ -7,19 +7,39 @@ log "$(date +"%F %T.%6N")"
 
 DIRECTION="$1"
 case "$DIRECTION" in
-    left)  TMUX_EDGE="pane_at_left"   ; TMUX_DIR="L"; KITTY_DIR="left"  ; SWAY_DIR="left"  ;;
-    down)  TMUX_EDGE="pane_at_bottom" ; TMUX_DIR="D"; KITTY_DIR="bottom"; SWAY_DIR="down"  ;;
-    up)    TMUX_EDGE="pane_at_top"    ; TMUX_DIR="U"; KITTY_DIR="top"   ; SWAY_DIR="up"    ;;
-    right) TMUX_EDGE="pane_at_right"  ; TMUX_DIR="R"; KITTY_DIR="right" ; SWAY_DIR="right" ;;
-    *)
-        notify-send "sway-tmux-navigation: invalid direction \"$DIRECTION\""
-        exit 1
-        ;;
+left)
+    TMUX_EDGE="pane_at_left"
+    TMUX_DIR="L"
+    KITTY_DIR="left"
+    SWAY_DIR="left"
+    ;;
+down)
+    TMUX_EDGE="pane_at_bottom"
+    TMUX_DIR="D"
+    KITTY_DIR="bottom"
+    SWAY_DIR="down"
+    ;;
+up)
+    TMUX_EDGE="pane_at_top"
+    TMUX_DIR="U"
+    KITTY_DIR="top"
+    SWAY_DIR="up"
+    ;;
+right)
+    TMUX_EDGE="pane_at_right"
+    TMUX_DIR="R"
+    KITTY_DIR="right"
+    SWAY_DIR="right"
+    ;;
+*)
+    notify-send "sway-tmux-navigation: invalid direction \"$DIRECTION\""
+    exit 1
+    ;;
 esac
 
 read -r APP_ID PID < <(swaymsg -t get_tree | jq -r '.. | select(.type? and .focused==true) | "\(.app_id) \(.pid)"')
 
-log "sway focused app_id: $APP_ID, pid: $PID"
+log "sway focused app_id: $APP_ID, pid: $PID, direction: $DIRECTION"
 
 # 1. 在终端中使用 Tmux
 if [[ "$APP_ID" =~ ^(Alacritty|foot|footclient)$ ]] && pgrep -P "$PID" | xargs ps -o comm= | grep -q "tmux"; then
@@ -38,7 +58,7 @@ elif [[ "$APP_ID" == "kitty" ]]; then
     [[ ! -S "$socket" ]] && socket=$(ls -t /tmp/mykitty-* 2>/dev/null | head -n1)
     # 确保 kitty socket 存在
     if [[ -S $socket ]]; then
-    kitty_cmd="kitty @ --to unix:$socket"
+        kitty_cmd="kitty @ --to unix:$socket"
         # 获取当前 tab 的布局和窗口数量
         read -r KITTY_LAYOUT WINDOW_COUNT < <($kitty_cmd ls | jq -r '
             .[].tabs[] | select(.is_focused==true) | "\(.layout) \( .windows | length )"
@@ -56,11 +76,12 @@ elif [[ "$APP_ID" == "kitty" ]]; then
     fi
 
 # 3. 浏览器聚焦地址栏
-elif [[ "$APP_ID" =~ ^(org.mozilla.firefox|google-chrome)$ && "$DIRECTION" == "right" ]]; then
+elif [[ "$APP_ID" =~ ^(org.mozilla.firefox|google-chrome|com.google.Chrome)$ && "$DIRECTION" == "right" ]]; then
     HAS_RIGHT=$(swaymsg -t get_tree | jq -r '
         . as $tree | (..|select(.focused?==true)) as $f
-        | .. | select(.type?=="workspace" and any(.nodes[]?; .id==$f.id))
-        | if .layout=="splith" and .nodes[-1].id != $f.id then "yes" else "no" end
+        | .. | select(.type?=="workspace" and any(.nodes[]?, .floating_nodes[]?; .id==$f.id))
+        | if .layout=="splith" and ((.nodes | map(.id) | index($f.id)) // (.nodes | length)) < (.nodes | length) - 1
+          then "yes" else "no" end
     ')
 
     if [[ "$HAS_RIGHT" == "no" ]]; then
