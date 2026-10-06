@@ -37,35 +37,38 @@ right)
     ;;
 esac
 
-read -r APP_ID PID < <(swaymsg -t get_tree | jq -r '.. | select(.type? and .focused==true) | "\(.app_id) \(.pid)"')
+read -r APP_ID PID < <(swaymsg -t get_tree | jq -r '.. | select(.type? and .focused==true) | "\(.app_id // .window_properties.class // "null") \(.pid)"')
 
 log "sway focused app_id: $APP_ID, pid: $PID, direction: $DIRECTION"
 
 # 1. 在终端中使用 Tmux
-if [[ "$APP_ID" =~ ^(Alacritty|foot|footclient)$ ]] && pgrep -P "$PID" | xargs ps -o comm= | grep -q "tmux"; then
-    # 获取 tmux 状态：是否在边缘，以及 pane 数量
-    read -r IS_AT_EDGE PANE_COUNT < <(tmux display-message -p "#{${TMUX_EDGE}} #{window_panes}")
+if [[ "$APP_ID" =~ ^(Alacritty|foot|footclient)$ ]] && pgrep -P "$PID" | xargs -r ps -o comm= | grep -q "tmux"; then
+    # 按 client pid 定位当前终端 attach 的 tmux session，避免多 session 时读写错窗口
+    TMUX_CLIENT=$(pgrep -P "$PID" | xargs -r ps -o pid=,comm= | awk '$2 ~ /^tmux/ {print $1; exit}')
+    TMUX_TARGET=$(tmux list-clients -F '#{client_pid} #{client_session}' 2>/dev/null | awk -v pid="$TMUX_CLIENT" '$1==pid {print $2; exit}')
 
-    if [[ "$PANE_COUNT" -gt 1 && "$IS_AT_EDGE" == "0" ]]; then
+    # 获取 tmux 状态：是否在边缘，以及 pane 数量
+    read -r IS_AT_EDGE PANE_COUNT < <(tmux display-message -t "$TMUX_TARGET" -p "#{${TMUX_EDGE}} #{window_panes}" 2>/dev/null)
+
+    if [[ "$PANE_COUNT" =~ ^[0-9]+$ && "$PANE_COUNT" -gt 1 && "$IS_AT_EDGE" == "0" ]]; then
         log "Switching tmux pane: $DIRECTION"
-        tmux select-pane -"$TMUX_DIR"
+        tmux select-pane -t "$TMUX_TARGET" -"$TMUX_DIR"
         exit $?
     fi
 
 # 2. Kitty 原生分屏
 elif [[ "$APP_ID" == "kitty" ]]; then
     socket="/tmp/mykitty-$PID"
-    [[ ! -S "$socket" ]] && socket=$(ls -t /tmp/mykitty-* 2>/dev/null | head -n1)
-    # 确保 kitty socket 存在
+    # 确保 kitty socket 存在（不用 ls -t 回退，多实例时会连错 kitty）
     if [[ -S $socket ]]; then
         kitty_cmd="kitty @ --to unix:$socket"
-        # 获取当前 tab 的布局和窗口数量
+        # 获取当前 tab 的布局和窗口数量（先限定 focused OS 窗口，避免多窗口时输出多行）
         read -r KITTY_LAYOUT WINDOW_COUNT < <($kitty_cmd ls | jq -r '
-            .[].tabs[] | select(.is_focused==true) | "\(.layout) \( .windows | length )"
+            .[] | select(.is_focused==true) | .tabs[] | select(.is_focused==true) | "\(.layout) \( .windows | length )"
         ')
 
         # 非 stack 布局，多个窗口
-        if [[ "$KITTY_LAYOUT" != "stack" && "$WINDOW_COUNT" -gt 1 ]]; then
+        if [[ "$KITTY_LAYOUT" != "stack" && "$WINDOW_COUNT" =~ ^[0-9]+$ && "$WINDOW_COUNT" -gt 1 ]]; then
             # 尝试移动，如果成功则退出脚本
             if $kitty_cmd focus-window --match "neighbor:$KITTY_DIR" 2>/dev/null; then
                 log "Kitty move: $DIRECTION"
@@ -76,7 +79,7 @@ elif [[ "$APP_ID" == "kitty" ]]; then
     fi
 
 # 3. 浏览器聚焦地址栏
-elif [[ "$APP_ID" =~ ^(org.mozilla.firefox|google-chrome|com.google.Chrome)$ && "$DIRECTION" == "right" ]]; then
+elif [[ "$APP_ID" =~ ^(firefox|org.mozilla.firefox|google-chrome|com.google.Chrome)$ && "$DIRECTION" == "right" ]]; then
     HAS_RIGHT=$(swaymsg -t get_tree | jq -r '
         . as $tree | (..|select(.focused?==true)) as $f
         | .. | select(.type?=="workspace" and any(.nodes[]?, .floating_nodes[]?; .id==$f.id))
@@ -87,8 +90,13 @@ elif [[ "$APP_ID" =~ ^(org.mozilla.firefox|google-chrome|com.google.Chrome)$ && 
     if [[ "$HAS_RIGHT" == "no" ]]; then
         log "Focusing browser address bar"
         # 模拟按下 Ctrl+L 聚焦地址栏
-        wtype -M ctrl -P l -m ctrl -p l || notify-send "sway-tmux-navigation: wtype failed"
-        exit $?
+        if wtype -M ctrl -P l -m ctrl -p l; then
+            exit 0
+        else
+            rc=$?
+            notify-send "sway-tmux-navigation: wtype failed"
+            exit "$rc"
+        fi
     fi
 fi
 
