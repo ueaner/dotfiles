@@ -2,6 +2,7 @@
 .bashrc.local
 .config/shell/.localrc
 .config/environment.d/60-paths.conf
+.config/environment.d/90-aqua.conf
 .local/etc/
 .ssh/
 .dotfiles/
