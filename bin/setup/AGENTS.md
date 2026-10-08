@@ -1,180 +1,183 @@
-# Agent Guide
+# Agent 指南
 
-This is a Bash-based automation suite for provisioning and maintaining a Unix workstation. It targets Fedora (GNOME/Sway) and macOS, using a staged execution model and platform-specific scripts.
+> 本文档仅说明 `bin/setup/` 初始化框架。仓库整体结构、Shell 环境、`bin/` 脚本以及 `waylaunch` Python 项目请查看根目录 `AGENTS.md`。
 
-## Project Purpose
+这是一个基于 Bash 的工作站初始化与维护自动化脚本集合。它采用分阶段执行模型，并支持平台特定的脚本。目标是 Fedora (GNOME/Sway) 和 macOS。
 
-The repository contains numbered shell scripts that configure dotfiles, system settings, desktop environment, applications, services, terminal tooling, and language runtimes. It is designed to be run on the target host, not in CI.
+## 项目用途
 
-## Entry Points
+通过编号脚本配置 dotfiles、系统设置、桌面环境、应用、服务、终端工具和语言运行时。这些脚本设计为在目标主机上直接运行，不用于 CI。
 
-### Primary runner
+## 入口
+
+### 主运行器
 
 ```bash
-./main              # Interactive section selection (requires fzf)
-./main <section>    # Run one section, e.g. prelude, desktop, app
-./main all          # Run all sections in order
-./main help         # Show help
+./main              # 交互式选择阶段（需要 fzf）
+./main <section>    # 运行单个阶段，例如 prelude、desktop、app
+./main all          # 按顺序运行所有阶段
+./main help         # 显示帮助
 ```
 
-The first numeric digit of each script (`NN-*.sh`) determines which section it belongs to. Sections are defined in `main`:
+每个脚本文件名的第一个数字决定所属阶段。阶段在 `main` 中定义：
 
-| Digit | Section  | Meaning                          |
-|-------|----------|----------------------------------|
-| 0     | prelude  | System base (dotfiles, hostname) |
-| 1     | desktop  | Desktop environment              |
-| 2     | app      | Applications                     |
-| 3     | service  | Services / virtualization        |
-| 4     | terminal | Terminal environment             |
-| 5     | lang     | Programming language tooling     |
+| 数字 | 阶段     | 含义                             |
+|------|----------|----------------------------------|
+| 0    | prelude  | 系统基础（dotfiles、主机名）     |
+| 1    | desktop  | 桌面环境                         |
+| 2    | app      | 应用程序                         |
+| 3    | service  | 服务 / 虚拟化                    |
+| 4    | terminal | 终端环境                         |
+| 5    | lang     | 编程语言工具                     |
 
-### Task runner wrapper (optional)
+### Task 包装器（可选）
 
 ```bash
-task                # Interactive multi-select of sections (Taskfile v3)
+task                # 交互式多选阶段（Taskfile v3）
 task process -- <section1> <section2>
 ```
 
-- `Taskfile.yml` is the current wrapper and delegates to `./main <section>`.
-- `Taskfile-v1.yml` is an older task-per-section layout kept for reference; do not use it.
+- `Taskfile.yml` 是当前包装器，调用 `./main <section>`。
+- `Taskfile-v1.yml` 是旧的每个任务对应一个阶段的布局，仅作参考，不要使用。
 
-## Architecture and Execution Flow
+## 架构与执行流程
 
-1. `main` sets strict shell options (`set -euo pipefail`), resolves its own directory, and sources `lib/init`.
-2. `lib/init` auto-loads every `*.sh` in `lib/` except `*_test.sh`, then detects the platform.
-3. `main` iterates over `[0-9][0-9]-*.sh` scripts in its directory.
-   - It filters by the requested section using the first filename digit.
-   - It skips scripts whose `@platform` suffix does not match the current platform.
-   - It sources each matching script in the same shell process (`source`), so all library functions and variables are shared.
-4. Scripts are side-effectful commands (installing packages, setting gsettings, cloning bare repos, etc.). They are not idempotent by default; individual scripts use file-existence checks to avoid duplicate work.
+1. `main` 设置严格 shell 选项（`set -euo pipefail`），解析自身目录，并 source `lib/init`。
+2. `lib/init` 自动加载 `lib/` 下除 `*_test.sh` 外的所有 `*.sh`，然后检测平台。
+3. `main` 遍历目录下的 `[0-9][0-9]-*.sh` 脚本：
+   - 根据请求的阶段按文件名第一个数字过滤。
+   - 跳过 `@platform` 后缀与当前平台不匹配的脚本。
+   - 在同一个 shell 进程中 `source` 每个匹配的脚本，因此所有库函数和变量共享。
+4. 脚本会产生副作用（安装包、设置 gsettings、clone bare 仓库等）。默认不具有幂等性；单个脚本通过文件存在检查来避免重复执行。
 
-### Platform detection
+### 平台检测
 
-`lib/init` sets three variables used for suffix matching:
+`lib/init` 设置三个用于后缀匹配的变量：
 
-- `ARCH` — from `uname -m`.
-- `KERNEL` — `darwin` or `linux`.
-- `SYSTEM` — `macos` or the Linux distro `ID` from `/etc/os-release` (e.g. `fedora`).
-- `DESKTOP` — detected by `current_desktop()` in `lib/platform.sh`. Values: `gnome`, `sway`, or `aqua` on macOS.
+- `ARCH` —— 来自 `uname -m`。
+- `KERNEL` —— `darwin` 或 `linux`。
+- `SYSTEM` —— `macos` 或 Linux 发行版的 `ID`（例如 `fedora`）。
+- `DESKTOP` —— 由 `lib/platform.sh` 中的 `current_desktop()` 检测。取值为 `gnome`、`sway` 或 macOS 上的 `aqua`。
 
-A script named `NN-purpose@<platform>.sh` is executed only when the filename contains one of the current platform tokens. The pattern used in `main` is an extglob:
+脚本命名为 `NN-purpose@<platform>.sh` 时，仅当文件名包含当前平台标识之一时才执行。`main` 中使用的模式是 extglob：
 
 ```bash
 PLATFORM_PATTERN="@(${KERNEL}|${SYSTEM}|${DESKTOP})"
 ```
 
-This means a single script can be scoped with `@fedora`, `@macos`, `@gnome`, `@sway`, or `@aqua`, and multiple variants of the same number can exist (e.g. `16-gsettings-ui@gnome.sh` and `16-gsettings-ui@sway.sh`).
+因此单个脚本可用 `@fedora`、`@macos`、`@gnome`、`@sway` 或 `@aqua` 限定作用域，同一个编号可以有多个变体（例如 `16-gsettings-ui@gnome.sh` 和 `16-gsettings-ui@sway.sh`）。
 
-### Script conventions
+### 脚本约定
 
-Every executable script should follow this shape:
+每个可执行脚本应遵循以下结构：
 
 ```bash
 #!/usr/bin/env bash
-# One-line description
+# 单行描述
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-task "Human-readable task name"
+task "人类可读的任务名称"
 
-# ... implementation ...
+# ... 实现 ...
 ```
 
-- `SCRIPT_DIR` is always computed relative to the script file so scripts can be sourced from anywhere.
-- Use `task` for L3 task headings, `step` for atomic steps, and `success`/`info`/`warn`/`error` for status feedback.
-- Use `section` only when you need an L2 chapter header. Usually `main` prints section headers automatically.
+- `SCRIPT_DIR` 始终相对于脚本文件自身计算，因此脚本可从任意位置被 source。
+- 使用 `task` 输出 L3 任务标题，`step` 输出原子步骤，`success`/`info`/`warn`/`error` 输出状态反馈。
+- 只有在需要 L2 章节标题时才使用 `section`。通常 `main` 会自动打印阶段标题。
 
-## Library Reference
+## 库参考
 
-`lib/init` auto-sources everything in `lib/`. The key libraries are:
+`lib/init` 自动 source `lib/` 下的所有文件。关键库包括：
 
-- `lib/color.sh` — UI helpers (`title`, `section`, `task`, `step`, `notice`, `note`, `info`, `success`, `warn`, `error`, `debug`, `paragraph`, `item`, `items`, `wrap`, `spinner`, `progress`).
-- `lib/trap.sh` — error and exit handling (`on_error`, `push_exit_handler`, `on_exit`, `kill_bg_jobs`).
-- `lib/platform.sh` — `current_desktop()` and `is_sourced()`.
-- `lib/array.sh` — portable array helpers (`array_index_of`, `array_get_at`) that handle Zsh 1-based indexing.
+- `lib/color.sh` —— UI 辅助函数（`title`、`section`、`task`、`step`、`notice`、`note`、`info`、`success`、`warn`、`error`、`debug`、`paragraph`、`item`、`items`、`wrap`、`spinner`、`progress`）。
+- `lib/trap.sh` —— 错误与退出处理（`on_error`、`push_exit_handler`、`on_exit`、`kill_bg_jobs`）。
+- `lib/platform.sh` —— `current_desktop()` 和 `is_sourced()`。
+- `lib/array.sh` —— 可移植数组辅助函数（`array_index_of`、`array_get_at`），处理 Zsh 的 1-based 索引。
 
-### Exit handlers
+### 退出处理
 
-`main` registers `kill_bg_jobs` first so background jobs are cleaned up on exit. If you need cleanup in a script, call `push_exit_handler <command>`; handlers run in LIFO order. Because of `set -e`, any command that might fail for benign reasons must be guarded with `|| true`.
+`main` 首先注册 `kill_bg_jobs`，确保退出时清理后台作业。如果需要自定义清理，调用 `push_exit_handler <command>`；处理程序按 LIFO 顺序执行。由于启用了 `set -e`，任何可能因正常原因失败的命令都必须用 `|| true` 保护。
 
-## Code Style and Safety
+## 代码风格与安全
 
-- Target Bash 3.2+ unless a script explicitly needs newer features. Avoid arrays where plain variables suffice if strict compatibility matters.
-- Always start with `#!/usr/bin/env bash`.
-- Scripts executed directly should use `set -euo pipefail` (or the equivalent in `main`). Scripts intended only for sourcing may skip this.
-- Quote variables. `.shellcheckrc` does not globally disable any checks; if a specific line needs intentional word splitting, add a local `# shellcheck disable=SC2086` directive instead.
-- Prefer `[[ ]]` over `[ ]`.
-- Prefer `"$SCRIPT_DIR/lib/init"` rather than relative paths.
-- Avoid `cd` into other directories; if you must, push/pop and guard with `|| exit`.
+- 目标 Bash 3.2+，除非脚本明确需要新特性。如果严格兼容很重要，尽量避免使用数组。
+- 始终以 `#!/usr/bin/env bash` 开头。
+- 直接执行的脚本应使用 `set -euo pipefail`（或在 `main` 中设置等效选项）。仅用于被 source 的脚本可跳过。
+- 变量加引号。`.shellcheckrc` 没有全局禁用任何检查；如果某行确实需要 word splitting，请在该行添加 `# shellcheck disable=SC2086`。
+- 优先使用 `[[ ]]` 而非 `[ ]`。
+- 优先使用 `"$SCRIPT_DIR/lib/init"` 而非相对路径。
+- 避免 `cd` 到其他目录；如果必须，使用 push/pop 并用 `|| exit` 保护。
 
-## Testing
+## 测试
 
-There is no formal test runner. `lib/color_test.sh` is a manual demo of the UI library output and can be run directly:
+没有正式的测试运行器。`lib/color_test.sh` 是 UI 库输出的手动演示，可直接运行：
 
 ```bash
 ./lib/color_test.sh
 ```
 
-Before committing or editing a script, run it through ShellCheck:
+提交或编辑脚本前，请用 ShellCheck 检查：
 
 ```bash
 shellcheck -x main lib/*.sh libexec/* [0-9][0-9]-*.sh
 ```
 
-- Use `-x` so ShellCheck follows sourced files where possible.
-- `SC1091` info messages about not following `./lib/init` or `../lib/init` are expected because ShellCheck resolves those paths relative to each script; they can be ignored.
-- Do not introduce new warnings or errors.
+- 使用 `-x` 让 ShellCheck 尽可能跟随 sourced 文件。
+- 关于无法跟随 `./lib/init` 或 `../lib/init` 的 `SC1091` 信息是预期的，因为 ShellCheck 会按每个脚本相对路径解析；可忽略。
+- 不要引入新的 warning 或 error。
 
-## Important Gotchas
+## 重要注意事项
 
-- **Scripts are sourced, not executed.** `main` runs `. "$f"` for each matching section script. That means global state (variables, traps, functions, `cd`) persists between scripts. Be careful not to leak variables or change the working directory.
-- **Avoid `cd` in sourced scripts.** Because scripts are sourced into the same shell, an unguarded `cd` affects every subsequent script. Use absolute paths or wrap temporary directory changes in a subshell.
-- **Strict mode is on.** `set -euo pipefail` means missing variables, failing commands, and failing pipes abort the run. Use `|| true` for commands whose failure is acceptable.
-- **Section index is the first digit only.** `main` extracts `curr_idx="${filename:0:1}"`, so scripts like `09-intel-based-macbook@fedora.sh` belong to section 0 (prelude). Keep numbering consistent with the section map in `main`.
-- **Platform variants are mutually exclusive.** If a filename contains `@`, it must match one of `${KERNEL}`, `${SYSTEM}`, or `${DESKTOP}`. If none match, the script is skipped. This means a generic `16-gsettings-ui.sh` would run on all platforms; if you only want it on GNOME, name it `16-gsettings-ui@gnome.sh`.
-- **Idempotency is preferred for install-once steps.** Use existence checks, `done` marker files, or `rpm -q` to avoid re-running expensive or stateful operations on every `./main all`.
-- **ShellCheck disables should be local.** `.shellcheckrc` no longer globally disables any checks. If a specific line needs intentional word splitting, add `# shellcheck disable=SC2086` on that line only.
-- **No CI or deploy pipeline.** This is host-local provisioning code. The only "deploy" is running `main` or `task` on a target machine.
-- **macOS brew path.** The project installs Homebrew to `/opt/local` rather than the default `/opt/homebrew` or `/usr/local`. The install script is patched via `sed` during `05-packager@macos.sh`.
-- **Aqua tools.** `21-aqua.sh` installs the custom `aqa` binary from `ueaner/aqua` releases (not the upstream aquaproj). It then runs `aqua install --all`, relying on `AQUA_GLOBAL_CONFIG` for globally available tools.
-- **Git bare repos for dotfiles.** `01-dotfiles.sh` clones `ueaner/dotfiles` and `ueaner/local` as bare repositories into `$HOME/.dotfiles` and `$HOME/.dotlocal`, then checks them out into `$HOME` and `$HOME/.local` respectively.
-- **Taskfile-v1 is legacy.** Only edit `Taskfile.yml` for new behavior.
+- **脚本是 source 执行，不是直接执行。** `main` 对每个匹配的阶段脚本执行 `. "$f"`。这意味着全局状态（变量、trap、函数、`cd`）在脚本之间持续存在。注意不要泄漏变量或改变工作目录。
+- **避免在被 source 的脚本中 `cd`。** 因为脚本被 source 到同一个 shell，未保护的 `cd` 会影响后续脚本。使用绝对路径，或把临时目录变更包裹在子 shell 中。
+- **严格模式已启用。** `set -euo pipefail` 意味着缺失变量、失败命令、失败管道都会中止运行。可忽略的失败请使用 `|| true`。
+- **阶段索引只看第一个数字。** `main` 提取 `curr_idx="${filename:0:1}"`，因此 `09-intel-based-macbook@fedora.sh` 属于阶段 0（prelude）。保持编号与阶段映射一致。
+- **平台变体互斥。** 如果文件名包含 `@`，则必须匹配 `${KERNEL}`、`${SYSTEM}` 或 `${DESKTOP}` 之一。否则脚本会被跳过。这意味着通用的 `16-gsettings-ui.sh` 会在所有平台上运行；如果只想在 GNOME 上运行，请命名为 `16-gsettings-ui@gnome.sh`。
+- **安装一次的步骤优先幂等。** 使用存在检查、`done` 标记文件或 `rpm -q`，避免每次 `./main all` 都重新执行昂贵或有状态的操作。
+- **ShellCheck 禁用应本地化。** `.shellcheckrc` 不再全局禁用任何检查。如果某行确实需要 word splitting，请仅在该行添加 `# shellcheck disable=SC2086`。
+- **没有 CI 或部署流水线。** 这是主机本地初始化代码。唯一的"部署"就是在目标机器上运行 `main` 或 `task`。
+- **提交 `0491d9b` 的标题有误导性。** "fix: 暂时不兼容 macOS" 实际只是临时注释掉了 `.config/alacritty/alacritty.toml` 中 `[env]` 下硬编码的 `PATH`（外加 tmux gitmux 路径等微调），并不代表 macOS 支持被暂停。
+- **macOS Homebrew 路径。** macOS 上 Homebrew 被安装到 `/opt/local` 而非默认的 `/opt/homebrew` 或 `/usr/local`。安装脚本在 `05-packager@macos.sh` 中通过 `sed` 打补丁。
+- **Aqua 工具。** `21-aqua.sh` 从 `ueaner/aqua` releases 安装定制的 `aqa` 二进制（不是上游 aquaproj）。然后运行 `aqua install --all`，依赖 `AQUA_GLOBAL_CONFIG` 使工具全局可用。
+- **Dotfiles 使用 Git bare 仓库。** `01-dotfiles.sh` 将 `ueaner/dotfiles` 和 `ueaner/local` 分别 clone 为 `$HOME/.dotfiles` 和 `$HOME/.dotlocal` 两个 bare 仓库，然后分别 checkout 到 `$HOME` 和 `$HOME/.local`。
+- **Taskfile-v1 已废弃。** 新增行为请只编辑 `Taskfile.yml`。
 
-## File Layout
+## 文件布局
 
 ```text
 .
-├── main                  # Entry point
-├── Taskfile.yml          # Current task runner wrapper
-├── Taskfile-v1.yml       # Legacy task runner
-├── README.md             # Human-facing documentation in Chinese
-├── .shellcheckrc         # ShellCheck config
-├── AGENTS.md             # This file
-├── files/                # Static config files
+├── main                  # 入口
+├── Taskfile.yml          # 当前 task 包装器
+├── Taskfile-v1.yml       # 旧版 task 包装器
+├── README.md             # 面向用户的文档（中文）
+├── .shellcheckrc         # ShellCheck 配置
+├── AGENTS.md             # 本文档
+├── files/                # 静态配置文件
 │   ├── chrome-flags.conf
 │   └── dnf.conf
-├── lib/                  # Shared libraries
-│   ├── init              # Auto-loader + platform detection
+├── lib/                  # 共享库
+│   ├── init              # 自动加载器 + 平台检测
 │   ├── array.sh
 │   ├── color.sh
 │   ├── color_test.sh
 │   ├── platform.sh
 │   └── trap.sh
-├── libexec/              # Standalone helper tools
+├── libexec/              # 独立辅助工具
 │   ├── dnf-util
 │   ├── gnome-custom-keybinding
 │   ├── gnome-shell-extensions-downloader
 │   ├── install-dmg
 │   └── kernel-broadcom-wl
-└── NN-*.sh               # Section scripts
+└── NN-*.sh               # 阶段脚本
 ```
 
-## Adding a New Script
+## 添加新脚本
 
-1. Pick the right section number (`0`–`5`).
-2. Name it `NN-purpose.sh` for cross-platform behavior or `NN-purpose@<platform>.sh` for platform-specific behavior.
-3. Start with the standard header and source `lib/init`.
-4. Use the UI helpers for output.
-5. Run `shellcheck` on the new file.
-6. If you add a new platform suffix that `main` does not currently match, update `PLATFORM_PATTERN` in `main`.
+1. 选择正确的阶段编号（`0`–`5`）。
+2. 跨平台行为命名为 `NN-purpose.sh`，平台特定行为命名为 `NN-purpose@<platform>.sh`。
+3. 使用标准头部并 source `lib/init`。
+4. 使用 UI 辅助函数输出。
+5. 对新文件运行 `shellcheck`。
+6. 如果添加了 `main` 当前不匹配的新的平台后缀，请更新 `main` 中的 `PLATFORM_PATTERN`。
