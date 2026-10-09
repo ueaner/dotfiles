@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# gh 包装：不用全局的 GITHUB_TOKEN / GH_TOKEN, 改用 `gh auth login` 保存在钥匙串里的凭据。
+# 脚本、hook 里调用 gh 也生效。
+IFS=: read -ra dirs <<<"$PATH"
+for dir in "${dirs[@]}"; do
+    candidate="$dir/gh"
+    # -ef：是同一个文件（本脚本自己，包括经由符号链接或重复的 PATH 目录找到的）就跳过
+    if [[ -f $candidate && -x $candidate && ! $candidate -ef ${BASH_SOURCE[0]} ]]; then
+        exec env -u GITHUB_TOKEN -u GH_TOKEN "$candidate" "$@"
+    fi
+done
+echo "gh: no gh found in PATH besides ${BASH_SOURCE[0]}" >&2
+exit 127
