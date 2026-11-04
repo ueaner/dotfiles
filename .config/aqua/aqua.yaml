@@ -17,10 +17,10 @@ registries:
     type: local
     path: $HOME/.config/aqua/registry/network.yaml
 packages: # aqua install -a
-  - name: astral-sh/uv@0.12.23
-  - name: junegunn/fzf@v0.74.4
-  - name: junegunn/fzf/fzf-tmux@v0.74.4
-  - name: sharkdp/fd@v10.5.0
+  - name: astral-sh/uv@0.13.7
+  - name: junegunn/fzf@v0.74.5
+  - name: junegunn/fzf/fzf-tmux@v0.74.5
+  - name: sharkdp/fd@v10.5.1
   - name: ajeetdsouza/zoxide@v0.10.0
   - name: BurntSushi/ripgrep@15.2.0
   - name: sxyazi/yazi@v26.9.1
@@ -30,15 +30,15 @@ packages: # aqua install -a
   - name: antonmedv/fx@40.0.0
   - name: boyter/scc@v4.1.0
   - name: sharkdp/bat@v0.26.1
-  - name: ClementTsang/bottom@0.14.9
+  - name: ClementTsang/bottom@0.15.0
   - name: Byron/dua-cli@v2.45.1
   - name: muesli/duf@v0.9.1
   - name: fastfetch-cli/fastfetch@2.69.0
-  - name: Wilfred/difftastic@0.70.0
+  - name: Wilfred/difftastic@0.72.0
   - name: dandavison/delta@0.20.1
   - name: go-task/task@v3.54.0
   - name: AlexanderGrooff/mermaid-ascii@1.6.1
-  - name: charmbracelet/crush@v0.98.0
+  - name: charmbracelet/crush@v0.99.0
   - name: terrastruct/d2@v0.9.0
   - name: sentriz/cliphist@v0.7.0
     registry: local
@@ -52,34 +52,35 @@ packages: # aqua install -a
     registry: network
   - name: corazawaf/coraza-caddy@v2.10.2
     registry: network
-  - name: fatedier/frp@v0.66.0
+  - name: fatedier/frp@v0.72.0
   - name: go-gost/gost@v3.3.0
   - name: lima-vm/lima@v2.0.3
   - name: tree-sitter/tree-sitter@v0.27.0
-  - name: neovim/neovim@v0.12.5
+  - name: neovim/neovim@v0.12.6
   - name: arl/gitmux@v0.11.5
-  - name: jesseduffield/lazygit@v0.66.0
-  - name: golang/go@go1.27.1
+  - name: jesseduffield/lazygit@v0.66.2
+  - name: golang/go@go1.27.3
     registry: local
   - name: nodejs/node@v24.21.0
   - name: pnpm/pnpm@v12.10.0
     registry: local
   - name: devmatteini/dra@0.10.3
     registry: local
-  - name: linebender/resvg@v0.48.1
+  - name: linebender/resvg@v0.49.0
   - name: uutils/coreutils@0.12.0
     registry: local
   - name: eza-community/eza@v0.23.5
-  - name: jorgerojas26/lazysql@v0.6.0
-  - name: riii111/sabiql@v3.0.1
+  - name: jorgerojas26/lazysql@v0.7.0
+  - name: riii111/sabiql@v3.0.2
     registry: network
   - name: achristmascarl/rainfrog@v0.4.6
   # aqua cp -o /usr/local/bin bandwhich
   - name: imsnif/bandwhich@v0.23.1
-  - name: mr-karan/doggo@v1.4.0
+  - name: mr-karan/doggo@v1.4.2
   # - name: chmln/sd@v1.1.0
   #   registry: local
   - name: YS-L/csvlens@v0.15.1
-  - name: lexmount/moli@v1.1.14
+  - name: lexmount/moli@v1.1.21
     registry: local
-  - name: rtk-ai/rtk@v0.51.0
+  - name: rtk-ai/rtk@v1.1.0
+  - name: cli/cli@v2.103.3
