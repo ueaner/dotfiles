@@ -6,6 +6,7 @@
 Description=frp client
 After=network-online.target
 Requires=network-online.target
+StartLimitIntervalSec=10min
 
 [Install]
 WantedBy=default.target
@@ -21,4 +22,3 @@ Restart=on-failure
 # Ensure retries every 10 seconds for 10 minutes
 RestartSec=10s
 StartLimitBurst=100
-StartLimitIntervalSec=10min

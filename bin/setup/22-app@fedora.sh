@@ -14,9 +14,12 @@ DNF_PACKAGES=(
     wl-clipboard
     wtype
     xlsclients
-    android-tools
-    gvfs-mtp # Thunar mounts Android devices
-    libmtp   # Same as above
+    libimobiledevice       # iOS, uv tool install pymobiledevice3
+    libimobiledevice-utils # iOS
+    usbmuxd                # iOS
+    android-tools          # Android
+    gvfs-mtp               # Thunar mounts Android devices
+    libmtp                 # Same as above
     grimpicker
     wf-recorder
     fcitx5

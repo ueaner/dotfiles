@@ -75,6 +75,16 @@
 
 针对 `Intel Mac + Fedora` 的无线网卡驱动一键修复。
 
+3. 触控板排障
+
+在 `Intel Mac + Fedora` 上，如果内置触控板突然失灵，但设备仍被系统识别，可以重载 `bcm5974` 驱动恢复（已在 MacBook / Sway 环境验证）：
+
+```sh
+sudo modprobe -r bcm5974 && sudo modprobe bcm5974
+```
+
+该命令会短暂断开并重新加载内置触控板，不影响正在运行的程序。
+
 ## 🧰 专用工具集
 
 ### 🔌 libexec 工具

@@ -15,6 +15,8 @@ image=$BACKGROUND_PATH
 scaling=fill
 EOT
 
+    # sudo cp ~/.local/share/backgrounds/f42-01-day.jxl /usr/share/backgrounds/f42-01-day.jxl
+    # sudo ln -sf /usr/share/backgrounds/f42-01-day.jxl /usr/share/backgrounds/default.jxl
     if grep --quiet -w sddm /etc/sysconfig/desktop; then
         # theme=$(grep --color=never -r -h -P -o "^Current=\K.*" /usr/lib/sddm/sddm.conf.d/*.conf /etc/sddm.conf.d/*.conf /etc/sddm.conf)
         theme=$(find /etc/sddm.conf.d/ /usr/lib/sddm/sddm.conf.d/ /etc/sddm.conf -name "*.conf" -exec grep --color=never -h -P -o "^Current=\K.*" {} +)
