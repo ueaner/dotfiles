@@ -1,7 +1,7 @@
 ---
 registries:
   - type: standard
-    ref: v4.454.0 # renovate: depName=aquaproj/aqua-registry
+    ref: v4.581.1 # renovate: depName=aquaproj/aqua-registry
   - name: local # aqua g -i local,sentriz/cliphist
     type: local
     path: registry/local.yaml
@@ -9,5 +9,5 @@ registries:
     type: local
     path: registry/network.yaml
 packages: # aqua install -a
-  - name: xremap/xremap/gnome@v0.14.9
+  - name: xremap/xremap/gnome@v0.15.17
     registry: local
