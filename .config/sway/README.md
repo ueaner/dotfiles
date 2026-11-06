@@ -471,7 +471,7 @@ tiling_drag enable
 3. **`layout.xkb` 未被加载。** Sway 配置中 `xkb_file` 被注释掉，物理键位交换由 `xremap` 完成。
 4. **`cb13.conf` 引用了不存在的 `sway-new-workspace`。** `XF86Forward` 绑定会失败，除非该脚本存在。
 5. **Waybar 录屏模块依赖 `SIGRTMIN+8`。** `sway-recording` 启动后每秒发送该信号，模块 `interval` 为 `once`。
-6. **环境变量 `WLR_DRM_NO_ATOMIC=1`。** `.config/environment.d/10-wayland.conf` 设置该变量，用于规避 Intel Haswell 核显在 wlroots atomic KMS 下的死锁。
+6. **环境变量 `WLR_DRM_NO_ATOMIC` 已停用。** `.config/environment.d/10-wayland.conf` 曾设置 `WLR_DRM_NO_ATOMIC=1` 规避 Intel Haswell/Broadwell 核显在 wlroots atomic KMS 下的死锁；Fedora 45（wlroots 0.20）下 legacy DRM 路径无法点亮外接显示器（提示无讯号），现已注释掉、改用 atomic。若再次出现多显示器卡死，可取消注释后重新登录。
 7. **截图/录屏通知是阻塞的。** 使用 `dunstify --block`，脚本会等待用户点击或关闭通知才继续。
 8. **Waylaunch 处于早期阶段。** Python 项目无测试，类型检查器可能对未安装的绝对导入报错。
 9. **多显示器下 `move container to workspace prev/next` 的跨越行为。** `Super + Shift + ←/→` 会跨当前输出移动容器；如果目标工作区在另一显示器上，窗口会随之迁移到该显示器。
