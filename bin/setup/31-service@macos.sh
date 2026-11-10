@@ -5,6 +5,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Configure auto-start service (macOS)"
 
+# 全新安装的 macOS 没有 ~/Library/LaunchAgents 目录，ln -sf 会因
+# "No such file or directory" 失败并在 set -e 下中断整个 main
+mkdir -p ~/Library/LaunchAgents
+
 # 加载 LaunchAgent，保证幂等：
 # - plist（及其软链目标）不存在时跳过 —— 这些文件来自私有仓库/dotlocal，
 #   新机器上可能尚未部署，不应因此中断 main；
