@@ -12,7 +12,7 @@ task "Timezone Configuration"
 timezone_t=Asia/Singapore
 
 if [[ "${OSTYPE}" == darwin* ]]; then
-    tz=$(systemsetup -gettimezone | awk -F': ' '{print $2}')
+    tz=$(sudo systemsetup -gettimezone | awk -F': ' '{print $2}')
 
     if [[ "$tz" != "$timezone_t" ]]; then
         step "set timezone to $timezone_t"
