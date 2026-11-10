@@ -60,13 +60,49 @@ mkdir -p "$ANDROID_HOME/cmdline-tools"
 ANDROID_CLI="$ANDROID_HOME/cmdline-tools/latest/bin/android"
 
 if [[ ! -x "$ANDROID_CLI" ]]; then
-    # 从 Homebrew API 取下载地址，避免写死版本号：
-    # macOS cask 的主 url 即 commandlinetools-mac-*_latest.zip，
-    # Linux 变体在 variations.x86_64_linux 下
+    # 从 Google SDK repository feed（repository2-3.xml）解析 cmdline-tools;latest
+    # 的下载地址 —— 这是 sdkmanager / Android CLI 的同一真相源，发版即更新；
+    # 含全部平台变体（含 Apple Silicon 的 mac_arm64）。brew cask API 由社区
+    # 人工维护版本号与 URL，实测滞后一个大版本（22.0 vs 23.0.0），弃用。
     if [[ "${OSTYPE}" == darwin* ]]; then
-        CMDLINE_URL=$(curl -s https://formulae.brew.sh/api/cask/android-commandlinetools.json | jq -r '.url')
+        if [[ "$(uname -m)" == "arm64" ]]; then
+            host_platform=mac_arm64
+        else
+            host_platform=mac_x86_64
+        fi
     else
-        CMDLINE_URL=$(curl -s https://formulae.brew.sh/api/cask/android-commandlinetools.json | jq -r '.variations.x86_64_linux.url')
+        host_platform=linux
+    fi
+    # 按 schema 代际从新到旧探测。带代际号的文件名是谷歌的向后兼容契约
+    # （老 sdkmanager 版本依赖其不变，2-1 至今可用），且各代际收录的包
+    # 同样新（2-1 的 cmdline-tools;latest 也是最新版）；mac_arm64 变体
+    # 需 ≥2-2 的 host-arch 表达能力，探测不到会自动落到旧代际再试
+    CMDLINE_URL=
+    for feed in repository2-3 repository2-2 repository2-1; do
+        if url=$(curl -sf "https://dl.google.com/android/repository/$feed.xml" | python3 -c '
+import re
+import sys
+
+want = sys.argv[1]
+data = sys.stdin.read()
+m = re.search(r"<remotePackage path=\"cmdline-tools;latest\">(.*?)</remotePackage>", data, re.S)
+if not m:
+    sys.exit(1)
+for archive in re.findall(r"<archive>(.*?)</archive>", m.group(1), re.S):
+    if re.search(r"<url>commandlinetools-" + re.escape(want) + r"-", archive):
+        u = re.search(r"<url>([^<]+)</url>", archive)
+        if u:
+            print("https://dl.google.com/android/repository/" + u.group(1))
+            break
+' "$host_platform") && [[ -n "$url" ]]; then
+            CMDLINE_URL=$url
+            info "cmdline-tools URL from $feed.xml"
+            break
+        fi
+    done
+    if [[ -z "$CMDLINE_URL" ]]; then
+        error "无法从 repository feed 解析 $host_platform 的 cmdline-tools 下载地址"
+        is_sourced && return 1 || exit 1
     fi
     curl -fL -o /tmp/commandlinetools.zip "$CMDLINE_URL"
     unzip -q -o /tmp/commandlinetools.zip -d "$ANDROID_HOME/cmdline-tools"
