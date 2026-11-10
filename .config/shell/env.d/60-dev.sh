@@ -92,9 +92,13 @@ export CARGO_INSTALL_ROOT=~/.local # ~/.local/bin
 # export CARGO_BUILD_TARGET_DIR=~/.target
 export CARGO_BUILD_TARGET_DIR=$XDG_CACHE_HOME/cargo-build
 
-# https://mirrors.ustc.edu.cn/help/rust-static.html
-export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+# https://rsproxy.cn 字节 Rust 生态代理，USTC rust-static 对 rustup-init
+# 的下载请求持续返回 403（普通 curl GET 正常，WAF 特征拦截），换 rsproxy
+export RUSTUP_DIST_SERVER=https://rsproxy.cn
+export RUSTUP_UPDATE_ROOT=https://rsproxy.cn/rustup
+# # https://mirrors.ustc.edu.cn/help/rust-static.html
+# export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+# export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 # # https://mirrors.tuna.tsinghua.edu.cn/help/rustup/
 # export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
 # export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
