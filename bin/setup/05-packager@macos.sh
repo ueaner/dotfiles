@@ -47,3 +47,6 @@ if ! /opt/homebrew/bin/brew tap | grep -q '^homebrew/cask$'; then
     step "Tap homebrew/cask (TUNA mirror)"
     /opt/homebrew/bin/brew tap --force --custom-remote homebrew/cask "${HOMEBREW_CASK_GIT_REMOTE:-https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask.git}"
 fi
+# 镜像 remote 并非官方 origin，brew 7.x 会拒绝从未信任的 tap 加载 cask：
+# "Refusing to load cask ... from untrusted tap"
+/opt/homebrew/bin/brew trust homebrew/cask >/dev/null 2>&1 || true
