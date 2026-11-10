@@ -70,20 +70,42 @@ if [[ ! -x "$SDKMANAGER" ]]; then
     unzip -q -o /tmp/commandlinetools.zip -d "$ANDROID_HOME/cmdline-tools"
     mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
 fi
-info "$("$SDKMANAGER" --version)"
+
+ANDROID_CLI="$ANDROID_HOME/cmdline-tools/latest/bin/android"
+if [[ -x "$ANDROID_CLI" ]]; then
+    # cmdline-tools 22+ 内置 Android CLI（1.x），sdkmanager 已被官方标记
+    # deprecated 且会往 stderr 打警告；安装组件改走 `android sdk`
+    info "android CLI $("$ANDROID_CLI" --no-metrics -V 2>/dev/null)"
+else
+    info "$("$SDKMANAGER" --version 2>/dev/null | tail -1)"
+fi
 
 step "Accept licenses and install SDK components"
 
 # sdkmanager --licenses 会逐个提示确认；用 yes 自动应答。
 # yes 在 sdkmanager 提前退出后会收到 SIGPIPE 而返回非零，配合 pipefail 需 `|| true` 兜底。
-yes | "$SDKMANAGER" --licenses >/dev/null || true
+# 过渡期策略（cmdline-tools 22.x 同时内置两者）：
+#   协议签署走 sdkmanager —— Android CLI 复用 licenses/ 目录，保持非交互；
+#   组件安装走 Android CLI —— 无 deprecation 警告且幂等（已装组件静默跳过）。
+# 旧版 cmdline-tools 没有 android 二进制时回退纯 sdkmanager 路径。
+SDK_PACKAGES=(
+    "platform-tools"
+    "platforms;$SDK_PLATFORM"
+    "build-tools;$SDK_BUILD_TOOLS"
+    "ndk;$SDK_NDK"
+)
 
-"$SDKMANAGER" --install \
-    "platform-tools" \
-    "platforms;$SDK_PLATFORM" \
-    "build-tools;$SDK_BUILD_TOOLS" \
-    "ndk;$SDK_NDK" \
-    >/dev/null
+if [[ -x "$SDKMANAGER" ]]; then
+    yes | "$SDKMANAGER" --licenses >/dev/null || true
+fi
+
+if [[ -x "$ANDROID_CLI" ]]; then
+    # --no-metrics 关闭遥测；--sdk 显式指定 —— CLI 默认只探测
+    # ~/Library/Android/sdk 和 ANDROID_HOME，而非交互 shell 往往没有后者
+    "$ANDROID_CLI" --no-metrics --sdk="$ANDROID_HOME" sdk install "${SDK_PACKAGES[@]}"
+else
+    "$SDKMANAGER" --install "${SDK_PACKAGES[@]}" >/dev/null
+fi
 
 success "platform-tools, platforms;$SDK_PLATFORM, build-tools;$SDK_BUILD_TOOLS, ndk;$SDK_NDK 已安装"
 note "ANDROID_HOME / NDK_HOME 由 shell 环境配置（~/.config/shell/env.d/60-dev.sh）自动导出"
