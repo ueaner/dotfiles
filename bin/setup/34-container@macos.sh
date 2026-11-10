@@ -45,7 +45,10 @@ fi
 
 step "Start container system service"
 if ! container system status >/dev/null 2>&1; then
-    container system start
+    # container system start 会交互式询问是否安装 kata 默认内核，
+    # 非交互环境（ssh / 重跑 main）下直接 "failed to read user input" 退出；
+    # herestring 预置应答，避免 yes| 的 SIGPIPE 在 pipefail 下产生非零状态
+    container system start <<< $'y\ny\ny\n'
 fi
 
 info "container status: $(container system status --format json 2>/dev/null | head -c 200)"
