@@ -30,6 +30,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         # baidunetdisk
         google-chrome
         wechat
+        wechatwebdevtools
         # dingtalk
         # visual-studio-code
         android-platform-tools
