@@ -30,9 +30,12 @@ current_desktop() {
 # Returns: 如果被导入返回 0，如果直接执行返回 1
 # Usage: is_sourced
 is_sourced() {
-    if [[ -n "$ZSH_VERSION" ]]; then
+    if [[ -n "${ZSH_VERSION:-}" ]]; then
         [[ "${zsh_eval_context:-}" == *file* ]]
     else
-        [[ "${BASH_SOURCE[1]}" != "${0}" ]]
+        # 注意：函数内 BASH_SOURCE[0] 是函数定义所在文件（platform.sh），不能用。
+        # BASH_SOURCE[1] 是调用方的文件：被 source 时（stage 脚本顶层调用）与 $0 不同；
+        # 直接执行时相同。:- 兜底防 set -u（如 bash -c 场景下无调用方文件）。
+        [[ "${BASH_SOURCE[1]:-}" != "${0}" ]]
     fi
 }

@@ -11,6 +11,7 @@ task "Hostname Configuration"
 # hostname
 # ----------------------------------------------------------------
 hostnames=(
+    "Mac17,9" mac26
     "MacBookPro12,1" mac15
     "MacBookPro11,1" mac14
     Link cb13
