@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
 # Apple Container + Socktainer (macOS native Linux containers with Docker API)
+#
+# 架构关系：
+#
+#   docker / docker compose (客户端)          container (苹果原生 CLI)
+#           │                                        │
+#           └──── Docker REST API ────► socktainer ──┘
+#                         (兼容层：把 Docker API 翻译成 Apple Container API)
+#                                                  │
+#                              container-apiserver (macOS 26+ 内置
+#                              containerization 框架，轻量 VM，无需 Docker Desktop)
+#
+# - 镜像为标准 OCI/Docker 格式（docker.io 可直接 pull）
+# - socktainer 启动时自动创建/更新名为 socktainer 的 docker context，
+#   首次使用执行 `docker context use socktainer`，无需手动导出 DOCKER_HOST
+# - named volume 默认 nosync（写密集更快，guest fsync 不保证落盘）；
+#   需要持久化语义时 `docker volume create -o sync=fsync <name>`
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
@@ -51,6 +67,11 @@ if ! container system status >/dev/null 2>&1; then
     container system start <<< $'y\ny\ny\n'
 fi
 
+step "Install recommended Linux kernel (kata)"
+# 未配置默认内核时无法运行容器；kernel set 下载前可能交互确认，herestring 兜底。
+# 已配置时为幂等 no-op
+container system kernel set --recommended <<< $'y\n'
+
 info "container status: $(container system status --format json 2>/dev/null | head -c 200)"
 
 # -------------------------------------------------------------
@@ -63,10 +84,24 @@ else
     info "socktainer already installed: $(socktainer --version 2>/dev/null || true)"
 fi
 
-note "To use Docker CLI / Docker Compose with apple/container:"
-item "export DOCKER_HOST=unix:///opt/homebrew/var/run/socktainer/.socktainer/container.sock"
-item "Start the daemon: socktainer"
-item "Or register a LaunchAgent at ~/Library/LaunchAgents/run.socktainer.plist"
+# 常驻：plist 由本仓库管理，软链到 ~/Library/LaunchAgents。
+# 全新安装的 macOS 没有该目录，ln 前需确保存在（31-service 也会创建，这里兜底）
+step "Configure and enable socktainer.service"
+if [[ -f ~/.config/plist/LaunchAgents/run.socktainer.plist ]]; then
+    mkdir -p ~/Library/LaunchAgents
+    ln -sf ~/.config/plist/LaunchAgents/run.socktainer.plist ~/Library/LaunchAgents/run.socktainer.plist
 
-info "Socktainer provides a Docker-compatible socket for apple/container."
-info "Run 'socktainer' in a terminal or via a LaunchAgent to start the daemon."
+    if launchctl print "gui/$(id -u)/run.socktainer" &>/dev/null; then
+        info "socktainer 已加载，跳过"
+    else
+        step "launchctl load run.socktainer"
+        launchctl load ~/Library/LaunchAgents/run.socktainer.plist
+    fi
+else
+    warn "run.socktainer.plist 不存在，跳过（前台调试可手动执行 socktainer）"
+fi
+
+note "Docker CLI 首次使用："
+item "docker context use socktainer    # socktainer 启动时自动创建该 context"
+item "docker run --rm hello-world      # 验证"
+item "日志：/tmp/socktainer.{stdout,stderr}.log"
