@@ -8,9 +8,9 @@
     <string>org.gofrp.frpc</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/local/bin/frpc</string>
+        <string>/opt/homebrew/bin/frpc</string>
         <string>-c</string>
-        <string>/opt/local/etc/frpc-mac15.toml</string>
+        <string>/opt/homebrew/etc/frpc-mac15.toml</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

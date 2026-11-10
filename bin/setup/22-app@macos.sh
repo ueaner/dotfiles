@@ -21,20 +21,21 @@ fi
 
 # Use lima-vm whenever possible
 # 从 App Store 具体的包详情页面，查看最低系统兼容版本
-if [[ -x /opt/local/bin/brew ]]; then
+if [[ -x /opt/homebrew/bin/brew ]]; then
     task "Install packages via brew (macOS)"
     CASK_PACKAGES=(
         hammerspoon
-        kitty
-        baidunetdisk
+        alacritty
+        # kitty
+        # baidunetdisk
         google-chrome
         wechat
-        dingtalk
-        visual-studio-code
+        # dingtalk
+        # visual-studio-code
         android-platform-tools
-        appcleaner
+        # appcleaner
         maccy
-        sogouinput
+        # sogouinput
         # kap
         # keycastr
         # tencent-docs
@@ -50,7 +51,17 @@ if [[ -x /opt/local/bin/brew ]]; then
         # tableplus
         # qq
     )
-    brew install --cask "${CASK_PACKAGES[@]}"
+
+    # 逐个安装：某个 cask 不可用或与新系统版本不兼容时仅告警，
+    # 避免一批安装中单个失败导致 set -e 中止其余全部软件
+    for cask in "${CASK_PACKAGES[@]}"; do
+        if brew list --cask "$cask" &>/dev/null; then
+            info "cask installed: $cask"
+        else
+            step "brew install --cask $cask"
+            brew install --cask "$cask" || warn "cask 安装失败（可能不兼容当前系统版本）: $cask"
+        fi
+    done
 
     # notify:
     #   - Disable netdisk_service automatic startup
@@ -58,5 +69,12 @@ if [[ -x /opt/local/bin/brew ]]; then
     PACKAGES=(
         iproute2mac # ip, ss
     )
-    brew install "${PACKAGES[@]}"
+    for pkg in "${PACKAGES[@]}"; do
+        if brew list --formula "$pkg" &>/dev/null; then
+            info "package installed: $pkg"
+        else
+            step "brew install $pkg"
+            brew install "$pkg" || warn "package 安装失败: $pkg"
+        fi
+    done
 fi

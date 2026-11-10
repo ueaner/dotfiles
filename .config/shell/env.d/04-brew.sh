@@ -2,18 +2,25 @@ if [[ "${OSTYPE}" != darwin* ]]; then
     return
 fi
 
-if [[ -e /opt/local/bin/brew ]]; then
-    # Ensure there is only one Cellar, which is /opt/local/Cellar
-    [[ -d /opt/local/Homebrew/Cellar ]] && rm -rf /opt/local/Homebrew/Cellar
-    mkdir -p /opt/local/Cellar
-    # export HOMEBREW_PREFIX=$(brew --prefix)
-    export HOMEBREW_PREFIX=/opt/local
+# 使用 Apple Silicon 标准前缀 /opt/homebrew（安装器自行管理目录归属）。
+# 以下等价于 eval "$(/opt/homebrew/bin/brew shellenv)"，
+# 硬编码以避免每次启动 shell 都 fork brew 子进程
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    export HOMEBREW_PREFIX="/opt/homebrew"
+    export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+    export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin${PATH:+:$PATH}"
+    export MANPATH="$HOMEBREW_PREFIX/share/man${MANPATH:+:$MANPATH}"
+    export INFOPATH="$HOMEBREW_PREFIX/share/info${INFOPATH:+:$INFOPATH}"
 fi
 
 # 安装相关编译工具: xcode-select —install
 # 10.15 定义 CPATH 代替软链 /usr/include
-# shellcheck disable=SC2155
-export CPATH=$(xcrun --show-sdk-path)/usr/include
+# 未安装 Command Line Tools 的机器上跳过（xcrun 会报错）
+if xcode-select -p &>/dev/null; then
+    # shellcheck disable=SC2155
+    export CPATH=$(xcrun --show-sdk-path)/usr/include
+fi
 
 # 下载安装包的源
 #export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles

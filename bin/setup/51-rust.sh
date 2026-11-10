@@ -37,6 +37,7 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 
     # error: no default toolchain is configured
     LATEST=$($CARGO_HOME/bin/rustup default | cut -d ' ' -f1)
+    mkdir -p ~/.local/share/zsh/site-functions
     ln -sf "$XDG_DATA_HOME"/cargo/bin/* "$XDG_BIN_HOME"
     ln -sf "$XDG_DATA_HOME/rustup/toolchains/$LATEST/share/zsh/site-functions/_cargo" \
         ~/.local/share/zsh/site-functions/_cargo

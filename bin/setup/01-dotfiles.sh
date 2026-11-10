@@ -13,17 +13,22 @@ if [[ ! -d "$HOME/.dotfiles" ]]; then
     step "git clone dotfiles"
     # git config --global http.version HTTP/1.1
     git clone --bare https://github.com/ueaner/dotfiles.git "$HOME/.dotfiles"
-    git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" checkout
-    git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
 fi
+
+# checkout 独立于 clone：首次运行若因 $HOME 中已存在的同名文件冲突而失败，
+# 修复后重跑会再次尝试 checkout，而不是被 [[ ! -d ]] 挡住
+step "checkout dotfiles"
+git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" checkout
+git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" config --local status.showUntrackedFiles no
 
 # ---------------------------------------------------------------
 # dotlocal
 # ---------------------------------------------------------------
 if [[ ! -d "$HOME/.dotlocal" ]]; then
     step "git clone dotlocal"
-    # git config --global http.version HTTP/1.1
     git clone --bare https://github.com/ueaner/local.git "$HOME/.dotlocal"
-    git --git-dir="$HOME/.dotlocal" --work-tree="$HOME/.local" checkout
-    git --git-dir="$HOME/.dotlocal" --work-tree="$HOME/.local" config --local status.showUntrackedFiles no
 fi
+
+step "checkout dotlocal"
+git --git-dir="$HOME/.dotlocal" --work-tree="$HOME/.local" checkout
+git --git-dir="$HOME/.dotlocal" --work-tree="$HOME/.local" config --local status.showUntrackedFiles no

@@ -136,12 +136,12 @@ if [[ -d "$ANDROID_HOME/ndk" ]]; then
     export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 fi
 
-# /opt/local/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
+# /opt/homebrew/Cellar/openjdk/17.0.2/libexec/openjdk.jdk/Contents/Home
 # export JAVA_HOME=`/usr/libexec/java_home`
 # export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
 # export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
 
-#export GRADLE_USER_HOME="/opt/local/opt/gradle/libexec"
+#export GRADLE_USER_HOME="/opt/homebrew/opt/gradle/libexec"
 # Linux下: sudo alternatives --config java
 #export JAVA_HOME=/usr/java/default
 

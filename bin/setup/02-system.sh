@@ -18,12 +18,9 @@ fi
 # ----------------------------------------------------------------
 # /usr/local/{bin,etc} permissions
 # ----------------------------------------------------------------
-if [[ ! -O "/usr/local/bin" ]]; then
-    if [[ "${OSTYPE}" == darwin* ]]; then
-        step "Change the owner of the /usr/local/{bin,etc} directory to $USER:admin"
-        mkdir -p /opt/local/{bin,etc}
-        sudo chown -R "${USER}:admin" /opt/local/{bin,etc}
-    else
+# macOS 上 Homebrew 使用标准前缀 /opt/homebrew，目录归属由安装器自行处理，无需干预
+if [[ "${OSTYPE}" == linux* ]]; then
+    if [[ ! -O /usr/local/bin ]]; then
         step "Change the owner of the /usr/local/{bin,etc} directory to $USER:wheel"
         mkdir -p /usr/local/{bin,etc}
         sudo chown -R "${USER}:wheel" /usr/local/{bin,etc}

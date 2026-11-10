@@ -22,20 +22,35 @@ defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspo
 # Release <Super>H for Tmux:
 defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
 
+return 0
+
 # Enable the "Quit Finder" option
 defaults write com.apple.Finder QuitMenuItem -bool true
-killall Finder
+killall Finder 2>/dev/null || true
 
 # Disable Spotlight indexing:
 sudo mdutil -a -i off
 
 # Shortcuts
 
+# 全新安装的 macOS 可能尚未生成 symbolichotkeys.plist
+# （需先在 系统设置 -> 键盘 -> 键盘快捷键 中打开一次或点「恢复默认」）；
+# 此时跳过快捷键配置即可，不应中断 main 的其余阶段
 if [[ ! -f ~/Library/Preferences/com.apple.symbolichotkeys.plist ]]; then
-    warn "Please run: System Preferences -> Keyboard -> shortcuts -> Restore Defaults"
-    warn "to rebuild the ~/Library/Preferences/com.apple.symbolichotkeys.plist file"
-    is_sourced && return 1 || exit 1
+    warn "symbolichotkeys.plist 不存在，跳过系统快捷键配置"
+    warn "可先在 系统设置 -> 键盘 -> 键盘快捷键 中点「恢复默认」后重跑本阶段"
+    is_sourced && return 0 || exit 0
 fi
+
+# PlistBuddy 的 Set 要求键已存在；64/65 键缺失（未恢复默认）时同样跳过
+for key in 64 65; do
+    if ! /usr/libexec/PlistBuddy -c "Print :AppleSymbolicHotKeys:$key:enabled" \
+        ~/Library/Preferences/com.apple.symbolichotkeys.plist &>/dev/null; then
+        warn "symbolichotkeys.plist 缺少按键 $key 的配置，跳过系统快捷键配置"
+        warn "请在 系统设置 -> 键盘 -> 键盘快捷键 中点「恢复默认」后重跑本阶段"
+        is_sourced && return 0 || exit 0
+    fi
+done
 
 # Check the shortcut key settings:
 task "System Hotkeys Status (Before-Configuration)"
@@ -43,7 +58,7 @@ task "System Hotkeys Status (Before-Configuration)"
 # ~/bin/plview -json ~/Library/Preferences/com.apple.symbolichotkeys.plist | jq '.AppleSymbolicHotKeys | {"spotlight": ."64".enabled, "finder": ."65".enabled, "launchpad": ."160".enabled}'
 info "Spotlight hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:64:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
 info "Finder hotkeys enabled   : $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:65:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:160:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
+info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:160:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist || true)"
 
 # Release <Super>Space for Launchpad:
 # [ ] System Preferences -> Keyboard -> Spotlight -> Disable all Spotlight shortcuts
@@ -87,7 +102,7 @@ info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbo
 # ~/bin/plview -json ~/Library/Preferences/com.apple.symbolichotkeys.plist | jq '.AppleSymbolicHotKeys | {"spotlight": ."64".enabled, "finder": ."65".enabled, "launchpad": ."160".enabled}'
 
 # 3) Log Out
-killall Dock
+killall Dock 2>/dev/null || true
 
 # Gestures
 

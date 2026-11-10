@@ -8,7 +8,7 @@
     <string>run.gost.tunnel</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/local/bin/gost</string>
+        <string>/opt/homebrew/bin/gost</string>
         <string>-L</string>
         <string>http://:1081</string>
         <string>-F</string>

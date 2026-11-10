@@ -139,7 +139,7 @@ shellcheck -x main lib/*.sh libexec/* [0-9][0-9]-*.sh
 - **ShellCheck 禁用应本地化。** `.shellcheckrc` 不再全局禁用任何检查。如果某行确实需要 word splitting，请仅在该行添加 `# shellcheck disable=SC2086`。
 - **没有 CI 或部署流水线。** 这是主机本地初始化代码。唯一的"部署"就是在目标机器上运行 `main` 或 `task`。
 - **提交 `0491d9b` 的标题有误导性。** "fix: 暂时不兼容 macOS" 实际只是临时注释掉了 `.config/alacritty/alacritty.toml` 中 `[env]` 下硬编码的 `PATH`（外加 tmux gitmux 路径等微调），并不代表 macOS 支持被暂停。
-- **macOS Homebrew 路径。** macOS 上 Homebrew 被安装到 `/opt/local` 而非默认的 `/opt/homebrew` 或 `/usr/local`。安装脚本在 `05-packager@macos.sh` 中通过 `sed` 打补丁。
+- **macOS Homebrew 路径。** macOS 上使用 Apple Silicon 标准前缀 `/opt/homebrew`，`05-packager@macos.sh` 直接运行官方安装脚本，不再通过 `sed` 打补丁。
 - **Aqua 工具。** `21-aqua.sh` 从 `ueaner/aqua` releases 安装定制的 `aqa` 二进制（不是上游 aquaproj）。然后运行 `aqua install --all`，依赖 `AQUA_GLOBAL_CONFIG` 使工具全局可用。
 - **Dotfiles 使用 Git bare 仓库。** `01-dotfiles.sh` 将 `ueaner/dotfiles` 和 `ueaner/local` 分别 clone 为 `$HOME/.dotfiles` 和 `$HOME/.dotlocal` 两个 bare 仓库，然后分别 checkout 到 `$HOME` 和 `$HOME/.local`。
 - **Taskfile-v1 已废弃。** 新增行为请只编辑 `Taskfile.yml`。

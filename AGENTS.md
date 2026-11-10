@@ -84,7 +84,7 @@ uv run ruff check .           # 代码检查
 
 - `env.d/00-xdg.sh` — 定义 `XDG_*` 目录和 `XDG_BACKUP_DIR=~/backup`。
 - `env.d/03-user-environment.sh` — `sync_vars_to_user_environment()` 把指定变量写入 `~/.config/environment.d/<file>`，并导入到 systemd（Linux）或 launchd（macOS）用户环境，使自启动服务也能继承。
-- `env.d/04-brew.sh` — macOS Homebrew 镜像和前缀配置；强制 `HOMEBREW_PREFIX=/opt/local`。
+- `env.d/04-brew.sh` — macOS Homebrew 镜像配置；使用 Apple Silicon 标准前缀 `/opt/homebrew`（硬编码 `brew shellenv` 等价导出，避免每次开 shell fork brew 进程）。
 - `env.d/05-path.sh` — 重建 `PATH`，然后调用 `sync_path_to_user_environment()` 持久化。
 - `env.d/90-apps.sh` — 设置 `MOZ_ENABLE_WAYLAND=1`，并根据桌面（`gnome.yaml`、`sway.yaml`）和主机（`$HOSTNAME.yaml`）动态拼接 `AQUA_GLOBAL_CONFIG`。
 

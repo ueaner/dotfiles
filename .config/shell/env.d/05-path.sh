@@ -24,15 +24,15 @@ sync_path_to_user_environment() {
 }
 
 # 1. 基础路径
-PATH="/opt/local/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
+PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 # 2. Homebrew 路径
 # HOMEBREW_PREFIX is defined in env.d/04-brew.sh
-if [[ -n "${HOMEBREW_PREFIX}" ]]; then
+if [[ -n "${HOMEBREW_PREFIX:-}" ]]; then
     path_prepend "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin
     # brew install llvm lld
     # brew install qemu --build-from-source --cc=llvm_clang -v
-    # use /opt/local/opt/man-db/libexec/bin/man instead of /usr/bin/man
+    # use /opt/homebrew/opt/man-db/libexec/bin/man instead of /usr/bin/man
     path_prepend "${HOMEBREW_PREFIX}"/opt/{curl,openssl,gnu-getopt,llvm,man-db/libexec}/bin
 
     # For LightGBM

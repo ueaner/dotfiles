@@ -6,11 +6,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Lima"
 
+return 0
+
 # ---------------------------------------------------------------
 # Lima VM
 # ---------------------------------------------------------------
 
 if command -v limactl 2>/dev/null; then
+    mkdir -p ~/.local/share/zsh/site-functions
     limactl completion zsh >~/.local/share/zsh/site-functions/_limactl
     info "$(limactl --version)"
 

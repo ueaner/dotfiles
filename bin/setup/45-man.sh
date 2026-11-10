@@ -40,4 +40,5 @@ fi
 # Completion files
 # ---------------------------------------------------------------
 # NOTE: See ~/.local/share/zsh/site-functions/README.md
+mkdir -p ~/.local/share/zsh/site-functions
 ~/.local/bin/tldr --print-completion zsh >~/.local/share/zsh/site-functions/_tldr

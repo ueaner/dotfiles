@@ -9,17 +9,32 @@ task "Package Manager (brew)"
 # Package Manager (brew)
 # ----------------------------------------------------------------
 # Ensure brew is installed (for macOS)
-if [[ ! -x /opt/local/bin/brew ]]; then
+# 使用 Apple Silicon 标准前缀 /opt/homebrew，直接运行官方安装脚本
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
     step "Install brew (macOS)"
+
+    # brew 依赖 Xcode Command Line Tools，首次运行前引导安装
+    if ! xcode-select -p &>/dev/null; then
+        step "Install Xcode Command Line Tools"
+        xcode-select --install || true
+        info "等待 Command Line Tools 安装完成 (在弹出的对话框中确认后自动继续)..."
+        SECONDS=0
+        until xcode-select -p &>/dev/null; do
+            if ((SECONDS > 900)); then
+                error "等待 Command Line Tools 安装超时"
+                is_sourced && return 1 || exit 1
+            fi
+            sleep 5
+        done
+    fi
+
     # shellcheck source=/dev/null
     [[ -f ~/.config/shell/env.d/04-brew.sh ]] && source ~/.config/shell/env.d/04-brew.sh
     # shellcheck source=/dev/null
     [[ -f ~/.local/etc/token.sh ]] && source ~/.local/etc/token.sh
 
-    curl -L "${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh" -o /tmp/brew-install.sh
-    sed -i 's|HOMEBREW_PREFIX="/opt/homebrew"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
-    sed -i 's|HOMEBREW_PREFIX="/usr/local"|HOMEBREW_PREFIX="/opt/local"|' /tmp/brew-install.sh
-
+    curl -fL "${GITHUB_PROXY}https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh" -o /tmp/brew-install.sh
     NONINTERACTIVE=1 /bin/bash /tmp/brew-install.sh
-    success "Brew installed $(brew --version)"
+    rm -f /tmp/brew-install.sh
+    success "Brew installed $(/opt/homebrew/bin/brew --version)"
 fi

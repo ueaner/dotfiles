@@ -6,6 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Lima socket_vmnet"
 
+return 0
+
 # ---------------------------------------------------------------
 # Lima socket_vmnet
 # ---------------------------------------------------------------
@@ -25,7 +27,7 @@ if vmnet_bin=$(command -v socket_vmnet 2>/dev/null); then
     info "$(socket_vmnet --version)"
     step "Configure socket_vmnet launch daemon"
 
-    ln -sf "$vmnet_bin" /opt/local/bin/socket_vmnet
+    ln -sf "$vmnet_bin" /opt/homebrew/bin/socket_vmnet
 
     if [[ ! -f /Library/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist ]]; then
         sudo cp ~/.config/plist/LaunchDaemons/io.github.lima-vm.socket_vmnet.bridged.en0.plist \
@@ -36,7 +38,7 @@ if vmnet_bin=$(command -v socket_vmnet 2>/dev/null); then
     fi
 
     # 安装 QEMU
-    if [[ -x /opt/local/bin/brew ]]; then
+    if [[ -x /opt/homebrew/bin/brew ]]; then
         task "Install QEMU"
         if ! brew list --formula qemu >/dev/null 2>&1; then
             brew install acpica llvm lld

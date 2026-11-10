@@ -67,7 +67,8 @@ title() {
     local width
     raw_text="${1}"
     text="  ${raw_text}  "
-    width=$(echo -n "$text" | wc -L)
+    # 可移植的最大行长统计（BSD/macOS 的 wc 没有 -L）
+width=$(echo -n "$text" | awk '{ if (length($0) > w) w = length($0) } END { print w + 0 }')
 
     printf "\n${BG_BLUE}${FG_WHITE}${C_BOLD}%${width}s${C_RESET}\n" ""
     printf "${BG_BLUE}${FG_WHITE}${C_BOLD}%s${C_RESET}\n" "$text"
@@ -78,7 +79,8 @@ title() {
 section() {
     local width
     local text="# $1"
-    width=$(echo -n "$text" | wc -L)
+    # 可移植的最大行长统计（BSD/macOS 的 wc 没有 -L）
+width=$(echo -n "$text" | awk '{ if (length($0) > w) w = length($0) } END { print w + 0 }')
     local line_width=60
     [[ $width -gt $line_width ]] && line_width=$width
 

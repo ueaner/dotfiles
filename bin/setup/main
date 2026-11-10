@@ -16,7 +16,13 @@ MAIN_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 push_exit_handler kill_bg_jobs
 
 # 平台信息定义在 lib/init
-PLATFORM_PATTERN="@(${KERNEL}|${SYSTEM}|${DESKTOP})"
+# DESKTOP 探测不到（如 SSH 会话）时不得留下空分支，
+# 否则 "@(linux|fedora|)" 的空分支会匹配任何含 @ 的脚本
+PLATFORM_PATTERN="@(${KERNEL}|${SYSTEM}"
+if [[ -n "$DESKTOP" ]]; then
+    PLATFORM_PATTERN+="|${DESKTOP}"
+fi
+PLATFORM_PATTERN+=")"
 
 SECTION_INDEX=
 
@@ -98,10 +104,10 @@ if [[ "$section" != "all" ]]; then
     # 设置了 set -e 需要 `|| true` 临时屏蔽错误
     SECTION_INDEX=$(array_index_of "$section" "${sections[@]}") || true
 
-    if [[ -z "$SECTION_INDEX" ]]; then
+    if [[ -z "$SECTION_INDEX" ]] || [[ "$SECTION_INDEX" == "-1" ]]; then
         echo "Error: No matching section found: $section"
         show_help
-        exit 1
+        exit 2
     fi
 fi
 

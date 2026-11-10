@@ -15,7 +15,9 @@ if [[ "$(uname -m)" != "arm64" ]]; then
 fi
 
 macos_version=$(sw_vers -productVersion)
-if [[ "$(printf '%s\n26.0\n' "$macos_version" | sort -V | head -n1)" != "26.0" ]]; then
+macos_major=${macos_version%%.*}
+# 只比较主版本号数值；BSD/macOS 的 sort 没有 -V，不能用于版本排序
+if ! [[ $macos_major =~ ^[0-9]+$ ]] || ((macos_major < 26)); then
     warn "apple/container requires macOS >= 26 (found $macos_version); skipping"
     is_sourced && return 0 || exit 0
 fi
@@ -26,8 +28,8 @@ fi
 # shellcheck source=/dev/null
 [[ -f ~/.config/shell/env.d/04-brew.sh ]] && source ~/.config/shell/env.d/04-brew.sh
 
-if [[ ! -x /opt/local/bin/brew ]]; then
-    error "Homebrew not found at /opt/local/bin/brew"
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
+    error "Homebrew not found at /opt/homebrew/bin/brew"
     is_sourced && return 1 || exit 1
 fi
 
@@ -59,7 +61,7 @@ else
 fi
 
 note "To use Docker CLI / Docker Compose with apple/container:"
-item "export DOCKER_HOST=unix:///opt/local/var/run/socktainer/.socktainer/container.sock"
+item "export DOCKER_HOST=unix:///opt/homebrew/var/run/socktainer/.socktainer/container.sock"
 item "Start the daemon: socktainer"
 item "Or register a LaunchAgent at ~/Library/LaunchAgents/run.socktainer.plist"
 

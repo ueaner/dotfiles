@@ -37,12 +37,14 @@ install-aqua() {
 
     curl --create-dirs --output-dir ~/.cache/archives -C - -sSL -O "${URL}"
 
+    mkdir -p ~/.local/bin
     tar xf ~/.cache/archives/"$FILENAME" -C ~/.local/bin aqua
 
     success "aqua successfully installed. $(aqua -v)"
 }
 
 install-aqua
+unset -f install-aqua
 
 # ---------------------------------------------------------------
 # tools

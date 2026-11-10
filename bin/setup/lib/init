@@ -34,3 +34,7 @@ else
     fi
     DESKTOP=$(current_desktop)
 fi
+
+# GITHUB_PROXY 等密钥定义在私有仓库的 ~/.local/etc/token.sh 中；
+# 在尚未部署 dotlocal 的机器上提供空默认值，避免 set -u 下中止
+: "${GITHUB_PROXY:=}"
