@@ -63,9 +63,13 @@ info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbo
 # Release <Super>Space for Launchpad:
 # [ ] System Preferences -> Keyboard -> Spotlight -> Disable all Spotlight shortcuts
 # 1) Cancel: ⌘Space (Show Spotlight search window)
-/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:64:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 # 2) Cancel: ⌥⌘Space (Show Finder search window)
-/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:65:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+# 全新 macOS 的 symbolichotkeys 可能缺少 64/65 条目（且 cfprefsd 缓存会
+# 覆盖 PlistBuddy 的直写），Set 失败时经 defaults 补写
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:64:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist 2>/dev/null || \
+    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "{enabled = 0; value = {parameters = (32, 49, 1048576); type = standard;};}"
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:65:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist 2>/dev/null || \
+    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "{enabled = 0; value = {parameters = (32, 49, 1572864); type = standard;};}"
 
 # Toggle Launchpad: using System Preferences or Hammerspoon (~/.config/hammerspoon/init.lua)
 # [ ] System Preferences -> Keyboard -> Launchpad & Dock -> Change the Show Launchpad shortcut to ⌘Space
