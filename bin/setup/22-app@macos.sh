@@ -27,15 +27,20 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         hammerspoon
         alacritty
         # kitty
-        # baidunetdisk
         google-chrome
         wechat
         wechatwebdevtools
-        # dingtalk
-        # visual-studio-code
         android-platform-tools
-        # appcleaner
         maccy
+        dbx
+        lark
+        tencent-meeting
+        qq
+        zed
+        # visual-studio-code
+        # baidunetdisk
+        # dingtalk
+        # appcleaner
         # sogouinput
         # kap
         # keycastr
@@ -43,14 +48,12 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         # drawio
         # wpsoffice
         # the-unarchiver
-        # tencent-meeting
         # vlc
         # omnigraffle
         # pdfexpert
         # wireshark-app
         # charles
         # tableplus
-        # qq
     )
 
     # 逐个安装：某个 cask 不可用或与新系统版本不兼容时仅告警，
