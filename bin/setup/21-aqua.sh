@@ -62,7 +62,25 @@ fi
 
 # 全局可用的工具（不受项目目录限制）需要配置在 $AQUA_GLOBAL_CONFIG 中
 # aqua list --installed --all
-aqua install --all
+# GitHub Release CDN 偶发 read timeout（IPv6 单点故障曾导致整轮 main 中止），重试 3 次
+aqua_install_with_retry() {
+    local attempt
+    for attempt in 1 2 3; do
+        if aqua install --all; then
+            return 0
+        fi
+        warn "aqua install --all 失败（第 ${attempt} 次），稍后重试..."
+        sleep 5
+    done
+    return 1
+}
+
+if ! aqua_install_with_retry; then
+    error "aqua install --all 连续 3 次失败"
+    unset -f aqua_install_with_retry
+    is_sourced && return 1 || exit 1
+fi
+unset -f aqua_install_with_retry
 
 # ---------------------------------------------------------------
 # 工具安装后的相关配置

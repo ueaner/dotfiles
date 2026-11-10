@@ -38,3 +38,11 @@ if [[ ! -x /opt/homebrew/bin/brew ]]; then
     rm -f /tmp/brew-install.sh
     success "Brew installed $(/opt/homebrew/bin/brew --version)"
 fi
+
+# HOMEBREW_NO_INSTALL_FROM_API=1 时，cask 完全依赖本地 homebrew/cask tap
+# （官方安装器只自动 tap homebrew/core），缺失时任何
+# brew install --cask 都会报 "Cask with this name does not exist"
+if ! /opt/homebrew/bin/brew tap | grep -q '^homebrew/cask$'; then
+    step "Tap homebrew/cask (TUNA mirror)"
+    /opt/homebrew/bin/brew tap --custom-remote homebrew/cask "${HOMEBREW_CASK_GIT_REMOTE:-https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask.git}"
+fi
