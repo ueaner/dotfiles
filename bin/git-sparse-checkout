@@ -67,12 +67,13 @@ if [[ -z "$ldir" ]]; then
     exit 1
 fi
 
-ldir=$(realpath "$ldir")
-mkdir -p "$ldir"
-cd "$ldir" || (
+mkdir -p "$ldir" || {
     echo "No permission to create $ldir directory"
     exit 1
-)
+}
+# macOS 没有 realpath，用 cd+pwd 解析绝对路径
+ldir=$(cd "$ldir" && pwd) || exit 1
+cd "$ldir" || exit 1
 
 # https://gist.github.com/guitarrapc/d56a096d3283cb43da5a0a0017f6eed2#file-git-sparse-checkout-only-yaml
 git clone --filter=blob:none --no-checkout --depth 1 --sparse "$rurl" "$ldir"
