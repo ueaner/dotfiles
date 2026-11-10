@@ -68,9 +68,26 @@ if ! container system status >/dev/null 2>&1; then
 fi
 
 step "Install recommended Linux kernel (kata)"
-# 未配置默认内核时无法运行容器；kernel set 下载前可能交互确认，herestring 兜底。
-# 已配置时为幂等 no-op
-container system kernel set --recommended <<< $'y\n'
+# 未配置默认内核时无法运行容器。container CLI 直连 GitHub 下载大文件
+# 在网络受限环境易长时间停滞，优先经 GITHUB_PROXY 镜像下载后用 --tar 本地
+# 安装（本地路径无需 digest），镜像失败再退回 --recommended 直连
+kata_version=4.3.1
+kata_tar=/tmp/kata-static-${kata_version}-arm64.tar.zst
+if [[ ! -f $kata_tar ]]; then
+    if ! curl -fL --connect-timeout 15 -m 900 "${GITHUB_PROXY}https://github.com/kata-containers/kata-containers/releases/download/${kata_version}/kata-static-${kata_version}-arm64.tar.zst" -o "$kata_tar"; then
+        rm -f "$kata_tar"
+        warn "经镜像下载内核失败，退回官方直连"
+    fi
+fi
+if [[ -f $kata_tar ]]; then
+    # --tar 必须配合 --binary 指定包内核二进制成员；
+    # 排除 debug / nvidia / dragonball-experimental 变体，取正式版 vmlinux
+    kernel_member=$(tar -tf "$kata_tar" | grep -E '/vmlinux-[0-9]' | grep -vE 'debug|nvidia|dragonball' | head -1)
+    # 已安装同版本内核时会以非零退出，视为幂等成功
+    container system kernel set --tar "$kata_tar" --binary "$kernel_member" <<< $'y\n' || info "内核可能已安装，跳过"
+else
+    container system kernel set --recommended <<< $'y\n'
+fi
 
 info "container status: $(container system status --format json 2>/dev/null | head -c 200)"
 
