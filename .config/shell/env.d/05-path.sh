@@ -29,7 +29,17 @@ PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
 # 2. Homebrew 路径
 # HOMEBREW_PREFIX is defined in env.d/04-brew.sh
 if [[ -n "${HOMEBREW_PREFIX:-}" ]]; then
-    path_prepend "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin
+    # zsh 对无匹配的全局通配直接报错（bash 保留字面量会被 path_prepend 的 -d 检查过滤），
+    # 新机器 /opt/homebrew/opt 为空时不能让 env 加载报错；
+    # LOCAL_OPTIONS 使 NULL_GLOB 仅在本函数内生效
+    prepend_brew_gnubin() {
+        if [[ -n "${ZSH_VERSION:-}" ]]; then
+            setopt LOCAL_OPTIONS NULL_GLOB
+        fi
+        path_prepend "${HOMEBREW_PREFIX}"/opt/*/libexec/gnubin
+    }
+    prepend_brew_gnubin
+    unset -f prepend_brew_gnubin
     # brew install llvm lld
     # brew install qemu --build-from-source --cc=llvm_clang -v
     # use /opt/homebrew/opt/man-db/libexec/bin/man instead of /usr/bin/man
