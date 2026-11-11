@@ -74,6 +74,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         iproute2mac # ip, ss
         docker      # Docker CLI 客户端；socktainer 提供 Docker 兼容 socket（34-container）
         docker-compose
+        tmux
         tig
         coreutils # 对齐 Linux 环境基础命令
         diffutils
