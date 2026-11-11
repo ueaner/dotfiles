@@ -42,17 +42,35 @@ sudo systemsetup -setremotelogin on
 # ---------------------------------------------------------------
 step "Configure and enable frpc.service"
 
-if [[ -x ~/.local/bin/frpc ]]; then
-    ln -sf ~/.local/bin/frpc /opt/homebrew/bin/frpc
+# 用包装脚本代替软链。软链指向的 aqua 真实路径含版本号，aqua 升级 frp 后会断链，
+# 而升级后通常不会重跑本脚本；包装脚本启动时动态解析当前路径，自带
+# AQUA_GLOBAL_CONFIG，不依赖 launchd 环境注入（见 env.d/03-user-environment.sh）
+if aqua which frpc &>/dev/null; then
+    # 先删旧软链，避免 cat > 穿透软链覆盖 aqua 目录里的真实二进制
+    rm -f /opt/homebrew/bin/frpc
+    cat > /opt/homebrew/bin/frpc <<'EOF'
+#!/bin/sh
+# 由 31-service@macos.sh 生成的 aqua 包装脚本，请勿手工编辑
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-$HOME/.config/aqua/aqua.yaml}"
+if ! frpc_bin=$("$HOME/.local/bin/aqua" which frpc 2>/dev/null); then
+    echo "frpc: unable to resolve binary via aqua" >&2
+    exit 127
 fi
-if [[ -f ~/.local/etc/frp/frpc-mac26.toml ]]; then
-    ln -sf ~/.local/etc/frp/frpc-mac26.toml /opt/homebrew/etc/frpc-mac26.toml
-fi
-if [[ -f ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ]]; then
-    ln -sf ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ~/Library/LaunchAgents/org.gofrp.frpc.plist
-fi
+exec "$frpc_bin" "$@"
+EOF
+    chmod +x /opt/homebrew/bin/frpc
 
-load_launch_agent org.gofrp.frpc ~/Library/LaunchAgents/org.gofrp.frpc.plist
+    if [[ -f ~/.local/etc/frp/frpc-mac26.toml ]]; then
+        ln -sf ~/.local/etc/frp/frpc-mac26.toml /opt/homebrew/etc/frpc-mac26.toml
+    fi
+    if [[ -f ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ]]; then
+        ln -sf ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ~/Library/LaunchAgents/org.gofrp.frpc.plist
+    fi
+
+    load_launch_agent org.gofrp.frpc ~/Library/LaunchAgents/org.gofrp.frpc.plist
+else
+    error "frpc is not found"
+fi
 
 unset -f load_launch_agent
 
@@ -71,52 +89,62 @@ return 0
 # launchctl print gui/501/org.shadowsocks.shadowsocks-rust | awk '/state =/ { print $3 }'
 step "Configure and enable shadowsocks.shadowsocks-rust.service"
 
-if [[ -x ~/.local/bin/sslocal ]]; then
-    sslocal --version
+# 同 frpc：aqua which 返回真实二进制路径，升级后重新链接避免断链
+if sslocal_bin=$(aqua which sslocal 2>/dev/null) && ssservice_bin=$(aqua which ssservice 2>/dev/null); then
+    "$sslocal_bin" --version
 
-    ln -sf ~/.local/bin/sslocal /opt/homebrew/bin/sslocal
-    ln -sf ~/.local/bin/ssservice /opt/homebrew/bin/ssservice
-fi
-if [[ -f ~/.local/etc/shadowsocks-rust-local.json ]]; then
-    ln -sf ~/.local/etc/shadowsocks-rust-local.json /opt/homebrew/etc/shadowsocks-rust-local.json
-    ln -sf ~/.local/etc/shadowsocks-rust-local.acl /opt/homebrew/etc/shadowsocks-rust-local.acl
-fi
-# https://github.com/shadowsocks/shadowsocks-rust/blob/master/configs/org.shadowsocks.shadowsocks-rust.plist
-if [[ -f ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ]]; then
-    ln -sf ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
-fi
+    ln -sf "$sslocal_bin" /opt/homebrew/bin/sslocal
+    ln -sf "$ssservice_bin" /opt/homebrew/bin/ssservice
 
-load_launch_agent org.shadowsocks.shadowsocks-rust ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    if [[ -f ~/.local/etc/shadowsocks-rust-local.json ]]; then
+        ln -sf ~/.local/etc/shadowsocks-rust-local.json /opt/homebrew/etc/shadowsocks-rust-local.json
+        ln -sf ~/.local/etc/shadowsocks-rust-local.acl /opt/homebrew/etc/shadowsocks-rust-local.acl
+    fi
+    # https://github.com/shadowsocks/shadowsocks-rust/blob/master/configs/org.shadowsocks.shadowsocks-rust.plist
+    if [[ -f ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ]]; then
+        ln -sf ~/.config/plist/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+    fi
+
+    load_launch_agent org.shadowsocks.shadowsocks-rust ~/Library/LaunchAgents/org.shadowsocks.shadowsocks-rust.plist
+else
+    error "shadowsocks-rust is not found"
+fi
 
 # ---------------------------------------------------------------
 # caddy
 # ---------------------------------------------------------------
 step "Configure and enable caddy.service"
 
-if [[ -x ~/.local/bin/caddy ]]; then
-    caddy --version
+if caddy_bin=$(aqua which caddy 2>/dev/null); then
+    "$caddy_bin" version
 
-    ln -sf ~/.local/bin/caddy /opt/homebrew/bin/caddy
-fi
-if [[ -f ~/.local/etc/Caddyfile ]]; then
-    ln -sf ~/.local/etc/Caddyfile /opt/homebrew/etc/Caddyfile
-fi
-if [[ -f ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ]]; then
-    ln -sf ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ~/Library/LaunchAgents/com.caddyserver.web.plist
-fi
+    ln -sf "$caddy_bin" /opt/homebrew/bin/caddy
 
-load_launch_agent com.caddyserver.web ~/Library/LaunchAgents/com.caddyserver.web.plist
+    if [[ -f ~/.local/etc/Caddyfile ]]; then
+        ln -sf ~/.local/etc/Caddyfile /opt/homebrew/etc/Caddyfile
+    fi
+    if [[ -f ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ]]; then
+        ln -sf ~/.config/plist/LaunchAgents/com.caddyserver.web.plist ~/Library/LaunchAgents/com.caddyserver.web.plist
+    fi
+
+    load_launch_agent com.caddyserver.web ~/Library/LaunchAgents/com.caddyserver.web.plist
+else
+    error "caddy is not found"
+fi
 
 # ---------------------------------------------------------------
 # gost
 # ---------------------------------------------------------------
 step "Configure and enable gost.service"
 
-if [[ -x ~/.local/bin/gost ]]; then
-    ln -sf ~/.local/bin/gost /opt/homebrew/bin/gost
-fi
-if [[ -f ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ]]; then
-    ln -sf ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ~/Library/LaunchAgents/run.gost.tunnel.plist
-fi
+if gost_bin=$(aqua which gost 2>/dev/null); then
+    ln -sf "$gost_bin" /opt/homebrew/bin/gost
 
-load_launch_agent run.gost.tunnel ~/Library/LaunchAgents/run.gost.tunnel.plist
+    if [[ -f ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ]]; then
+        ln -sf ~/.config/plist/LaunchAgents/run.gost.tunnel.plist ~/Library/LaunchAgents/run.gost.tunnel.plist
+    fi
+
+    load_launch_agent run.gost.tunnel ~/Library/LaunchAgents/run.gost.tunnel.plist
+else
+    error "gost is not found"
+fi

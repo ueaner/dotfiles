@@ -166,6 +166,7 @@ shellcheck -x main lib/*.sh libexec/* [0-9][0-9]-*.sh
 │   └── trap.sh
 ├── libexec/              # 独立辅助工具
 │   ├── dnf-util
+│   ├── frpc-sync         # Fedora: 把 aqua 安装的 frpc 同步到 /usr/local/bin（供 nobody 系统服务）
 │   ├── gnome-custom-keybinding
 │   ├── gnome-shell-extensions-downloader
 │   ├── install-dmg

@@ -87,20 +87,43 @@ service_restart_or_enable gost.service
 # ---------------------------------------------------------------
 # frpc 用作系统服务，以便在未登陆系统的情况下，也可以提供服务
 step "Configure and enable frpc.service (system service)"
-if frpc_file=$(aqua which frpc 2>/dev/null); then
-    # 版本升级
-    sync_file "$frpc_file" /usr/local/bin/frpc
+if aqua which frpc &>/dev/null; then
+    # 二进制：拷贝真实文件到 /usr/local/bin（服务以 nobody 运行，读不到用户家目录
+    # 里的 aqua 代理/配置）；frpc-sync.path 监听 aqua pkgs 目录，升级后自动同步，
+    # 无需为重跑本脚本
+    sudo install -Dm755 "$SCRIPT_DIR/libexec/frpc-sync" /usr/local/libexec/frpc-sync
 
     # 配置文件更新
     sync_file "$HOME/.local/etc/frp/frpc-$HOSTNAME.toml" /usr/local/etc/frpc.toml
 
-    # 服务文件更新
-    if ! cmp -s ~/.config/systemd/system/frpc.service /etc/systemd/system/frpc.service 2>/dev/null; then
-        sudo cp ~/.config/systemd/system/frpc.service /etc/systemd/system/frpc.service
+    # 服务文件更新（frpc + 二进制自同步单元）
+    units_updated=0
+    for unit in frpc.service frpc-sync.service; do
+        if [[ -f ~/.config/systemd/system/$unit ]] &&
+            ! cmp -s ~/.config/systemd/system/$unit /etc/systemd/system/$unit 2>/dev/null; then
+            sudo cp ~/.config/systemd/system/$unit /etc/systemd/system/$unit
+            units_updated=1
+        fi
+    done
+    # frpc-sync.path 是模板：@HOME@ 部署时替换为实际家目录，避免写死用户名
+    path_unit=$(mktemp)
+    sed "s|@HOME@|$HOME|g" ~/.config/systemd/system/frpc-sync.path >"$path_unit"
+    if ! cmp -s "$path_unit" /etc/systemd/system/frpc-sync.path 2>/dev/null; then
+        sudo cp "$path_unit" /etc/systemd/system/frpc-sync.path
+        units_updated=1
+    fi
+    rm -f "$path_unit"
+    if [[ $units_updated -eq 1 ]]; then
         sudo systemctl daemon-reload
     fi
 
+    # 立即同步一次（含首次部署）；二进制有变更时 frpc-sync 会重启 frpc
+    sudo /usr/local/libexec/frpc-sync
+
     # 服务启动
+    if [[ -f /etc/systemd/system/frpc-sync.path ]]; then
+        sudo systemctl enable --now frpc-sync.path
+    fi
     if systemctl is-active --quiet frpc.service; then
         sudo systemctl restart frpc.service
     else

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# 将 aqua 安装的 frpc 同步到 /usr/local/bin，供以 nobody 运行的系统服务使用
+#
+# 服务以 nobody 运行，读不到用户家目录里的 aqua 代理/配置，因此需要把真实
+# 二进制拷贝到系统路径。由 frpc-sync.path 监听 aqua 的 frp pkgs 目录触发
+# （aqua 安装/升级 frp 后自动同步，无需重跑 31-service@fedora.sh），
+# 也可由 31-service@fedora.sh 直接调用。二进制内容无变更时不做任何事。
+
+set -euo pipefail
+
+# 写 /usr/local/bin、重启系统服务都需要 root；两个调用方（path unit 触发的
+# oneshot、31-service 的 sudo 调用）都以 root 运行，这里防御误用
+if [[ $EUID -ne 0 ]]; then
+    echo "frpc-sync: must be run as root" >&2
+    exit 1
+fi
+
+AQUA_USER=ueaner
+FRP_PKGS_REL=.local/share/aquaproj-aqua/pkgs/github_release/github.com/fatedier/frp
+DEST=/usr/local/bin/frpc
+
+user_home=$(getent passwd "$AQUA_USER" | cut -d: -f6)
+frp_pkgs=$user_home/$FRP_PKGS_REL
+
+# frp 尚未经 aqua 安装时不做任何事
+[[ -d $frp_pkgs ]] || exit 0
+
+# pkgs 目录按版本号命名，取最新版本（aqua cleanup 前的旧版本目录不影响结果）
+latest=$(find "$frp_pkgs" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+src=$(find "$latest" -type f -name frpc | head -1)
+
+if [[ -z $src || ! -x $src ]]; then
+    echo "frpc-sync: no frpc binary found under $latest" >&2
+    exit 1
+fi
+
+# 内容一致则跳过（幂等）；不一致才覆盖并重启服务
+if ! cmp -s "$src" "$DEST" 2>/dev/null; then
+    install -m 755 "$src" "$DEST"
+    echo "frpc-sync: updated $DEST from $src"
+
+    # 首次部署（服务单元尚未安装）时跳过重启，由 31-service@fedora.sh 负责启动
+    if systemctl cat frpc.service &>/dev/null; then
+        systemctl restart frpc.service
+    fi
+fi
