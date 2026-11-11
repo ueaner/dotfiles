@@ -36,6 +36,19 @@ end)
 -- defaults write com.apple.Finder QuitMenuItem -bool true
 hs.hotkey.bind({ "cmd" }, "e", util.showFinder)
 
+-- Maccy clipboard manager
+hs.hotkey.bind({ "cmd" }, ";", function()
+  hs.application.launchOrFocus("Maccy")
+end)
+
+-- -- Spotlight: ⌘; → ⌘Space, then ⌘4 to open clipboard
+-- hs.hotkey.bind({ "cmd" }, ";", function()
+--   hs.eventtap.keyStroke({ "cmd" }, "space")
+--   hs.timer.doAfter(0.3, function()
+--     hs.eventtap.keyStroke({ "cmd" }, "4")
+--   end)
+-- end)
+
 -- Load EmmyLua spoon for Lua autocompletion support
 -- Download from: https://github.com/Hammerspoon/Spoons/raw/master/Spoons/EmmyLua.spoon.zip
 if hs.spoons.isInstalled("EmmyLua") ~= nil then
