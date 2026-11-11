@@ -22,7 +22,7 @@ defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspo
 # Release <Super>H for Tmux:
 defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
 
-return 0
+is_sourced && return 0 || exit 0
 
 # Enable the "Quit Finder" option
 defaults write com.apple.Finder QuitMenuItem -bool true

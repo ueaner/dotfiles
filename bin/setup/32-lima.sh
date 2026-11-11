@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Lima"
 
-return 0
+is_sourced && return 0 || exit 0
 
 # ---------------------------------------------------------------
 # Lima VM

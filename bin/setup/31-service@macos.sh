@@ -74,7 +74,9 @@ fi
 
 unset -f load_launch_agent
 
-return 0
+# 禁用后续段落：被 main source 时 return；直接执行时 exit，
+# 防止直接执行穿透到 shadowsocks/caddy/gost 段落
+is_sourced && return 0 || exit 0
 
 # Hotspot: Internet Sharing, sudo launchctl list | grep -i sharing
 # [ ] System Preferences -> Sharing -> Internet Sharing
