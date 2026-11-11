@@ -8,10 +8,17 @@
 #           └──── Docker REST API ────► socktainer ──┘
 #                         (兼容层：把 Docker API 翻译成 Apple Container API)
 #                                                  │
-#                              container-apiserver (macOS 26+ 内置
-#                              containerization 框架，轻量 VM，无需 Docker Desktop)
+#                        container-apiserver (macOS 26+ 内置
+#                        containerization 框架，轻量 VM，无需 Docker Desktop)
+#                                                  │
+#                             ┌────────── 轻量 VM ──────────┐
+#                             │  kata 客户机内核 (vmlinux)   │
+#                             │   └─► OCI 容器进程运行其上   │
+#                             └─────────────────────────────┘
 #
 # - 镜像为标准 OCI/Docker 格式（docker.io 可直接 pull）
+# - macOS 不带 Linux 内核：VM 引导的 vmlinux 由 kata-containers 提供，
+#   经 container system kernel set 注册为默认内核（见下文内核安装步骤）
 # - socktainer 启动时自动创建/更新名为 socktainer 的 docker context，
 #   首次使用执行 `docker context use socktainer`，无需手动导出 DOCKER_HOST
 # - named volume 默认 nosync（写密集更快，guest fsync 不保证落盘）；
