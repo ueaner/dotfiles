@@ -27,6 +27,7 @@ DNF_PACKAGES=(
     fcitx5-autostart
     zsh
     tmux      # Use Kitty instead of Tmux on macOS.
+    tig
     alacritty # Image preview not working in Yazi with Alacritty
     foot      # Use Foot instead of Alacritty on Fedora.
     compat-lua-devel
