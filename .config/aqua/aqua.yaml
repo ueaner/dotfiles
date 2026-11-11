@@ -59,7 +59,7 @@ packages: # aqua install -a
   - name: neovim/neovim@v0.12.6
   - name: arl/gitmux@v0.11.5
   - name: jesseduffield/lazygit@v0.66.2
-  - name: golang/go@go1.27.3
+  - name: golang/go@go1.27.4
     registry: local
   - name: nodejs/node@v24.21.0
   - name: pnpm/pnpm@v12.10.0
