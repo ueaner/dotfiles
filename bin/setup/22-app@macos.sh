@@ -75,6 +75,13 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         docker      # Docker CLI 客户端；socktainer 提供 Docker 兼容 socket（34-container）
         docker-compose
         tig
+        coreutils # 对齐 Linux 环境基础命令
+        diffutils
+        findutils
+        gawk
+        gnu-sed
+        gnu-tar
+        grep
     )
     for pkg in "${PACKAGES[@]}"; do
         if brew list --formula "$pkg" &>/dev/null; then

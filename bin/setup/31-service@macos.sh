@@ -46,7 +46,7 @@ if [[ -x ~/.local/bin/frpc ]]; then
     ln -sf ~/.local/bin/frpc /opt/homebrew/bin/frpc
 fi
 if [[ -f ~/.local/etc/frp/frpc-mac26.toml ]]; then
-    ln -sf ~/.local/etc/frp/frpc-mac26.toml /opt/homebrew/etc/frpc-mac15.toml
+    ln -sf ~/.local/etc/frp/frpc-mac26.toml /opt/homebrew/etc/frpc-mac26.toml
 fi
 if [[ -f ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ]]; then
     ln -sf ~/.config/plist/LaunchAgents/org.gofrp.frpc.plist ~/Library/LaunchAgents/org.gofrp.frpc.plist
