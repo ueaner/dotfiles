@@ -1,0 +1,11 @@
+# 模板：@HOME@ 由 31-service@fedora.sh 部署时替换为实际家目录
+# （系统单元的 systemd 描述符 %h 是 root 的家目录，拿不到目标用户路径）
+[Unit]
+Description=Watch aqua frp pkgs dir to sync frpc binary
+
+[Path]
+PathModified=@HOME@/.local/share/aquaproj-aqua/pkgs/github_release/github.com/fatedier/frp
+Unit=frpc-sync.service
+
+[Install]
+WantedBy=multi-user.target

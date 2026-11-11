@@ -1,0 +1,6 @@
+[Unit]
+Description=Sync frpc binary from aqua pkgs to /usr/local/bin
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/frpc-sync
