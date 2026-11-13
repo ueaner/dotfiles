@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: rgba(246, 246, 246, 0.97);
+    --fg: #1d1d1f;
+    --muted: #86868b;
+    --sep: rgba(0, 0, 0, 0.08);
+    --sel: #0a63d6;
+    --sel-fg: #fff;
+    --preview-bg: rgba(0, 0, 0, 0.035);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: rgba(36, 36, 38, 0.97);
+      --fg: #f5f5f7;
+      --muted: #98989d;
+      --sep: rgba(255, 255, 255, 0.09);
+      --sel: #0a63d6;
+      --preview-bg: rgba(255, 255, 255, 0.04);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: transparent; overflow: hidden; }
+  body {
+    font: 13px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    color: var(--fg);
+    -webkit-user-select: none;
+    cursor: default;
+  }
+  .panel {
+    height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--bg);
+    border: 0.5px solid var(--sep);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .search svg { flex: none; color: var(--muted); }
+  .search input {
+    flex: 1; border: 0; outline: 0; background: transparent;
+    font: 20px -apple-system, "PingFang SC", sans-serif; color: var(--fg);
+  }
+  .search input::placeholder { color: var(--muted); }
+  .count { color: var(--muted); font-size: 12px; }
+  .body { flex: 1; display: flex; min-height: 0; }
+  .list {
+    width: 42%; overflow-y: auto; padding: 6px;
+    border-right: 0.5px solid var(--sep);
+  }
+  .list::-webkit-scrollbar { width: 0; }
+  .row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 7px;
+    white-space: nowrap; overflow: hidden;
+  }
+  .row .icon { flex: none; width: 16px; text-align: center; color: var(--muted); font-size: 12px; }
+  .row .title { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .row.sel { background: var(--sel); color: var(--sel-fg); }
+  .row.sel .icon { color: var(--sel-fg); }
+  .preview { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .preview .content {
+    flex: 1; overflow: auto; margin: 10px; padding: 12px;
+    border-radius: 8px; background: var(--preview-bg);
+    font: 12px ui-monospace, "SF Mono", Menlo, monospace;
+    white-space: pre-wrap; word-break: break-all; line-height: 1.5;
+    -webkit-user-select: text;
+  }
+  .preview .content img { max-width: 100%; max-height: 100%; display: block; margin: auto; }
+  .preview .meta {
+    padding: 0 16px 10px; color: var(--muted); font-size: 11px;
+    display: flex; justify-content: space-between;
+  }
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+  kbd { font: inherit; padding: 0 4px; border: 0.5px solid var(--sep); border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" placeholder="Clipboard History" autocomplete="off" spellcheck="false">
+    <span class="count" id="count"></span>
+  </div>
+  <div class="body">
+    <div class="list" id="list"></div>
+    <div class="preview">
+      <div class="content" id="content"></div>
+      <div class="meta"><span id="info"></span><span><kbd>↩</kbd> Copy　<kbd>⌘⌫</kbd> Delete</span></div>
+    </div>
+  </div>
+</div>
+<script>
+  // 数据由 Lua 注入：prepare(data) 打开面板时调用（重置搜索），update(data) 后台数据变化时调用（保留搜索和选中）
+  let items = [], view = [], sel = 0;
+  const $ = id => document.getElementById(id);
+  const q = $("q"), list = $("list"), content = $("content"), info = $("info"), count = $("count");
+  const send = msg => webkit.messageHandlers.clipboard.postMessage(msg);
+
+  function prepare(data) {
+    items = data; q.value = ""; sel = 0;
+    filter(); q.focus();
+    // 等 WebKit 真正画完一帧后通知 Lua 显示窗口（隐藏的窗口不会重绘，直接显示会闪旧画面）
+    requestAnimationFrame(() => requestAnimationFrame(() => send({ action: "ready" })));
+  }
+
+  function update(data) {
+    const selectedId = view[sel]?.id;
+    items = data;
+    filter();
+    const i = view.findIndex(it => it.id === selectedId);
+    if (i >= 0) select(i);
+  }
+
+  function filter() {
+    const terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    view = items.filter(it => {
+      const s = (it.type === "text" ? it.text : "image").toLowerCase();
+      return terms.every(t => s.includes(t));
+    });
+    sel = Math.min(sel, Math.max(view.length - 1, 0));
+    drawList();
+    drawPreview();
+  }
+
+  function drawList() {
+    count.textContent = view.length ? `${view.length} ${view.length === 1 ? "item" : "items"}` : "";
+    list.replaceChildren();
+    if (!view.length) {
+      list.innerHTML = '<div class="empty">No matches</div>';
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    view.forEach((it, i) => {
+      const row = document.createElement("div");
+      row.className = "row" + (i === sel ? " sel" : "");
+      const icon = document.createElement("span");
+      icon.className = "icon";
+      icon.textContent = it.type === "text" ? "¶" : "▣";
+      const title = document.createElement("span");
+      title.className = "title";
+      title.textContent = it.type === "text" ? it.text.replace(/\s+/g, " ").trim() : `Image ${it.size}`;
+      row.append(icon, title);
+      row.onmousemove = () => { if (sel !== i) select(i, false); };
+      row.onclick = () => choose();
+      frag.append(row);
+    });
+    list.append(frag);
+    list.children[sel]?.scrollIntoView({ block: "nearest" });
+  }
+
+  function drawPreview() {
+    content.replaceChildren();
+    const it = view[sel];
+    if (!it) { info.textContent = ""; return; }
+    if (it.type === "text") {
+      content.textContent = it.truncated ? it.text + "\n…" : it.text;
+      info.textContent = `${it.len} chars · ${it.lines} ${it.lines === 1 ? "line" : "lines"} · ${it.time}` + (it.truncated ? " · preview truncated" : "");
+    } else {
+      const img = document.createElement("img");
+      img.src = it.url;
+      content.append(img);
+      info.textContent = `${it.size} · ${it.time}`;
+    }
+    content.scrollTop = 0;
+  }
+
+  // 只切换高亮和预览，不重建列表
+  function select(i, scroll = true) {
+    list.children[sel]?.classList.remove("sel");
+    sel = i;
+    const row = list.children[sel];
+    row?.classList.add("sel");
+    if (scroll) row?.scrollIntoView({ block: "nearest" });
+    drawPreview();
+  }
+
+  function move(d) {
+    if (view.length) select((sel + d + view.length) % view.length);
+  }
+  function choose() { if (view[sel]) send({ action: "select", id: view[sel].id }); }
+
+  q.addEventListener("input", () => { sel = 0; filter(); });
+  document.addEventListener("keydown", e => {
+    const k = e.key;
+    if (k === "ArrowDown" || (e.ctrlKey && k === "n")) { move(1); e.preventDefault(); }
+    else if (k === "ArrowUp" || (e.ctrlKey && k === "p")) { move(-1); e.preventDefault(); }
+    else if (k === "Enter") { choose(); e.preventDefault(); }
+    else if (k === "Escape") { send({ action: "close" }); e.preventDefault(); }
+    else if (e.metaKey && k === "Backspace" && view[sel]) {
+      send({ action: "delete", id: view[sel].id }); e.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>

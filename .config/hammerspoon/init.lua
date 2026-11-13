@@ -1,68 +1,51 @@
-local util = require("util")
+-- Hammerspoon 入口：只负责加载模块和绑定热键，功能实现见各模块
+--
+-- 前置系统配置：
+--   1. 让 Hammerspoon 读取 XDG 路径下的配置：
+--      defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+--   2. System Settings → Privacy & Security → Accessibility：允许 Hammerspoon（窗口操作、模拟按键需要）
 
--- Set Hammerspoon's configuration file path to ~/.config/hammerspoon/init.lua:
--- [x] defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+local tiling = require("tiling")
+local finder = require("finder")
+local clipboard = require("clipboard").start()
 
--- Release <Super>H for Tmux:
--- [x] defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
-
--- Disable Spotlight indexing:
--- [x] sudo mdutil -a -i off
-
--- Release <Super>Space for Launchpad:
--- [x] System Preferences -> Keyboard -> Spotlight -> Disable all Spotlight shortcuts
-
--- Toggle Launchpad: using System Preferences or Hammerspoon
--- [ ] System Preferences -> Keyboard -> Launchpad & Dock -> Change the Show Launchpad shortcut to ⌘Space
-
--- Toggle Launchpad
--- hs.hotkey.bind({ "cmd" }, "space", function()
---   hs.task.new("/usr/bin/open", nil, function() end, { "-a", "Launchpad" }):start()
--- end)
-
--- Toggle Terminal
+-- Terminal：优先 ~/Applications/Alacritty.app，其次 Kitty（任意位置，按 bundle ID 查找），否则系统 Terminal
 hs.hotkey.bind({ "cmd" }, "return", function()
-  local alacrittyAppPath = os.getenv("HOME") .. "/Applications/Alacritty.app"
-  if util.file_exists(alacrittyAppPath) then
-    hs.application.launchOrFocus(alacrittyAppPath)
+  local alacritty = os.getenv("HOME") .. "/Applications/Alacritty.app"
+  if hs.fs.attributes(alacritty) then
+    hs.application.launchOrFocus(alacritty)
+  elseif hs.application.pathForBundleID("net.kovidgoyal.kitty") then
+    hs.application.launchOrFocusByBundleID("net.kovidgoyal.kitty")
   else
-    -- hs.application.launchOrFocus("Terminal")
-    -- osascript -e 'id of app "Terminal"'
     hs.application.launchOrFocusByBundleID("com.apple.Terminal")
   end
 end)
 
--- Show Finder
--- defaults write com.apple.Finder QuitMenuItem -bool true
-hs.hotkey.bind({ "cmd" }, "e", util.showFinder)
+-- Finder：可选系统配置见 finder.lua
+hs.hotkey.bind({ "cmd" }, "e", finder.show)
 
--- Maccy clipboard manager
-hs.hotkey.bind({ "cmd" }, ";", function()
-  hs.application.launchOrFocus("Maccy")
+-- Clipboard History：hs.pasteboard.watcher + hs.webview
+hs.hotkey.bind({ "cmd" }, ";", clipboard.show)
+
+-- Switch to Previous App
+hs.hotkey.bind({ "ctrl" }, ".", function()
+  hs.eventtap.keyStroke({ "cmd" }, "tab")
 end)
 
--- -- Spotlight: ⌘; → ⌘Space, then ⌘4 to open clipboard
--- hs.hotkey.bind({ "cmd" }, ";", function()
---   hs.eventtap.keyStroke({ "cmd" }, "space")
---   hs.timer.doAfter(0.3, function()
---     hs.eventtap.keyStroke({ "cmd" }, "4")
---   end)
--- end)
+-- Window Tiling
+hs.hotkey.bind({ "cmd" }, "left", tiling.left)
+hs.hotkey.bind({ "cmd" }, "right", tiling.right)
+hs.hotkey.bind({ "cmd" }, "up", tiling.toggleMaximize)
+hs.hotkey.bind({ "cmd" }, "down", tiling.centerOnScreen)
 
--- Load EmmyLua spoon for Lua autocompletion support
--- Download from: https://github.com/Hammerspoon/Spoons/raw/master/Spoons/EmmyLua.spoon.zip
-if hs.spoons.isInstalled("EmmyLua") ~= nil then
+-- Reload Config
+-- hs.reload() 会销毁当前 Lua 环境，之后的代码不会执行，所以提示放在文件末尾
+hs.hotkey.bind({ "cmd", "ctrl" }, "r", hs.reload)
+
+-- EmmyLua Spoon：为编辑器生成 hs.* 补全注解（未安装则跳过）
+-- 下载：https://github.com/Hammerspoon/Spoons/raw/master/Spoons/EmmyLua.spoon.zip
+if hs.spoons.isInstalled("EmmyLua") then
   hs.loadSpoon("EmmyLua")
 end
 
--- Reload the Hammerspoon configuration
-hs.hotkey.bind({ "cmd", "ctrl" }, "r", function()
-  hs.reload()
-  hs.notify.show("Hammerspoon", "Config reloaded!", "")
-end)
-
--- Tiling
-hs.hotkey.bind({ "cmd" }, "left", util.tiling.left)
-hs.hotkey.bind({ "cmd" }, "right", util.tiling.right)
-hs.hotkey.bind({ "cmd" }, "up", util.tiling.toggleMaximize)
-hs.hotkey.bind({ "cmd" }, "down", util.tiling.centerOnScreen)
+hs.alert.show("Hammerspoon config loaded")
