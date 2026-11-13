@@ -131,8 +131,10 @@ export BUN_INSTALL_BIN=$XDG_BIN_HOME
 export ANDROID_HOME=$XDG_DATA_HOME/android
 
 if [[ -d "$ANDROID_HOME/ndk" ]]; then
-    # shellcheck disable=SC2155
-    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+    # 可能并存多个 NDK 版本（升级后旧版仍保留），取最新的一个
+    # NDK 目录名均为版本号，用 ls 足够
+    # shellcheck disable=SC2155,SC2012
+    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 "$ANDROID_HOME/ndk" | sort -V | tail -1)"
     # for tauri only
     # https://tauri.app/start/prerequisites/#android
     export NDK_HOME=$ANDROID_NDK_HOME

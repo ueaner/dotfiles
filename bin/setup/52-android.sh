@@ -6,10 +6,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 task "Android"
 
-# ---------------------------------------------------------------
-# Android
-# ---------------------------------------------------------------
-
 if [[ "${OSTYPE}" == darwin* ]] && [[ ! -x /opt/homebrew/bin/brew ]]; then
     error "Homebrew not found at /opt/homebrew/bin/brew"
     is_sourced && return 1 || exit 1
@@ -42,14 +38,20 @@ if [[ "${OSTYPE}" == darwin* ]]; then
     note "JDK 切换: /usr/libexec/java_home -V 查看，JAVA_HOME=\$(/usr/libexec/java_home -v 17) 指定"
 else
     # Fedora 官方仓库默认提供更新的 OpenJDK 版本，需通过 Adoptium Temurin 仓库安装 17。
+    # 该仓库默认禁用；只在本次安装时临时启用，不用 fedora-third-party enable（会启用全部第三方仓库）。
+    # TODO: 在 Fedora 上用 `dnf repolist --all | grep -i temurin` 确认仓库 id
     if ! rpm -q temurin-17-jdk &>/dev/null; then
         sudo dnf install -y adoptium-temurin-java-repository
-        sudo fedora-third-party enable
-        sudo dnf install -y temurin-17-jdk
+        sudo dnf install -y --enablerepo=adoptium-temurin-java-repository temurin-17-jdk
     fi
     note "如需切换默认 JDK，可运行：sudo alternatives --config java"
 fi
-info "$(java -version 2>&1 | head -1)"
+if [[ "${OSTYPE}" == darwin* ]]; then
+    # macOS 的 java 默认指向已安装的最高版本，这里显式取 17
+    info "$("$(/usr/libexec/java_home -v 17)/bin/java" -version 2>&1 | head -1)"
+else
+    info "$(java -version 2>&1 | head -1)"
+fi
 
 step "Install commandlinetools"
 
@@ -59,6 +61,7 @@ mkdir -p "$ANDROID_HOME/cmdline-tools"
 # `android sdk` 为官方替代品
 ANDROID_CLI="$ANDROID_HOME/cmdline-tools/latest/bin/android"
 
+# 只在缺少 android CLI 时安装（重跑不会更新）；需要更新时删除 cmdline-tools/latest 后重跑。
 if [[ ! -x "$ANDROID_CLI" ]]; then
     # 从 Google SDK repository feed（repository2-3.xml）解析 cmdline-tools;latest
     # 的下载地址 —— 这是 sdkmanager / Android CLI 的同一真相源，发版即更新；
@@ -104,9 +107,15 @@ for archive in re.findall(r"<archive>(.*?)</archive>", m.group(1), re.S):
         error "无法从 repository feed 解析 $host_platform 的 cmdline-tools 下载地址"
         is_sourced && return 1 || exit 1
     fi
-    curl -fL -o /tmp/commandlinetools.zip "$CMDLINE_URL"
-    unzip -q -o /tmp/commandlinetools.zip -d "$ANDROID_HOME/cmdline-tools"
-    mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    # 先下载解压到临时目录，再整体替换 latest：旧版（无 android CLI）或上次中断残留的
+    # latest/ 存在时，直接 mv 会把新目录嵌套进 latest/cmdline-tools
+    cmdline_tmp=$(mktemp -d)
+    push_exit_handler rm -rf "$cmdline_tmp"
+    curl -fL -o "$cmdline_tmp/commandlinetools.zip" "$CMDLINE_URL"
+    unzip -q "$cmdline_tmp/commandlinetools.zip" -d "$cmdline_tmp"
+    rm -rf "$ANDROID_HOME/cmdline-tools/latest"
+    mv "$cmdline_tmp/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    rm -rf "$cmdline_tmp"
 fi
 info "android CLI $("$ANDROID_CLI" --no-metrics -V 2>/dev/null)"
 

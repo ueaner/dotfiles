@@ -30,7 +30,6 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         google-chrome
         wechat
         wechatwebdevtools
-        android-platform-tools
         dbx
         lark
         tencent-meeting
