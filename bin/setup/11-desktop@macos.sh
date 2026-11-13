@@ -4,111 +4,91 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 . "$SCRIPT_DIR/lib/init"
 
-# ---------------------------------------------------------------
-# macOS basic desktop environment
-# ---------------------------------------------------------------
-
 task "macOS basic desktop environment"
-
-if [[ "${OSTYPE}" != darwin* ]]; then
-    is_sourced && return 1 || exit 1
-fi
 
 paragraph "macOS basic desktop environment"
 
-# Set Hammerspoon's configuration file path to ~/.config/hammerspoon/init.lua:
+# ---------------------------------------------------------------
+# Hammerspoon
+# ---------------------------------------------------------------
+
+# 配置文件路径改为 ~/.config/hammerspoon/init.lua:
 defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspoon/init.lua"
 
-# Release <Super>H for Tmux:
-defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
+# 窗口操作和模拟按键需要辅助功能权限，无法用脚本授权:
+note "Hammerspoon 需要辅助功能权限：open 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility'"
 
-is_sourced && return 0 || exit 0
+# Alacritty + Tmux 需要释放 ⌘H（Kitty + Tmux 不需要）:
+# defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
 
-# Enable the "Quit Finder" option
-defaults write com.apple.Finder QuitMenuItem -bool true
-killall Finder 2>/dev/null || true
+# ---------------------------------------------------------------
+# Appearance & Language/Region
+# ---------------------------------------------------------------
 
-# Disable Spotlight indexing:
-sudo mdutil -a -i off
+# Dark Mode:
+defaults write NSGlobalDomain AppleInterfaceStyle -string Dark
 
-# Shortcuts
+# Language & Region：English (Singapore):
+defaults write NSGlobalDomain AppleLanguages -array en-US
+defaults write NSGlobalDomain AppleLocale -string "en_US@rg=sgzzzz"
+sudo defaults write /Library/Preferences/.GlobalPreferences Country -string SG
 
-# 全新安装的 macOS 可能尚未生成 symbolichotkeys.plist
-# （需先在 系统设置 -> 键盘 -> 键盘快捷键 中打开一次或点「恢复默认」）；
-# 此时跳过快捷键配置即可，不应中断 main 的其余阶段
-if [[ ! -f ~/Library/Preferences/com.apple.symbolichotkeys.plist ]]; then
-    warn "symbolichotkeys.plist 不存在，跳过系统快捷键配置"
-    warn "可先在 系统设置 -> 键盘 -> 键盘快捷键 中点「恢复默认」后重跑本阶段"
-    is_sourced && return 0 || exit 0
-fi
+# ---------------------------------------------------------------
+# Dock & Hot Corners
+# ---------------------------------------------------------------
 
-# PlistBuddy 的 Set 要求键已存在；64/65 键缺失（未恢复默认）时同样跳过
-for key in 64 65; do
-    if ! /usr/libexec/PlistBuddy -c "Print :AppleSymbolicHotKeys:$key:enabled" \
-        ~/Library/Preferences/com.apple.symbolichotkeys.plist &>/dev/null; then
-        warn "symbolichotkeys.plist 缺少按键 $key 的配置，跳过系统快捷键配置"
-        warn "请在 系统设置 -> 键盘 -> 键盘快捷键 中点「恢复默认」后重跑本阶段"
-        is_sourced && return 0 || exit 0
-    fi
-done
+# 自动隐藏 Dock:
+defaults write com.apple.dock autohide -bool true
 
-# Check the shortcut key settings:
-task "System Hotkeys Status (Before-Configuration)"
-# defaults read com.apple.symbolichotkeys AppleSymbolicHotKeys | grep -Ew -A4 '64|65|160'
-# ~/bin/plview -json ~/Library/Preferences/com.apple.symbolichotkeys.plist | jq '.AppleSymbolicHotKeys | {"spotlight": ."64".enabled, "finder": ."65".enabled, "launchpad": ."160".enabled}'
-info "Spotlight hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:64:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-info "Finder hotkeys enabled   : $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:65:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:160:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist || true)"
+# Hot Corner：右下角 -> Quick Note（modifier 0：无需修饰键）:
+defaults write com.apple.dock wvous-br-corner -int 14
+defaults write com.apple.dock wvous-br-modifier -int 0
 
-# Release <Super>Space for Launchpad:
-# [ ] System Preferences -> Keyboard -> Spotlight -> Disable all Spotlight shortcuts
-# 1) Cancel: ⌘Space (Show Spotlight search window)
-# 2) Cancel: ⌥⌘Space (Show Finder search window)
-# 全新 macOS 的 symbolichotkeys 可能缺少 64/65 条目（且 cfprefsd 缓存会
-# 覆盖 PlistBuddy 的直写），Set 失败时经 defaults 补写
-/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:64:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist 2>/dev/null || \
-    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "{enabled = 0; value = {parameters = (32, 49, 1048576); type = standard;};}"
-/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:65:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist 2>/dev/null || \
-    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "{enabled = 0; value = {parameters = (32, 49, 1572864); type = standard;};}"
+# Hot Corner：左下角 -> Show Desktop:
+defaults write com.apple.dock wvous-bl-corner -int 4
+defaults write com.apple.dock wvous-bl-modifier -int 0
 
-# Toggle Launchpad: using System Preferences or Hammerspoon (~/.config/hammerspoon/init.lua)
-# [ ] System Preferences -> Keyboard -> Launchpad & Dock -> Change the Show Launchpad shortcut to ⌘Space
-# -> hs.hotkey.bind({ "cmd" }, "space", function()
-# ->   hs.task.new("/usr/bin/open", nil, function() end, { "-a", "Launchpad" }):start()
-# -> end)
-defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 160 "
-<dict>
-    <key>enabled</key>
-    <true/>
-    <key>value</key>
-    <dict>
-        <key>parameters</key>
-        <array>
-            <integer>32</integer>
-            <integer>49</integer>
-            <integer>1048576</integer>
-        </array>
-        <key>type</key>
-        <string>standard</string>
-    </dict>
-</dict>"
-
-# /usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:160:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-
-# Check the shortcut key settings:
-task "System Hotkeys Status (Post-Configuration)"
-info "Spotlight hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:64:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-info "Finder hotkeys enabled   : $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:65:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-info "Launchpad hotkeys enabled: $(/usr/libexec/PlistBuddy -c 'Print :AppleSymbolicHotKeys:160:enabled' ~/Library/Preferences/com.apple.symbolichotkeys.plist)"
-
-# ~/bin/plview ~/Library/Preferences/com.apple.symbolichotkeys.plist -json | jq '.AppleSymbolicHotKeys | {"64": ."64", "65": ."65", "160": ."160"}'
-# ~/bin/plview ~/Library/Preferences/com.apple.symbolichotkeys.plist -json | jq '.AppleSymbolicHotKeys | {"64": ."64".enabled, "65": ."65".enabled, "160": ."160".enabled}'
-# ~/bin/plview -json ~/Library/Preferences/com.apple.symbolichotkeys.plist | jq '.AppleSymbolicHotKeys | {"spotlight": ."64".enabled, "finder": ."65".enabled, "launchpad": ."160".enabled}'
-
-# 3) Log Out
 killall Dock 2>/dev/null || true
 
-# Gestures
+# ---------------------------------------------------------------
+# Keyboard
+# ---------------------------------------------------------------
 
-# Scroll direction: Natural
-defaults write -g com.apple.swipescrolldirection -bool true
+# 按键重复：最快速率、最短延迟（System Settings -> Keyboard -> Key repeat rate / Delay until repeat）:
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+
+# ---------------------------------------------------------------
+# Trackpad
+# ---------------------------------------------------------------
+
+# Tap to click、Dragging 与 Drag Lock（Dragging style 在 System Settings -> Accessibility -> Pointer Control -> Trackpad Options）:
+# Dragging style 三选一，Dragging + DragLock 为「With Drag Lock」，需同时关闭 Three Finger Drag。
+
+# 内置 / USB 触控板:
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Dragging -bool true
+defaults write com.apple.AppleMultitouchTrackpad DragLock -bool true
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool false
+
+# 蓝牙妙控板:
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Dragging -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad DragLock -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool false
+
+# 改用「Three Finger Drag」时，替换上面两组为下面的配置（两个触控板域都要写）:
+# 在 System Settings 中开启 Three Finger Drag 会自动把三指扫动手势改为四指，defaults write 不会联动，需要手动关闭三指扫动。
+# -currentHost 下另有一份系统维护的对应值，重新登录后若 Dragging style 未生效，到 Trackpad Options 手动切换一次即可同步。
+# for d in com.apple.AppleMultitouchTrackpad com.apple.driver.AppleBluetoothMultitouch.trackpad; do
+#     defaults write "$d" Dragging -bool false
+#     defaults write "$d" DragLock -bool false
+#     defaults write "$d" TrackpadThreeFingerDrag -bool true
+#     # 三指扫动让给拖移，切换全屏应用 / Mission Control 只用四指（四指手势需为 2）
+#     defaults write "$d" TrackpadThreeFingerHorizSwipeGesture -int 0
+#     defaults write "$d" TrackpadThreeFingerVertSwipeGesture -int 0
+#     defaults write "$d" TrackpadFourFingerHorizSwipeGesture -int 2
+#     defaults write "$d" TrackpadFourFingerVertSwipeGesture -int 2
+# done
+
+note "深色模式在应用重启后生效；键盘重复、语言区域和触控板设置需注销并重新登录后生效"
