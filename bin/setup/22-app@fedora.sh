@@ -14,19 +14,16 @@ DNF_PACKAGES=(
     wl-clipboard
     wtype
     xlsclients
-    libimobiledevice       # iOS, uv tool install pymobiledevice3
-    libimobiledevice-utils # iOS
-    usbmuxd                # iOS
-    android-tools          # Android
-    gvfs-mtp               # Thunar mounts Android devices
-    libmtp                 # Same as above
+    gvfs-mtp # Thunar mounts Android devices
+    libmtp   # Same as above
+    usbmuxd  # iOS USB 连接守护进程，pymobiledevice3 依赖（见 52-ios.sh；macOS 自带）
     grimpicker
     wf-recorder
     fcitx5
     fcitx5-chinese-addons
     fcitx5-autostart
     zsh
-    tmux      # Use Kitty instead of Tmux on macOS.
+    tmux # Use Kitty instead of Tmux on macOS.
     tig
     alacritty # Image preview not working in Yazi with Alacritty
     foot      # Use Foot instead of Alacritty on Fedora.
