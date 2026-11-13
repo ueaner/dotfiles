@@ -31,7 +31,6 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         wechat
         wechatwebdevtools
         android-platform-tools
-        maccy
         dbx
         lark
         tencent-meeting
@@ -83,6 +82,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         gnu-sed
         gnu-tar
         grep
+        imagemagick # 实用工具
     )
     for pkg in "${PACKAGES[@]}"; do
         if brew list --formula "$pkg" &>/dev/null; then
