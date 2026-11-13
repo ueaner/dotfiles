@@ -131,6 +131,7 @@ shellcheck -x main lib/*.sh libexec/* [0-9][0-9]-*.sh
 ## 重要注意事项
 
 - **脚本是 source 执行，不是直接执行。** `main` 对每个匹配的阶段脚本执行 `. "$f"`。这意味着全局状态（变量、trap、函数、`cd`）在脚本之间持续存在。注意不要泄漏变量或改变工作目录。
+- **`is_sourced && return 0 || exit 0` 是“禁用后续段落”的开关，不是 bug。** 仓库惯例（见 `31-service@macos.sh:77-79`、`32-lima.sh:9`、`33-lima-socket_vmnet@macos.sh:9`）：该语句出现在脚本中间时，表示有意停用其后的段落（通常是暂时性的，如新版 macOS 不兼容）。给这类脚本新增配置时必须写在该行之前，否则同样不会生效。
 - **避免在被 source 的脚本中 `cd`。** 因为脚本被 source 到同一个 shell，未保护的 `cd` 会影响后续脚本。使用绝对路径，或把临时目录变更包裹在子 shell 中。
 - **严格模式已启用。** `set -euo pipefail` 意味着缺失变量、失败命令、失败管道都会中止运行。可忽略的失败请使用 `|| true`。
 - **阶段索引只看第一个数字。** `main` 提取 `curr_idx="${filename:0:1}"`，因此 `09-intel-based-macbook@fedora.sh` 属于阶段 0（prelude）。保持编号与阶段映射一致。
