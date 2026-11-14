@@ -35,6 +35,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         tencent-meeting
         qq
         zed
+        wetype
         # visual-studio-code
         # baidunetdisk
         # dingtalk
