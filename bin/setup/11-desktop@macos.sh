@@ -18,6 +18,18 @@ defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspo
 # 窗口操作和模拟按键需要辅助功能权限，无法用脚本授权:
 note "Hammerspoon 需要辅助功能权限：open 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility'"
 
+# 释放 ⌘Space 给 Hammerspoon 打开 Apps（见 ~/.config/hammerspoon/init.lua）:
+# 系统快捷键优先于 Hammerspoon 热键，必须先关闭 Spotlight 的快捷键（System Settings -> Keyboard -> Keyboard Shortcuts -> Spotlight）:
+#   64: Show Spotlight search（⌘Space，1048576 = ⌘）
+#   65: Show Finder search window（⌥⌘Space，1572864 = ⌥⌘）
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 \
+    "<dict><key>enabled</key><false/><key>value</key><dict><key>parameters</key><array><integer>32</integer><integer>49</integer><integer>1048576</integer></array><key>type</key><string>standard</string></dict></dict>"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 \
+    "<dict><key>enabled</key><false/><key>value</key><dict><key>parameters</key><array><integer>32</integer><integer>49</integer><integer>1572864</integer></array><key>type</key><string>standard</string></dict></dict>"
+# 立即应用快捷键变更（否则需注销重新登录）:
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u 2>/dev/null || true
+note "⌘Space 已从 Spotlight 释放：Hammerspoon 若已在运行，需按 ⌘⌃R 重载配置后才会接管 ⌘Space 打开 Apps"
+
 # Alacritty + Tmux 需要释放 ⌘H（Kitty + Tmux 不需要）:
 # defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil
 

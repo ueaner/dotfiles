@@ -2,6 +2,11 @@
 --
 -- 配合系统设置（可选）：允许 ⌘Q 退出 Finder，退出后再按热键会重新启动
 --   defaults write com.apple.Finder QuitMenuItem -bool true && killall Finder
+--
+-- launchOrFocusByBundleID 激活已运行的 Finder 时，系统会发送 reopen 事件（同点击 Dock 图标）：
+-- 没有可见窗口时 Finder 自己恢复最小化窗口或新建窗口，有窗口时不做处理，重复发送也不会多建。
+-- 因此不能再自己检测窗口后 ⌘N：检测可能早于 Finder 建好窗口，偶现两个窗口。
+-- 唯一例外是冷启动（Finder 未运行）：启动后没有窗口，等启动完成再激活一次触发 reopen。
 
 local M = {}
 
@@ -12,57 +17,24 @@ local function isFrontmost()
   return front ~= nil and front:bundleID() == BUNDLE_ID
 end
 
--- Finder 已在前台：有可见窗口则不处理；有最小化窗口则恢复；都没有则 ⌘N 新建
-local function ensureWindow(finder)
-  if not isFrontmost() then return end
-
-  -- 只看标准窗口（排除桌面、面板等）
-  local wins = hs.fnutils.filter(finder:allWindows(), function(w)
-    return w:isStandard()
-  end)
-
-  for _, w in ipairs(wins) do
-    if w:isVisible() then return end
-  end
-
-  for _, w in ipairs(wins) do
-    if w:isMinimized() then
-      w:unminimize()
-      w:focus()
-      return
-    end
-  end
-
-  hs.eventtap.keyStroke({ "cmd" }, "n")
-end
-
-function M.show(retried)
-  -- 启动（若已运行则只是切到前台）
+function M.show()
+  local running = hs.application.get(BUNDLE_ID) ~= nil
   hs.application.launchOrFocusByBundleID(BUNDLE_ID)
+  if running then return end
 
-  local finder = hs.application.get(BUNDLE_ID)
-  if not finder then
-    if not retried then
-      hs.timer.doAfter(0.3, function() M.show(true) end) -- Finder 刚启动还拿不到，重试一次
-    end
-    return
-  end
-
-  if isFrontmost() then
-    ensureWindow(finder)
-    return
-  end
-
-  -- 还没切到前台，等 Finder 激活后再处理，最多等 1s
-  local watcher
-  watcher = hs.application.watcher.new(function(_, event, app)
-    if event == hs.application.watcher.activated and app and app:bundleID() == BUNDLE_ID then
-      watcher:stop()
-      ensureWindow(finder)
+  -- 冷启动：每 0.1s 检查一次，Finder 到前台后再激活一次，最多等 3s
+  -- timer 挂在模块表上，避免被 GC 回收；连按时先停掉上一次的
+  if M.timer then M.timer:stop() end
+  local tries = 0
+  M.timer = hs.timer.doEvery(0.1, function()
+    tries = tries + 1
+    if isFrontmost() then
+      M.timer:stop()
+      hs.application.launchOrFocusByBundleID(BUNDLE_ID)
+    elseif tries >= 30 then
+      M.timer:stop()
     end
   end)
-  watcher:start()
-  hs.timer.doAfter(1, function() watcher:stop() end)
 end
 
 return M

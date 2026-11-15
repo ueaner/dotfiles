@@ -20,7 +20,7 @@ macOS 下的 [Hammerspoon](https://www.hammerspoon.org/) 配置：热键启动�
 | 目的                  | 操作                                                                                |
 | --------------------- | ----------------------------------------------------------------------------------- |
 | 释放 `⌘H` 给 tmux     | `defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add "Hide alacritty" nil` |
-| 释放 `⌘Space` 给 Apps | System Settings → Keyboard → Keyboard Shortcuts → Spotlight，关闭全部快捷键                                 |
+| 释放 `⌘Space` 给 Apps | 关闭 Spotlight 的 `⌘Space` / `⌥⌘Space`，已由 `~/bin/setup/11-desktop@macos.sh` 处理 |
 | 关闭 Spotlight 索引   | `sudo mdutil -a -i off`                                                             |
 | 允许 `⌘Q` 退出 Finder | `defaults write com.apple.Finder QuitMenuItem -bool true`                           |
 
@@ -29,6 +29,7 @@ macOS 下的 [Hammerspoon](https://www.hammerspoon.org/) 配置：热键启动�
 | 热键        | 功能                                                                | 实现            |
 | ----------- | ------------------------------------------------------------------- | --------------- |
 | `⌘↩`        | 打开/切换终端（优先 `~/Applications/Alacritty.app`，否则 Terminal） | `init.lua`      |
+| `⌘Space`    | 打开/关闭 Apps 应用浏览器，`Esc` 一次直接关闭                       | `apps.lua`      |
 | `⌘E`        | 打开/切换 Finder，没有可见窗口时自动恢复或新建                      | `finder.lua`    |
 | `⌘;`        | 剪切板历史面板                                                      | `clipboard.lua` |
 | `⌃.`        | 切换到上一个应用（模拟 `⌘Tab`）                                     | `init.lua`      |
@@ -94,6 +95,7 @@ clipboard.start()
 ├── init.lua         # 入口：加载模块、绑定全部热键
 ├── tiling.lua       # 窗口平铺：左/右半屏、最大化切换、居中
 ├── finder.lua       # Finder 启动/切换，保证有可见窗口
+├── apps.lua         # Apps 应用浏览器：⌘Space 开关，Esc 一步关闭
 ├── clipboard.lua    # 剪切板历史：监听、存储、面板窗口与 Lua ↔ JS 通信
 ├── clipboard.html   # 剪切板面板 UI（HTML/CSS/JS），启动时由 clipboard.lua 读取
 ├── .luarc.json      # lua-language-server 配置（hs 全局 + EmmyLua 注解）
@@ -126,4 +128,6 @@ hs.pasteboard.watcher ──onChange──▶ history（Lua 表，带稳定 id�
 ## Debugging
 
 - Menu Bar Hammerspoon 图标 → Console 查看报错和 `print` 输出。
-- 命令行 `hs` 需要在配置中加载 `require("hs.ipc")` 才能使用。
+- 命令行 `hs -c 'lua code'`：取消 `init.lua` 中 `require("hs.ipc")` 的注释并重载；
+  首次使用需在 Console 执行 `hs.ipc.cliInstall("/opt/homebrew")` 安装 `hs` 命令。
+  调试完请重新注释：ipc 允许本机任意同用户进程借用 Hammerspoon 的辅助功能权限执行代码。

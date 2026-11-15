@@ -236,10 +236,11 @@ local function payload()
   return list
 end
 
--- 把最新的 history 同步进 webview（隐藏状态下也会执行，保证下次打开时已是最新）
--- 只更新数据，保留当前搜索词和选中项；打开面板时由 prepare() 重置
+-- 面板可见时把最新的 history 同步进 webview，只更新数据，保留当前搜索词和选中项
+-- 隐藏时跳过：打开面板时 M.show() 会通过 prepare() 传入完整数据，并在 alpha 0 下画完新列表
+-- 才显示（见 reveal），所以选中条目后的重新排序不会在打开时出现跳动
 function refresh()
-  if not webview then return end
+  if not webview or not webview:isVisible() then return end
   webview:evaluateJavaScript("update(" .. hs.json.encode(payload()) .. ")")
 end
 

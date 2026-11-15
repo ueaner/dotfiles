@@ -5,9 +5,14 @@
 --      defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 --   2. System Settings → Privacy & Security → Accessibility：允许 Hammerspoon（窗口操作、模拟按键需要）
 
+-- 命令行 hs 工具需要 ipc 模块（hs -c 'lua code'），仅调试时打开：
+-- ipc 允许本机任意同用户进程借用 Hammerspoon 的辅助功能权限执行代码
+-- require("hs.ipc")
+
 local tiling = require("tiling")
 local finder = require("finder")
 local clipboard = require("clipboard").start()
+local apps = require("apps").start()
 
 -- Terminal：优先 ~/Applications/Alacritty.app，其次 Kitty（任意位置，按 bundle ID 查找），否则系统 Terminal
 hs.hotkey.bind({ "cmd" }, "return", function()
@@ -20,6 +25,9 @@ hs.hotkey.bind({ "cmd" }, "return", function()
     hs.application.launchOrFocusByBundleID("com.apple.Terminal")
   end
 end)
+
+-- Apps：再按一次或 Esc 直接关闭，见 apps.lua
+hs.hotkey.bind({ "cmd" }, "space", apps.toggle)
 
 -- Finder：可选系统配置见 finder.lua
 hs.hotkey.bind({ "cmd" }, "e", finder.show)

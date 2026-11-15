@@ -57,6 +57,15 @@ function M.toggleMaximize()
     return
   end
 
+  -- 清理已关闭窗口的记录（窗口在最大化状态下被关闭时不会经过 restore）
+  local alive = {}
+  for _, w in ipairs(hs.window.allWindows()) do
+    alive[w:id()] = true
+  end
+  for id in pairs(originalFrame) do
+    if not alive[id] then originalFrame[id] = nil end
+  end
+
   originalFrame[win:id()] = win:frame()
   win:maximize(0)
 end
