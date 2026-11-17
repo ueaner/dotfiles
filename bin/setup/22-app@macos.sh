@@ -36,10 +36,10 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         qq
         zed
         wetype
+        appcleaner
         # visual-studio-code
         # baidunetdisk
         # dingtalk
-        # appcleaner
         # sogouinput
         # kap
         # keycastr
@@ -83,6 +83,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
         gnu-tar
         grep
         imagemagick # 实用工具
+        macmon
     )
     for pkg in "${PACKAGES[@]}"; do
         if brew list --formula "$pkg" &>/dev/null; then
@@ -92,4 +93,8 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
             brew install "$pkg" || warn "package 安装失败: $pkg"
         fi
     done
+
+    # 注册为 docker-compose 为 docker cli 插件
+    mkdir -p ~/.docker/cli-plugins
+    ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
 fi
