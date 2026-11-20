@@ -8,6 +8,9 @@ task "macOS basic desktop environment"
 
 paragraph "macOS basic desktop environment"
 
+# 关闭所有卷宗的索引
+sudo mdutil -a -i off
+
 # ---------------------------------------------------------------
 # Hammerspoon
 # ---------------------------------------------------------------
