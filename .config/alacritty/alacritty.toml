@@ -134,7 +134,8 @@ bindings = [
     { key = "J",           mods = "Super",         chars = "\u001Bsj"          }, # Pane: Force Down
     { key = "K",           mods = "Super",         chars = "\u001Bsk"          }, # Pane: Force Up
     { key = "L",           mods = "Super",         chars = "\u001Bsl"          }, # Pane: Force Right
-    { key = "Escape",      mods = "Super",         chars = "\u001Bs\u001B"     }, # Mode: Copy Mode vi
+    # { key = "Escape",      mods = "Super",         chars = "\u001Bs\u001B"     }, # Mode: Copy Mode vi
+    { key = "C",           mods = "Super|Shift",   chars = "\u001Bs\u001B"     }, # Mode: Copy Mode vi
     { key = ":",           mods = "Super|Shift",   chars = "\u001Bs:"          }, # Mode: Command mode
     { key = "/",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
     { key = "F",           mods = "Super",         chars = "\u001Bs/"          }, # Search: in copy mode
