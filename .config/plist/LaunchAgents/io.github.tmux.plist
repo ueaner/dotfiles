@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    由 launchd 托管 tmux server, kitty 只负责 attach (见 kitty.conf 的 shell 选项).
+
+    由 LaunchServices 启动的 kitty 属于 launchd 的 application job, kitty 退出时
+    launchd 会清理该 job 派生的全部进程 (即使 tmux 已 setsid daemonize),
+    因此 tmux server 不能由 kitty 拉起.
+
+    tmux -D: server 前台运行 (不 daemonize), 并自动关闭 exit-empty, 无 session 时也不退出;
+    KeepAlive: server 被 kill-server 等退出后由 launchd 自动拉起 (10s 节流).
+    经 login shell 启动, tmux server 继承完整 PATH (状态栏 gitmux 等依赖).
+
+    安装: ~/bin/setup/31-service@macos.sh
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>io.github.tmux</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>-l</string>
+        <string>-c</string>
+        <string>exec tmux -D</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/tmux-launchd.stderr.log</string>
+</dict>
+</plist>

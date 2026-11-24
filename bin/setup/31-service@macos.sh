@@ -38,6 +38,19 @@ step "Enable sshd.service"
 sudo systemsetup -setremotelogin on
 
 # ---------------------------------------------------------------
+# tmux
+# ---------------------------------------------------------------
+# tmux server 由 launchd 托管 (tmux -D + KeepAlive), kitty 只 attach;
+# 由 kitty 拉起的 server 会在 kitty 退出时被 launchd 连带清理
+step "Configure and enable tmux.service"
+
+if [[ -f ~/.config/plist/LaunchAgents/io.github.tmux.plist ]]; then
+    ln -sf ~/.config/plist/LaunchAgents/io.github.tmux.plist ~/Library/LaunchAgents/io.github.tmux.plist
+fi
+
+load_launch_agent io.github.tmux ~/Library/LaunchAgents/io.github.tmux.plist
+
+# ---------------------------------------------------------------
 # frpc
 # ---------------------------------------------------------------
 step "Configure and enable frpc.service"
