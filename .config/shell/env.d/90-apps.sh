@@ -14,10 +14,14 @@ sync_aqua_to_user_environment() {
 
 aqua_specific_config() {
     local desktop=
+    local compositor_proc=
+    # zsh 使用 HOST，Bash 使用 HOSTNAME
+    local host_name="${HOSTNAME:-${HOST:-}}"
 
     if [[ -n "$XDG_CURRENT_DESKTOP" ]]; then
         desktop=$(tr '[:upper:]' '[:lower:]' <<<"$XDG_CURRENT_DESKTOP")
-    else # ssh
+    elif [[ "${OSTYPE}" == linux* ]]; then
+        # SSH 等桌面变量缺失的场景，回退到进程探测
         compositor_proc=$(pgrep -ax 'gnome-shell|sway')
         case "$compositor_proc" in
         *gnome-shell*)
@@ -34,8 +38,8 @@ aqua_specific_config() {
         export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:+$AQUA_GLOBAL_CONFIG:}$aqua_desktop_specific_config"
     fi
 
-    local aqua_host_specific_config="$HOME/.config/aqua/$HOSTNAME.yaml"
-    if [[ -f "$aqua_host_specific_config" ]]; then
+    local aqua_host_specific_config="$HOME/.config/aqua/${host_name}.yaml"
+    if [[ -n "$host_name" && -f "$aqua_host_specific_config" ]]; then
         export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:+$AQUA_GLOBAL_CONFIG:}$aqua_host_specific_config"
     fi
 }
