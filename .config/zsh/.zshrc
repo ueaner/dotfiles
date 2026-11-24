@@ -80,10 +80,7 @@
 # |------|----------|-------|--------|----------|----------|
 # | XOFF | 暂停传输 |  DC3  |   19   |    13    |  Ctrl+S  |
 # | XON  | 恢复传输 |  DC1  |   17   |    11    |  Ctrl+Q  |
-stty -ixon
-stty -ixoff
-stty stop undef
-stty start undef
+[[ -t 0 ]] && /bin/stty -ixon -ixoff stop undef start undef
 
 # time zsh -i -c exit
 # zsh 调试详细每个操作的执行时间, 开头加载 zmodload zsh/zprof 最后调用 zprof

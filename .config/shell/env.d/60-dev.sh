@@ -38,7 +38,9 @@
 export GIT_TERMINAL_PROMPT=1
 
 if [[ "${OSTYPE}" == darwin* ]]; then
-    sudo launchctl limit maxfiles 10240 unlimited
+    if [[ ! "$(launchctl limit maxfiles)" =~ ^[[:space:]]*maxfiles[[:space:]]+10240[[:space:]]+unlimited[[:space:]]*$ ]]; then
+        sudo launchctl limit maxfiles 10240 unlimited
+    fi
 else
     ulimit -n 64000
 fi
@@ -133,8 +135,15 @@ export ANDROID_HOME=$XDG_DATA_HOME/android
 if [[ -d "$ANDROID_HOME/ndk" ]]; then
     # 可能并存多个 NDK 版本（升级后旧版仍保留），取最新的一个
     # NDK 目录名均为版本号，用 ls 足够
+    sort_cmd=sort
+    tail_cmd=tail
+    if [[ "${OSTYPE}" == darwin* && -x "${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin/sort" ]]; then
+        sort_cmd="${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin/sort"
+        tail_cmd="${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin/tail"
+    fi
     # shellcheck disable=SC2155,SC2012
-    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 "$ANDROID_HOME/ndk" | sort -V | tail -1)"
+    export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/$(/bin/ls -1 "$ANDROID_HOME/ndk" | "$sort_cmd" -V | "$tail_cmd" -1)"
+    unset sort_cmd tail_cmd
     # for tauri only
     # https://tauri.app/start/prerequisites/#android
     export NDK_HOME=$ANDROID_NDK_HOME

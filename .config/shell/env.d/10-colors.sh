@@ -8,17 +8,17 @@
 
 # Color values are consistent with alacritty terminal.
 arr=(
-    black     "#0d1117"
-    red       "#df6566"
-    green     "#c5d15c"
-    yellow    "#ecce58"
-    blue      "#a8c7fa"
-    magenta   "#cfabe0"
-    cyan      "#81cabf"
-    white     "#eaeaea"
-    gray      "#778899"  # #42495c
-    darkgray  "#21252d"
-    dark      "#07090c"
+    BLACK     "#0d1117"
+    RED       "#df6566"
+    GREEN     "#c5d15c"
+    YELLOW    "#ecce58"
+    BLUE      "#a8c7fa"
+    MAGENTA   "#cfabe0"
+    CYAN      "#81cabf"
+    WHITE     "#eaeaea"
+    GRAY      "#778899"  # #42495c
+    DARKGRAY  "#21252d"
+    DARK      "#07090c"
 )
 
 # 0-based indexing
@@ -31,7 +31,7 @@ fi
 # Arrays in bash are 0-indexed;
 # Arrays in  zsh are 1-indexed.
 for ((i = 0; i < ${#arr[@]} / 2; i++)); do
-    k=$(tr '[:lower:]' '[:upper:]' <<<"${arr[i * 2 + $index_offset]}")
+    k=${arr[i * 2 + $index_offset]}
     v=${arr[i * 2 + 1 + $index_offset]}
     # printf "export COLOR_%s=%s\n" ${k} ${v}
     export "COLOR_$k"="$v"
